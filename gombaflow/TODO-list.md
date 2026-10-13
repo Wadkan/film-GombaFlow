@@ -1,10 +1,18 @@
+1. TRY LOCALLY
+n8n in docker
+ollama locally
+
+!!! USE n8n TEAMPLATES
+    workflow automation templates
+
+
+
+
 TRY OUT
 try out grok bot teach task with recoridng - youtube upload?
 
 trigger.net - instead of creating it by hand in N8N
 
-!!! USE n8n TEAMPLATES
-    workflow automation templates
 
 chatGpt / GPTs / N8N Assistant - trained for n8n
 
