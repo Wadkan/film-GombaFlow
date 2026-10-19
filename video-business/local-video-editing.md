@@ -55,26 +55,7 @@ félbehagyott mondatok jelölése
 Timeline Builder
 Cél: végső timeline összeállítása.
 
-
-
-
-
-INSTALL
-
-brew install ollama
-brew services start ollama
-
-python3 -m venv ~/video-ai
-source ~/video-ai/bin/activate
-
-pip install -U faster-whisper
-
-pip install OpenTimelineIO
-
-pip install OpenTimelineIO-Plugins
-
-brew install ffmpeg
-
+---
 
 Video
   ↓
