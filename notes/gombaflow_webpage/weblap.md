@@ -13,23 +13,6 @@ REFERENCIAK
         -kdmf app nezet
         -loopbreaker app nezet
 
----
-
-EGYEDI WEBLAP
--Nem oldalt adunk. Megjelenest.
-    -gyors
-    -sajat admin felulet - RESEARCH hogyan?
-    -SEO-ra hangolva
-    -ajanlatkeres, foglalas, adatbekeres
-    -valaszthato nyelv
--website beirasra speed checker
--elobb almodj, utana megvalositas
-    -mutasd be Magad!
-    -nezzuk meg mi tetszik
-    -
-
-minden aloldal aljan legyen gorgo hero az oldalra jellemzo kulcsszavakkal (bts-bol otletek)
-
 betenni subpage-ek ala:
     -kulon price card-ot
     -contact
