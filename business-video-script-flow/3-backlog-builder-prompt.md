@@ -39,7 +39,10 @@ Minden backlog elemnél jelenítsd meg:
 - title
 - final_score
 - tags
-- rövid 1 mondatos összefoglaló arról, hogy miért érdemes videót készíteni belőle
+- backlog_reason (a témaindexből, rövid 1 mondatos indoklás)
+
+Ne olvass részletes JSON fájlokat, és ne találj ki új indoklást. A
+`backlog_reason` mezőt változtatás nélkül használd.
 
 A BACKLOG.md legyen könnyen olvasható ember számára.
 
@@ -55,7 +58,7 @@ Score: XX
 
 Tags: ...
 
-Rövid indoklás...
+{{backlog_reason}}
 
 ---
 

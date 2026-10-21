@@ -58,6 +58,9 @@ Felelősség:
 Feladat:
 Könnyen kereshető és gyorsan feldolgozható témaindex karbantartása.
 
+Megvalósító prompt:
+- `index-builder-agent-prompt.md`
+
 Olvas:
 - /research/scored/*.json
 
@@ -76,9 +79,14 @@ Index rekord minta:
   "final_score": 87,
   "created_at": "2026-10-19",
   "tags": ["ollama", "n8n", "support"],
+  "backlog_reason": "Bizonyított automatizálás, amely kézzelfogható ügyfélszolgálati időmegtakarítást mutat be.",
   "backlog": false,
   "published": false
 }
+
+Az index mezői a pontozott rekordból származnak: `id`, `title`, `created_at`,
+`technology.tags`, `scores.final_score` és `editorial.why_selected`.
+Az `editorial.why_selected` rövidített változata kerül a `backlog_reason` mezőbe.
 
 ---
 
@@ -103,7 +111,9 @@ Felelősség:
 
 5. Publishing Workflow
 
-Videó elkészülése után:
+Felelős: a videó publikálásáért felelős emberi operátor.
+
+Amint a videó nyilvánosan megjelent, az operátor az érintett téma rekordján:
 
 Frissítendő:
 - /indexes/topic-index.json
@@ -112,7 +122,8 @@ Módosítás:
 
 published = true
 
-A téma ezután többé nem kerülhet vissza a backlogba.
+A téma ezután többé nem kerülhet vissza a backlogba. A backlog builder a
+következő futásakor kihagyja.
 
 ---
 
