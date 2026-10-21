@@ -10,13 +10,30 @@ RESEARCH n8n TEAMPLATES, workflow automation templates
 
 ---
 
-TRY OUT
+RESEARCH
+szuksegem van egy templatere vagy eszkozre (ai vagy nem ai) a business video (automation, n8n, ai skills, agents, stb) bemutato videoimhoz. nagyon professzionalis kell legyen, ai vagassal es fizetos davincival konnyen hasznalhato amennyire lehet automatikusan (ai driven).
+roviden listazd a 5 top lehetoseget.
+ kesz templatet szeretnek, nem szeretnek nagyon belemelyedni, csak hasznalni szeretnem.
+ amit en veszek fel: talking head es screenrecordings
+ amire szuksegem van: cim kartyak a reszek kozott igenyes transitionnel es akar hanggal
+ kiiras tipusok ha magyarazok valamit, transitionok videok kozott automatikusan, talking head elhelyezese automatikusan.
+
+RESEARCH: milyen hosszu legyen a video?
+RESEARCH: legsikeresebb ai bemutato videok pontjai, hosszusaga, tomorsege, hook es tanulsaga
+
+RESEARCH: davinci transparent talking head
+
+
+
+
+---
+NOT PRIO
+
+
 RESEARCH grok bot teach task with recoridng - for youtube upload?
 CHECK claude code visuals
 CHECK futurpedia courses
----
 
-RESEARCH
 RESEARCH - trained gpt for youtube, script writing and davinci ai automation
 
 RESEARCH eros modellel: mivel tudok a leghatekonyabban sok penzt keresni ai eszkozok hasznalataval 2026-ban. ezek kozul melyikbe tudok a legegyszerubben boteroni? fo kerdes: meghatarozni, ha sikerult a piacra betorni valamelyik temaban a lentiek kozul, melyik fogja a beletett idobol a legtobb profitot kihozni? melyikkel mennyi munkaval havi munkaval mennyi megterules varhato havonta ft-ban?
