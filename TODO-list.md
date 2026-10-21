@@ -1,9 +1,20 @@
 AT HOME
+RESEARCH n8n TEAMPLATES, workflow automation templates
+    trigger.net - instead of creating it by hand in N8N
+
+try out davinci rough cut
+try out davinci motion template
+
+
 
 TRY LOCALLY
 n8n in docker
 ollama locally for youtube rough cut
 chatGpt / GPTs / N8N Assistant - trained for n8n
+
+
+---
+
 
 RESEARCH n8n TEAMPLATES, workflow automation templates
     trigger.net - instead of creating it by hand in N8N
@@ -20,6 +31,9 @@ roviden listazd a 5 top lehetoseget.
 
 RESEARCH: milyen hosszu legyen a video?
 RESEARCH: legsikeresebb ai bemutato videok pontjai, hosszusaga, tomorsege, hook es tanulsaga
+
+
+
 
 RESEARCH: davinci transparent talking head
 
