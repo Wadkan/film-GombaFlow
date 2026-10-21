@@ -70,10 +70,14 @@ gomba-1-script-writer/
       5-preparation.md
 ```
 
-A számozott template-ek és skillek később, egyenként készülnek el.
+A számozott template-ek és skillek a fenti útvonalakon találhatók.
 Minden számozott template az azonos sorszámú projektkimenet formátumát adja meg.
 A közös összehasonlítás formátuma a `templates/comparison-template.md`;
 a fejezet- és scripttemplate erre hivatkozzon, ne másolja.
+A template kitöltési utasításait ne másold a kész kimenetbe: a szögletes zárójelű
+helyőrzőket helyettesítsd, az ismételhető blokkokat a szükséges számban töltsd ki.
+Nem releváns mezőnél rövid indok kell. A kimenet magyar, a kód és technikai
+azonosítók eredeti alakja megmarad.
 
 ## Lépések
 
@@ -171,6 +175,10 @@ kötelező bemenet, saját skill és template létezése.
 - A CLI-agentet helyi n8n vagy CLI-koordinátor indíthatja. Explicit megadja
   a skill nevét/útvonalát, workflow-t, projektet, input/template/output útvonalakat
   és aktuális jóváhagyásokat. A `skills/` automatikus felismerését nem feltételezzük.
+- A futtató azonosítható bemeneti változatokat is ad; a kimenet ezeket rögzíti.
+  A skill egy lépést végez el, a következőt nem indítja és nem ad emberi
+  jóváhagyást. Válaszában a kimenet útvonalát, a teljesült/nem teljesült kaput
+  és az esetleges akadályt jelzi; akadálynál nem jelöl késznek hiányos kimenetet.
 - Történethez és scripthez erős storytellingmodell kell, technikai oktató és
   forgatókönyvíró szereppel; észrevétlen modellhelyettesítés nélkül.
 - Hiányzó kritikus inputnál vagy bizonyítéknál megállás és konkrét hibajelzés kell.
