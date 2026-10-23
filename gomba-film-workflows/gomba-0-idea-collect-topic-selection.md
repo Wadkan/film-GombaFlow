@@ -3,7 +3,7 @@
 ## Cél
 
 Egy hívásra kutass megvalósított automatizálási videóötleteket, válaszd ki
-a legjobb hármat, és mentsd őket egy ember által olvasható fájlba.
+a legjobb jelölteket, és mentsd őket egy ember által olvasható fájlba.
 Egy másik, felhasználó által meghívott skill a megadott ID alapján egyetlen
 témát ad át a scriptírónak. Nincs külön scoring agent, index vagy backlog.
 
@@ -11,9 +11,9 @@ témát ad át a scriptírónak. Nincs külön scoring agent, index vagy backlog
 
 A skillek projektszintű, automatikusan felfedezhető helyen vannak:
 
-1. [gomba-0-idea-collect-search-top3](../.github/skills/gomba-0-idea-collect-search-top3/SKILL.md)
-   — kutatás, összehasonlítás, top 3 és fájlba mentés.
-   Hívás: `/gomba-0-idea-collect-search-top3`
+1. [gomba-0-idea-collect-search-ideas](../.github/skills/gomba-0-idea-collect-search-ideas/SKILL.md)
+   — kutatás, összehasonlítás, jelöltek kiválasztása és fájlba mentés.
+   Hívás: `/gomba-0-idea-collect-search-ideas`
    Opcionálisan adj témaszűkítést, például „ügyfélszolgálati automatizálás”.
 2. [gomba-0-idea-collect-select-topic](../.github/skills/gomba-0-idea-collect-select-topic/SKILL.md)
    — a felhasználó által kiválasztott ID átadása.
@@ -30,7 +30,9 @@ Az alábbi útvonalak a repository gyökeréhez képest értendők.
 - Témarekord formátuma:
   [topic-template.json](../gomba-0-idea-collector/templates/topic-template.json).
 - Kutatási futásonként egy új, magyar nyelvű eredmény:
-  `gomba-0-idea-collector/results/<run-id>-top3.md`.
+  `gomba-0-idea-collector/results/<run-id>-ideas.md`.
+- A kiválasztandó jelöltek számát kizárólag a kereső skill állítja be;
+  ezt a workflow és a többi skill nem ismétli meg.
 - A kiválasztott egyetlen teljes rekord:
   `gomba-1-script-writer/projects/<topic-id>/selected-topic.json`.
 - Következő fázis:
@@ -41,7 +43,7 @@ alakban; ütközésnél új, egyedi időbélyeg kell, meglévő fájl nem írhat
 `<topic-id>`: `<run-id>-<rovid-angol-slug>`, kizárólag kisbetűs ASCII
 betűkkel, számokkal és kötőjelekkel a slugban. A teljes ID a
 `^[0-9]{8}T[0-9]{9}Z-[a-z0-9]+(?:-[a-z0-9]+)*$` mintát követi.
-Az ID mentés után változatlan, nem pusztán a rangsorbeli 1, 2 vagy 3.
+Az ID mentés után változatlan, nem pusztán a rangsorbeli helyezés.
 
 Az eredményfájl kötelező tartalma:
 
@@ -77,7 +79,7 @@ szerkesztői indoklás adja, nem a korábbi `final_score`.
   ügyfélkiszolgálás vagy sales; reális tanácsadói/implementációs lehetőség.
 - Kizárt: AI-hír, trend- vagy fundinghír, eszközlista, promptgyűjtemény,
   prompt engineering, ChatGPT-trükk, hype és meg nem valósított ötlet.
-- A top 3-ba csak konkrét fő forrásvideóval és a megoldást igazoló,
+- A kiválasztott listába csak konkrét fő forrásvideóval és a megoldást igazoló,
   hozzáférhető videóval, átirattal vagy érdemi leírással rendelkező téma
   kerülhet, hogy a scriptíró ténylegesen át tudja venni.
   A nem videós források bizonyítékot és további jelölteket adhatnak.
@@ -92,9 +94,10 @@ szerkesztői indoklás adja, nem a korábbi `final_score`.
 
 ## Kapuk és hibák
 
-Normál kimenet három különböző, ellenőrzött jelölt. Ha ennél kevesebb
-található, csak a megfelelőket mentsd el, és egyértelműen jelezd a hiányt.
-Nulla megfelelő jelöltnél ne készíts sikeresnek látszó top 3-at.
+Normál kimenet a kereső skillben beállított számú, különböző és ellenőrzött
+jelölt. Ha ennél kevesebb található, csak a megfelelőket mentsd el,
+és egyértelműen jelezd a hiányt. Nulla megfelelő jelöltnél ne készíts
+sikeresnek látszó ajánlati listát.
 Webhozzáférés nélkül ne helyettesítsd a kutatást emlékezetből írt ötletekkel.
 
 A mentés után ellenőrizni kell a JSON-ok parse-olhatóságát, mezőit,

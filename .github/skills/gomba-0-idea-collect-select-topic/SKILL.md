@@ -1,6 +1,6 @@
 ---
 name: gomba-0-idea-collect-select-topic
-description: 'Egy korábban elmentett Gomba top 3 videóötlet kiválasztása pontos téma-ID alapján, és az egyetlen teljes rekord mentése a scriptíró fázis számára. Használd, amikor a felhasználó megadja a választott ötlet ID-ját. Nem kutat és nem ír briefet.'
+description: 'Egy korábban elmentett Gomba videóötlet kiválasztása pontos téma-ID alapján, és az egyetlen teljes rekord mentése a scriptíró fázis számára. Használd, amikor a felhasználó megadja a választott ötlet ID-ját. Nem kutat és nem ír briefet.'
 argument-hint: '<topic-id>'
 disable-model-invocation: true
 ---
@@ -12,7 +12,7 @@ disable-model-invocation: true
 - Olvasd a [workflow-t](../../../gomba-film-workflows/gomba-0-idea-collect-topic-selection.md)
   és a [tématemplate-et](../../../gomba-0-idea-collector/templates/topic-template.json).
 - Kötelező bemenet a felhasználó által megadott pontos `<topic-id>`.
-- Forrás: `gomba-0-idea-collector/results/*-top3.md`.
+- Forrás: `gomba-0-idea-collector/results/*-ideas.md`.
 - Egyetlen engedélyezett kimenet:
   `gomba-1-script-writer/projects/<topic-id>/selected-topic.json`.
   Minden útvonal a repository gyökerétől értendő.
@@ -38,7 +38,7 @@ disable-model-invocation: true
    Azonos tartalomnál jelezd a meglévő átadást, ne írj új másolatot.
    Eltérő tartalomnál állj meg, és kérj felhasználói döntést; ne írj felül.
 6. Új átadásnál hozd létre a projektmappát és mentsd az egyetlen JSON-fájlt.
-   A top 3 forrásfájlt és a projekt más fájljait ne módosítsd.
+   A forrásfájlt és a projekt más fájljait ne módosítsd.
    Ellenőrizd a mentett JSON parse-olhatóságát, ID-ját és a forrással való
    egyezést a szándékos státuszváltáson kívül.
 7. Válaszolj a kiválasztott ID-val, címmel és a mentett fájl linkjével.
