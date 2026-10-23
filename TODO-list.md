@@ -1,4 +1,6 @@
 AT HOME
+!!! add AIa resz to webpage - weblap
+
 RESEARCH n8n TEAMPLATES, workflow automation templates
     trigger.net - instead of creating it by hand in N8N
 
