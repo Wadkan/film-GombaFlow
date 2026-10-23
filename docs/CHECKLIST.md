@@ -2,7 +2,7 @@
 # Áttekintő terv: YouTube-feltöltés n8n-nel (MVP)
 
 ## Alapelvek
-- **Egy helyi n8n fut Rancher Desktopon, Dockerben, két workflow-val és egy közös értesítő segéd-workflow-val.** A Rancher Desktopban a Docker-kompatibilis motort (dockerd/moby) kell választani, hogy a `docker compose` működjön.
+- **A már futó n8n marad.** Egy helyi n8n fut Rancher Desktopon, az `n8n-docker/` stackből, két workflow-val és egy közös értesítő segéd-workflow-val. Nem készül második compose, és nem kerül `docker-compose.yml` a repó gyökerébe. A Rancher Desktopban a Docker-kompatibilis motort (dockerd/moby) kell választani, hogy a `docker compose` működjön.
 - **Minden webes, saját fejlesztés nélkül:**
   - a chat az n8n beépített chat-oldala,
   - a feltöltést egy n8n-űrlap indítja,
@@ -11,20 +11,25 @@
 - **A feltöltés mindig kézzel indul,** minden más automatikus.
 - **Amit online el lehet érni, azt nem mentjük el külön.** A playlisteket a workflow mindig élőben kéri le.
 - **Az end screen kézi lépés,** Playwright ebben a körben nincs.
-- **Minden parancssori parancs a Makefile-ban van.**
+- **Az n8n indítása és leállítása a meglévő Makefile-okban marad** (`make start-n8n`, `make stop-n8n`). Az export és az import a `youtube-upload/Makefile`-ban van.
 
 ## A repó tartalma
-- `docker-compose.yml`
-- `Makefile`
-- `.env.example`: verziózva. A valódi `.env` nincs Gitben, abban vannak a titkos kulcsok és a gépenkénti útvonalak.
-- `.gitignore`
+
+Meglévő stack, ez marad: `n8n-docker/` (`compose.yaml`, `env.example`, `Makefile`). A gyökér `Makefile` csak ide delegál.
+
+Új mappa, `youtube-upload/`:
+
 - `workflows/`: az exportált workflow-k JSON-ban.
 - `scripts/`: az export és az import.
+- `Makefile`: `export` és `import`.
 - `config/settings.json`: az alapértelmezett mappa, a Telegram chat ID, az időzóna, az alapértelmezett megjelenési idő.
 - `prompts/style.md`: a skilled, a stílusod és a SEO-szabályaid (AI-keresőkre és klasszikus keresőkre).
 - `rules/rules.md`: amit az ügynök tanul, például „bringás videó → Bringa playlist”.
+- `examples/meta.json` és `examples/upload-state.json`: a formátum példája. A valódi fájlokat a workflow a videómappába írja.
 
-A videók nincsenek a repóban. Helyi mappában vannak, az útvonaluk a `.env`-ben van (`VIDEOS_ROOT`), és külön kötetként kerülnek a konténerbe.
+A videók nincsenek a repóban. Helyi mappában vannak. A `VIDEOS_ROOT` az `n8n-docker/.env`-ben van, mert a compose a mellette lévő `.env`-ből helyettesíti az útvonalat. A titkos kulcsok is ott maradnak. Külön `youtube-upload/.env` nem kell. A valódi `.env` továbbra is az `n8n-docker/.gitignore` alatt van.
+
+Az env változó önmagában nem teszi láthatóvá a mappát. Az `n8n-docker/compose.yaml` n8n szolgáltatására bind mount kell: a `${VIDEOS_ROOT}` írhatóan csatolva, mert a `meta.json` és az `upload-state.json` oda kerül. Ugyanígy csatolni kell a `youtube-upload/` mappát, hogy a workflow olvassa a `settings.json`-t, a `style.md`-t és a `rules.md`-t, és írja a `rules.md`-t. Ezek a konténerbeli útvonalak kerülnek az `N8N_RESTRICT_FILE_ACCESS_TO` értékébe. Az `N8N_DEFAULT_BINARY_DATA_MODE=filesystem` és az `N8N_ENCRYPTION_KEY` az `n8n-docker/env.example` kiegészítése. A `GENERIC_TIMEZONE=Europe/Vienna` már be van állítva.
 
 ## Egy videó mappája
 `YYYY-MM-DD_videonev/`, benne:
@@ -40,14 +45,9 @@ A videók nincsenek a repóban. Helyi mappában vannak, az útvonaluk a `.env`-b
   - Ha egy feltöltés órák óta `uploading` állapotban áll, `failed`-nek számít.
 
 ## Megvalósítási sorrend
-1. [ ] TODO **Repó alapjai:** docker-compose, `.env.example`, `.gitignore`, Makefile (`up`, `down`, `restart`, `logs`, `export`, `import`). A docker-compose-ban beállítandó:
-   - a videók kötete és a repó becsatolt mappái,
-   - `N8N_RESTRICT_FILE_ACCESS_TO`: mely mappákhoz férhet hozzá az n8n,
-   - `N8N_DEFAULT_BINARY_DATA_MODE=filesystem`: a nagy videók lemezen tárolódnak, nem memóriában,
-   - `GENERIC_TIMEZONE=Europe/Vienna`,
-   - `N8N_ENCRYPTION_KEY`.
-2. [ ] TODO **Export- és importszkript** a `workflows/` mappába, Makefile-parancsokkal.
-3. [ ] TODO **Adatformátumok rögzítése:** a `meta.json`, az `upload-state.json` és a `settings.json` szerkezete, valamint a mappák elnevezése.
+1. [ ] TODO **Repó alapjai, a meglévő stackhez igazítva.** Új compose nem készül. Az `n8n-docker/compose.yaml` kiegészítése a videókötetettel és a `youtube-upload/` csatolásával. Az `n8n-docker/env.example` kiegészítése: `VIDEOS_ROOT`, `N8N_RESTRICT_FILE_ACCESS_TO`, `N8N_DEFAULT_BINARY_DATA_MODE=filesystem`, `N8N_ENCRYPTION_KEY`. A `youtube-upload/Makefile` csak az `export` és az `import`.
+2. [ ] TODO **Export- és importszkript** a `youtube-upload/workflows/` mappába, a `youtube-upload/Makefile` `export` és `import` céljaival. A futó konténer a meglévő `n8n-docker` stack.
+3. [ ] TODO **Adatformátumok rögzítése** a `youtube-upload/` alatt: `config/settings.json`, `examples/meta.json`, `examples/upload-state.json`, `prompts/style.md`, `rules/rules.md`, valamint a videómappák elnevezése.
 4. [ ] TODO **Telegram értesítő segéd-workflow,** amit a többi workflow meghív.
 5. [ ] TODO **Feltöltő workflow** (előbb érdemes megépíteni, mert egy kézzel írt `meta.json`-nal jól tesztelhető):
    1. [ ] TODO Űrlap, előre kitöltve az alapértelmezett mappával.
@@ -66,7 +66,7 @@ A videók nincsenek a repóban. Helyi mappában vannak, az útvonaluk a `.env`-b
    5. [ ] TODO Egyezteti veled a playlistet és az időzítést.
    6. [ ] TODO A jóváhagyásod után átviszi a `meta.md` tartalmát a `meta.json`-ba, és `ready`-re állítja.
    7. [ ] TODO Ha új szabályt mondasz, beírja a `rules.md`-be, és legközelebb már csak felajánlja.
-7. [ ] TODO **Végigtesztelés egy valódi videóval,** utána `make export` és commit.
+7. [ ] TODO **Végigtesztelés egy valódi videóval,** utána `make -C youtube-upload export` és commit.
 
 ## Kockázatok
 - **Ellenőrizetlen Google API-projekt:** a YouTube szabályai szerint az ilyen projektből feltöltött videók privátak maradnak, és az időzítés sem teszi őket nyilvánossá. Ezt egy ellenőrzés (audit) kérésével lehet feloldani.
@@ -75,7 +75,7 @@ A videók nincsenek a repóban. Helyi mappában vannak, az útvonaluk a `.env`-b
 
 ## Rád váró teendők
 1. [ ] TODO **Rancher Desktop:** állítsd a motort dockerdre (moby), és ha a videómappa nem a saját mappádon belül van, engedélyezd a megosztását.
-2. [ ] TODO **`.env` kitöltése:** állítsd be a `VIDEOS_ROOT` útvonalat, és generálj egy `N8N_ENCRYPTION_KEY` kulcsot. A kulcsot mentsd el biztonságos helyre, mert nélküle a credentialök nem állíthatók vissza.
+2. [ ] TODO **`n8n-docker/.env` kitöltése:** állítsd be a `VIDEOS_ROOT` útvonalat, és generálj egy `N8N_ENCRYPTION_KEY` kulcsot. A kulcsot mentsd el biztonságos helyre, mert nélküle a credentialök nem állíthatók vissza. A compose csak e fájl mellől látja a `VIDEOS_ROOT`-ot.
 3. [ ] TODO **Google Cloud:**
    1. [ ] TODO Hozz létre egy projektet, és kapcsold be a YouTube Data API v3-at.
    2. [ ] TODO Állítsd be a bejelentkezési (OAuth) engedélykérő képernyőt.
@@ -85,9 +85,9 @@ A videók nincsenek a repóban. Helyi mappában vannak, az útvonaluk a `.env`-b
 4. [ ] TODO **Telegram:**
    1. [ ] TODO Az n8n-ben hozd létre a Telegram credentialt a BotFathertől kapott tokennel.
    2. [ ] TODO Írj egy üzenetet a botnak.
-   3. [ ] TODO A `getUpdates` címen nézd ki a chat ID-t, és írd be a `settings.json`-ba.
+   3. [ ] TODO A `getUpdates` címen nézd ki a chat ID-t, és írd be a `youtube-upload/config/settings.json`-ba.
 5. [ ] TODO **AI-modell:** hozz létre egy credentialt a választott szolgáltatóhoz (pl. OpenAI vagy Anthropic), az API-kulcsoddal.
-6. [ ] TODO **Tartalom:** másold át a meglévő skilledet és a preferenciáidat a `prompts/style.md`-be, és töltsd ki a `settings.json` alapértékeit.
+6. [ ] TODO **Tartalom:** másold át a meglévő skilledet és a preferenciáidat a `youtube-upload/prompts/style.md`-be, és töltsd ki a `youtube-upload/config/settings.json` alapértékeit.
 7. [ ] TODO **Minden videónál:** állítsd be kézzel az end screent a YouTube Studióban.
-8. [ ] TODO **Minden workflow-változtatás után:** futtasd a `make export` parancsot, és commitolj.
+8. [ ] TODO **Minden workflow-változtatás után:** futtasd a `make -C youtube-upload export` parancsot, és commitolj.
 
