@@ -45,16 +45,6 @@ betűkkel, számokkal és kötőjelekkel a slugban. A teljes ID a
 `^[0-9]{8}T[0-9]{9}Z-[a-z0-9]+(?:-[a-z0-9]+)*$` mintát követi.
 Az ID mentés után változatlan, nem pusztán a rangsorbeli helyezés.
 
-Az eredményfájl kötelező tartalma:
-
-- futásazonosító, keresés dátuma, alkalmazott témaszűkítés;
-- rövid keresési összefoglaló és hozzáférési korlátok;
-- összehasonlító táblázat: helyezés, ID, cím, üzleti haszon,
-  választás indoka, fő forrásvideó URL-je;
-- témánként rövid indoklás, videóhook, bizonyíték és kockázat;
-- témánként pontosan egy `json` kódblokk a teljes témarekorddal;
-- a kiválasztó skill példahívása a mentett ID-kkel.
-
 A JSON minden template-mezőt megőriz. Ismeretlen szöveg `""`, ismeretlen
 lista `[]`; hiányzó számszerű állítást ne találj ki. Az evidence jelző csak
 ellenőrzött bizonyítéknál `true`; a `false` nem bizonyítja a hiányt.
@@ -87,7 +77,7 @@ szerkesztői indoklás adja, nem a korábbi `final_score`.
   bemutathatóság és az implementációs/megbízási lehetőség.
   A local AI és n8n előny, nem mesterségesen ráerőltetett követelmény.
 - Ne ígérj garantált nézettséget, ROI-t vagy igazolatlan időmegtakarítást.
-  A vendor állítása nem független mérés; jelöld a bizonyíték korlátját.
+  A vendor állítását ne kezeld független mérésként.
 - Ugyanaz a megoldás több linkről egy jelölt. A korábbi eredményekben és
   a már kiválasztott rekordokban szereplő azonos megoldást alapértelmezetten
   ne ajánld újra; újraajánlás csak kifejezett felhasználói kérésre történjen.

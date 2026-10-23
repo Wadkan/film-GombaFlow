@@ -31,7 +31,7 @@ Kiválasztandó ötletek száma: 5.
    csak azért, hogy teljesüljön a kiválasztási keret.
 3. Nyisd meg a döntéshez használt forrásokat. Ellenőrizd a megvalósítást,
    a konkrét üzleti problémát és a fő forrásvideó URL-jét, valamint az
-   elemzéshez hozzáférhető anyagot. Jegyezd fel a hozzáférési korlátokat.
+   elemzéshez hozzáférhető anyagot.
    Keresési kivonatból ne állíts teljes videóelemzést.
 4. Vond össze az azonos megoldás jelöltjeit, és szűrd ki a korábban már
    ajánlott/kiválasztott témákat a workflow szabályai szerint.
@@ -44,9 +44,23 @@ Kiválasztandó ötletek száma: 5.
    A `source` a kiválasztott fő forrásvideót írja le, amely az
    `assets.video_urls` listában is szerepeljen. Töltsd ki a kutatással
    igazolt üzleti/technológiai adatokat, a tartalmi hookot és az editorial
-   indoklást; ismeretlen adatot és a bizonyíték korlátját jelöld.
-7. Mentsd az eredményt a workflow szerinti áttekintő táblázattal,
-   indoklásokkal és témánként egy teljes JSON kódblokkal.
+   indoklást. Az ismeretlen adatokat a workflow-ban rögzített üres értékekkel
+   add meg; csak a témaválasztást befolyásoló korlátot jelezd röviden
+   az adott rekordban.
+7. Mentsd az eredményt a `gomba-0-idea-collector/results/<run-id>-ideas.md`
+   útvonalra. A fájl tartalmazza a futásazonosítót, a kutatás dátumát és
+   a témaszűkítést, ha volt. Készíts összehasonlító táblázatot a helyezés,
+   ID, cím, üzleti haszon, rövid kiválasztási indok és fő videó URL
+   oszlopaival. Minden kiválasztott ötlethez adj rövid indoklást,
+   videóhookot, a legfontosabb bizonyítékot és csak a témaválasztást
+   befolyásoló korlátot. Minden kiválasztott ötlethez pontosan egy teljes
+   `json` kódblokk tartozzon. A fájl végén add meg a kiválasztó skill
+   példahívását a mentett ID-val.
+   Csak a kiválasztott ötleteket mutasd be: ne írj külön kutatási
+   beszámolót, hozzáférési vagy eszközhiba-listát, módszertani leírást,
+   illetve ne sorold fel a kiesett, kizárt vagy összevont jelölteket és
+   azok kihagyásának indokait. Az összehasonlítást és duplikációszűrést
+   a kutatás során végezd el, ne az eredményben dokumentáld.
    Ha a megfelelő témák száma a beállított keret alatt marad, jelezd
    a részleges eredményt;
    nulla megfelelő témánál csak a korlátokat és a keresés eredménytelenségét
