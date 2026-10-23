@@ -1,16 +1,45 @@
-services:
-  n8n:
-    image: n8nio/n8n:latest
-    ports:
-      - "127.0.0.1:5678:5678"
-    environment:
-      - TZ=Europe/Vienna
-      - GENERIC_TIMEZONE=Europe/Vienna
-      - N8N_HOST=localhost
-      - N8N_EDITOR_BASE_URL=http://localhost:5678/
-    volumes:
-      - n8n_data:/home/node/.n8n
-    restart: unless-stopped
+# n8n (+ task runners + SearXNG for Assistant web search).
+# Code sandbox: separate stack in ./sandbox — start that first.
+
+name: n8n-docker
 
 volumes:
   n8n_data:
+    external: true
+    name: n8n-docker_n8n_data
+
+networks:
+  n8n_assistant:
+    external: true
+    name: n8n_assistant
+
+services:
+  searxng:
+    image: ghcr.io/searxng/searxng:latest
+    restart: unless-stopped
+    environment:
+      SEARXNG_SECRET: ${SEARXNG_SECRET}
+    volumes:
+      - ./searxng-settings.yml:/etc/searxng/settings.yml:ro
+
+  n8n:
+    image: docker.io/n8nio/n8n:${N8N_VERSION}
+    ports:
+      - "127.0.0.1:5678:5678"
+    env_file: .env
+    volumes:
+      - n8n_data:/home/node/.n8n
+    restart: unless-stopped
+    networks:
+      - default
+      - n8n_assistant
+
+  runners:
+    image: ghcr.io/n8n-io/runners:${N8N_VERSION}
+    restart: unless-stopped
+    depends_on:
+      - n8n
+    environment:
+      N8N_RUNNERS_AUTH_TOKEN: ${N8N_RUNNERS_AUTH_TOKEN}
+      N8N_RUNNERS_TASK_BROKER_URI: http://n8n:5679
+      N8N_RUNNERS_AUTO_SHUTDOWN_TIMEOUT: "15"
