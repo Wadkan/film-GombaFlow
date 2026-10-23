@@ -1,0 +1,7 @@
+# w-flow agent wiring (local symlinks; run `make init` from w-flow after clone)
+.cursor/skills
+.clinerules
+.agents/skills/
+.cline/skills/
+docs/planning/templates/work-items
+tooling/git

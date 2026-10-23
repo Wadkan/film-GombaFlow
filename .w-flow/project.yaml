@@ -1,0 +1,51 @@
+schema_version: 1
+
+project:
+  name: "{{PROJECT_NAME}}"
+  default_user_language: "hu"
+  repository_language: "en"
+
+paths:
+  agent_entry: "AGENTS.md"
+  project_context: "AI_CONTEXT.md"
+  project_stack: "project-stack.md"
+  planning:
+    backlog: "docs/planning/BACKLOG.md"
+    features: "docs/planning/FEATURES.md"
+    bugs: "docs/planning/BUGS.md"
+
+
+capabilities:
+  api_contract: false
+  database_migrations: false
+  deployment: false
+  end_to_end_tests: false
+
+validation:
+  command_sources:
+    - "Makefile"
+    - "package.json"
+  pre_handoff_commands: []
+
+
+
+sync:
+  managed_paths:
+    - "AGENTS.md"
+    - ".cursor/skills"
+    - ".agents/skills"
+    - ".clinerules"
+  bootstrap_only_paths:
+    - ".gitignore"
+    - "docs/planning/BACKLOG.md"
+    - "docs/planning/FEATURES.md"
+    - "docs/planning/BUGS.md"
+
+    - ".w-flow/project.yaml"
+    - "AI_CONTEXT.md"
+    - "project-stack.md"
+  preserved_local_paths:
+    - "AI_CONTEXT.md"
+    - "project-stack.md"
+init:
+  profile: "core"
