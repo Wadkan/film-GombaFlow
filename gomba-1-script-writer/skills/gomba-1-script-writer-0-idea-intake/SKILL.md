@@ -1,6 +1,6 @@
 ---
 name: gomba-1-script-writer-0-idea-intake
-description: 'Kiválasztott sikeres automatizálási videó átvétele és magyar brief készítése. Használd a gomba-1-script-writer workflow 0. lépéséhez, meglévő ötlet és forrásvideó feldolgozásakor.'
+description: 'Felhasználó által kiválasztott, megvalósított automatizálási videó átvétele és magyar brief készítése. Használd a gomba-1-script-writer workflow 0. lépéséhez, meglévő ötlet és forrásvideó feldolgozásakor.'
 ---
 
 # 0. Ötletátvétel
@@ -14,7 +14,8 @@ description: 'Kiválasztott sikeres automatizálási videó átvétele és magya
   [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
   [brief-template](../../templates/0-brief-template.md),
   [témaséma](../../../gomba-0-idea-collector/templates/topic-template.json),
-  `<selected-topic-path>` és az abban hivatkozott releváns források.
+  `<selected-topic-path>` (alapértelmezetten `<project>/selected-topic.json`)
+  és az abban hivatkozott releváns források.
 - **Output:** kizárólag `<project>/0-brief.md`, a brief-template szerint.
   A változó útvonalak a workflow mappájához képest értendők.
 
@@ -24,7 +25,8 @@ description: 'Kiválasztott sikeres automatizálási videó átvétele és magya
    a projekt egyezését. Útvonalba nem illő azonosítónál kérj pontosítást,
    ne alakítsd át csendben és ne írj más projektbe.
 2. Azonosítsd a kiválasztott forrásvideót. Több jelölt közül ne válassz
-   önállóan; tisztázd, melyiket dolgozzuk át. Ne kutasd újra a sikerességét.
+   önállóan; tisztázd, melyiket dolgozzuk át. Ne végezz új népszerűségi
+   kutatást; a kiválasztást ne tekintsd bizonyított közönségsikernek.
 3. A hozzáférhető anyagból bontsd ki a megoldás inputját, feldolgozását,
    outputját, fő technikai lépéseit és korlátait. A forrásjegyzékbe kerüljön
    pontos URL/útvonal, elérhető időbélyeg vagy szakasz és hozzáférési korlát.

@@ -1,0 +1,112 @@
+# Gomba 0 — Videóötlet-keresés és témaválasztás
+
+## Cél
+
+Egy hívásra kutass megvalósított automatizálási videóötleteket, válaszd ki
+a legjobb hármat, és mentsd őket egy ember által olvasható fájlba.
+Egy másik, felhasználó által meghívott skill a megadott ID alapján egyetlen
+témát ad át a scriptírónak. Nincs külön scoring agent, index vagy backlog.
+
+## Skillek és használat
+
+A skillek projektszintű, automatikusan felfedezhető helyen vannak:
+
+1. [gomba-0-idea-collect-search-top3](../.github/skills/gomba-0-idea-collect-search-top3/SKILL.md)
+   — kutatás, összehasonlítás, top 3 és fájlba mentés.
+   Hívás: `/gomba-0-idea-collect-search-top3`
+   Opcionálisan adj témaszűkítést, például „ügyfélszolgálati automatizálás”.
+2. [gomba-0-idea-collect-select-topic](../.github/skills/gomba-0-idea-collect-select-topic/SKILL.md)
+   — a felhasználó által kiválasztott ID átadása.
+   Hívás: `/gomba-0-idea-collect-select-topic <topic-id>`
+
+Az első skill nem választ a felhasználó helyett végleges témát.
+A második nem kutat, nem rangsorol újra és nem indít scriptírást.
+A rendszer csak hívásra fut; rendszeres futtatásához külső ütemezés kell.
+
+## Fájlok és szerződés
+
+Az alábbi útvonalak a repository gyökeréhez képest értendők.
+
+- Témarekord formátuma:
+  [topic-template.json](../gomba-0-idea-collector/templates/topic-template.json).
+- Kutatási futásonként egy új, magyar nyelvű eredmény:
+  `gomba-0-idea-collector/results/<run-id>-top3.md`.
+- A kiválasztott egyetlen teljes rekord:
+  `gomba-1-script-writer/projects/<topic-id>/selected-topic.json`.
+- Következő fázis:
+  [scriptíró workflow](../gomba-1-script-writer/WORKFLOW.md), 0. ötletátvétel.
+
+`<run-id>`: a futtatás kezdő időpontja UTC-ben, `YYYYMMDDTHHmmssSSSZ`
+alakban; ütközésnél új, egyedi időbélyeg kell, meglévő fájl nem írható felül.
+`<topic-id>`: `<run-id>-<rovid-angol-slug>`, kizárólag kisbetűs ASCII
+betűkkel, számokkal és kötőjelekkel a slugban. A teljes ID a
+`^[0-9]{8}T[0-9]{9}Z-[a-z0-9]+(?:-[a-z0-9]+)*$` mintát követi.
+Az ID mentés után változatlan, nem pusztán a rangsorbeli 1, 2 vagy 3.
+
+Az eredményfájl kötelező tartalma:
+
+- futásazonosító, keresés dátuma, alkalmazott témaszűkítés;
+- rövid keresési összefoglaló és hozzáférési korlátok;
+- összehasonlító táblázat: helyezés, ID, cím, üzleti haszon,
+  választás indoka, fő forrásvideó URL-je;
+- témánként rövid indoklás, videóhook, bizonyíték és kockázat;
+- témánként pontosan egy `json` kódblokk a teljes témarekorddal;
+- a kiválasztó skill példahívása a mentett ID-kkel.
+
+A JSON minden template-mezőt megőriz. Ismeretlen szöveg `""`, ismeretlen
+lista `[]`; hiányzó számszerű állítást ne találj ki. Az evidence jelző csak
+ellenőrzött bizonyítéknál `true`; a `false` nem bizonyítja a hiányt.
+Az ismeretlen technológiai lehetőségeket a `editorial.notes` jelezze.
+A `scores` mezői `null` értékűek maradnak: nincs mesterségesen pontos
+viralitási vagy ROI-pontozás. A sorrendet rövid, bizonyítékalapú
+szerkesztői indoklás adja, nem a korábbi `final_score`.
+
+## Kutatási és választási elvek
+
+- Már megvalósított AI, local/private AI, n8n és automatizálási use case-ek.
+  Bizonyíték: publikus demó, repository, workflow template, implementációs
+  tutorial vagy dokumentált üzleti case study.
+- Források: YouTube, GitHub, Reddit, n8n Community és Templates, LinkedIn,
+  Product Hunt, Hacker News, technikai/implementációs blogok és vendor case study-k.
+  A keresési találat önmagában nem ellenőrzött bizonyíték.
+- Előny: Ollama, local/private AI, agentek, több rendszer integrációja,
+  CRM, email, sales, support, dokumentumfeldolgozás, tudáskezelés,
+  működés- és riportautomatizálás.
+- Célközönség: KKV-tulajdonosok és cégvezetők. Érték: idő- vagy
+  költségmegtakarítás, kevesebb kézi munka, jobb termelékenység,
+  ügyfélkiszolgálás vagy sales; reális tanácsadói/implementációs lehetőség.
+- Kizárt: AI-hír, trend- vagy fundinghír, eszközlista, promptgyűjtemény,
+  prompt engineering, ChatGPT-trükk, hype és meg nem valósított ötlet.
+- A top 3-ba csak konkrét fő forrásvideóval és a megoldást igazoló,
+  hozzáférhető videóval, átirattal vagy érdemi leírással rendelkező téma
+  kerülhet, hogy a scriptíró ténylegesen át tudja venni.
+  A nem videós források bizonyítékot és további jelölteket adhatnak.
+- Első a konkrét üzleti relevancia és bizonyított működés, utána a
+  bemutathatóság és az implementációs/megbízási lehetőség.
+  A local AI és n8n előny, nem mesterségesen ráerőltetett követelmény.
+- Ne ígérj garantált nézettséget, ROI-t vagy igazolatlan időmegtakarítást.
+  A vendor állítása nem független mérés; jelöld a bizonyíték korlátját.
+- Ugyanaz a megoldás több linkről egy jelölt. A korábbi eredményekben és
+  a már kiválasztott rekordokban szereplő azonos megoldást alapértelmezetten
+  ne ajánld újra; újraajánlás csak kifejezett felhasználói kérésre történjen.
+
+## Kapuk és hibák
+
+Normál kimenet három különböző, ellenőrzött jelölt. Ha ennél kevesebb
+található, csak a megfelelőket mentsd el, és egyértelműen jelezd a hiányt.
+Nulla megfelelő jelöltnél ne készíts sikeresnek látszó top 3-at.
+Webhozzáférés nélkül ne helyettesítsd a kutatást emlékezetből írt ötletekkel.
+
+A mentés után ellenőrizni kell a JSON-ok parse-olhatóságát, mezőit,
+egyedi és biztonságos ID-it, a táblázattal való egyezést és a fájl létezését.
+A válasz csak a ténylegesen elmentett fájlra hivatkozhat.
+
+A kiválasztás kizárólag egy mentett teljes rekord pontos ID-egyezésével
+történhet. Hiányzó, hibás vagy többértelmű ID-nél nincs fájlírás, hanem
+konkrét hiba és pontosítás kell. Meglévő, eltérő kiválasztott rekordot
+nem szabad felülírni. A már azonos tartalommal mentett rekord új hívása
+nem hoz létre másolatot.
+
+A skillek nem törölnek vagy mozgatnak eredményeket, nem módosítják a másik
+skill kimenetét és a már létező scriptíró anyagokat. A kiválasztás nem
+brief-jóváhagyás, és nem bizonyítja a videó közönségsikerét.

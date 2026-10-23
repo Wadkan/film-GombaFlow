@@ -2,8 +2,8 @@
 
 ## Cél és hatókör
 
-A `gomba-1-script-writer` a [collector](../gomba-0-idea-collector/WORKFLOW.md)
-által már sikeresnek kiválasztott **egyetlen forrásvideót** dolgozza át saját,
+A `gomba-1-script-writer` a [collector](../gomba-film-workflows/gomba-0-idea-collect-topic-selection.md)
+top 3 ajánlatából a felhasználó által kiválasztott **egyetlen forrásvideót** dolgozza át saját,
 magyar, forgatáshoz követhető anyaggá. Nem keres új témát, nem pontoz újra,
 és nem kísérletezik tartalomformátumok teljesítményével.
 
@@ -36,8 +36,10 @@ Külön stílusfájl nem bemenet; a hangvételt a brief rögzíti.
 
 Minden útvonal ehhez a mappához képest relatív.
 `<project>` = `projects/<topic-id>`, ahol az azonosító a kiválasztott rekord `id` mezője.
-`<selected-topic-path>` a felhasználó által megadott pontozott témarekord pontos
-útvonala; nem helyettesíthető indexkivonattal.
+`<selected-topic-path>` alapértelmezetten `<project>/selected-topic.json`,
+amelyet a collector kiválasztó skillje ment. Ez teljes témarekord, nem
+top 3 kivonat. Korábbi teljes témarekord pontos útvonala is megadható;
+számszerű pontozás nem előfeltétel, a kiválasztás nem bizonyít közönségsikert.
 
 ```text
 gomba-1-script-writer/
@@ -62,6 +64,7 @@ gomba-1-script-writer/
     gomba-1-script-writer-5-shoot-preparation/SKILL.md
   projects/
     <topic-id>/
+      selected-topic.json
       0-brief.md
       1-story.md
       2-chapters.md
@@ -88,7 +91,7 @@ kötelező bemenet, saját skill és template létezése.
 ### 0. Ötletátvétel — `gomba-1-script-writer-0-idea-intake`
 
 - **Goal:** jóváhagyható brief a már kiválasztott videó átdolgozásához.
-- **Prerequisite:** egy kiválasztott téma, részletes rekord és elérhető forrásvideó
+- **Prerequisite:** egy felhasználó által kiválasztott téma, részletes rekord és elérhető forrásvideó
   vagy annak megfelelő, az elemzés korlátait jelző átirata/leírása.
 - **Olvas:** `<selected-topic-path>`,
   `../gomba-0-idea-collector/templates/topic-template.json`,

@@ -1,7 +1,7 @@
 # Brief — [téma címe]
 
 - Témaazonosító: [a kiválasztott rekord id mezője]
-- Eredeti pontozott rekord: [pontos útvonal]
+- Kiválasztott teljes témarekord: [pontos útvonal]
 - Bemeneti változatok: [a futtató által megadott referenciák]
 - Kiválasztott forrásvideó: [cím és URL]
 - Elemzés alapja és korlátai: [videó/átirat/leírás; mi nem hozzáférhető]
