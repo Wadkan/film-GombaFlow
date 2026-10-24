@@ -60,17 +60,7 @@ Az alábbi számozás követelményhivatkozás; a nyitott munkák tényleges sor
 2. [x] DONE **Export- és importszkript** a `n8n-workflows/youtube-upload/workflows/` mappába, a csomag `Makefile` `export` és `import` céljaival. A futó konténer a meglévő `n8n-docker` stack.
 3. [x] DONE **Alap adatformátumok rögzítése** a `n8n-workflows/youtube-upload/` alatt: `config/settings.json`, `config/channels.json`, `examples/meta.json`, `examples/upload-state.json`, valamint a videómappák elnevezése. A csatornaspecifikus metaadat-források a `channels/<ChannelName>/` könyvtárban vannak; csak a csatornaválasztó és a workflow-integráció maradt TODO.
 4. [ ] TODO **Telegram értesítő segéd-workflow,** amit a többi workflow meghív.
-5. [ ] TODO **Egy közös feltöltő workflow** (előbb érdemes megépíteni, mert egy kézzel írt `meta.json`-nal jól tesztelhető; a feltöltő workflow nem csatornánként duplikálódik):
-   1. [ ] TODO Az első űrlapoldal csak az indítás. Nincs előre kitöltött mappa. A következő node a `settings.json`-ból olvassa a `/data/videos` útvonalat.
-   2. [ ] TODO Read/Write Files node ellenőrzi, hogy a konténerbeli mappa létezik.
-   3. [ ] TODO Megkeresi a feltölthető videókat: ahol a `meta.json` státusza `ready`, és az `upload-state.json` hiányzik, `failed`, vagy a határon túli `uploading`. A határon belüli `uploading` kimarad. A határon túli `uploading` állapotot előbb `failed`-re írja. Ha egy jelölt van, rögtön indul. Ha több, a második űrlapoldalon kifejezéssel töltött legördülő listából választasz.
-   4. [ ] TODO A `meta.json` `channelKey` és `youtubeChannelId` mezője alapján feloldja és kiválasztja a registryben megadott OAuth-credentialt, ellenőrzi, hogy a credential az elvárt YouTube-csatornához tartozik, és csak sikeres ellenőrzés után folytatja a feltöltést.
-   5. [ ] TODO Egyetlen videófeltöltési lépésben feltölti a videót privátként, az eltolásos `youtube_scheduled_at` időpontra időzítve.
-   6. [ ] TODO Beállítja a thumbnailt egy HTTP Request node-dal.
-   7. [ ] TODO Hozzáadja a videót a `meta.json`-ban már mentett `playlistId` alapján; playlistnév → ID feloldás itt már nem történik.
-   8. [ ] TODO Minden lépés után menti az állapotot, az `uploading` kezdetén a `startedAt` mezővel. Újraindításkor a `videoId` alapján csak a hiányzó lépéseket futtatja.
-   9. [ ] TODO Telegramon jelzi, hol tart. A végén elküldi a linket, és emlékeztet az end screenre a Studio-linkkel. Hiba esetén megírja, mi és melyik lépésnél romlott el.
-6. [ ] TODO **Egy csatorna-aware metaadat-chat workflow:**
+5. [ ] TODO **Egy csatorna-aware metaadat-chat workflow:**
    1. [ ] TODO A közös belépési űrlapon listából kiválasztod a YouTube-csatornát a meta-agent hívása előtt, majd megadod a `YYYY-MM-DD_videonev` almappát. A workflow létrehoz egy session kulcsot `${channelKey}:${videoFolder}` formában, ezt adja át a chat memóriájának és minden fájlíró lépésnek; más csatorna vagy más videómappa sessionje nem keveredhet bele.
    2. [ ] TODO A workflow a `config/channels.json` alapján feloldja a kiválasztott csatorna könyvtárát, és csak az adott bejegyzés `sourceFiles` listájában szereplő, ténylegesen létező fájlokat tölti be. Más csatorna kontextusa nem kerülhet az agent promptjába.
    3. [ ] TODO A workflow a registry gyökérszintű `commonSkills` listájában szereplő közös fájlokat is betölti minden meta-agent futásnál. MVP-ben ez a `/data/common-skills/walk.md`; a protokollt nem kell csatornánként vagy workflow-nként lemásolni.
@@ -83,6 +73,16 @@ Az alábbi számozás követelményhivatkozás; a nyitott munkák tényleges sor
    10. [ ] TODO A user „kész” jelzése után a workflow visszaolvassa az aktuális `meta.md`-t, a deklarált playlist-forrásból a playlistnévhez feloldja a `playlistId`-t, és ugyanabba a videómappába írja a `meta.json`-t `draft` státusszal, a `channelKey` és `youtubeChannelId` mezőkkel együtt.
    11. [ ] TODO Ellenőrzi a kötelező mezőket, a csatornaazonosítót és az OAuth-credential csatornaegyezését, és csak teljesen kitöltött, egyértelműen jóváhagyott metaadat esetén állítja a `meta.json`-t `ready` állapotúra.
    12. [ ] TODO Ha új szabályt mondasz, a n8n-ben futó agent a kiválasztott csatorna `rules.md` fájlját csak a fő workflow Read/Write Files node-ján keresztül módosíthatja: visszaolvassa, módosítja, validálja, majd visszaírja. Az agent közvetlenül nem írhat tetszőleges repófájlba, és a szabály legközelebb csak az adott csatornához használható.
+6. [ ] TODO **Egy közös feltöltő workflow** (előbb érdemes megépíteni, mert egy kézzel írt `meta.json`-nal jól tesztelhető; a feltöltő workflow nem csatornánként duplikálódik):
+   1. [ ] TODO Az első űrlapoldal csak az indítás. Nincs előre kitöltött mappa. A következő node a `settings.json`-ból olvassa a `/data/videos` útvonalat.
+   2. [ ] TODO Read/Write Files node ellenőrzi, hogy a konténerbeli mappa létezik.
+   3. [ ] TODO Megkeresi a feltölthető videókat: ahol a `meta.json` státusza `ready`, és az `upload-state.json` hiányzik, `failed`, vagy a határon túli `uploading`. A határon belüli `uploading` kimarad. A határon túli `uploading` állapotot előbb `failed`-re írja. Ha egy jelölt van, rögtön indul. Ha több, a második űrlapoldalon kifejezéssel töltött legördülő listából választasz.
+   4. [ ] TODO A `meta.json` `channelKey` és `youtubeChannelId` mezője alapján feloldja és kiválasztja a registryben megadott OAuth-credentialt, ellenőrzi, hogy a credential az elvárt YouTube-csatornához tartozik, és csak sikeres ellenőrzés után folytatja a feltöltést.
+   5. [ ] TODO Egyetlen videófeltöltési lépésben feltölti a videót privátként, az eltolásos `youtube_scheduled_at` időpontra időzítve.
+   6. [ ] TODO Beállítja a thumbnailt egy HTTP Request node-dal.
+   7. [ ] TODO Hozzáadja a videót a `meta.json`-ban már mentett `playlistId` alapján; playlistnév → ID feloldás itt már nem történik.
+   8. [ ] TODO Minden lépés után menti az állapotot, az `uploading` kezdetén a `startedAt` mezővel. Újraindításkor a `videoId` alapján csak a hiányzó lépéseket futtatja.
+   9. [ ] TODO Telegramon jelzi, hol tart. A végén elküldi a linket, és emlékeztet az end screenre a Studio-linkkel. Hiba esetén megírja, mi és melyik lépésnél romlott el.
 
 ## Végrehajtási sorrend és agentfelelősök
 
