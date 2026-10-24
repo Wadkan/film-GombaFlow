@@ -9,13 +9,13 @@ témát ad át a scriptírónak. Nincs külön scoring agent, index vagy backlog
 
 ## Skillek és használat
 
-A skillek projektszintű, automatikusan felfedezhető helyen vannak:
+A skillek a [`gomba-0-idea-collector/skills/`](../gomba-0-idea-collector/skills/) alatt vannak (mint a script-writer fázisban):
 
-1. [gomba-0-idea-collect-search-ideas](../.github/skills/gomba-0-idea-collect-search-ideas/SKILL.md)
+1. [gomba-0-idea-collect-search-ideas](../gomba-0-idea-collector/skills/gomba-0-idea-collect-search-ideas/SKILL.md)
    — kutatás, összehasonlítás, jelöltek kiválasztása és fájlba mentés.
    Hívás: `/gomba-0-idea-collect-search-ideas`
    Opcionálisan adj témaszűkítést, például „ügyfélszolgálati automatizálás”.
-2. [gomba-0-idea-collect-select-topic](../.github/skills/gomba-0-idea-collect-select-topic/SKILL.md)
+2. [gomba-0-idea-collect-select-topic](../gomba-0-idea-collector/skills/gomba-0-idea-collect-select-topic/SKILL.md)
    — a felhasználó által kiválasztott ID átadása.
    Hívás: `/gomba-0-idea-collect-select-topic <topic-id>`
 

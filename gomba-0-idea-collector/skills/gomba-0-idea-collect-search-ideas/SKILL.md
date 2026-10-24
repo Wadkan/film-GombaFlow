@@ -11,7 +11,7 @@ Kiválasztandó ötletek száma: 5.
 ## Bemenet és kimenet
 
 - Olvasd a [workflow-t](../../../gomba-film-workflows/gomba-0-idea-collect-topic-selection.md)
-  és a [tématemplate-et](../../../gomba-0-idea-collector/templates/topic-template.json).
+  és a [tématemplate-et](../../templates/topic-template.json).
 - Opcionális bemenet a felhasználó témaszűkítése; enélkül az eredeti teljes
   keresési profil érvényes, nem kell előzetes kérdés.
 - Olvasd a `gomba-0-idea-collector/results/*-ideas.md` korábbi eredményeit és
