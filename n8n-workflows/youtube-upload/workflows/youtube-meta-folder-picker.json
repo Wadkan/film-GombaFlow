@@ -1,0 +1,184 @@
+{
+  "name": "youtube meta workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "youtube-meta",
+        "httpMethod": "GET",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "6aab47b0-f47d-40bb-a9ac-f45528adcb23",
+      "name": "Űrlap megnyitása",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "f7283cde-c494-4a40-a5ef-0be8f104cf19"
+    },
+    {
+      "parameters": {
+        "command": "node -e 'const fs = require(\"fs\"); const registry = JSON.parse(fs.readFileSync(\"/data/youtube-upload/config/channels.json\", \"utf8\")); const channels = registry.channels.filter(c => c.enabled).map(c => ({key:c.key, displayName:c.displayName})); const folders = fs.readdirSync(\"/data/videos\", {withFileTypes:true}).filter(entry => entry.isDirectory()).map(entry => entry.name).sort(); process.stdout.write(JSON.stringify({channels, folders}));'"
+      },
+      "id": "a96ef4d8-2741-4869-8340-7419d665bd3f",
+      "name": "Videómappák listázása",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const {channels, folders} = JSON.parse($json.stdout);\nconst esc = value => String(value).replace(/[&<>\"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '\"':'&quot;', \"'\":'&#39;'}[c]));\nconst webhookUrl = $('Űrlap megnyitása').first().json.webhookUrl;\nconst action = webhookUrl.replace(/youtube-meta$/, 'youtube-meta-submit');\nconst channelOptions = channels.map(c => `<option value=\"${esc(c.key)}\">${esc(c.displayName)}</option>`).join('');\nconst folderOptions = folders.map(name => `<option value=\"${esc(name)}\">${esc(name)}</option>`).join('');\nconst html = `<!doctype html>\n<html lang=\"hu\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>YouTube meta</title>\n<style>body{font:16px system-ui;max-width:560px;margin:48px auto;padding:0 20px}select{display:block;width:100%;padding:12px;margin:8px 0 20px}button{padding:12px 24px}</style></head>\n<body><h1>YouTube meta</h1>\n<form method=\"post\" action=\"${esc(action)}\">\n<label for=\"channelKey\">Csatorna</label><select id=\"channelKey\" name=\"channelKey\" required><option value=\"\">Válassz csatornát</option>${channelOptions}</select>\n<label for=\"videoFolder\">Videómappa</label><select id=\"videoFolder\" name=\"videoFolder\" required><option value=\"\">Válassz mappát</option>${folderOptions}</select>\n<button id=\"next\" type=\"submit\" disabled>Tovább</button></form>\n<script>const c=document.querySelector('#channelKey'),f=document.querySelector('#videoFolder'),b=document.querySelector('#next');function update(){b.disabled=!(c.value&&f.value)}c.addEventListener('change',update);f.addEventListener('change',update);update();</script>\n</body></html>`;\nreturn [{json:{html}}];"
+      },
+      "id": "eb41ff27-150d-4c37-ac18-434a36367c4b",
+      "name": "Űrlap összeállítása",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "id": "c783a6fc-5396-4b22-abbe-054486801dd0",
+      "name": "Űrlap megjelenítése",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        660,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "path": "youtube-meta-submit",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "65ed76f4-6453-4050-8f6e-67e2869353ca",
+      "name": "Kiválasztás fogadása",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        280
+      ],
+      "webhookId": "e8a3a2b9-38f9-42c4-80fd-1e9c9d433a25"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body ?? {};\nconst selection = { channelKey: body.channelKey ?? '', videoFolder: body.videoFolder ?? '' };\nreturn [{json: selection}];"
+      },
+      "id": "5278aa3e-fc82-4bab-9f40-9e43db9c7818",
+      "name": "Kiválasztott értékek",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "e7300177-4cb6-4dac-bdad-779be73d0bbb",
+      "name": "Kiválasztás visszaigazolása",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        440,
+        280
+      ]
+    }
+  ],
+  "connections": {
+    "Űrlap megnyitása": {
+      "main": [
+        [
+          {
+            "node": "Videómappák listázása",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Videómappák listázása": {
+      "main": [
+        [
+          {
+            "node": "Űrlap összeállítása",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Űrlap összeállítása": {
+      "main": [
+        [
+          {
+            "node": "Űrlap megjelenítése",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiválasztás fogadása": {
+      "main": [
+        [
+          {
+            "node": "Kiválasztott értékek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiválasztott értékek": {
+      "main": [
+        [
+          {
+            "node": "Kiválasztás visszaigazolása",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0ae7f5ea-e458-46df-ab43-b7dd49606417",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "id": "DXBPbp7kk9umiQeG"
+}

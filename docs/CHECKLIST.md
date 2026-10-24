@@ -3,10 +3,10 @@
 
 ## Alapelvek
 - **A már futó n8n marad.** Egy helyi n8n fut Rancher Desktopon, az `n8n-docker/` stackből, két workflow-val és egy közös értesítő segéd-workflow-val. Nem készül második compose, és nem kerül `docker-compose.yml` a repó gyökerébe. A stackhez kell egy helyi Docker API: Rancher Desktop **moby** motorral (`docker compose` a `Makefile`-ból). Kubernetes nem kell az MVP-hez.
-- **Minden webes, saját fejlesztés nélkül:**
+- **Webes használat:**
   - a chat az n8n beépített chat-oldala,
   - a feltöltést egy n8n-űrlap indítja,
-  - a metaadat-agent indítása előtt egy n8n-űrlapon listából kiválasztod a YouTube-csatornát,
+  - a metaadat-agent belépése a jóváhagyott, n8n Webhook által kiszolgált egyszerű webes űrlap: csatorna- és videómappa-dropdown, külön indítóképernyő nélkül,
   - a kiválasztott csatorna az egész metaadat-egyeztetés kontextusa; az agent csak az ahhoz tartozó szabályokat és forrásfájlokat olvashatja,
   - a metaadatot a csatornához kötött agenttel egyezteted. Az első kimenet a videómappába írt, kézzel szerkeszthető `meta.md`, amelyből a user „kész” jelzése után készül a `meta.json`.
 - **A Telegram csak értesít,** bejövő üzenetet nem figyel, ezért tunnel nem kell.
@@ -61,10 +61,12 @@ Az alábbi számozás követelményhivatkozás; a nyitott munkák tényleges sor
 3. [x] DONE **Alap adatformátumok rögzítése** a `n8n-workflows/youtube-upload/` alatt: `config/settings.json`, `config/channels.json`, `examples/meta.json`, `examples/upload-state.json`, valamint a videómappák elnevezése. A csatornaspecifikus metaadat-források a `channels/<ChannelName>/` könyvtárban vannak; csak a csatornaválasztó és a workflow-integráció maradt TODO.
 4. [ ] TODO **Telegram értesítő segéd-workflow,** amit a többi workflow meghív.
 5. [ ] TODO **Egy csatorna-aware metaadat-chat workflow:**
-   1. [ ] TODO A közös belépési űrlapon listából kiválasztod a YouTube-csatornát a meta-agent hívása előtt, majd megadod a `YYYY-MM-DD_videonev` almappát. A workflow létrehoz egy session kulcsot `${channelKey}:${videoFolder}` formában, ezt adja át a chat memóriájának és minden fájlíró lépésnek; más csatorna vagy más videómappa sessionje nem keveredhet bele.
+   1. [x] DONE A belépési weboldal azonnal megjeleníti a két dropdown-mezőt: az engedélyezett csatornákat a `config/channels.json` alapján, a videómappákat a `/data/videos` közvetlen almappáiból. Nem ellenőrzi a mappák elnevezését, és nem olvas videómappán belüli fájlokat. A Tovább gomb csak mindkét választás után aktív; a workflow továbbadja a `channelKey` és `videoFolder` értékét. Belépés: `http://localhost:5678/webhook/youtube-meta`. Böngészőben és user által is igazolt.
+      - [ ] TODO A kiválasztásból `${channelKey}:${videoFolder}` session kulcs létrehozása és átadása a beépített chat memóriájának és minden fájlíró lépésnek; más csatorna vagy más videómappa sessionje nem keveredhet bele.
    2. [ ] TODO A workflow a `config/channels.json` alapján feloldja a kiválasztott csatorna könyvtárát, és csak az adott bejegyzés `sourceFiles` listájában szereplő, ténylegesen létező fájlokat tölti be. Más csatorna kontextusa nem kerülhet az agent promptjába.
    3. [ ] TODO A workflow a registry gyökérszintű `commonSkills` listájában szereplő közös fájlokat is betölti minden meta-agent futásnál. MVP-ben ez a `/data/common-skills/walk.md`; a protokollt nem kell csatornánként vagy workflow-nként lemásolni.
    4. [ ] TODO Read/Write Files node ellenőrzi, hogy a `/data/videos/YYYY-MM-DD_videonev/` létezik, és videóformátumú fájlt keres benne; fájlnév nem hardcode-olható. Találat nélkül megáll, egy találatot használ, több találatnál választást kér. Ez a mappa minden `meta.md` és `meta.json` írás célja.
+   
    5. [ ] TODO Az agent a metaadatokat elsőként ugyanabba a videómappába írt `meta.md` fájlba állítja elő. A `meta.md` playlistnevet tartalmaz, nem playlist ID-t, és a user kézzel szerkesztheti.
    6. [ ] TODO Minden chatbeli átírás előtt visszaolvassa az aktuális `meta.md`-t, így a user kézi módosításai nem vesznek el. Ha már létezik `ready` állapotú `meta.json`, az új szerkesztés kezdetén `draft` állapotúra állítja, és törli vagy érvényteleníti a korábbi feltölthetőséget.
    7. [ ] TODO Ha a user nem ad playlistet, az agent javasol a kiválasztott csatorna playlistjei közül. Ha a választás nem egyértelmű, egyeztet, és addig nem lép tovább, amíg a playlist, az időzítés és minden más kötelező mező tiszta.
@@ -95,7 +97,7 @@ Egy fázis az előző lezárása után indul. Egy workflow üzleti folyamata a h
 - [ ] TODO **Lokális agent:** a meglévő `settings.json`, `channels.json` és példák alapján rögzíti a két workflow közös bemenetét és kimenetét. Pótolja a még hiányzó, kézzel szerkeszthető `meta.md` mintát és annak egyértelmű mezőformátumát; rögzíti a playlistnév feloldását és a `draft` → `ready` jóváhagyási feltételeit. Ez nem külön parseralkalmazás vagy új szolgáltatás.
 - [ ] TODO **Lokális agent:** a feltöltő elkészítése előtt rögzíti a régi `uploading` állapot határát és konfigurációs mezőjét, valamint a hiányzó vagy hibás `startedAt` kezelését. A határ konkrét értékét egyeztetni kell; ezt az agent nem találja ki. Rögzíti azt is, hogy bizonytalan kimenetelű videófeltöltésnél, mentett `videoId` nélkül ne induljon vakon új feltöltés.
 - [ ] TODO **n8n agent:** még a teljes workflow-k megépítése előtt tisztázza a futó n8n-ben az `oauthCredentialKey` → tényleges credential hozzárendelését és a csatornaegyezés ellenőrzésének módját, amelyet mindkét workflow használ. Az egy közös feltöltő követelménye megmarad; dinamikus credential-választást nem szabad ellenőrzés nélkül adottnak venni. Token vagy titkos kulcs nem kerül a registrybe vagy exportba.
-- [ ] TODO **n8n agent:** rögzíti a csatornaválasztó Form → beépített Chat átadás működő módját és a `${channelKey}:${videoFolder}` sessionkötést. Ellenőrzi a metaadat-chat futásidejű modelljét és credentialjét is: az építő AI Assistant beállítása önmagában nem igazolja ezeket. Ha az elvárt belépés a beépített node-okkal nem megoldható, megáll és egyeztet; nem vezet be saját webes felületet.
+- [ ] TODO **n8n agent:** a már működő, jóváhagyott Webhook-űrlap `channelKey` és `videoFolder` kimenetét a beépített Chathez köti, és rögzíti a `${channelKey}:${videoFolder}` sessionkötést. Ellenőrzi a metaadat-chat futásidejű modelljét és credentialjét is: az építő AI Assistant beállítása önmagában nem igazolja ezeket.
 - [ ] TODO **Lokális agent, az n8n agenttel egyeztetve:** rögzíti a két E2E futtatási módját: az elkészített workflow-k izolált tesztpéldánya, ideiglenes fájlok, helyettesített LLM/YouTube/Telegram-válaszok. A teszt a tényleges node-láncot járja végig, nem annak Pythonban újraírt másolatát. A host oldali segéd- és fixture-fájlok `/tmp` alatt legyenek; a fő n8n konténerből való elérésüket előre rendezni kell, a valódi videos és repo fájlok írása nélkül. A runners szolgáltatás nem kap fájlrendszer-hozzáférést.
 - **Lezárás feltétele:** a fájlformátum, a credential-hozzárendelés, a Form → Chat kapcsolat és a biztonságos E2E futtatási mód egyértelmű. A technikai vagy termékdöntést igénylő eltéréseknél egyeztetés szükséges, az érintett építés addig nem indul.
 
@@ -129,6 +131,7 @@ Egy fázis az előző lezárása után indul. Egy workflow üzleti folyamata a h
 
 ### 6. Csatornához kötött metaadat-chat teljes flow — n8n agent
 
+- [x] DONE A `youtube meta workflow` belépési weboldala elkészült, importálva és aktiválva van. A két dropdown, a Tovább gomb állapota és a kiválasztott értékek átadása böngészőben ellenőrizve; a user a `freezwithme` és `20260730_drava_sup_testfolder` értékekkel is visszaigazolta. Az Execute Command engedélyezett a fő n8n konténerben.
 - [ ] TODO A 6. követelménypont mind a 12 elemét egyben elkészíti: csatorna- és videómappa-űrlap → kötött session → kiválasztott csatornaforrások és közös `walk.md` → videómappa ellenőrzése → egyeztetés → `meta.md` mentése és visszaolvasása → „kész” → playlistfeloldás → `draft` metaadat → validáció és csatornaegyezés → `ready`.
 - [ ] TODO Ebbe a teljes flow-ba tartozik a kézi `meta.md` javítások megőrzése, az új szerkesztéskor történő `ready` → `draft` visszaállítás, a short/long playlistkorlát és a playlistforrás nélküli csatorna `draft` korlátozása is.
 - [ ] TODO Ugyanekkor készül el a tanult szabály visszaolvasás → módosítás → validálás → visszaírás ága, kizárólag a kiválasztott csatorna `rules.md` fájljára. Minden fájlművelet a fő n8n konténer Read/Write Files node-ján megy. A chat röviden jelenti a mentési PATH-ot, repóbeli szabálymódosításnál commitüzenet-javaslatot ad.
@@ -168,7 +171,7 @@ Ez külön, a workflow-k elkészülése után indítható kör. Nem része a `ma
 
 ## Rád váró teendők
 
-**Előkészítés összefoglaló (2026-10-24):** infra, `.env`, YouTube OAuth, Telegram, OpenRouter / n8n AI assistant, a FreezWithMe csatorna-forrásstruktúrája és a `config/channels.json` registry **kész**. **Hátra:** a végrehajtási blokk szerinti előfeltételek lezárása, az értesítő, a közös feltöltő és a csatornához kötött metaadat-workflow, két szűk E2E és a workflow-exportok. A valódi használati próba külön kézi kör. GCP **audit** és **end screen** nem implementációs feladat.
+**Előkészítés összefoglaló (2026-10-24):** infra, `.env`, YouTube OAuth, Telegram, OpenRouter / n8n AI assistant, a FreezWithMe csatorna-forrásstruktúrája, a `config/channels.json` registry és a csatorna-/videómappa-választó weboldal **kész**. A választó workflow JSON-ja a repóban van, a futó n8n-be importálva és aktiválva. **Hátra:** a végrehajtási blokk szerinti további előfeltételek, a Chat- és sessionkapcsolat, az értesítő, a közös feltöltő és a metaadat-workflow további részei, két szűk E2E és a teljes workflow-k exportjai. A valódi használati próba külön kézi kör. GCP **audit** és **end screen** nem implementációs feladat.
 
 1. [x] DONE **Rancher Desktop (MVP):** moby motor, hogy a `make start-n8n` / `docker compose` működjön. A `VIDEOS_ROOT` home alatti Mac-útvonal bind mountolható extra Rancher-beállítás nélkül. Kubernetes és külön „volume megosztás” nem része az MVP-nek.
 2. [x] DONE **`n8n-docker/.env`:** `VIDEOS_ROOT` (idézőjeles útvonal, szóköz), `N8N_ENCRYPTION_KEY`, többi mező az `env.example` szerint; `n8n` konténer recreate után a mount egyezik a `.env`-vel.
@@ -176,7 +179,7 @@ Ez külön, a workflow-k elkészülése után indítható kör. Nem része a `ma
 4. [x] DONE **Telegram:** BotFather token → n8n **Telegram API** credential; chat ID a `n8n-workflows/youtube-upload/config/settings.json` `telegramChatId` mezőben (token nem a repóban).
 5. [x] DONE **AI:** OpenRouter API key és n8n **AI Assistant** beállítva az n8n UI-ban (metaadat-chat workflow építéshez).
 6. [x] DONE **Csatorna-források:** a struktúra `channels/FreezWithMe/style.md`, `rules.md`, valamint a csatorna által igényelt opcionális fájlok. A `channels/` rename a munkafában ellenőrizve.
-7. [ ] TODO **Csatornaválasztó:** n8n agentes implementáció a végrehajtási sorrend 6. fázisában; a Form → Chat kapcsolat tisztázása már az 1. fázis előfeltétele. Nem külön useres építési feladat.
+7. [x] DONE **Csatorna- és videómappa-választó:** azonnal megjelenő weboldal két dropdownnal; a kiválasztott `channelKey` és `videoFolder` értékeket továbbadja. Workflow: `youtube meta workflow`; JSON: `n8n-workflows/youtube-upload/workflows/youtube-meta-folder-picker.json`. A Chat- és sessionkapcsolat külön nyitott feladat az 1. fázisban.
 8. [ ] TODO **`style.md` és csatornaszabályok véglegesítése:** a lokális agenttel, az 5. fázisban; csak a még nyitott tartalmi kérdésekben kell userdöntés.
 9. [ ] TODO **Valódi kézi próba és későbbi end screen:** kizárólag a külön tesztelési blokk szerint, a workflow-k elkészülése után.
 10. [ ] TODO **Workflow export:** a lokális agent végzi minden lezárt workflow-változtatás után a `make -C n8n-workflows/youtube-upload export` paranccsal. Stage, commit és push a user feladata.

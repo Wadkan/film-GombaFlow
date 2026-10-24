@@ -27,6 +27,9 @@ services:
     ports:
       - "127.0.0.1:5678:5678"
     env_file: .env
+    environment:
+      # Keep the local file trigger blocked; the folder picker needs Execute Command.
+      NODES_EXCLUDE: '["n8n-nodes-base.localFileTrigger"]'
     volumes:
       - n8n_data:/home/node/.n8n
       - ${VIDEOS_ROOT}:/data/videos
