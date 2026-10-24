@@ -1,0 +1,6 @@
+{
+  "videosContainerPath": "/data/videos",
+  "telegramChatId": "",
+  "timezone": "Europe/Vienna",
+  "defaultPublishTime": "18:00"
+}

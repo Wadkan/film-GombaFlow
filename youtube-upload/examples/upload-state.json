@@ -1,0 +1,14 @@
+{
+  "status": "uploading",
+  "steps": {
+    "videoUpload": "pending",
+    "thumbnail": "pending",
+    "playlist": "pending"
+  },
+  "videoId": "",
+  "videoUrl": "",
+  "startedAt": "2026-10-24T17:55:00+02:00",
+  "uploadedAt": null,
+  "attempts": 1,
+  "error": null
+}
