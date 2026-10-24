@@ -12,14 +12,15 @@
 - **A Telegram csak értesít,** bejövő üzenetet nem figyel, ezért tunnel nem kell.
 - **A feltöltés mindig kézzel indul,** minden más automatikus.
 - **Git-állapot kezelése:** az n8n-ben futó agent és workflow soha nem stage-el, commitol vagy pushol. Repóbeli fájlmódosítás után rövid, néhány szavas commitüzenet-javaslatot ad a usernek, de a Git-műveletet teljes egészében a user végzi. Repón kívüli módosításnál nincs commitüzenet; a chatben kötelező röviden jelenteni a módosítás pontos PATH-ját.
-- **Tesztelési biztonság:** a `make test` parameter nélkül futtat minden tesztet, de soha nem indít és nem buildel Docker konténert. Csak a már futó környezethez csatlakozhat. A tesztek semmilyen valódi videó-, metaadat-, repo- vagy Git-fájlt nem módosíthatnak; kizárólag izolált ideiglenes fixture-t használhatnak. Hiányzó vagy nem futó előfeltételnél a teszt egyértelműen kiírja, pontosan mi hiányzik és milyen kézi parancs szükséges, majd hibával leáll.
+- **Szűk automatizált tesztelés:** csak két teljes flow E2E alapellenőrzése készül `pytest`-tel; nincs unit teszt, külön meta-contract tesztcsomag vagy részletes esetmátrix. A cél annak ellenőrzése, hogy az elkészített workflow-k működnek. A paraméter nélküli gyökérszintű `make test` ezeket futtatja, valódi YouTube-feltöltés és valódi Telegram-küldés nélkül.
+- **Tesztelési biztonság:** a `make test` soha nem indít és nem buildel Docker konténert. Csak a már kézzel elindított környezethez csatlakozhat. A tesztek semmilyen valódi videó-, metaadat-, repo- vagy Git-fájlt nem módosíthatnak; kizárólag izolált ideiglenes fixture-t használhatnak. Hiányzó vagy nem futó előfeltételnél a teszt egyértelműen kiírja, pontosan mi hiányzik és milyen kézi parancs szükséges, majd hibával leáll. A valódi adatokkal és szolgáltatásokkal végzett tesztek külön kézi körbe tartoznak.
   - **A csatorna metaadatai csatornánként elkülönülnek.** Minden csatorna saját `style.md` és `rules.md` fájlt tartalmaz. A további fájlok és almappák opcionálisak, csatornánként eltérhetnek; például nem minden csatornának lesz gear-listája vagy playlist-forrása. Az agent csak a kiválasztott csatorna könyvtárából és az ott ténylegesen létező, releváns fájlokból dolgozik. Feltöltéshez azonban minden csatornának kell definiált playlist-feloldási mód; MVP-ben ez kötelezően egy csatornafájlból történő feloldás. A feltöltő a jóváhagyott `meta.json` csatorna- és `playlistId` mezőjét használja.
-- **Az end screen kézi lépés** (YouTube Studio); az implementációs / workflow-építési körön kívül, feltöltéses végigteszt nélkül. Playwright ebben a körben nincs.
+- **A valódi feltöltéses teszt és az end screen kézi lépés:** az implementációs sorrenden kívül, a külön tesztelési blokk szerint. Az end screen feltöltés után, a YouTube Studióban állítható be. Playwright ebben a körben nincs.
 - **Az n8n indítása és leállítása a meglévő Makefile-okban marad** (`make start-n8n`, `make stop-n8n`). Az export és az import a `n8n-workflows/youtube-upload/Makefile`-ban van.
 
 ## A repó tartalma
 
-Meglévő stack, ez marad: `n8n-docker/` (`compose.yaml`, `env.example`, `Makefile`). A gyökér `Makefile` csak ide delegál.
+Meglévő stack, ez marad: `n8n-docker/` (`compose.yaml`, `env.example`, `Makefile`). A gyökér `Makefile` az indítást és leállítást ide delegálja; a tervezett `test` cél a két E2E-t futtatja.
 
 Workflow csomag: `n8n-workflows/youtube-upload/` (csoportosítás: [`n8n-workflows/README.md`](../n8n-workflows/README.md)):
 
@@ -51,7 +52,10 @@ Az env változó önmagában nem teszi láthatóvá a mappát. Az `n8n` szolgál
   - `attempts` és `error`
   - Nincs háttérfigyelő. A következő kézi indításkor a friss `uploading` kimarad a választásból: ha a `startedAt` a választott határon belül van, a workflow nem nyúl hozzá. Ha a `startedAt` régebbi ennél a határnál, `failed`-nek veszi, és a meglévő `videoId` alapján csak a hiányzó lépéseket futtatja.
 
-## Megvalósítási sorrend
+## Megvalósítandó elemek
+
+Az alábbi számozás követelményhivatkozás; a nyitott munkák tényleges sorrendjét és felelősét a következő blokk rögzíti. A DONE jelölések a korábban elkészült alapokat jelzik.
+
 1. [x] DONE **Repó alapjai, a meglévő stackhez igazítva.** Új compose nem készül. Az `n8n-docker/compose.yaml` `n8n` szolgáltatására három bind mount: `${VIDEOS_ROOT}:/data/videos`, `../n8n-workflows/youtube-upload:/data/youtube-upload` és `../n8n-workflows/common-skills:/data/common-skills:ro`. A `runners` szolgáltatásra nincs kötet. Az `n8n-docker/env.example` kiegészítése: `VIDEOS_ROOT`, `N8N_RESTRICT_FILE_ACCESS_TO=/data/videos;/data/youtube-upload;/data/common-skills`, `N8N_DEFAULT_BINARY_DATA_MODE=filesystem`, `N8N_ENCRYPTION_KEY`. A `n8n-workflows/youtube-upload/Makefile` csak az `export` és az `import`.
 2. [x] DONE **Export- és importszkript** a `n8n-workflows/youtube-upload/workflows/` mappába, a csomag `Makefile` `export` és `import` céljaival. A futó konténer a meglévő `n8n-docker` stack.
 3. [x] DONE **Alap adatformátumok rögzítése** a `n8n-workflows/youtube-upload/` alatt: `config/settings.json`, `config/channels.json`, `examples/meta.json`, `examples/upload-state.json`, valamint a videómappák elnevezése. A csatornaspecifikus metaadat-források a `channels/<ChannelName>/` könyvtárban vannak; csak a csatornaválasztó és a workflow-integráció maradt TODO.
@@ -79,11 +83,84 @@ Az env változó önmagában nem teszi láthatóvá a mappát. Az `n8n` szolgál
    10. [ ] TODO A user „kész” jelzése után a workflow visszaolvassa az aktuális `meta.md`-t, a deklarált playlist-forrásból a playlistnévhez feloldja a `playlistId`-t, és ugyanabba a videómappába írja a `meta.json`-t `draft` státusszal, a `channelKey` és `youtubeChannelId` mezőkkel együtt.
    11. [ ] TODO Ellenőrzi a kötelező mezőket, a csatornaazonosítót és az OAuth-credential csatornaegyezését, és csak teljesen kitöltött, egyértelműen jóváhagyott metaadat esetén állítja a `meta.json`-t `ready` állapotúra.
    12. [ ] TODO Ha új szabályt mondasz, a n8n-ben futó agent a kiválasztott csatorna `rules.md` fájlját csak a fő workflow Read/Write Files node-ján keresztül módosíthatja: visszaolvassa, módosítja, validálja, majd visszaírja. Az agent közvetlenül nem írhat tetszőleges repófájlba, és a szabály legközelebb csak az adott csatornához használható.
-7. [ ] TODO **Meta-contract tesztchunk:** `pytest`-tel futó lokális tesztek a Docker és n8n nélkül. Ellenőrzik a `config/channels.json` registry feloldását, a `sourceFiles` és `playlistSource` validációját, a `meta.md` → `meta.json` átalakítást, a playlistnév → `playlistId` feloldást, a `channelKey` és `youtubeChannelId` mezőket, valamint a `draft` / `ready` gate-et. Csak izolált ideiglenes fixture-t használhatnak.
-8. [ ] TODO **Docker smoke/E2E tesztchunk:** `pytest`-ből ellenőrzi a már kézzel elindított n8n-környezetet és a mountokat: `/data/videos`, `/data/youtube-upload`, `/data/common-skills`, a registry, a kiválasztott csatorna forrásfájljai és a közös `walk.md` elérhetők-e. Nem indít és nem buildel konténert, nem módosít valódi adatot, és nem ír Git-állapotot.
-   - Mindkét chunkot a parameter nélküli `make test` futtatja.
-   - Ha a Docker-környezet nem fut, a teszt egyértelműen kiírja a hiányzó előfeltételt és a kézi indítóparancsot, majd hibával leáll.
-9. [ ] TODO **Végigtesztelés egy valódi videóval,** utána `make -C n8n-workflows/youtube-upload export` és commit.
+
+## Végrehajtási sorrend és agentfelelősök
+
+**Munkamegosztás:** a **lokális agent** a repóbeli konfigurációkat, forrásdokumentumokat, példákat, Makefile-t, tesztfuttatót és workflow-exportot kezeli. Az **n8n agent** az n8n felületén építi és köti össze a node-okat, a credentialöket és a workflow-kat. Az n8n agent itt a workflow-építő assistant; a megépítendő metaadat-chat futásidejű agentje ettől külön szerep.
+
+Egy fázis az előző lezárása után indul. Egy workflow üzleti folyamata a hozzá tartozó fájlírással, hibakezeléssel és értesítéssel együtt készül el; ezek nem maradnak későbbi, másik flow utáni körre.
+
+### 1. Közös előfeltételek és átadási szerződés
+
+- [ ] TODO **Lokális agent:** a meglévő `settings.json`, `channels.json` és példák alapján rögzíti a két workflow közös bemenetét és kimenetét. Pótolja a még hiányzó, kézzel szerkeszthető `meta.md` mintát és annak egyértelmű mezőformátumát; rögzíti a playlistnév feloldását és a `draft` → `ready` jóváhagyási feltételeit. Ez nem külön parseralkalmazás vagy új szolgáltatás.
+- [ ] TODO **Lokális agent:** a feltöltő elkészítése előtt rögzíti a régi `uploading` állapot határát és konfigurációs mezőjét, valamint a hiányzó vagy hibás `startedAt` kezelését. A határ konkrét értékét egyeztetni kell; ezt az agent nem találja ki. Rögzíti azt is, hogy bizonytalan kimenetelű videófeltöltésnél, mentett `videoId` nélkül ne induljon vakon új feltöltés.
+- [ ] TODO **n8n agent:** még a teljes workflow-k megépítése előtt tisztázza a futó n8n-ben az `oauthCredentialKey` → tényleges credential hozzárendelését és a csatornaegyezés ellenőrzésének módját, amelyet mindkét workflow használ. Az egy közös feltöltő követelménye megmarad; dinamikus credential-választást nem szabad ellenőrzés nélkül adottnak venni. Token vagy titkos kulcs nem kerül a registrybe vagy exportba.
+- [ ] TODO **n8n agent:** rögzíti a csatornaválasztó Form → beépített Chat átadás működő módját és a `${channelKey}:${videoFolder}` sessionkötést. Ellenőrzi a metaadat-chat futásidejű modelljét és credentialjét is: az építő AI Assistant beállítása önmagában nem igazolja ezeket. Ha az elvárt belépés a beépített node-okkal nem megoldható, megáll és egyeztet; nem vezet be saját webes felületet.
+- [ ] TODO **Lokális agent, az n8n agenttel egyeztetve:** rögzíti a két E2E futtatási módját: az elkészített workflow-k izolált tesztpéldánya, ideiglenes fájlok, helyettesített LLM/YouTube/Telegram-válaszok. A teszt a tényleges node-láncot járja végig, nem annak Pythonban újraírt másolatát. A host oldali segéd- és fixture-fájlok `/tmp` alatt legyenek; a fő n8n konténerből való elérésüket előre rendezni kell, a valódi videos és repo fájlok írása nélkül. A runners szolgáltatás nem kap fájlrendszer-hozzáférést.
+- **Lezárás feltétele:** a fájlformátum, a credential-hozzárendelés, a Form → Chat kapcsolat és a biztonságos E2E futtatási mód egyértelmű. A technikai vagy termékdöntést igénylő eltéréseknél egyeztetés szükséges, az érintett építés addig nem indul.
+
+### 2. Telegram értesítő teljes segéd-flow — n8n agent
+
+- [ ] TODO A 4. követelménypontot egyben elkészíti: meghívás más workflow-ból → üzenet és cél feloldása → Telegram-küldés → eredmény vagy küldési hiba visszaadása. A chat ID a `settings.json`-ból, a token az n8n credentialből jön.
+- [ ] TODO Az értesítési hiba ne indítsa újra a videófeltöltést, és ne írja felül a már mentett feltöltési eredményt.
+- **Előfeltétel:** 1. fázis, meglévő Telegram credential és chat ID.
+- **Átadás a lokális agentnek:** a kész segéd-workflow azonosítója, bemenete és kimenete; export a meglévő paranccsal. Külön automatizált Telegram-teszt nem készül: ezt a feltöltő E2E-je érinti.
+
+### 3. Közös feltöltő teljes flow — n8n agent
+
+- [ ] TODO Az 5. követelménypont összes elemét egyben építi meg: indítóűrlap → settings és mappák beolvasása → feltölthető videó kiválasztása → metaadat- és csatornaellenőrzés → `uploading` mentése → privát/időzített videófeltöltés → azonnali `videoId`-mentés → thumbnail → playlist → `uploaded` és link → Telegram.
+- [ ] TODO Ebben a fázisban készül el a lépésenkénti állapotmentés, a `failed` ág és a folytatás is. A friss `uploading` kimarad; a lejárt állapot kezelése az 1. fázisban rögzített szabályt követi. Mentett `videoId` esetén csak a hiányzó lépések futnak. Nulla jelölt esetén érthetően lezár, több jelöltnél a választóűrlapot használja.
+- **Előfeltétel:** 1–2. fázis. A metaadat-chat még nem szükséges: a bemenet a rögzített szerződés szerinti, kézzel előkészített fixture `ready` metaadat.
+- **Átadás a lokális agentnek:** kész feltöltő és értesítő kapcsolata, tesztelhető belépés, állapotfájlok és credential-hozzárendelés; valódi feltöltés ekkor nem indul.
+
+### 4. Feltöltő lezárása és minimális E2E — lokális agent
+
+- [ ] TODO Exportálja a kész workflow-kat a `make -C n8n-workflows/youtube-upload export` paranccsal; ellenőrzi az exportban a workflow-k közötti hivatkozásokat és azt, hogy titkos credentialérték nincs benne.
+- [ ] TODO Elkészíti a gyökérszintű `make test` belépést és a tesztelési blokkban leírt egy feltöltő E2E-t. A Docker/mount/forrás-előfeltételek ellenőrzése ennek része, nem külön tesztcsomag. A csomag saját Makefile-ja továbbra is csak `export` és `import` célokat kap.
+- **Előfeltétel:** 3. fázis, már kézzel elindított n8n és az 1. fázisban rögzített izolált tesztelérési mód.
+- **Lezárás feltétele:** az exportált feltöltő teljes flow-ja átmegy az alapellenőrzésen. Workflow-hibát az n8n agent, tesztfuttató- vagy repóhibát a lokális agent javít ugyanebben a fázisban; csak ezután kezdődik a metaadat-chat.
+
+### 5. Metaadat-chat forrásainak lezárása — lokális agent
+
+- [ ] TODO A már elkészült feltöltő bemenetéhez és az 1. fázis mintájához igazítja a csatornaforrásokat. A userrel lezárja a még nyitott `style.md` / `rules.md` tartalmi kérdéseket; nem ír át saját döntéssel csatornapreferenciát.
+- [ ] TODO Ellenőrzi az engedélyezett csatorna `sourceFiles`, `playlistSource` és `commonSkills` hivatkozásait. A metaadat-chat építése előtt átadja az n8n agentnek a végleges forráslistát, a playlistnév → ID forrást és a `meta.md` mintát.
+- **Előfeltétel:** 4. fázis. Nem készül külön unit vagy forrásfájlonkénti tesztcsomag.
+- **Lezárás feltétele:** a metaadat-agent által olvasandó források és a feltöltőnek átadandó fájlformátum véglegesek.
+
+### 6. Csatornához kötött metaadat-chat teljes flow — n8n agent
+
+- [ ] TODO A 6. követelménypont mind a 12 elemét egyben elkészíti: csatorna- és videómappa-űrlap → kötött session → kiválasztott csatornaforrások és közös `walk.md` → videómappa ellenőrzése → egyeztetés → `meta.md` mentése és visszaolvasása → „kész” → playlistfeloldás → `draft` metaadat → validáció és csatornaegyezés → `ready`.
+- [ ] TODO Ebbe a teljes flow-ba tartozik a kézi `meta.md` javítások megőrzése, az új szerkesztéskor történő `ready` → `draft` visszaállítás, a short/long playlistkorlát és a playlistforrás nélküli csatorna `draft` korlátozása is.
+- [ ] TODO Ugyanekkor készül el a tanult szabály visszaolvasás → módosítás → validálás → visszaírás ága, kizárólag a kiválasztott csatorna `rules.md` fájljára. Minden fájlművelet a fő n8n konténer Read/Write Files node-ján megy. A chat röviden jelenti a mentési PATH-ot, repóbeli szabálymódosításnál commitüzenet-javaslatot ad.
+- **Előfeltétel:** 5. fázis és az 1. fázisban igazolt Form → Chat kapcsolat, session és futásidejű modell/credential. A `ready` ellenőrzés a feltöltőnél már lezárt csatorna- és credential-hozzárendelést használja.
+- **Átadás a lokális agentnek:** a teljes metaadat-flow és belépése, a session átadásának módja, a mentett fájlok helye; valódi videós próba ekkor nem indul.
+
+### 7. Metaadat-flow lezárása és végső repoátadás — lokális agent
+
+- [ ] TODO Exportálja a metaadat-workflow-t és az esetleg módosult segéd-workflow-kat; hozzáadja a tesztelési blokk szerinti egy metaadat E2E-t a már meglévő `make test` futtatáshoz.
+- [ ] TODO Lefuttatja a két E2E alapellenőrzést együtt. A metaadat-flow kimenete ugyanazt a szerződést követi, amelyből a feltöltő indul; nem készül harmadik, ismétlődő tesztcsomag.
+- [ ] TODO A végleges workflow-exportokat és a checklist státuszait egyezteti a ténylegesen elkészült állapottal. A workflow-javítás az n8n agenthez, a repóbeli javítás a lokális agenthez kerül; javítás után az érintett E2E fut újra.
+- **Lezárás feltétele:** mindkét teljes flow exportálva van és a két szűk E2E sikeres. A valódi kézi teszt nem implementációs kapu; külön, az alábbi blokkban vár a userre. Stage, commit és push nem agentes feladat.
+
+## Tesztelés
+
+### Automatizált alapellenőrzés — lokális agent
+
+Az E2E-k megírása a hozzájuk tartozó flow lezárási fázisának része. Csak az alábbi két teszt készül; nincs unit teszt, külön parser-/registryteszt vagy részletes hibamátrix. Nem szükséges minden node belső kimenetét vizsgálni, csak a teljes folyamat eredményét.
+
+- [ ] TODO **Feltöltő E2E:** izolált `ready` videómappából, a tényleges feltöltő workflow-val eljut a helyettesített YouTube-lépéseken át az `uploaded` állapotig és az értesítő meghívásáig. Ugyanebben az egy forgatókönyvben egy megszakítás utáni folytatás igazolja, hogy a mentett `videoId`-t használja, és nem tölti fel újra a videót.
+- [ ] TODO **Metaadat E2E:** a csatorna-/mappaválasztástól egy rövid, helyettesített modellválaszokkal vezetett egyeztetésen és a `meta.md` mentésén át a jóváhagyott `ready` `meta.json`-ig fut. A kézzel javított előnézet marad a véglegesítés forrása; az eredmény a kiválasztott csatorna és a forrásból feloldott playlist azonosítóját tartalmazza.
+- **Futtatás:** paraméter nélküli `make test` a repó gyökeréből; `pytest`, a már futó n8n-re támaszkodva. A szükséges környezet- és mountellenőrzés a belépés része. Hiány esetén konkrét hiba és kézi indítóparancs, például `make start-n8n`, majd hibás kilépés; nincs automatikus indítás/build vagy csendes skip.
+- **Izoláció:** ideiglenes tesztadat és teszt-workflow-példány; valódi videó-, metaadat-, csatornaszabály-, repo- és Git-fájlok módosítása nélkül. Az LLM-, YouTube- és Telegram-hívások helyettesítettek. A valódi credential, AI-szövegminőség és külső szolgáltatás működését a kézi próba igazolja.
+
+### Valódi kézi tesztelés — user, az implementációs sorrenden kívül
+
+Ez külön, a workflow-k elkészülése után indítható kör. Nem része a `make test`-nek, és az agent nem indítja el a fejlesztési fázisok lezárásához.
+
+- [ ] TODO **Egy teljes valós használati próba:** valódi videómappa és csatornaválasztás → metaadat-chat → `meta.md` kézi javítása → „kész” → `ready` `meta.json` → külön kézzel indított feltöltő → privát/időzített videó, thumbnail és playlist → Telegram-link. Csak azt kell ellenőrizni, hogy a teljes használati út működik.
+- [ ] LATER **End screen:** a feltöltött videóhoz kézzel, a YouTube Studióban. A workflow csak emlékeztetőt és Studio-linket küld.
+- **Google audit:** az MVP implementációján és a privát feltöltési próbán kívüli későbbi teendő; a nyilvános ütemezés korlátait a kockázati blokk tartalmazza.
+- **Ha a kézi próba javítást igényel:** a workflow-javítást az n8n agent végzi, majd a lokális agent exportál és lefuttatja az érintett automatizált E2E-t. Az exportot nem kell a valódi feltöltési próbáig halasztani; Git-műveletet a user végez.
 
 ## Kockázatok
 - **Ellenőrizetlen Google API-projekt:** a YouTube szabályai szerint az ilyen projektből feltöltött videók privátak maradnak, és az időzítés sem teszi őket nyilvánossá. Ezt egy ellenőrzés (audit) kérésével lehet feloldani.
@@ -91,7 +168,7 @@ Az env változó önmagában nem teszi láthatóvá a mappát. Az `n8n` szolgál
 
 ## Rád váró teendők
 
-**Előkészítés összefoglaló (2026-10-24):** infra, `.env`, YouTube OAuth, Telegram, OpenRouter / n8n AI assistant, a FreezWithMe csatorna-forrásstruktúrája és a `config/channels.json` registry **kész**. **Hátra:** a csatornaválasztó, a channel-aware metaadat-workflow, a közös feltöltő workflow és a végigteszt; export/commit workflow-k után. GCP **audit** és **end screen** nem ebben a körben.
+**Előkészítés összefoglaló (2026-10-24):** infra, `.env`, YouTube OAuth, Telegram, OpenRouter / n8n AI assistant, a FreezWithMe csatorna-forrásstruktúrája és a `config/channels.json` registry **kész**. **Hátra:** a végrehajtási blokk szerinti előfeltételek lezárása, az értesítő, a közös feltöltő és a csatornához kötött metaadat-workflow, két szűk E2E és a workflow-exportok. A valódi használati próba külön kézi kör. GCP **audit** és **end screen** nem implementációs feladat.
 
 1. [x] DONE **Rancher Desktop (MVP):** moby motor, hogy a `make start-n8n` / `docker compose` működjön. A `VIDEOS_ROOT` home alatti Mac-útvonal bind mountolható extra Rancher-beállítás nélkül. Kubernetes és külön „volume megosztás” nem része az MVP-nek.
 2. [x] DONE **`n8n-docker/.env`:** `VIDEOS_ROOT` (idézőjeles útvonal, szóköz), `N8N_ENCRYPTION_KEY`, többi mező az `env.example` szerint; `n8n` konténer recreate után a mount egyezik a `.env`-vel.
@@ -99,8 +176,8 @@ Az env változó önmagában nem teszi láthatóvá a mappát. Az `n8n` szolgál
 4. [x] DONE **Telegram:** BotFather token → n8n **Telegram API** credential; chat ID a `n8n-workflows/youtube-upload/config/settings.json` `telegramChatId` mezőben (token nem a repóban).
 5. [x] DONE **AI:** OpenRouter API key és n8n **AI Assistant** beállítva az n8n UI-ban (metaadat-chat workflow építéshez).
 6. [x] DONE **Csatorna-források:** a struktúra `channels/FreezWithMe/style.md`, `rules.md`, valamint a csatorna által igényelt opcionális fájlok. A `channels/` rename a munkafában ellenőrizve.
-7. [ ] TODO **Csatornaválasztó az agent indítása előtt:** n8n űrlapon listából választható csatorna. A választás alapján a metaadat-chat egyetlen közös workflow-ja a megfelelő csatorna-forráskönyvtárat tölti be, és a kiválasztott csatorna azonosítóját végig továbbadja a metaadat- és fájlírási lépéseknek. Ha a beépített chat-oldalon nincs előzetes választó, az n8n Form Trigger legyen a belépési pont, amely ezután nyitja vagy indítja a chat-folyamatot.
-8. [ ] TODO **`style.md` és csatornaszabályok véglegesítése:** az agent a kiválasztott csatorna kötelező `style.md` és `rules.md` fájljából, valamint csak a ténylegesen létező opcionális forrásokból dolgozik; más csatorna szabályait nem használhatja.
-9. [ ] LATER **End screen** (YouTube Studio, videónként): nem az implementációs kör feladata; feltöltéses végigteszt előtt.
-10. [ ] TODO **Workflow export:** minden workflow-változtatás után `make -C n8n-workflows/youtube-upload export` (majd commit, ha kéred).
+7. [ ] TODO **Csatornaválasztó:** n8n agentes implementáció a végrehajtási sorrend 6. fázisában; a Form → Chat kapcsolat tisztázása már az 1. fázis előfeltétele. Nem külön useres építési feladat.
+8. [ ] TODO **`style.md` és csatornaszabályok véglegesítése:** a lokális agenttel, az 5. fázisban; csak a még nyitott tartalmi kérdésekben kell userdöntés.
+9. [ ] TODO **Valódi kézi próba és későbbi end screen:** kizárólag a külön tesztelési blokk szerint, a workflow-k elkészülése után.
+10. [ ] TODO **Workflow export:** a lokális agent végzi minden lezárt workflow-változtatás után a `make -C n8n-workflows/youtube-upload export` paranccsal. Stage, commit és push a user feladata.
 
