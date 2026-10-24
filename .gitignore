@@ -3,5 +3,6 @@
 .clinerules
 .agents/skills/
 .cline/skills/
+.DS_Store
 docs/planning/templates/work-items
 tooling/git

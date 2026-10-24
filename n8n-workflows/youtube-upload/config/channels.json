@@ -1,0 +1,26 @@
+{
+  "channels": [
+    {
+      "key": "freezwithme",
+      "displayName": "FreezWithMe | FagyjVelem",
+      "youtubeHandle": "@FreezWithMe",
+      "youtubeChannelId": "UCTmNLnPDniFPocALLVSFoDg",
+      "oauthCredentialKey": "freezwithme",
+      "sourcePath": "channels/FreezWithMe",
+      "playlistSource": {
+        "mode": "file",
+        "file": "FreezWithMe-playlist.md"
+      },
+      "sourceFiles": [
+        "style.md",
+        "rules.md",
+        "gear-list.md",
+        "FreezWithMe-playlist.md"
+      ],
+      "enabled": true
+    }
+  ],
+  "commonSkills": [
+    "/data/common-skills/walk.md"
+  ]
+}
