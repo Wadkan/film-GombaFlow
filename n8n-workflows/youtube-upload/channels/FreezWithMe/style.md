@@ -25,6 +25,7 @@ A választ a csak megadott formátumokban add. Ha file-ba kell írni az outputot
 
 - Magyar input esetén a cím és a leírás magyar legyen.
 - Angol input esetén a cím és a leírás angol legyen.
+- A generált cím és leírás mindig egyes szám első személyben készüljön.
 - A hang legyen természetes, outdoor-központú, személyes és történetszerű.
 - Használj sok, de olvashatóságot segítő emojit; ne legyen bazári vagy kulcsszó-spam jellegű.
 

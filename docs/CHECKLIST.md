@@ -40,7 +40,7 @@ Az env változó önmagában nem teszi láthatóvá a mappát. Az `n8n` szolgál
 
 ## Egy videó mappája
 `YYYY-MM-DD_videonev/`, benne:
-- `video.mp4` és `thumbnail.jpg`
+- egy feltölthető videófájl bármilyen támogatott videoformátumban és `thumbnail.jpg`
 - `meta.md`: a meta-agent első kimenete, kézzel szerkeszthető előnézet. A user módosításai a „kész” jelzésig elsődlegesek.
 - `meta.json`: ezt az ügynök írja a user „kész” jelzése után, rögzített mezőkkel, csak ebbe az almappába: `/data/videos/YYYY-MM-DD_videonev/meta.json`. A `/data/videos/meta.json` útvonal érvénytelen. A `status` értéke `draft`, és csak minden kötelező mező kitöltése, minden bizonytalanság tisztázása és a user egyértelmű jóváhagyása után lehet `ready`. Mezők: `status`, `channelKey`, `youtubeChannelId`, cím, leírás, címkék, `playlistId`, `youtube_scheduled_at`. A `meta.md` playlistnevet tartalmaz; a `meta.json` csak a kiválasztott csatorna playlist-feloldási forrásából származó ID-t tartalmaz. A `youtube_scheduled_at` eltolásos idő, például `2026-10-24T18:00:00+02:00`.
 - `upload-state.json`: ezt csak a feltöltő írja.
@@ -74,7 +74,7 @@ Az alábbi számozás követelményhivatkozás; a nyitott munkák tényleges sor
    1. [ ] TODO A közös belépési űrlapon listából kiválasztod a YouTube-csatornát a meta-agent hívása előtt, majd megadod a `YYYY-MM-DD_videonev` almappát. A workflow létrehoz egy session kulcsot `${channelKey}:${videoFolder}` formában, ezt adja át a chat memóriájának és minden fájlíró lépésnek; más csatorna vagy más videómappa sessionje nem keveredhet bele.
    2. [ ] TODO A workflow a `config/channels.json` alapján feloldja a kiválasztott csatorna könyvtárát, és csak az adott bejegyzés `sourceFiles` listájában szereplő, ténylegesen létező fájlokat tölti be. Más csatorna kontextusa nem kerülhet az agent promptjába.
    3. [ ] TODO A workflow a registry gyökérszintű `commonSkills` listájában szereplő közös fájlokat is betölti minden meta-agent futásnál. MVP-ben ez a `/data/common-skills/walk.md`; a protokollt nem kell csatornánként vagy workflow-nként lemásolni.
-   4. [ ] TODO Read/Write Files node ellenőrzi, hogy a `/data/videos/YYYY-MM-DD_videonev/` létezik és van benne `video.mp4`. Ez a mappa minden `meta.md` és `meta.json` írás célja.
+   4. [ ] TODO Read/Write Files node ellenőrzi, hogy a `/data/videos/YYYY-MM-DD_videonev/` létezik, és videóformátumú fájlt keres benne; fájlnév nem hardcode-olható. Találat nélkül megáll, egy találatot használ, több találatnál választást kér. Ez a mappa minden `meta.md` és `meta.json` írás célja.
    5. [ ] TODO Az agent a metaadatokat elsőként ugyanabba a videómappába írt `meta.md` fájlba állítja elő. A `meta.md` playlistnevet tartalmaz, nem playlist ID-t, és a user kézzel szerkesztheti.
    6. [ ] TODO Minden chatbeli átírás előtt visszaolvassa az aktuális `meta.md`-t, így a user kézi módosításai nem vesznek el. Ha már létezik `ready` állapotú `meta.json`, az új szerkesztés kezdetén `draft` állapotúra állítja, és törli vagy érvényteleníti a korábbi feltölthetőséget.
    7. [ ] TODO Ha a user nem ad playlistet, az agent javasol a kiválasztott csatorna playlistjei közül. Ha a választás nem egyértelmű, egyeztet, és addig nem lép tovább, amíg a playlist, az időzítés és minden más kötelező mező tiszta.
