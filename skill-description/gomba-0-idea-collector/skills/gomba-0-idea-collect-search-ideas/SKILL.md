@@ -10,14 +10,14 @@ Kiválasztandó ötletek száma: 5.
 
 ## Bemenet és kimenet
 
-- Olvasd a [workflow-t](../../../gomba-film-workflows/gomba-0-idea-collect-topic-selection.md)
+- Olvasd a [workflow-t](../../../gomba-0-idea-collect-topic-selection.md)
   és a [tématemplate-et](../../templates/topic-template.json).
 - Opcionális bemenet a felhasználó témaszűkítése; enélkül az eredeti teljes
   keresési profil érvényes, nem kell előzetes kérdés.
-- Olvasd a `gomba-0-idea-collector/results/*-ideas.md` korábbi eredményeit és
-  a `gomba-1-script-writer/projects/*/selected-topic.json` rekordokat
+- Olvasd a `skill-description/gomba-0-idea-collector/results/*-ideas.md` korábbi eredményeit és
+  a `skill-description/gomba-1-script-writer/projects/*/selected-topic.json` rekordokat
   a duplikációk kizárásához. E könyvtárak hiánya első futásnál normális.
-- Kizárólag egy új `gomba-0-idea-collector/results/<run-id>-ideas.md`
+- Kizárólag egy új `skill-description/gomba-0-idea-collector/results/<run-id>-ideas.md`
   eredményt írhatsz. Minden útvonal a repository gyökerétől értendő.
 
 ## Végrehajtás
@@ -47,7 +47,7 @@ Kiválasztandó ötletek száma: 5.
    indoklást. Az ismeretlen adatokat a workflow-ban rögzített üres értékekkel
    add meg; csak a témaválasztást befolyásoló korlátot jelezd röviden
    az adott rekordban.
-7. Mentsd az eredményt a `gomba-0-idea-collector/results/<run-id>-ideas.md`
+7. Mentsd az eredményt a `skill-description/gomba-0-idea-collector/results/<run-id>-ideas.md`
    útvonalra. A fájl tartalmazza a futásazonosítót, a kutatás dátumát és
    a témaszűkítést, ha volt. Készíts összehasonlító táblázatot a helyezés,
    ID, cím, üzleti haszon, rövid kiválasztási indok és fő videó URL

@@ -2,7 +2,7 @@
 
 ## Cél és hatókör
 
-A `gomba-1-script-writer` a [collector](../gomba-film-workflows/gomba-0-idea-collect-topic-selection.md)
+A `gomba-1-script-writer` a [collector](../gomba-0-idea-collect-topic-selection.md)
 ajánlati listájából a felhasználó által kiválasztott **egyetlen forrásvideót** dolgozza át saját,
 magyar, forgatáshoz követhető anyaggá. Nem keres új témát, nem pontoz újra,
 és nem kísérletezik tartalomformátumok teljesítményével.

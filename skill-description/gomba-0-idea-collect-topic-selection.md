@@ -30,11 +30,11 @@ Az alábbi útvonalak a repository gyökeréhez képest értendők.
 - Témarekord formátuma:
   [topic-template.json](../gomba-0-idea-collector/templates/topic-template.json).
 - Kutatási futásonként egy új, magyar nyelvű eredmény:
-  `gomba-0-idea-collector/results/<run-id>-ideas.md`.
+  `skill-description/gomba-0-idea-collector/results/<run-id>-ideas.md`.
 - A kiválasztandó jelöltek számát kizárólag a kereső skill állítja be;
   ezt a workflow és a többi skill nem ismétli meg.
 - A kiválasztott egyetlen teljes rekord:
-  `gomba-1-script-writer/projects/<topic-id>/selected-topic.json`.
+  `skill-description/gomba-1-script-writer/projects/<topic-id>/selected-topic.json`.
 - Következő fázis:
   [scriptíró workflow](../gomba-1-script-writer/WORKFLOW.md), 0. ötletátvétel.
 

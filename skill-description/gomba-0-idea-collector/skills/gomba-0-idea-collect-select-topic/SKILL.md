@@ -9,12 +9,12 @@ disable-model-invocation: true
 
 ## Bemenet és kimenet
 
-- Olvasd a [workflow-t](../../../gomba-film-workflows/gomba-0-idea-collect-topic-selection.md)
+- Olvasd a [workflow-t](../../../gomba-0-idea-collect-topic-selection.md)
   és a [tématemplate-et](../../templates/topic-template.json).
 - Kötelező bemenet a felhasználó által megadott pontos `<topic-id>`.
-- Forrás: `gomba-0-idea-collector/results/*-ideas.md`.
+- Forrás: `skill-description/gomba-0-idea-collector/results/*-ideas.md`.
 - Egyetlen engedélyezett kimenet:
-  `gomba-1-script-writer/projects/<topic-id>/selected-topic.json`.
+  `skill-description/gomba-1-script-writer/projects/<topic-id>/selected-topic.json`.
   Minden útvonal a repository gyökerétől értendő.
 
 ## Végrehajtás
