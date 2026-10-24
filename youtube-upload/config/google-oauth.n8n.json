@@ -1,0 +1,9 @@
+{
+  "n8nEditorBaseUrl": "http://localhost:5678/",
+  "oauthRedirectUri": "http://localhost:5678/rest/oauth2-credential/callback",
+  "googleApiToEnable": "YouTube Data API v3",
+  "googleApiServiceId": "youtube.googleapis.com",
+  "suggestedGcpProjectId": "gombaflow-youtube",
+  "n8nCredentialType": "YouTube OAuth2 API",
+  "notes": "Redirect URI must match exactly in Google Cloud OAuth client. n8n credential uses Client ID + Client Secret from GCP, then Connect my account in the browser."
+}

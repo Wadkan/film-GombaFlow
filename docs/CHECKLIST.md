@@ -2,7 +2,7 @@
 # Áttekintő terv: YouTube-feltöltés n8n-nel (MVP)
 
 ## Alapelvek
-- **A már futó n8n marad.** Egy helyi n8n fut Rancher Desktopon, az `n8n-docker/` stackből, két workflow-val és egy közös értesítő segéd-workflow-val. Nem készül második compose, és nem kerül `docker-compose.yml` a repó gyökerébe. A Rancher Desktopban a Docker-kompatibilis motort (dockerd/moby) kell választani, hogy a `docker compose` működjön.
+- **A már futó n8n marad.** Egy helyi n8n fut Rancher Desktopon, az `n8n-docker/` stackből, két workflow-val és egy közös értesítő segéd-workflow-val. Nem készül második compose, és nem kerül `docker-compose.yml` a repó gyökerébe. A stackhez kell egy helyi Docker API: Rancher Desktop **moby** motorral (`docker compose` a `Makefile`-ból). Kubernetes nem kell az MVP-hez.
 - **Minden webes, saját fejlesztés nélkül:**
   - a chat az n8n beépített chat-oldala,
   - a feltöltést egy n8n-űrlap indítja,
@@ -10,7 +10,7 @@
 - **A Telegram csak értesít,** bejövő üzenetet nem figyel, ezért tunnel nem kell.
 - **A feltöltés mindig kézzel indul,** minden más automatikus.
 - **Amit online el lehet érni, azt nem mentjük el külön.** A playlisteket a workflow mindig élőben kéri le.
-- **Az end screen kézi lépés,** Playwright ebben a körben nincs.
+- **Az end screen kézi lépés** (YouTube Studio); az implementációs / workflow-építési körön kívül, feltöltéses végigteszt nélkül. Playwright ebben a körben nincs.
 - **Az n8n indítása és leállítása a meglévő Makefile-okban marad** (`make start-n8n`, `make stop-n8n`). Az export és az import a `youtube-upload/Makefile`-ban van.
 
 ## A repó tartalma
@@ -48,7 +48,7 @@ Az env változó önmagában nem teszi láthatóvá a mappát. Az `n8n` szolgál
 ## Megvalósítási sorrend
 1. [x] DONE **Repó alapjai, a meglévő stackhez igazítva.** Új compose nem készül. Az `n8n-docker/compose.yaml` `n8n` szolgáltatására két bind mount: `${VIDEOS_ROOT}:/data/videos` és `../youtube-upload:/data/youtube-upload`. A `runners` szolgáltatásra nincs kötet. Az `n8n-docker/env.example` kiegészítése: `VIDEOS_ROOT`, `N8N_RESTRICT_FILE_ACCESS_TO=/data/videos;/data/youtube-upload`, `N8N_DEFAULT_BINARY_DATA_MODE=filesystem`, `N8N_ENCRYPTION_KEY`. A `youtube-upload/Makefile` csak az `export` és az `import`.
 2. [x] DONE **Export- és importszkript** a `youtube-upload/workflows/` mappába, a `youtube-upload/Makefile` `export` és `import` céljaival. A futó konténer a meglévő `n8n-docker` stack.
-3. [x] DONE **Adatformátumok rögzítése** a `youtube-upload/` alatt: `config/settings.json`, `examples/meta.json`, `examples/upload-state.json`, `prompts/style.md`, `rules/rules.md`, valamint a videómappák elnevezése.
+3. [x] DONE **Adatformátumok rögzítése** a `youtube-upload/` alatt: `config/settings.json`, `examples/meta.json`, `examples/upload-state.json`, `rules/rules.md`, valamint a videómappák elnevezése. A `prompts/style.md` fájl megvan, tartalma még **kitöltendő** (lásd Rád váró 6.).
 4. [ ] TODO **Telegram értesítő segéd-workflow,** amit a többi workflow meghív.
 5. [ ] TODO **Feltöltő workflow** (előbb érdemes megépíteni, mert egy kézzel írt `meta.json`-nal jól tesztelhető):
    1. [ ] TODO Az első űrlapoldal csak az indítás. Nincs előre kitöltött mappa. A következő node a `settings.json`-ból olvassa a `/data/videos` útvonalat.
@@ -72,23 +72,17 @@ Az env változó önmagában nem teszi láthatóvá a mappát. Az `n8n` szolgál
 ## Kockázatok
 - **Ellenőrizetlen Google API-projekt:** a YouTube szabályai szerint az ilyen projektből feltöltött videók privátak maradnak, és az időzítés sem teszi őket nyilvánossá. Ezt egy ellenőrzés (audit) kérésével lehet feloldani.
 - **Napi YouTube API-keret:** a keret szűkös. Egy feltöltés nagyjából 1600 egységbe kerül a napi 10 000-ből, ez kb. 6 videó naponta. Ezt az értéket érdemes a Google aktuális dokumentációjában ellenőrizni.
-- **Rancher Desktop Macen:** alapból csak a saját mappádat (home) osztja meg a konténerekkel. Ha a videók máshol vannak, azt a mappát külön engedélyezni kell.
 
 ## Rád váró teendők
-1. [ ] TODO **Rancher Desktop:** állítsd a motort dockerdre (moby), és ha a videómappa nem a saját mappádon belül van, engedélyezd a megosztását.
-2. [ ] TODO **`n8n-docker/.env` kitöltése:** állítsd be a `VIDEOS_ROOT` útvonalat. Az `N8N_ENCRYPTION_KEY` a futó konténer `/home/node/.n8n/config` fájljának `encryptionKey` értéke. Új kulcsot ne generálj, ha ez a fájl megvan, mert a meglévő credentialök azzal visszafejthetetlenek. A kulcsot mentsd el biztonságos helyre. A compose csak e fájl mellől látja a `VIDEOS_ROOT`-ot.
-3. [ ] TODO **Google Cloud:**
-   1. [ ] TODO Hozz létre egy projektet, és kapcsold be a YouTube Data API v3-at.
-   2. [ ] TODO Állítsd be a bejelentkezési (OAuth) engedélykérő képernyőt.
-   3. [ ] TODO Hozz létre egy Client ID-t és egy Client Secretet, az n8n által megadott átirányítási címmel.
-   4. [ ] TODO Az n8n-ben hozd létre a YouTube credentialt.
-   5. [ ] TODO Kérd az API-ellenőrzést (audit), különben a videók privátak maradnak.
-4. [ ] TODO **Telegram:**
-   1. [ ] TODO Az n8n-ben hozd létre a Telegram credentialt a BotFathertől kapott tokennel.
-   2. [ ] TODO Írj egy üzenetet a botnak.
-   3. [ ] TODO A `getUpdates` címen nézd ki a chat ID-t, és írd be a `youtube-upload/config/settings.json`-ba.
-5. [ ] TODO **AI-modell:** hozz létre egy credentialt a választott szolgáltatóhoz (pl. OpenAI vagy Anthropic), az API-kulcsoddal.
-6. [ ] TODO **Tartalom:** másold át a meglévő skilledet és a preferenciáidat a `youtube-upload/prompts/style.md`-be, és töltsd ki a `youtube-upload/config/settings.json` alapértékeit. Az alapértelmezett mappa a `/data/videos` konténerbeli útvonal.
-7. [ ] TODO **Minden videónál:** állítsd be kézzel az end screent a YouTube Studióban.
-8. [ ] TODO **Minden workflow-változtatás után:** futtasd a `make -C youtube-upload export` parancsot, és commitolj.
+
+**Előkészítés összefoglaló (2026-10-24):** infra, `.env`, YouTube OAuth, Telegram, OpenRouter / n8n AI assistant **kész**. **Hátra:** `prompts/style.md` tartalom; workflow-építés (megvalósítási sorrend 4–7); export/commit workflow-k után. GCP **audit** és **end screen** nem ebben a körben.
+
+1. [x] DONE **Rancher Desktop (MVP):** moby motor, hogy a `make start-n8n` / `docker compose` működjön. A `VIDEOS_ROOT` home alatti Mac-útvonal bind mountolható extra Rancher-beállítás nélkül. Kubernetes és külön „volume megosztás” nem része az MVP-nek.
+2. [x] DONE **`n8n-docker/.env`:** `VIDEOS_ROOT` (idézőjeles útvonal, szóköz), `N8N_ENCRYPTION_KEY`, többi mező az `env.example` szerint; `n8n` konténer recreate után a mount egyezik a `.env`-vel.
+3. [x] DONE **Google Cloud / YouTube (OAuth):** GCP projekt, consent, Web OAuth kliens, n8n **YouTube OAuth2 API** credential connected. Audit / nyilvános ütemezés korlát **később**. Repó: `youtube-upload/config/google-oauth.n8n.json`, `youtube-upload/docs/google-cloud-teendok.md`.
+4. [x] DONE **Telegram:** BotFather token → n8n **Telegram API** credential; chat ID a `youtube-upload/config/settings.json` `telegramChatId` mezőben (token nem a repóban).
+5. [x] DONE **AI:** OpenRouter API key és n8n **AI Assistant** beállítva az n8n UI-ban (metaadat-chat workflow építéshez).
+6. [ ] TODO **`youtube-upload/prompts/style.md`:** skilled, csatornahang, SEO-szabályok — **következő előkészítési lépés**. A `youtube-upload/config/settings.json` alapmezői (`videosContainerPath`, `telegramChatId`, `timezone`, `defaultPublishTime`) **kész**.
+7. [ ] LATER **End screen** (YouTube Studio, videónként): nem az implementációs kör feladata; feltöltéses végigteszt előtt.
+8. [ ] TODO **Workflow export:** minden workflow-változtatás után `make -C youtube-upload export` (majd commit, ha kéred).
 
