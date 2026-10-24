@@ -2,7 +2,7 @@
 
 **Állapot:** OAuth + n8n **YouTube OAuth2** credential **kész** (2026-10-24). Az API audit / production quota **még nincs** — feltöltéses MVP után, ha nyilvános ütemezés kell.
 
-A repóban fix értékek: `youtube-upload/config/google-oauth.n8n.json` (redirect URI, API neve, n8n credential típus).
+A repóban fix értékek: `n8n-workflows/youtube-upload/config/google-oauth.n8n.json` (redirect URI, API neve, n8n credential típus).
 
 ## 1. Projekt + API
 

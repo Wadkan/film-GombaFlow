@@ -30,7 +30,7 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
       - ${VIDEOS_ROOT}:/data/videos
-      - ../youtube-upload:/data/youtube-upload
+      - ../n8n-workflows/youtube-upload:/data/youtube-upload
     restart: unless-stopped
     networks:
       - default

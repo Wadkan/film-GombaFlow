@@ -4,10 +4,10 @@ Self-hosted [n8n Assistant](https://docs.n8n.io/deploy/host-n8n/configure-n8n/se
 
 ## Layout
 
-| Path | What runs |
-| --- | --- |
-| `compose.yaml` | n8n, external task runners, SearXNG (web search) |
-| `sandbox/compose.yaml` | `sandbox-certs`, `sandbox-api`, `sandbox-runner-1` (privileged DinD) |
+- `compose.yaml` — n8n, external task runners, SearXNG (web search)
+- `sandbox/compose.yaml` — `sandbox-certs`, `sandbox-api`, `sandbox-runner-1` (privileged DinD)
+
+Workflow csomagok (export/import, config): [`../n8n-workflows/README.md`](../n8n-workflows/README.md). A YouTube MVP a konténerben `/data/youtube-upload` mounton érhető el.
 
 Both stacks share the Docker network `n8n_assistant` so n8n can reach `http://sandbox-api:8080`.
 
