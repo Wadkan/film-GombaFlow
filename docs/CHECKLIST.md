@@ -1,6 +1,13 @@
 
 # Áttekintő terv: YouTube-feltöltés n8n-nel (MVP)
 
+> **Történeti terv:** a metaadat-chat n8n workflow-k kivezetése folyamatban van.
+> A metaadatok egyeztetése és a `meta.md` / `meta.json` létrehozása
+> most közvetlenül chatben történik; lásd
+> [`n8n-workflows/youtube-upload/CHAT_WORKFLOW.md`](../n8n-workflows/youtube-upload/CHAT_WORKFLOW.md).
+> Az alábbi részletek az eredeti n8n MVP tervet dokumentálják, nem aktív
+> végrehajtási listát.
+
 ## Alapelvek
 - **A már futó n8n marad.** Egy helyi n8n fut Rancher Desktopon, az `n8n-docker/` stackből, két workflow-val és egy közös értesítő segéd-workflow-val. Nem készül második compose, és nem kerül `docker-compose.yml` a repó gyökerébe. A stackhez kell egy helyi Docker API: Rancher Desktop **moby** motorral (`docker compose` a `Makefile`-ból). Kubernetes nem kell az MVP-hez.
 - **Webes használat:**

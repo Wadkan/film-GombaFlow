@@ -1,12 +1,17 @@
-# n8n workflow csomagok
+# YouTube metaadatforrások és n8n workflow csomagok
 
-Az n8n-hez tartozó, repóban verziózott workflow-családok egy helyen. Minden almappa egy önálló csomag (saját `workflows/`, `config/`, `Makefile`, dokumentáció).
+Az `youtube-upload/` csomag megőrzi a YouTube-csatornák metaadat-forrásait,
+a `meta.json` formátumot és az n8n import/export segédscripteket. A korábbi
+metaadat-chat n8n workflow-kat kivezetjük; az egyeztetés és fájlkészítés
+közvetlenül chatben történik az [`youtube-upload/CHAT_WORKFLOW.md`](youtube-upload/CHAT_WORKFLOW.md)
+útmutató szerint.
 
-- [`youtube-upload/`](youtube-upload/) — YouTube feltöltés és metaadat-chat (MVP). Részletes terv: [`docs/CHECKLIST.md`](../docs/CHECKLIST.md).
+- [`youtube-upload/`](youtube-upload/) — YouTube csatornaforrások és metaadatok.
 
 ## Docker mount
 
-A `n8n-docker/compose.yaml` minden csomaghoz külön bind mountot adhat. A YouTube csomag a konténerben továbbra is `/data/youtube-upload` alatt látszik (az n8n workflow-k és a `N8N_RESTRICT_FILE_ACCESS_TO` ezt az útvonalat használja).
+A YouTube csomag n8n-beli import/export műveletekhez továbbra is
+`/data/youtube-upload` útvonalon érhető el.
 
 Új csomag esetén: almappa itt, mount a compose-ban, és szükség szerint bővítsd a `N8N_RESTRICT_FILE_ACCESS_TO` listát az `n8n-docker/env.example` / `.env` fájlban.
 

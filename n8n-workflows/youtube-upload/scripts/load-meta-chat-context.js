@@ -30,6 +30,7 @@ if (require.main === module) {
   try {
     const channelKey = process.argv[2] ?? '';
     const folder = process.argv[3] ?? '';
+    const videoRoot = process.argv[4] ?? process.env.VIDEOS_ROOT ?? '/data/videos';
     const loaded = spawnSync(process.execPath, [path.join(__dirname, 'load-channel-context.js'), channelKey], { encoding: 'utf8' });
     if (loaded.status !== 0) throw new Error(loaded.stderr || 'A csatornaforrások betöltése sikertelen.');
     const result = JSON.parse(loaded.stdout);
@@ -37,7 +38,7 @@ if (require.main === module) {
     const channel = registry.channels.find((entry) => entry.key === channelKey && entry.enabled);
     if (!channel) throw new Error('A kiválasztott csatorna nem aktív.');
     result.youtubeChannelId = channel.youtubeChannelId;
-    result.videoMetadata = readVideoMetadata('/data/videos', folder);
+    result.videoMetadata = readVideoMetadata(videoRoot, folder);
     const messagesFile = result.files.find((file) => file.path.endsWith('/chat-messages.json'));
     if (!messagesFile) throw new Error('A csatornához nincs chat-messages.json.');
     result.chatMessages = JSON.parse(messagesFile.content);
