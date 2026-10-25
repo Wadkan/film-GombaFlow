@@ -2,7 +2,6 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const packageRoot = "/data/youtube-upload";
-const commonRoot = "/data/common-skills";
 const channelKey = process.argv[2] ?? "";
 
 function resolveRelativeFile(base, value, description) {
@@ -16,17 +15,6 @@ function resolveRelativeFile(base, value, description) {
   return resolved;
 }
 
-function resolveCommonFile(value) {
-  if (typeof value !== "string" || !path.isAbsolute(value)) {
-    throw new Error("commonSkills entries must be absolute paths.");
-  }
-  const resolved = path.resolve(value);
-  if (!resolved.startsWith(`${commonRoot}${path.sep}`)) {
-    throw new Error("A commonSkills entry is outside /data/common-skills.");
-  }
-  return resolved;
-}
-
 try {
   if (!/^[A-Za-z0-9_-]+$/.test(channelKey)) {
     throw new Error("The selected channel key is invalid.");
@@ -34,8 +22,21 @@ try {
 
   const registryPath = path.join(packageRoot, "config", "channels.json");
   const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
-  if (!Array.isArray(registry.channels) || !Array.isArray(registry.commonSkills)) {
-    throw new Error("channels.json must contain channels and commonSkills lists.");
+  const settingsPath = path.join(packageRoot, "config", "settings.json");
+  const settings = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
+  if (typeof settings.timezone !== "string" || settings.timezone.length === 0) {
+    throw new Error("settings.json must contain a timezone.");
+  }
+  const dateParts = new Intl.DateTimeFormat("en", {
+    timeZone: settings.timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const currentDate = Object.fromEntries(dateParts.map(({ type, value }) => [type, value]));
+  const localDate = `${currentDate.year}-${currentDate.month}-${currentDate.day}`;
+  if (!Array.isArray(registry.channels)) {
+    throw new Error("channels.json must contain a channels list.");
   }
 
   const channel = registry.channels.find((entry) => entry?.key === channelKey && entry.enabled);
@@ -47,10 +48,7 @@ try {
   }
 
   const channelRoot = resolveRelativeFile(packageRoot, channel.sourcePath, "sourcePath");
-  const requestedFiles = [
-    ...channel.sourceFiles.map((file) => resolveRelativeFile(channelRoot, file, "sourceFiles entry")),
-    ...registry.commonSkills.map(resolveCommonFile),
-  ];
+  const requestedFiles = channel.sourceFiles.map((file) => resolveRelativeFile(channelRoot, file, "sourceFiles entry"));
   const uniqueFiles = [...new Set(requestedFiles)];
   const files = [];
   const missingFiles = [];
@@ -71,6 +69,11 @@ try {
       throw error;
     }
   }
+
+  files.unshift({
+    path: "Workflow által átadott aktuális dátum",
+    content: `Aktuális dátum: ${localDate}\nIdőzóna: ${settings.timezone}\nA relatív publikálási dátumot ehhez viszonyítsd. A videó és a videómappa neve nem aktuális dátumforrás.`,
+  });
 
   process.stdout.write(JSON.stringify({ ok: true, channelKey, files, missingFiles }));
 } catch (error) {

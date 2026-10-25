@@ -34,7 +34,6 @@ services:
       - n8n_data:/home/node/.n8n
       - ${VIDEOS_ROOT}:/data/videos
       - ../n8n-workflows/youtube-upload:/data/youtube-upload
-      - ../n8n-workflows/common-skills:/data/common-skills:ro
     restart: unless-stopped
     networks:
       - default

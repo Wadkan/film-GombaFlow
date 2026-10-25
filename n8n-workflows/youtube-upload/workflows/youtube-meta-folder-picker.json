@@ -88,14 +88,28 @@
     },
     {
       "parameters": {
-        "jsCode": "try {\nconst body = $json.body ?? {};\nconst channelKey = typeof body.channelKey === \"string\" ? body.channelKey.trim() : \"\";\nconst videoFolder = typeof body.videoFolder === \"string\" ? body.videoFolder.trim() : \"\";\nconst problems = [];\nif (!channelKey) problems.push(\"Nem érkezett csatornaválasztás.\");\nif (!videoFolder) problems.push(\"Nem érkezett videómappa-választás.\");\nif (videoFolder === \".\" || videoFolder === \"..\" || videoFolder.includes(\"/\") || videoFolder.includes(\"\\\\\")) problems.push(\"A videómappa neve érvénytelen; csak egy közvetlen mappanév adható meg.\");\nconst esc = value => String(value).replace(/[&<>\"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '\"':'&quot;', \"'\":'&#39;'}[c]));\nif (problems.length) {\n  const message = problems.join(\" \");\n  const html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>Hiba a beküldésnél</title><body><h1>Nem sikerült rögzíteni a választást</h1><p>${esc(message)}</p><p>Menj vissza az űrlapra, javítsd a választást, majd küldd be újra.</p></body></html>`;\n  return [{json:{ok:false,error:{stage:\"űrlap beküldésének ellenőrzése\",message},html}}];\n}\nconst webhookUrl = String($('Kiválasztás fogadása').first().json.webhookUrl ?? '');\nconst origin = webhookUrl.split('/webhook/')[0];\nif (!origin) throw new Error('Nem állítható össze a chat webcíme.');\nconst chatUrl = `${origin}/webhook/c50219e8-5cba-4cf9-a77f-9c5908890b4f/chat`;\nconst jsonForScript = value => JSON.stringify(value).replace(/</g, '\\\\u003c').replace(/>/g, '\\\\u003e').replace(/&/g, '\\\\u0026');\nconst metadata = jsonForScript({channelKey,videoFolder});\nconst widgetUrl = jsonForScript(chatUrl);\nconst sessionId = jsonForScript(`youtube-meta-${channelKey}-${videoFolder}-${Date.now()}`);\nconst html = `<!doctype html><html lang=\"hu\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>YouTube metaadat-chat</title>\n<style>\n*{box-sizing:border-box}html,body{height:100%;margin:0;font:16px system-ui,sans-serif;color:#222;background:#f5f6f8}body{min-height:100dvh}.chat{height:100dvh;max-width:900px;margin:0 auto;background:white;display:flex;flex-direction:column}.header{padding:16px 20px;border-bottom:1px solid #ddd}.header h1{font-size:20px;margin:0 0 4px}.header p{margin:0;color:#666;font-size:14px}.messages{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:12px}.message{max-width:min(80%,680px);padding:12px 16px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45}.bot{background:#f0f1f4;align-self:flex-start}.user{background:#2459d3;color:#fff;align-self:flex-end}.composer{border-top:1px solid #ddd;padding:12px 16px;display:flex;gap:10px;align-items:flex-end}.composer textarea{flex:1;resize:vertical;min-height:48px;max-height:180px;padding:12px;border:1px solid #aaa;border-radius:8px;font:inherit}.composer button{padding:12px 20px;border:0;border-radius:8px;background:#2459d3;color:white;font:inherit;cursor:pointer}.composer button:disabled{opacity:.55;cursor:wait}.status{min-height:20px;padding:0 16px 8px;color:#8a1c1c;font-size:14px}@media(max-width:600px){.header{padding:12px}.messages{padding:14px}.composer{padding:10px}.composer button{padding:12px}}\n</style></head><body><main class=\"chat\"><header class=\"header\"><h1>YouTube metaadat-chat</h1><p>DeepSeek Chat · ${String(channelKey).replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]))} / ${String(videoFolder).replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]))}</p></header><section id=\"messages\" class=\"messages\" role=\"log\" aria-live=\"polite\"></section><div id=\"status\" class=\"status\" role=\"alert\"></div><form id=\"composer\" class=\"composer\"><textarea id=\"chat-input\" data-test-id=\"chat-input\" aria-label=\"Üzenet\" placeholder=\"Írd be az üzeneted...\" rows=\"2\" required></textarea><button id=\"send\" type=\"submit\">Küldés</button></form></main>\n<script>\nconst webhookUrl=${widgetUrl},metadata=${metadata},sessionId=${sessionId};\nconst messages=document.querySelector('#messages'),form=document.querySelector('#composer'),input=document.querySelector('#chat-input'),button=document.querySelector('#send'),status=document.querySelector('#status');\nfunction addMessage(kind,text){const el=document.createElement('div');el.className='message '+kind;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight}\naddMessage('bot','Szia! A DeepSeek metaadat-chat elindult. Mit szeretnél megbeszélni?');\nform.addEventListener('submit',async event=>{event.preventDefault();const chatInput=input.value.trim();if(!chatInput)return;addMessage('user',chatInput);input.value='';input.focus();button.disabled=true;status.textContent='Válasz betöltése…';try{const response=await fetch(webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'sendMessage',sessionId,chatInput,metadata})});let data;try{data=await response.json()}catch{throw new Error('A szerver nem olvasható választ küldött (HTTP '+response.status+').')}if(!response.ok||data.type==='error')throw new Error(data.output||data.message||data.error||('HTTP '+response.status));if(typeof data.output!=='string'||!data.output.trim())throw new Error('A workflow üres választ adott.');addMessage('bot',data.output);status.textContent=''}catch(error){const detail=error&&error.message?error.message:String(error);addMessage('bot','Nem sikerült feldolgozni az üzenetet. Részlet: '+detail);status.textContent='Hiba történt; a részletek a chatben láthatók.'}finally{button.disabled=false;input.focus()}});\ninput.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();form.requestSubmit()}});\n</script></body></html>`;\nreturn [{json:{ok:true,channelKey,videoFolder,chatUrl,html}}];\n} catch (error) {\n  const message = error?.message ?? String(error);\n  const safe = String(message).replace(/[&<>\"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '\"':'&quot;', \"'\":'&#39;'}[c]));\n  const html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>Hiba a chat indításakor</title><body><h1>Nem sikerült elindítani a chatet</h1><p role=\"alert\">${safe}</p><p>Töltsd újra az oldalt. Ha a hiba megmarad, küldd el ezt az üzenetet az üzemeltetőnek.</p></body></html>`;\n  return [{json:{ok:false,error:{stage:\"chat indítása\",message},html}}];\n}"
+        "command": "={{ 'node /data/youtube-upload/scripts/load-channel-context.js ' + (($json.body && /^[A-Za-z0-9_-]+$/.test(String($json.body.channelKey ?? ''))) ? String($json.body.channelKey) : 'invalid') }}"
+      },
+      "id": "12e273f1-76d8-41d4-a52c-906f0b3b773a",
+      "name": "Kiválasztott csatorna stílusának betöltése",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        220,
+        280
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "try {\nconst body = $('Kiválasztás fogadása').first().json.body ?? {};\nconst channelKey = typeof body.channelKey === \"string\" ? body.channelKey.trim() : \"\";\nconst videoFolder = typeof body.videoFolder === \"string\" ? body.videoFolder.trim() : \"\";\nconst problems = [];\nif (!channelKey) problems.push(\"Nem érkezett csatornaválasztás.\");\nif (!videoFolder) problems.push(\"Nem érkezett videómappa-választás.\");\nif (videoFolder === \".\" || videoFolder === \"..\" || videoFolder.includes(\"/\") || videoFolder.includes(\"\\\\\")) problems.push(\"A videómappa neve érvénytelen; csak egy közvetlen mappanév adható meg.\");\nconst esc = value => String(value).replace(/[&<>\"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '\"':'&quot;', \"'\":'&#39;'}[c]));\nif (problems.length) {\n  const message = problems.join(\" \");\n  const html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>Hiba a beküldésnél</title><body><h1>Nem sikerült rögzíteni a választást</h1><p>${esc(message)}</p><p>Menj vissza az űrlapra, javítsd a választást, majd küldd be újra.</p></body></html>`;\n  return [{json:{ok:false,error:{stage:\"űrlap beküldésének ellenőrzése\",message},html}}];\n}\nif ($json.error) throw new Error($json.error.message ?? String($json.error));\nconst sourceResult = JSON.parse($json.stdout ?? '{}');\nif (!sourceResult.ok || sourceResult.missingFiles?.length) throw new Error(sourceResult.error?.message ?? 'A csatornaforrások nem tölthetők be.');\nconst styleFile = sourceResult.files.find(file => file.path.endsWith('/style.md'));\nif (!styleFile) throw new Error('A kiválasztott csatornához nem található style.md.');\nconst openingMatch = styleFile.content.match(/^### Első kérdés\\s*\\r?\\n([\\s\\S]*?)(?=^###? |^## |\\s*$)/m);\nconst openingMessage = openingMatch?.[1].trim().split(/\\r?\\n/)[0];\nif (!openingMessage) throw new Error('A style.md nem tartalmaz kitöltött „Nyitó kérdés” részt.');\nconst webhookUrl = String($('Kiválasztás fogadása').first().json.webhookUrl ?? '');\nconst origin = webhookUrl.split('/webhook/')[0];\nif (!origin) throw new Error('Nem állítható össze a chat webcíme.');\nconst chatUrl = `${origin}/webhook/c50219e8-5cba-4cf9-a77f-9c5908890b4f/chat`;\nconst jsonForScript = value => JSON.stringify(value).replace(/</g, '\\\\u003c').replace(/>/g, '\\\\u003e').replace(/&/g, '\\\\u0026');\nconst metadata = jsonForScript({channelKey,videoFolder});\nconst openingMessageJson = jsonForScript(openingMessage);\nconst widgetUrl = jsonForScript(chatUrl);\nconst sessionId = jsonForScript(`youtube-meta-${channelKey}-${videoFolder}-${Date.now()}`);\nconst html = `<!doctype html><html lang=\"hu\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>YouTube metaadat-chat</title>\n<style>\n*{box-sizing:border-box}html,body{height:100%;margin:0;font:16px system-ui,sans-serif;color:#222;background:#f5f6f8}body{min-height:100dvh}.chat{height:100dvh;max-width:900px;margin:0 auto;background:white;display:flex;flex-direction:column}.header{padding:16px 20px;border-bottom:1px solid #ddd}.header h1{font-size:20px;margin:0 0 4px}.header p{margin:0;color:#666;font-size:14px}.messages{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:12px}.message{max-width:min(80%,680px);padding:12px 16px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45}.bot{background:#f0f1f4;align-self:flex-start}.user{background:#2459d3;color:#fff;align-self:flex-end}.composer{border-top:1px solid #ddd;padding:12px 16px;display:flex;gap:10px;align-items:flex-end}.composer textarea{flex:1;resize:vertical;min-height:48px;max-height:180px;padding:12px;border:1px solid #aaa;border-radius:8px;font:inherit}.composer button{padding:12px 20px;border:0;border-radius:8px;background:#2459d3;color:white;font:inherit;cursor:pointer}.composer button:disabled{opacity:.55;cursor:wait}.status{min-height:20px;padding:0 16px 8px;color:#8a1c1c;font-size:14px}@media(max-width:600px){.header{padding:12px}.messages{padding:14px}.composer{padding:10px}.composer button{padding:12px}}\n</style></head><body><main class=\"chat\"><header class=\"header\"><h1>YouTube metaadat-chat</h1><p>DeepSeek Chat · ${String(channelKey).replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]))} / ${String(videoFolder).replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]))}</p></header><section id=\"messages\" class=\"messages\" role=\"log\" aria-live=\"polite\"></section><div id=\"status\" class=\"status\" role=\"alert\"></div><form id=\"composer\" class=\"composer\"><textarea id=\"chat-input\" data-test-id=\"chat-input\" aria-label=\"Üzenet\" placeholder=\"Írd be az üzeneted...\" rows=\"2\" required></textarea><button id=\"send\" type=\"submit\">Küldés</button></form></main>\n<script>\nconst webhookUrl=${widgetUrl},metadata=${metadata},sessionId=${sessionId};\nconst messages=document.querySelector('#messages'),form=document.querySelector('#composer'),input=document.querySelector('#chat-input'),button=document.querySelector('#send'),status=document.querySelector('#status');\nfunction addMessage(kind,text){const el=document.createElement('div');el.className='message '+kind;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight}\naddMessage('bot',${openingMessageJson});\nform.addEventListener('submit',async event=>{event.preventDefault();const chatInput=input.value.trim();if(!chatInput)return;addMessage('user',chatInput);input.value='';input.focus();button.disabled=true;status.textContent='Válasz betöltése…';try{const response=await fetch(webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'sendMessage',sessionId,chatInput,metadata})});let data;try{data=await response.json()}catch{throw new Error('A szerver nem olvasható választ küldött (HTTP '+response.status+').')}if(!response.ok||data.type==='error')throw new Error(data.output||data.message||data.error||('HTTP '+response.status));if(typeof data.output!=='string'||!data.output.trim())throw new Error('A workflow üres választ adott.');addMessage('bot',data.output);status.textContent=''}catch(error){addMessage('bot','A chat feldolgozása nem sikerült. Próbáld újra később.');status.textContent='Nem érkezett válasz.'}finally{button.disabled=false;input.focus()}});\ninput.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();form.requestSubmit()}});\n</script></body></html>`;\nreturn [{json:{ok:true,channelKey,videoFolder,chatUrl,html}}];\n} catch (error) {\n  const message = 'Nem sikerült előkészíteni a chatet. Ellenőrizd a kiválasztást, majd próbáld újra.';\n  const html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>Hiba a chat indításakor</title><body><h1>Nem sikerült elindítani a chatet</h1><p role=\"alert\">${message}</p><p>Próbáld újra később.</p></body></html>`;\n  return [{json:{ok:false,error:{stage:\"chat inicializálása\"},html}}];\n}"
       },
       "id": "5278aa3e-fc82-4bab-9f40-9e43db9c7818",
       "name": "Kiválasztott értékek",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        220,
+        440,
         280
       ]
     },
@@ -127,7 +141,6 @@
       "parameters": {
         "public": true,
         "mode": "webhook",
-        "initialMessages": "Szia! A DeepSeek metaadat-chat elindult. Mit szeretnél megbeszélni?",
         "options": {
           "allowedOrigins": "*",
           "loadPreviousSession": "notSupported",
@@ -149,7 +162,7 @@
         "promptType": "auto",
         "text": "={{ $json.chatInput }}",
         "options": {
-          "systemMessage": "={{ 'A kiválasztott csatorna: ' + $json.channelKey + '. A kiválasztott videómappa: ' + $json.videoFolder + '. Válaszolj magyarul, és a betöltött forrásfájlokat vedd alapul.' + '\\n\\n' + $json.sourceContext }}"
+          "systemMessage": "={{ $json.sourceContext }}"
         }
       },
       "id": "d6110f59-6f26-44ca-96e3-3ee7e59022ae",
@@ -213,7 +226,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const trigger = $('Metaadat-chat').first().json;\nconst metadata = trigger.metadata ?? {};\nconst channelKey = String(metadata.channelKey ?? '');\nconst videoFolder = String(metadata.videoFolder ?? '');\ntry {\n  if ($json.error) throw new Error($json.error.message ?? String($json.error));\n  const result = JSON.parse($json.stdout ?? '{}');\n  if (!result.ok || !Array.isArray(result.files)) throw new Error(result.error?.message ?? 'A csatorna-forrásfájlok betöltése nem sikerült.');\n  if (!channelKey || !videoFolder) throw new Error('A chatből hiányzik a kiválasztott csatorna vagy videómappa.');\n  if (channelKey !== result.channelKey) throw new Error('A betöltött csatorna nem egyezik a chat választásával.');\n  if (result.missingFiles?.length) throw new Error(`Hiányzó registry fájlok: ${result.missingFiles.join(', ')}`);\n  const loadedFiles = result.files.map(file => `## ${file.path}\\n${file.content}`).join('\\n\\n');\n  const sourceContext = `Betöltött fájlok (${result.files.length}):\\n\\n${loadedFiles}`;\n  return [{json:{ok:true,chatInput:trigger.chatInput,sessionId:trigger.sessionId,channelKey,videoFolder,sourceContext}}];\n} catch (error) {\n  const message = error?.message ?? String(error);\n  return [{json:{ok:false,output:`Nem sikerült betölteni a(z) „${channelKey || 'kiválasztott'}” csatorna registry szerinti forrásfájljait, ezért az Agent nem indult el. Részlet: ${message}`}}];\n}"
+        "jsCode": "const trigger = $('Metaadat-chat').first().json;\nconst metadata = trigger.metadata ?? {};\nconst channelKey = String(metadata.channelKey ?? '');\nconst videoFolder = String(metadata.videoFolder ?? '');\ntry {\n  if ($json.error) throw new Error($json.error.message ?? String($json.error));\n  const result = JSON.parse($json.stdout ?? '{}');\n  if (!result.ok || !Array.isArray(result.files)) throw new Error(result.error?.message ?? 'A csatorna-forrásfájlok betöltése nem sikerült.');\n  if (!channelKey || !videoFolder) throw new Error('A chatből hiányzik a kiválasztott csatorna vagy videómappa.');\n  if (channelKey !== result.channelKey) throw new Error('A betöltött csatorna nem egyezik a chat választásával.');\n  if (result.missingFiles?.length) throw new Error(`Hiányzó registry fájlok: ${result.missingFiles.join(', ')}`);\n  const loadedFiles = result.files.map(file => `## ${file.path}\\n${file.content}`).join('\\n\\n');\n  const sourceContext = `Kiválasztott csatornakulcs: ${channelKey}\\nKiválasztott videómappa: ${videoFolder}\\n\\nBetöltött fájlok (${result.files.length}):\\n\\n${loadedFiles}`;\n  return [{json:{ok:true,chatInput:trigger.chatInput,sessionId:trigger.sessionId,channelKey,videoFolder,sourceContext}}];\n} catch (error) {\n  return [{json:{ok:false,output:'A csatorna forrásai nem tölthetők be, ezért a chat jelenleg nem tud válaszolni.',error:{stage:'channel context loading',detail:error?.message ?? String(error)}}}];\n}"
       },
       "id": "f53cc59a-e7f4-42ab-b050-4e78d76f52a4",
       "name": "Forráskontextus előkészítése",
@@ -271,7 +284,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const error = $json.error;\nif (error) {\n  const detail = error.message ?? error.description ?? JSON.stringify(error);\n  return [{json:{output:`A metaadat-agent hibát adott: ${detail}`}}];\n}\nconst answer = $json.output ?? $json.text;\nif (typeof answer !== 'string' || !answer.trim()) return [{json:{output:'A metaadat-agent üres választ adott. Próbáld újra, vagy küldd el ezt a hibaüzenetet az üzemeltetőnek.'}}];\nreturn [{json:{output:answer}}];"
+        "jsCode": "const error = $json.error;\nif (error) return [{json:{output:'A chat feldolgozása nem sikerült. Próbáld újra később.'}}];\nconst answer = $json.output ?? $json.text;\nif (typeof answer !== 'string' || !answer.trim()) return [{json:{output:'A chat nem adott választ. Próbáld újra később.'}}];\nreturn [{json:{output:answer}}];"
       },
       "id": "7e8ea686-0be8-42f0-8faf-14e6d710c0cf",
       "name": "Chat-válasz ellenőrzése",
@@ -280,6 +293,76 @@
       "position": [
         1160,
         540
+      ]
+    },
+    {
+      "parameters": {
+        "description": "Írj egy szöveges fájlt a kiválasztott videómappa közvetlen gyökerébe. A videoFolder rögzített bemenet; te csak a fileName és content értéket adod meg. Almappába vagy másik útvonalra írás nem engedélyezett.",
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "39baa951-fdba-4d7c-870c-ac22b056704c",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "videoFolder": "={{ $('Metaadat-chat').first().json.metadata.videoFolder }}",
+            "fileName": "={{ $fromAI('fileName', 'Egyszerű fájlnév almappa és útvonal nélkül.') }}",
+            "content": "={{ $fromAI('content', 'A fájl teljes szöveges tartalma.') }}",
+            "userMessage": "={{ $('Metaadat-chat').first().json.chatInput }}"
+          },
+          "schema": [
+            {
+              "id": "videoFolder",
+              "displayName": "videoFolder",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fileName",
+              "displayName": "fileName",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content",
+              "displayName": "content",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "userMessage",
+              "displayName": "userMessage",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        }
+      },
+      "id": "320d6f67-bfc4-4972-9d45-9269816a9017",
+      "name": "Kiválasztott videómappa fájlírása",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        760
       ]
     }
   ],
@@ -321,7 +404,7 @@
       "main": [
         [
           {
-            "node": "Kiválasztott értékek",
+            "node": "Kiválasztott csatorna stílusának betöltése",
             "type": "main",
             "index": 0
           }
@@ -432,9 +515,31 @@
       "main": [
         []
       ]
+    },
+    "Kiválasztott videómappa fájlírása": {
+      "ai_tool": [
+        [
+          {
+            "node": "Metaadat Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kiválasztott csatorna stílusának betöltése": {
+      "main": [
+        [
+          {
+            "node": "Kiválasztott értékek",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },

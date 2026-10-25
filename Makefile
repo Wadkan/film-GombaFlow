@@ -1,4 +1,4 @@
-.PHONY: start-n8n stop-n8n
+.PHONY: start-n8n stop-n8n test
 
 .DEFAULT_GOAL := start-n8n
 
@@ -7,3 +7,7 @@ start-n8n:
 
 stop-n8n:
 	@$(MAKE) -C n8n-docker stop-n8n
+
+test:
+	@$(MAKE) -C n8n-workflows/youtube-upload flow-test
+	@$(MAKE) -C n8n-workflows/youtube-upload file-write-test

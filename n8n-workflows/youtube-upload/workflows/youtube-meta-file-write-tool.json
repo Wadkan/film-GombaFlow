@@ -1,0 +1,72 @@
+{
+  "id": "39baa951-fdba-4d7c-870c-ac22b056704c",
+  "name": "YouTube meta - kiválasztott videómappa fájlírás eszköz",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "workflowInputs",
+        "workflowInputs": {
+          "values": [
+            { "name": "videoFolder", "type": "string" },
+            { "name": "fileName", "type": "string" },
+            { "name": "content", "type": "string" },
+            { "name": "userMessage", "type": "string" }
+          ]
+        }
+      },
+      "id": "1024280c-3c98-4d57-8367-02c17c70e7aa",
+      "name": "AI eszköz bemenete",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.3,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Biztonsági kapu: az AI csak egy fájlnevet és tartalmat kérhet; a videómappát a fő workflow adja át.\n// A Read/Write Files node engedélye a teljes /data/videos gyökérre szól, ezért itt elutasítjuk\n// az abszolút útvonalakat, almappákat és útvonalbejárást, mielőtt a fájlíró node lefutna.\nconst input = $input.first().json;\nconst videoFolder = String(input.videoFolder ?? '');\nconst fileName = String(input.fileName ?? '');\nconst content = input.content;\nconst userMessage = String(input.userMessage ?? '').trim().toLocaleLowerCase('hu-HU');\nif (fileName === 'meta.json' && userMessage !== 'kész' && userMessage !== 'kesz') {\n  throw new Error('A meta.json csak külön, új jóváhagyó üzenet után írható. Az MD-fázisban kizárólag meta.md menthető; várd meg, hogy a user az MD átnézése után pontosan azt írja: Kész.');\n}\nif (!/^[A-Za-z0-9][A-Za-z0-9 _.-]{0,119}$/.test(videoFolder) || videoFolder === '.' || videoFolder === '..' || videoFolder.includes('..')) {\n  throw new Error('A kiválasztott videómappa neve érvénytelen.');\n}\nif (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$/.test(fileName) || fileName.includes('..')) {\n  throw new Error('Érvénytelen fájlútvonal: csak egyszerű fájlnév engedélyezett a kiválasztott videómappán belül; almappa és külső útvonal nem írható.');\n}\nif (typeof content !== 'string') throw new Error('A fájl tartalmának szövegnek kell lennie.');\nconst targetPath = `/data/videos/${videoFolder}/${fileName}`;\nreturn [{ json: { videoFolder, fileName, content, targetPath } }];"
+      },
+      "id": "cd6feaca-8a37-4c88-8d75-82f1c91b42f0",
+      "name": "Útvonal ellenőrzése",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "content",
+        "binaryPropertyName": "data",
+        "options": { "fileName": "={{ $json.fileName }}" }
+      },
+      "id": "f993ee03-f4df-4603-a0dc-cbd7cb0a5d27",
+      "name": "Szövegfájl előkészítése",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [480, 0]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $('Útvonal ellenőrzése').first().json.targetPath }}",
+        "dataPropertyName": "data",
+        "options": { "append": false }
+      },
+      "id": "a8592153-d7fd-49c9-9336-5d83aa293363",
+      "name": "Read/Write Files - fájl mentése",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [720, 0]
+    }
+  ],
+  "connections": {
+    "AI eszköz bemenete": { "main": [[{ "node": "Útvonal ellenőrzése", "type": "main", "index": 0 }]] },
+    "Útvonal ellenőrzése": { "main": [[{ "node": "Szövegfájl előkészítése", "type": "main", "index": 0 }]] },
+    "Szövegfájl előkészítése": { "main": [[{ "node": "Read/Write Files - fájl mentése", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "versionId": "92ddbb50-dafa-4e0e-8ea4-4b7787edb8ed",
+  "meta": { "templateCredsSetupCompleted": true },
+  "tags": []
+}

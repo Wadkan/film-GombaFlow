@@ -12,3 +12,5 @@ approval.
 ## Rules
 
 <!-- Add approved project-specific rules below. -->
+
+- Minden automatizált tesztet egyetlen, gyökérszintű `make test` target fogjon össze; új tesztek kerüljenek be ebbe a futtatásba.

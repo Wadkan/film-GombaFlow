@@ -5,7 +5,7 @@ repo_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 compose_file="$repo_root/n8n-docker/compose.yaml"
 workflow_file="$repo_root/n8n-workflows/youtube-upload/workflows/youtube-meta-folder-picker.json"
 chat_webhook_id="$(node -e 'const w=require(process.argv[1]); process.stdout.write(w.nodes.find(n=>n.name==="Metaadat-chat").webhookId)' "$workflow_file")"
-expected_paths='["/data/youtube-upload/channels/FreezWithMe/style.md","/data/youtube-upload/channels/FreezWithMe/rules.md","/data/youtube-upload/channels/FreezWithMe/gear-list.md","/data/youtube-upload/channels/FreezWithMe/FreezWithMe-playlist.md","/data/common-skills/walk.md"]'
+expected_paths='["/data/youtube-upload/channels/FreezWithMe/style.md","/data/youtube-upload/channels/FreezWithMe/rules.md","/data/youtube-upload/channels/FreezWithMe/gear-list.md","/data/youtube-upload/channels/FreezWithMe/FreezWithMe-playlist.md"]'
 
 context="$(docker compose -f "$compose_file" exec -T n8n node /data/youtube-upload/scripts/load-channel-context.js freezwithme)"
 CONTEXT_JSON="$context" EXPECTED_PATHS="$expected_paths" node <<'NODE'
