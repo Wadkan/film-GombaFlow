@@ -1,6 +1,3 @@
 {
-  "videosContainerPath": "/data/videos",
-  "telegramChatId": "5208745417",
-  "timezone": "Europe/Vienna",
-  "defaultPublishTime": "18:00"
+  "timezone": "Europe/Vienna"
 }

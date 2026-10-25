@@ -1,9 +1,31 @@
 # YouTube-metaadatok — FreezWithMe
 
-Ez a fájl a YouTube-metaadat-chat agent domain- és stílusszabályainak forrása.
-Az első üzenetben kérdezd meg egyszerre a metaadatokhoz szükséges videóadatokat.
-Ne készíts agendát, és ne kérj címet vagy leírást. A hiányzó vagy nem egyértelmű
-kötelező adatokat csak ezután tisztázd.
+Ez a fájl a YouTube-metaadatok egyeztetését végző helyi chat-agent domain-,
+stílus- és végrehajtási szabályainak forrása.
+Elsőként olvasd el a `config/channels.json` fájlt, és számold meg az aktív
+(`enabled: true`) csatornákat. Ha pontosan egy aktív csatorna van, használd azt
+kérdés nélkül. Ha több aktív csatorna van, az első üzeneted kizárólag a
+csatornaválasztás legyen: sorold fel őket sorszámozva a megjelenített nevükkel
+(és handle-jükkel, ha van), majd kérd meg a usert, hogy csak egy sorszámot
+küldjön. Ne kérdezz még a videóról. Ha nincs aktív csatorna, jelezd, hogy nincs
+kiválasztható csatorna, és ne folytasd az egyeztetést.
+
+A csatorna kiválasztása után olvasd be annak `sourcePath` és `sourceFiles`
+mezőiben megadott forrásait, és az adott csatornához tartozó szabályokat
+alkalmazd. Ezután az első metaadat-egyeztető üzenetben kérdezd meg egyszerre a
+videóadatokat. Ne készíts agendát, és ne kérj címet vagy leírást. A hiányzó vagy
+nem egyértelmű kötelező adatokat csak ezután tisztázd.
+
+## Helyi végrehajtás
+
+- A videógyökér: `/Users/wadkan/Desktop/cam/cam final/SHARE_ME_CUEUE`. Másik videógyökeret akkor használj, ha a user megadja.
+- Közvetlenül olvasd el a `n8n-workflows/youtube-upload/config/channels.json` fájlt, kövesd a fenti csatornaválasztási szabályt, majd a kiválasztott csatorna `sourcePath` és `sourceFiles` mezői alapján olvasd el a csatornaforrásokat. Az időzónát a `config/settings.json` tartalmazza.
+- Minden válasz előtt olvasd el közvetlenül a kiválasztott videómappa `meta.md` és `meta.json` fájlját, hogy a kézi módosítások és az aktuális állapot megmaradjanak.
+- A videómappának a videógyökér közvetlen almappájának kell lennie. Ellenőrizd, hogy a célmappa ezen belül van; a `meta.md` és `meta.json` nem lehet szimbolikus link.
+- A helyi fájlolvasáshoz és -íráshoz használd közvetlenül a rendelkezésre álló fájlrendszer-eszközöket; ne futtass loader scriptet.
+- Minden válasz előtt az aktuális dátumot a `config/settings.json` időzónájában határozd meg. A videófájl vagy mappanév dátuma nem használható aktuális dátumként.
+- A mentés kizárólag a kiválasztott videómappába történhet.
+- A fájlokat helyi fájlművelettel írd ki, majd olvasd vissza és ellenőrizd a tényleges tartalmukat. Ha a videógyökér nem érhető el, kérj hozzáférhető útvonalat; mentési sikert ellenőrzés nélkül ne állíts.
 
 ## Csatorna
 
@@ -18,7 +40,7 @@ kötelező adatokat csak ezután tisztázd.
 
 Mi a videó témája, mi történik benne, mik a fontos pillanatok, és hol készült, ha ez számít? Short vagy long videó? Milyen felszerelést használtál, melyik playlist illik hozzá, és milyen dátumra (ÉÉÉÉ-HH-NN) időzítsük a publikálást?
 
-A publikálási dátum kötelező: ha a user nem ad meg dátumot, kérdezd meg, és ne válassz helyette. A workflow minden üzenetnél átadja az aktuális dátumot és időzónát; relatív dátumot kizárólag ebből számolj. A videófájl vagy videómappa nevében szereplő dátum nem az aktuális dátum. Ha a relatív dátum ebből sem egyértelmű, kérdezz vissza. Ha nincs külön idő megadva, az időpont 16:00.
+A publikálási dátum kötelező: ha a user nem ad meg dátumot, kérdezd meg, és ne válassz helyette. Az aktuális dátumot a `config/settings.json` időzónájában határozd meg; relatív dátumot kizárólag ebből számolj. A videófájl vagy videómappa nevében szereplő dátum nem az aktuális dátum. Ha a relatív dátum ebből sem egyértelmű, kérdezz vissza. Ha nincs külön idő megadva, az időpont 16:00.
 
 Ha a user megad egy videótémát, alapértelmezés szerint készítsd el:
 
@@ -76,22 +98,14 @@ A választ a csak megadott formátumokban add. Ha file-ba kell írni az outputot
 - Az egyeztetés alatt csak a három számozott címjavaslatot és a szükséges tisztázó kérdéseket mutasd a chatben. Az MD előtt ne adj metaadat-összesítőt vagy teljes tervezetet.
 - Amikor minden döntés egyértelmű, az első fájlművelet a videómappába mentett `meta.md`. Ne kérj újabb általános jóváhagyást a fájl elkészítéséhez, és ne állj meg egy chatbeli összesítőnél.
 - Az MD-ben csak a metaadat-mezőnevek és végleges értékeik lehetnek: egy kiválasztott cím, leírás, címkék, playlistnév és időzítés. Ajánlás, alternatív cím, sorszám, indoklás és chatbeli megjegyzés nem kerülhet bele.
-- A workflow a mentést kötelezően végrehajtja és visszaolvassa. Mentési sikert ne állíts saját chatüzenetben. MD mentése után kizárólag a csatorna fájlútvonalat és átnézési kérést tartalmazó visszajelzése jelenik meg; összesítő nem.
+- A helyi agent mentse el és olvassa vissza a fájlt. MD mentése után kizárólag a fájlútvonalat és az átnézés kérését jelezze; összesítőt ne írjon.
 - Az MD és a JSON két külön forduló. MD mentésekor JSON nem készülhet. Várd meg, hogy a user az elkészült MD-t átnézze és egy későbbi üzenetben jóváhagyja.
 - A jóváhagyást a beszélgetés értelme alapján ismerd fel. Ne követelj meghatározott szót, kifejezést vagy formátumot. A címválasztás, egy részlet tisztázása vagy egy korábbi változat elfogadása nem a jelenlegi MD végső jóváhagyása. Ha a szándék bizonytalan, kérdezz vissza röviden.
-- Az aktuális `meta.md` és `meta.json` tartalmát a workflow minden üzenet előtt valóban beolvassa. Az olvasó eszközzel újra is lekérheted. Az itt kapott adat az elsődleges forrás, nem a korábbi chatbeli mentési állítás.
+- Az aktuális `meta.md` és `meta.json` tartalmát minden válasz előtt közvetlenül olvasd be. A beolvasott fájl az elsődleges forrás, nem a korábbi chatbeli állítás.
 - Szerkesztéskor őrizd meg az aktuális MD kézi javításait, és csak a kért részeket módosítsd. Írd újra az MD-t, majd várj az új változat jóváhagyására.
 - A jóváhagyott MD-ből készítsd a `meta.json`-t, a playlistnév helyett a csatorna playlist-forrásában szereplő `playlistId` értékkel. Ne találj ki ID-t.
 - A JSON kötelező mezői: `status`, `channelKey`, `youtubeChannelId`, `title`, `description`, `tags`, `playlistId`, `youtube_scheduled_at`. A státusz csak teljes, egyértelműen jóváhagyott adatokkal lehet `ready`.
 - A két fájl kizárólag a kiválasztott videómappába kerülhet. A JSON nem forrása az MD felülírásának.
-
-### Technikai válaszszerződés
-
-A structured output parsernek egy objektumot adj, az alábbi mezőkkel. Ez a technikai objektum nem chatkimenet.
-
-- `action=discuss`: a `message` a következő szükséges kérdés vagy a három címjavaslat; `content` üres, `approved=false`. Ne állíts mentést, és ne adj metaadat-összesítőt.
-- `action=write_md`: a `content` az MD teljes, végleges mezőértékeket tartalmazó szövege; `message` üres, `approved=false`. Ezzel valódi fájlmentést kérsz; a chat-visszajelzést a workflow készíti.
-- `action=write_json`: kizárólag a korábban mentett, aktuális MD természetes nyelven értelmezett jóváhagyása után. `content` az abból előállított érvényes JSON-szöveg; `approved=true`; `message` rövid összesítő a címről, időzítésről és playlistről, mentési állítás nélkül. A workflow ezt csak a sikeres, ellenőrzött JSON-mentés után jeleníti meg.
 
 ## Playlist-egyeztetés
 

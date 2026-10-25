@@ -1,6 +1,6 @@
 .PHONY: export import
 
-REPO_ROOT := $(abspath ../..)
+REPO_ROOT := $(abspath ..)
 N8N_COMPOSE := $(REPO_ROOT)/n8n-docker/compose.yaml
 COMPOSE := docker compose -f $(N8N_COMPOSE)
 

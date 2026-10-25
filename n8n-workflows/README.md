@@ -1,27 +1,27 @@
-# YouTube metaadatforrások és n8n workflow csomagok
+# n8n workflow-k
 
-Az `youtube-upload/` csomag megőrzi a YouTube-csatornák metaadat-forrásait,
-a `meta.json` formátumot és az n8n import/export segédscripteket. A korábbi
-metaadat-chat n8n workflow-kat kivezetjük; az egyeztetés és fájlkészítés
-közvetlenül chatben történik az [`youtube-upload/CHAT_WORKFLOW.md`](youtube-upload/CHAT_WORKFLOW.md)
-útmutató szerint.
+Az általános n8n import/export eszközök és workflow exportok ebben a
+könyvtárban vannak.
 
-- [`youtube-upload/`](youtube-upload/) — YouTube csatornaforrások és metaadatok.
+## Elrendezés
+
+- `Makefile` — általános `export` és `import` célok.
+- `config/` — n8n URL/OAuth konfiguráció.
+- `scripts/` — általános n8n workflow import/export scriptek.
+- `workflows/` — exportált n8n workflow JSON-ok.
 
 ## Docker mount
 
-A YouTube csomag n8n-beli import/export műveletekhez továbbra is
-`/data/youtube-upload` útvonalon érhető el.
-
-Új csomag esetén: almappa itt, mount a compose-ban, és szükség szerint bővítsd a `N8N_RESTRICT_FILE_ACCESS_TO` listát az `n8n-docker/env.example` / `.env` fájlban.
+Az `n8n-docker/compose.yaml` a teljes könyvtárat `/data/n8n-workflows` útvonalon
+mountolja.
 
 ## Export / import
 
-Csomagonként, a csomag gyökeréből:
+Repo gyökérből:
 
 ```sh
-make -C n8n-workflows/youtube-upload export
-make -C n8n-workflows/youtube-upload import
+make -C n8n-workflows export
+make -C n8n-workflows import
 ```
 
 Az n8n stacket a gyökér `Makefile`-lal indítod (`make start-n8n`).
