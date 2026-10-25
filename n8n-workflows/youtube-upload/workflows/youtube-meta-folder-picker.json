@@ -87,7 +87,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const body = $json.body ?? {};\nconst channelKey = typeof body.channelKey === \"string\" ? body.channelKey.trim() : \"\";\nconst videoFolder = typeof body.videoFolder === \"string\" ? body.videoFolder.trim() : \"\";\nconst problems = [];\nif (!channelKey) problems.push(\"Nem érkezett csatornaválasztás.\");\nif (!videoFolder) problems.push(\"Nem érkezett videómappa-választás.\");\nif (videoFolder === \".\" || videoFolder === \"..\" || videoFolder.includes(\"/\") || videoFolder.includes(\"\\\\\")) problems.push(\"A videómappa neve érvénytelen; csak egy közvetlen mappanév adható meg.\");\nconst esc = value => String(value).replace(/[&<>\"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '\"':'&quot;', \"'\":'&#39;'}[c]));\nif (problems.length) {\n  const message = problems.join(\" \");\n  const html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>Hiba a beküldésnél</title><body><h1>Nem sikerült rögzíteni a választást</h1><p>${esc(message)}</p><p>Menj vissza az űrlapra, javítsd a választást, majd küldd be újra.</p></body></html>`;\n  return [{json:{ok:false,error:{stage:\"űrlap beküldésének ellenőrzése\",message},html}}];\n}\nconst message = `A választás beérkezett: ${channelKey} csatorna, ${videoFolder} videómappa.`;\nconst html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>Választás rögzítve</title><body><h1>Választás rögzítve</h1><p>${esc(message)}</p></body></html>`;\nreturn [{json:{ok:true,channelKey,videoFolder,message,html}}];"
+        "jsCode": "const body = $json.body ?? {};\nconst channelKey = typeof body.channelKey === \"string\" ? body.channelKey.trim() : \"\";\nconst videoFolder = typeof body.videoFolder === \"string\" ? body.videoFolder.trim() : \"\";\nconst problems = [];\nif (!channelKey) problems.push(\"Nem érkezett csatornaválasztás.\");\nif (!videoFolder) problems.push(\"Nem érkezett videómappa-választás.\");\nif (videoFolder === \".\" || videoFolder === \"..\" || videoFolder.includes(\"/\") || videoFolder.includes(\"\\\\\")) problems.push(\"A videómappa neve érvénytelen; csak egy közvetlen mappanév adható meg.\");\nconst esc = value => String(value).replace(/[&<>\"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '\"':'&quot;', \"'\":'&#39;'}[c]));\nif (problems.length) {\n  const message = problems.join(\" \");\n  const html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>Hiba a beküldésnél</title><body><h1>Nem sikerült rögzíteni a választást</h1><p>${esc(message)}</p><p>Menj vissza az űrlapra, javítsd a választást, majd küldd be újra.</p></body></html>`;\n  return [{json:{ok:false,error:{stage:\"űrlap beküldésének ellenőrzése\",message},html}}];\n}\nconst sessionId = `${channelKey}:${videoFolder}`;\nconst webhookUrl = String($('Kiválasztás fogadása').first().json.webhookUrl ?? '');\nconst origin = webhookUrl.split('/webhook/')[0];\nif (!origin) throw new Error('Nem állítható össze a chat webcíme.');\nconst chatUrl = `${origin}/webhook/c50219e8-5cba-4cf9-a77f-9c5908890b4f/chat#sessionId=${encodeURIComponent(sessionId)}`;\nconst message = `A chat indul: ${channelKey} csatorna, ${videoFolder} videómappa.`;\nconst html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>YouTube metaadat-chat</title><body><h1>Indul a metaadat-chat</h1><p>${esc(message)}</p><p><a href=\"${esc(chatUrl)}\">Ha nem nyílik meg automatikusan, kattints ide.</a></p><script>window.location.replace(${JSON.stringify(chatUrl)});</script></body></html>`;\nreturn [{json:{ok:true,channelKey,videoFolder,sessionId,chatUrl,message,html}}];"
       },
       "id": "5278aa3e-fc82-4bab-9f40-9e43db9c7818",
       "name": "Kiválasztott értékek",
@@ -120,6 +120,81 @@
       "position": [
         440,
         280
+      ]
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "hostedChat",
+        "initialMessages": "Szia! A DeepSeek metaadat-chat elindult. Mit szeretnél megbeszélni?",
+        "options": {
+          "loadPreviousSession": "memory",
+          "responseMode": "streaming",
+          "title": "YouTube metaadat-chat",
+          "subtitle": "DeepSeek Chat",
+          "inputPlaceholder": "Írd be az üzeneted..."
+        }
+      },
+      "id": "9caf6ac4-a42e-4658-a2cc-37312d5f19b5",
+      "name": "Metaadat-chat",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        680,
+        520
+      ],
+      "webhookId": "c50219e8-5cba-4cf9-a77f-9c5908890b4f"
+    },
+    {
+      "parameters": {
+        "promptType": "auto",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "={{ 'A kiválasztott csatorna és videómappa session azonosítója: ' + $json.sessionId + '. Válaszolj magyarul.' }}"
+        }
+      },
+      "id": "d6110f59-6f26-44ca-96e3-3ee7e59022ae",
+      "name": "Metaadat Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        940,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-chat",
+        "options": {}
+      },
+      "id": "24b75839-38de-425e-afdf-65f94698c7f3",
+      "name": "DeepSeek Chat",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        980,
+        740
+      ],
+      "credentials": {
+        "openRouterApi": {
+          "id": "1af01983-c079-4f97-b988-f71280b6a461",
+          "name": "OpenRouter workflow"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "fromInput",
+        "sessionKey": "={{ $json.sessionId }}",
+        "contextWindowLength": 5
+      },
+      "id": "cc294be9-1322-48d9-89fc-0ea8e7afe070",
+      "name": "Session memória",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        700,
+        740
       ]
     }
   ],
@@ -174,6 +249,44 @@
           {
             "node": "Kiválasztás visszaigazolása",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metaadat-chat": {
+      "main": [
+        [
+          {
+            "node": "Metaadat Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Chat": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Metaadat Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Session memória": {
+      "ai_memory": [
+        [
+          {
+            "node": "Metaadat Agent",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "Metaadat-chat",
+            "type": "ai_memory",
             "index": 0
           }
         ]
