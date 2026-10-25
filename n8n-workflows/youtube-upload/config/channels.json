@@ -15,7 +15,8 @@
         "style.md",
         "rules.md",
         "gear-list.md",
-        "FreezWithMe-playlist.md"
+        "FreezWithMe-playlist.md",
+        "chat-messages.json"
       ],
       "enabled": true
     }

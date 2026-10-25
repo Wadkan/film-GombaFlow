@@ -1,0 +1,6 @@
+{
+  "mdSaved": "Elkészült: {path}. Kérlek, nézd át.",
+  "jsonSaved": "Mentve: {path}.",
+  "saveFailed": "A fájl mentése nem sikerült: {error}",
+  "invalidAction": "A kért művelet nem hajtható végre: {error}"
+}

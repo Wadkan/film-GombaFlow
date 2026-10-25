@@ -1,0 +1,118 @@
+{
+  "id": "753b1981-e240-434a-ae07-c947708b16ef",
+  "name": "YouTube meta - kiválasztott videómappa olvasása",
+  "active": true,
+  "nodes": [
+    {
+      "id": "669a26ed-d14d-4e9b-a47f-5a3ab28a8c0e",
+      "name": "AI eszköz bemenete",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "parameters": {
+        "inputSource": "workflowInputs",
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "videoFolder",
+              "type": "string"
+            },
+            {
+              "name": "fileName",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "id": "75e91858-2b20-4d5e-8498-71f55454271e",
+      "name": "Olvasási útvonal ellenőrzése",
+      "type": "n8n-nodes-base.code",
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const input = $input.first().json;\nconst videoFolder = String(input.videoFolder ?? '');\nconst fileName = String(input.fileName ?? '');\nif (!/^[A-Za-z0-9][A-Za-z0-9 _.-]{0,119}$/.test(videoFolder) || videoFolder.includes('..') || !['meta.md','meta.json'].includes(fileName)) throw new Error('Csak a kiválasztott videómappa meta.md vagy meta.json fájlja olvasható.');\nreturn [{json:{fileName,targetPath:`/data/videos/${videoFolder}/${fileName}`}}];\n"
+      },
+      "position": [
+        240,
+        0
+      ],
+      "typeVersion": 2
+    },
+    {
+      "id": "fb9563aa-db35-4b4e-9c5f-05f1473e6d04",
+      "name": "Read/Write Files - metaadat olvasása",
+      "type": "n8n-nodes-base.readWriteFile",
+      "parameters": {
+        "operation": "read",
+        "fileSelector": "={{ $json.targetPath }}",
+        "options": {
+          "dataPropertyName": "data"
+        }
+      },
+      "position": [
+        480,
+        0
+      ],
+    "onError": "continueRegularOutput",
+      "typeVersion": 1
+    },
+    {
+      "id": "e887ec64-9e0c-4a07-afc3-3a7241b14e82",
+      "name": "Olvasott metaadat",
+      "type": "n8n-nodes-base.code",
+      "parameters": {
+        "mode": "runOnceForAllItems",
+    "jsCode": "const request = $('Olvasási útvonal ellenőrzése').first().json;\nconst item = $input.first();\nif (item.json?.error || !item.binary?.data) return [{json:{ok:true,exists:false,fileName:request.fileName,targetPath:request.targetPath,content:''}}];\nconst content = (await this.helpers.getBinaryDataBuffer(0, 'data')).toString('utf8');\nreturn [{json:{ok:true,exists:true,fileName:request.fileName,targetPath:request.targetPath,content}}];"
+      },
+      "position": [
+        720,
+        0
+      ],
+      "typeVersion": 2
+    }
+  ],
+  "connections": {
+    "AI eszköz bemenete": {
+      "main": [
+        [
+          {
+            "node": "Olvasási útvonal ellenőrzése",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Olvasási útvonal ellenőrzése": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files - metaadat olvasása",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files - metaadat olvasása": {
+      "main": [
+        [
+          {
+            "node": "Olvasott metaadat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "tags": []
+}

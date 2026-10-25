@@ -1,7 +1,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const packageRoot = "/data/youtube-upload";
+const packageRoot = path.resolve(__dirname, "..");
 const channelKey = process.argv[2] ?? "";
 
 function resolveRelativeFile(base, value, description) {
