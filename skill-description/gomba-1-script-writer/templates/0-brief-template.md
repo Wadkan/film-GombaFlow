@@ -1,7 +1,7 @@
 # Brief — [téma címe]
 
-- Témaazonosító: [a kiválasztott rekord id mezője]
-- Kiválasztott teljes témarekord: [pontos útvonal]
+- Projektazonosító: [a futtató által megadott topic-id]
+- Kiválasztott videóbejegyzés: [Gomba 0 dátumozott `results/YYYYMMDD-ideas.md`, videó címe és URL-je]
 - Bemeneti változatok: [a futtató által megadott referenciák]
 - Kiválasztott forrásvideó: [cím és URL]
 - Elemzés alapja és korlátai: [videó/átirat/leírás; mi nem hozzáférhető]

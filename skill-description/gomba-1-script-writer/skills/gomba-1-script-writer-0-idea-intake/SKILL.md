@@ -8,22 +8,20 @@ description: 'Felhasználó által kiválasztott, megvalósított automatizálá
 ## Szerződés
 
 - **Goal:** a kiválasztott megoldás saját változatához jóváhagyható brief.
-- **Prerequisite:** a futtató megadja a témarekordot, projektet és bemeneti
+- **Prerequisite:** a futtató megadja a kiválasztott videóbejegyzést, projektet és bemeneti
   változatokat; az alapanyag a workflow szerint hozzáférhető.
 - **Input:** [workflow](../../WORKFLOW.md), [videóstruktúra](../../VIDEO_STRUCTURE.md),
   [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
   [brief-template](../../templates/0-brief-template.md),
-  [témaséma](../../../gomba-0-idea-collector/templates/topic-template.json),
-  `<selected-topic-path>` (alapértelmezetten `<project>/selected-topic.json`)
-  és az abban hivatkozott releváns források.
+  `<selected-topic-path>` a Gomba 0 dátumozott `results/YYYYMMDD-ideas.md`
+  fájljának kiválasztott videóbejegyzésével, valamint a videó releváns forrásai.
 - **Output:** kizárólag `<project>/0-brief.md`, a brief-template szerint.
   A változó útvonalak a workflow mappájához képest értendők.
 
 ## Végrehajtás
 
-1. Olvasd be a szerződés dokumentumait. Ellenőrizd a rekord azonosítóját és
-   a projekt egyezését. Útvonalba nem illő azonosítónál kérj pontosítást,
-   ne alakítsd át csendben és ne írj más projektbe.
+1. Olvasd be a szerződés dokumentumait. Egyeztesd a felhasználó által
+   kiválasztott videót a projekttel és a megadott forrásanyaggal.
 2. Azonosítsd a kiválasztott forrásvideót. Több jelölt közül ne válassz
    önállóan; tisztázd, melyiket dolgozzuk át. Ne végezz új népszerűségi
    kutatást; a kiválasztást ne tekintsd bizonyított közönségsikernek.
@@ -34,5 +32,5 @@ description: 'Felhasználó által kiválasztott, megvalósított automatizálá
    vonatkozó átdolgozást. Ne találj ki új funkciót vagy hiányzó technikai tényt.
 5. A még hiányzó szerkesztői döntéseket egy körben egyeztesd a felhasználóval.
    Kritikus hiánynál a workflow szerinti akadályjelzéssel állj meg.
-6. Töltsd ki a template-et; egyeztesd a témarekorddal és a forrásokkal.
+6. Töltsd ki a template-et; egyeztesd a kiválasztott bejegyzéssel és a forrásokkal.
    A briefet jóváhagyásra add át, ne állítsd, hogy a felhasználó már elfogadta.

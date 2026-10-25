@@ -2,7 +2,7 @@
 
 ## Cél és hatókör
 
-A `gomba-1-script-writer` a [collector](../gomba-0-idea-collect-topic-selection.md)
+A `gomba-1-script-writer` a [Gomba 0 workflow](../gomba-0-idea-collector/WORKFLOW.md)
 ajánlati listájából a felhasználó által kiválasztott **egyetlen forrásvideót** dolgozza át saját,
 magyar, forgatáshoz követhető anyaggá. Nem keres új témát, nem pontoz újra,
 és nem kísérletezik tartalomformátumok teljesítményével.
@@ -35,11 +35,11 @@ Külön stílusfájl nem bemenet; a hangvételt a brief rögzíti.
 ## Útvonalak és fájllista
 
 Minden útvonal ehhez a mappához képest relatív.
-`<project>` = `projects/<topic-id>`, ahol az azonosító a kiválasztott rekord `id` mezője.
-`<selected-topic-path>` alapértelmezetten `<project>/selected-topic.json`,
-amelyet a collector kiválasztó skillje ment. Ez teljes témarekord, nem
-ajánlati lista kivonat. Korábbi teljes témarekord pontos útvonala is megadható;
-számszerű pontozás nem előfeltétel, a kiválasztás nem bizonyít közönségsikert.
+`<project>` = `projects/<topic-id>`, ahol az azonosítót a felhasználó adja meg.
+`<selected-topic-path>` a felhasználó által kiválasztott bejegyzés a
+`../gomba-0-idea-collector/results/YYYYMMDD-ideas.md` fájlok egyikéből.
+Add meg a videó URL-jét és az elérhető forrásanyagot; külön JSON témarekordra
+nincs szükség.
 
 ```text
 gomba-1-script-writer/
@@ -64,7 +64,6 @@ gomba-1-script-writer/
     gomba-1-script-writer-5-shoot-preparation/SKILL.md
   projects/
     <topic-id>/
-      selected-topic.json
       0-brief.md
       1-story.md
       2-chapters.md
@@ -91,13 +90,12 @@ kötelező bemenet, saját skill és template létezése.
 ### 0. Ötletátvétel — `gomba-1-script-writer-0-idea-intake`
 
 - **Goal:** jóváhagyható brief a már kiválasztott videó átdolgozásához.
-- **Prerequisite:** egy felhasználó által kiválasztott téma, részletes rekord és elérhető forrásvideó
+- **Prerequisite:** egy felhasználó által kiválasztott videóbejegyzés és elérhető forrásvideó
   vagy annak megfelelő, az elemzés korlátait jelző átirata/leírása.
-- **Olvas:** `<selected-topic-path>`,
-  `../gomba-0-idea-collector/templates/topic-template.json`,
-  `templates/0-brief-template.md`, a rekord releváns forrásai.
+- **Olvas:** `<selected-topic-path>`, `templates/0-brief-template.md` és a
+  kiválasztott videó releváns forrásai.
 - **Ír:** `<project>/0-brief.md`.
-- **Rögzíti:** rekordútvonal, forrásvideó URL és hozzáférhető forrásanyag,
+- **Rögzíti:** a kiválasztott bejegyzés, a forrásvideó URL-je és a hozzáférhető forrásanyag,
   a forrás működése és fő lépései, probléma, ígéret, közönség, scope, videóhossz,
   hangvétel és saját fordulatok; mit tartunk meg és mit alakítunk át.
 - **Kapu:** kritikus kérdések tisztázva, brief felhasználó által elfogadva.
