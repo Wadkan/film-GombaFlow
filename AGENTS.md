@@ -2,11 +2,12 @@
 
 This root file is intentionally short so Codex, GitHub Copilot, and other repo agents can discover the project instructions quickly.
 
-Before making changes, read and follow:
+At the start of every task, read and follow:
 
+- `/PROJECT_RULES.md` for project-specific agent rules, when present
 - `/AI_CONTEXT.md` for stable project/domain context
 - `.cursor/skills/skill-index.md` for skill routing and shared references
-  - `docs/orchestration/ORCHESTRATOR.md` for the local backlog orchestrator
+- `docs/orchestration/ORCHESTRATOR.md` for the local backlog orchestrator
 - current repository docs/source/tests/Makefile/package scripts relevant to the task
 
 Current repository source and docs override stale memories, summaries, or old prompts.
