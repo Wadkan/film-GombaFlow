@@ -1,4 +1,4 @@
-.PHONY: export import
+.PHONY: export import flow-test
 
 REPO_ROOT := $(abspath ../..)
 N8N_COMPOSE := $(REPO_ROOT)/n8n-docker/compose.yaml
@@ -9,3 +9,6 @@ export:
 
 import:
 	@./scripts/import-workflows.sh
+
+flow-test:
+	@./scripts/test-meta-chat-flow.sh

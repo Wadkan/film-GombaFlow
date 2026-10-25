@@ -29,11 +29,12 @@
       "position": [
         220,
         0
-      ]
+      ],
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
-        "jsCode": "const result = JSON.parse($json.stdout ?? \"{}\");\nconst esc = value => String(value).replace(/[&<>\"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '\"':'&quot;', \"'\":'&#39;'}[c]));\nconst errorPage = message => `<!doctype html><html lang=\"hu\"><head><meta charset=\"utf-8\"><title>Hiba – YouTube meta</title><style>body{font:16px system-ui;max-width:650px;margin:48px auto;padding:0 20px;color:#222}.error{border-left:4px solid #b00020;padding:12px 16px;background:#fff4f4;white-space:pre-wrap}</style></head><body><h1>Nem sikerült megnyitni az űrlapot</h1><p class=\"error\">${esc(message)}</p><p>Javítsd a jelzett hibát, majd töltsd újra az oldalt. Ha a hiba megmarad, küldd el ezt az üzenetet az üzemeltetőnek.</p></body></html>`;\nif (!result.ok) return [{json:{html:errorPage(result.error?.message ?? \"Ismeretlen hiba történt az űrlap adatainak betöltésekor.\")}}];\nif (!Array.isArray(result.channels) || !Array.isArray(result.folders)) throw new Error(\"Az űrlap adatainak formátuma hibás: channels és folders listát vártam.\");\nconst {channels, folders} = result;\nconst webhookUrl = $('Űrlap megnyitása').first().json.webhookUrl;\nif (!webhookUrl) throw new Error(\"Nem érkezett meg a webhook URL-je; az űrlap beküldési címe nem állítható össze.\");\nconst action = webhookUrl.replace(/youtube-meta$/, 'youtube-meta-submit');\nconst channelOptions = channels.map(c => `<option value=\"${esc(c.key)}\">${esc(c.displayName)}</option>`).join('');\nconst folderOptions = folders.map(name => `<option value=\"${esc(name)}\">${esc(name)}</option>`).join('');\nconst html = `<!doctype html>\n<html lang=\"hu\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>YouTube meta</title>\n<style>body{font:16px system-ui;max-width:560px;margin:48px auto;padding:0 20px}select{display:block;width:100%;padding:12px;margin:8px 0 20px}button{padding:12px 24px}</style></head>\n<body><h1>YouTube meta</h1>\n<form method=\"post\" action=\"${esc(action)}\">\n<label for=\"channelKey\">Csatorna</label><select id=\"channelKey\" name=\"channelKey\" required><option value=\"\">Válassz csatornát</option>${channelOptions}</select>\n<label for=\"videoFolder\">Videómappa</label><select id=\"videoFolder\" name=\"videoFolder\" required><option value=\"\">Válassz mappát</option>${folderOptions}</select>\n<button id=\"next\" type=\"submit\" disabled>Tovább</button></form>\n<script>const c=document.querySelector('#channelKey'),f=document.querySelector('#videoFolder'),b=document.querySelector('#next');function update(){b.disabled=!(c.value&&f.value)}c.addEventListener('change',update);f.addEventListener('change',update);update();</script>\n</body></html>`;\nreturn [{json:{html}}];"
+        "jsCode": "const esc = value => String(value).replace(/[&<>\"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '\"':'&quot;', \"'\":'&#39;'}[c]));\nconst errorPage = message => `<!doctype html><html lang=\"hu\"><head><meta charset=\"utf-8\"><title>Hiba – YouTube meta</title><style>body{font:16px system-ui;max-width:650px;margin:48px auto;padding:0 20px;color:#222}.error{border-left:4px solid #b00020;padding:12px 16px;background:#fff4f4;white-space:pre-wrap}</style></head><body><h1>Nem sikerült megnyitni az űrlapot</h1><p class=\"error\">${esc(message)}</p><p>Javítsd a jelzett hibát, majd töltsd újra az oldalt. Ha a hiba megmarad, küldd el ezt az üzenetet az üzemeltetőnek.</p></body></html>`;\ntry {\n  if ($json.error) throw new Error($json.error.message ?? String($json.error));\n  const result = JSON.parse($json.stdout ?? '{}');\n  if (!result.ok) return [{json:{html:errorPage(result.error?.message ?? 'Ismeretlen hiba történt az űrlap adatainak betöltésekor.')}}];\n  if (!Array.isArray(result.channels) || !Array.isArray(result.folders)) throw new Error('Az űrlap adatainak formátuma hibás: channels és folders listát vártam.');\n  const {channels, folders} = result;\n  const webhookUrl = $('Űrlap megnyitása').first().json.webhookUrl;\n  if (!webhookUrl) throw new Error('Nem érkezett meg a webhook URL-je; az űrlap beküldési címe nem állítható össze.');\n  const action = webhookUrl.replace(/youtube-meta$/, 'youtube-meta-submit');\n  const channelOptions = channels.map(c => `<option value=\"${esc(c.key)}\"${channels.length === 1 ? ' selected' : ''}>${esc(c.displayName)}</option>`).join('');\n  const folderOptions = folders.map(name => `<option value=\"${esc(name)}\"${folders.length === 1 ? ' selected' : ''}>${esc(name)}</option>`).join('');\n  const initialSelectionComplete = channels.length === 1 && folders.length === 1;\n  const html = `<!doctype html>\n<html lang=\"hu\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>YouTube meta</title>\n<style>body{font:16px system-ui;max-width:560px;margin:48px auto;padding:0 20px}select{display:block;width:100%;padding:12px;margin:8px 0 20px}button{padding:12px 24px}</style></head>\n<body><h1>YouTube meta</h1>\n<form method=\"post\" action=\"${esc(action)}\">\n<label for=\"channelKey\">Csatorna</label><select id=\"channelKey\" name=\"channelKey\" required><option value=\"\">Válassz csatornát</option>${channelOptions}</select>\n<label for=\"videoFolder\">Videómappa</label><select id=\"videoFolder\" name=\"videoFolder\" required><option value=\"\">Válassz mappát</option>${folderOptions}</select>\n<button id=\"next\" type=\"submit\"${initialSelectionComplete ? '' : ' disabled'}>Tovább</button></form>\n<script>const c=document.querySelector('#channelKey'),f=document.querySelector('#videoFolder'),b=document.querySelector('#next');function update(){b.disabled=!(c.value&&f.value)}c.addEventListener('change',update);f.addEventListener('change',update);update();</script>\n</body></html>`;\n  return [{json:{html}}];\n} catch (error) {\n  return [{json:{html:errorPage(error?.message ?? String(error))}}];\n}"
       },
       "id": "eb41ff27-150d-4c37-ac18-434a36367c4b",
       "name": "Űrlap összeállítása",
@@ -87,7 +88,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const body = $json.body ?? {};\nconst channelKey = typeof body.channelKey === \"string\" ? body.channelKey.trim() : \"\";\nconst videoFolder = typeof body.videoFolder === \"string\" ? body.videoFolder.trim() : \"\";\nconst problems = [];\nif (!channelKey) problems.push(\"Nem érkezett csatornaválasztás.\");\nif (!videoFolder) problems.push(\"Nem érkezett videómappa-választás.\");\nif (videoFolder === \".\" || videoFolder === \"..\" || videoFolder.includes(\"/\") || videoFolder.includes(\"\\\\\")) problems.push(\"A videómappa neve érvénytelen; csak egy közvetlen mappanév adható meg.\");\nconst esc = value => String(value).replace(/[&<>\"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '\"':'&quot;', \"'\":'&#39;'}[c]));\nif (problems.length) {\n  const message = problems.join(\" \");\n  const html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>Hiba a beküldésnél</title><body><h1>Nem sikerült rögzíteni a választást</h1><p>${esc(message)}</p><p>Menj vissza az űrlapra, javítsd a választást, majd küldd be újra.</p></body></html>`;\n  return [{json:{ok:false,error:{stage:\"űrlap beküldésének ellenőrzése\",message},html}}];\n}\nconst sessionId = `${channelKey}:${videoFolder}`;\nconst webhookUrl = String($('Kiválasztás fogadása').first().json.webhookUrl ?? '');\nconst origin = webhookUrl.split('/webhook/')[0];\nif (!origin) throw new Error('Nem állítható össze a chat webcíme.');\nconst chatUrl = `${origin}/webhook/c50219e8-5cba-4cf9-a77f-9c5908890b4f/chat#sessionId=${encodeURIComponent(sessionId)}`;\nconst message = `A chat indul: ${channelKey} csatorna, ${videoFolder} videómappa.`;\nconst html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>YouTube metaadat-chat</title><body><h1>Indul a metaadat-chat</h1><p>${esc(message)}</p><p><a href=\"${esc(chatUrl)}\">Ha nem nyílik meg automatikusan, kattints ide.</a></p><script>window.location.replace(${JSON.stringify(chatUrl)});</script></body></html>`;\nreturn [{json:{ok:true,channelKey,videoFolder,sessionId,chatUrl,message,html}}];"
+        "jsCode": "try {\nconst body = $json.body ?? {};\nconst channelKey = typeof body.channelKey === \"string\" ? body.channelKey.trim() : \"\";\nconst videoFolder = typeof body.videoFolder === \"string\" ? body.videoFolder.trim() : \"\";\nconst problems = [];\nif (!channelKey) problems.push(\"Nem érkezett csatornaválasztás.\");\nif (!videoFolder) problems.push(\"Nem érkezett videómappa-választás.\");\nif (videoFolder === \".\" || videoFolder === \"..\" || videoFolder.includes(\"/\") || videoFolder.includes(\"\\\\\")) problems.push(\"A videómappa neve érvénytelen; csak egy közvetlen mappanév adható meg.\");\nconst esc = value => String(value).replace(/[&<>\"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '\"':'&quot;', \"'\":'&#39;'}[c]));\nif (problems.length) {\n  const message = problems.join(\" \");\n  const html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>Hiba a beküldésnél</title><body><h1>Nem sikerült rögzíteni a választást</h1><p>${esc(message)}</p><p>Menj vissza az űrlapra, javítsd a választást, majd küldd be újra.</p></body></html>`;\n  return [{json:{ok:false,error:{stage:\"űrlap beküldésének ellenőrzése\",message},html}}];\n}\nconst webhookUrl = String($('Kiválasztás fogadása').first().json.webhookUrl ?? '');\nconst origin = webhookUrl.split('/webhook/')[0];\nif (!origin) throw new Error('Nem állítható össze a chat webcíme.');\nconst chatUrl = `${origin}/webhook/c50219e8-5cba-4cf9-a77f-9c5908890b4f/chat`;\nconst jsonForScript = value => JSON.stringify(value).replace(/</g, '\\\\u003c').replace(/>/g, '\\\\u003e').replace(/&/g, '\\\\u0026');\nconst metadata = jsonForScript({channelKey,videoFolder});\nconst widgetUrl = jsonForScript(chatUrl);\nconst sessionId = jsonForScript(`youtube-meta-${channelKey}-${videoFolder}-${Date.now()}`);\nconst html = `<!doctype html><html lang=\"hu\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>YouTube metaadat-chat</title>\n<style>\n*{box-sizing:border-box}html,body{height:100%;margin:0;font:16px system-ui,sans-serif;color:#222;background:#f5f6f8}body{min-height:100dvh}.chat{height:100dvh;max-width:900px;margin:0 auto;background:white;display:flex;flex-direction:column}.header{padding:16px 20px;border-bottom:1px solid #ddd}.header h1{font-size:20px;margin:0 0 4px}.header p{margin:0;color:#666;font-size:14px}.messages{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:12px}.message{max-width:min(80%,680px);padding:12px 16px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45}.bot{background:#f0f1f4;align-self:flex-start}.user{background:#2459d3;color:#fff;align-self:flex-end}.composer{border-top:1px solid #ddd;padding:12px 16px;display:flex;gap:10px;align-items:flex-end}.composer textarea{flex:1;resize:vertical;min-height:48px;max-height:180px;padding:12px;border:1px solid #aaa;border-radius:8px;font:inherit}.composer button{padding:12px 20px;border:0;border-radius:8px;background:#2459d3;color:white;font:inherit;cursor:pointer}.composer button:disabled{opacity:.55;cursor:wait}.status{min-height:20px;padding:0 16px 8px;color:#8a1c1c;font-size:14px}@media(max-width:600px){.header{padding:12px}.messages{padding:14px}.composer{padding:10px}.composer button{padding:12px}}\n</style></head><body><main class=\"chat\"><header class=\"header\"><h1>YouTube metaadat-chat</h1><p>DeepSeek Chat · ${String(channelKey).replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]))} / ${String(videoFolder).replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]))}</p></header><section id=\"messages\" class=\"messages\" role=\"log\" aria-live=\"polite\"></section><div id=\"status\" class=\"status\" role=\"alert\"></div><form id=\"composer\" class=\"composer\"><textarea id=\"chat-input\" data-test-id=\"chat-input\" aria-label=\"Üzenet\" placeholder=\"Írd be az üzeneted...\" rows=\"2\" required></textarea><button id=\"send\" type=\"submit\">Küldés</button></form></main>\n<script>\nconst webhookUrl=${widgetUrl},metadata=${metadata},sessionId=${sessionId};\nconst messages=document.querySelector('#messages'),form=document.querySelector('#composer'),input=document.querySelector('#chat-input'),button=document.querySelector('#send'),status=document.querySelector('#status');\nfunction addMessage(kind,text){const el=document.createElement('div');el.className='message '+kind;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight}\naddMessage('bot','Szia! A DeepSeek metaadat-chat elindult. Mit szeretnél megbeszélni?');\nform.addEventListener('submit',async event=>{event.preventDefault();const chatInput=input.value.trim();if(!chatInput)return;addMessage('user',chatInput);input.value='';input.focus();button.disabled=true;status.textContent='Válasz betöltése…';try{const response=await fetch(webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'sendMessage',sessionId,chatInput,metadata})});let data;try{data=await response.json()}catch{throw new Error('A szerver nem olvasható választ küldött (HTTP '+response.status+').')}if(!response.ok||data.type==='error')throw new Error(data.output||data.message||data.error||('HTTP '+response.status));if(typeof data.output!=='string'||!data.output.trim())throw new Error('A workflow üres választ adott.');addMessage('bot',data.output);status.textContent=''}catch(error){const detail=error&&error.message?error.message:String(error);addMessage('bot','Nem sikerült feldolgozni az üzenetet. Részlet: '+detail);status.textContent='Hiba történt; a részletek a chatben láthatók.'}finally{button.disabled=false;input.focus()}});\ninput.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();form.requestSubmit()}});\n</script></body></html>`;\nreturn [{json:{ok:true,channelKey,videoFolder,chatUrl,html}}];\n} catch (error) {\n  const message = error?.message ?? String(error);\n  const safe = String(message).replace(/[&<>\"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '\"':'&quot;', \"'\":'&#39;'}[c]));\n  const html = `<!doctype html><html lang=\"hu\"><meta charset=\"utf-8\"><title>Hiba a chat indításakor</title><body><h1>Nem sikerült elindítani a chatet</h1><p role=\"alert\">${safe}</p><p>Töltsd újra az oldalt. Ha a hiba megmarad, küldd el ezt az üzenetet az üzemeltetőnek.</p></body></html>`;\n  return [{json:{ok:false,error:{stage:\"chat indítása\",message},html}}];\n}"
       },
       "id": "5278aa3e-fc82-4bab-9f40-9e43db9c7818",
       "name": "Kiválasztott értékek",
@@ -125,14 +126,12 @@
     {
       "parameters": {
         "public": true,
-        "mode": "hostedChat",
+        "mode": "webhook",
         "initialMessages": "Szia! A DeepSeek metaadat-chat elindult. Mit szeretnél megbeszélni?",
         "options": {
-          "loadPreviousSession": "memory",
-          "responseMode": "streaming",
-          "title": "YouTube metaadat-chat",
-          "subtitle": "DeepSeek Chat",
-          "inputPlaceholder": "Írd be az üzeneted..."
+          "allowedOrigins": "*",
+          "loadPreviousSession": "notSupported",
+          "responseMode": "lastNode"
         }
       },
       "id": "9caf6ac4-a42e-4658-a2cc-37312d5f19b5",
@@ -150,7 +149,7 @@
         "promptType": "auto",
         "text": "={{ $json.chatInput }}",
         "options": {
-          "systemMessage": "={{ 'A kiválasztott csatorna és videómappa session azonosítója: ' + $json.sessionId + '. Válaszolj magyarul.' }}"
+          "systemMessage": "={{ 'A kiválasztott csatorna: ' + $json.channelKey + '. A kiválasztott videómappa: ' + $json.videoFolder + '. Válaszolj magyarul, és a betöltött forrásfájlokat vedd alapul.' + '\\n\\n' + $json.sourceContext }}"
         }
       },
       "id": "d6110f59-6f26-44ca-96e3-3ee7e59022ae",
@@ -160,7 +159,8 @@
       "position": [
         940,
         520
-      ]
+      ],
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -184,8 +184,8 @@
     },
     {
       "parameters": {
-        "sessionIdType": "fromInput",
-        "sessionKey": "={{ $json.sessionId }}",
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.channelKey + ':' + $json.videoFolder }}",
         "contextWindowLength": 5
       },
       "id": "cc294be9-1322-48d9-89fc-0ea8e7afe070",
@@ -195,6 +195,91 @@
       "position": [
         700,
         740
+      ]
+    },
+    {
+      "parameters": {
+        "command": "={{ 'node /data/youtube-upload/scripts/load-channel-context.js ' + (($json.metadata && /^[A-Za-z0-9_-]+$/.test(String($json.metadata.channelKey))) ? String($json.metadata.channelKey) : 'invalid') }}"
+      },
+      "id": "d32e622e-e862-4df3-8237-e02103c249b7",
+      "name": "Csatornaforrások betöltése",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const trigger = $('Metaadat-chat').first().json;\nconst metadata = trigger.metadata ?? {};\nconst channelKey = String(metadata.channelKey ?? '');\nconst videoFolder = String(metadata.videoFolder ?? '');\ntry {\n  if ($json.error) throw new Error($json.error.message ?? String($json.error));\n  const result = JSON.parse($json.stdout ?? '{}');\n  if (!result.ok || !Array.isArray(result.files)) throw new Error(result.error?.message ?? 'A csatorna-forrásfájlok betöltése nem sikerült.');\n  if (!channelKey || !videoFolder) throw new Error('A chatből hiányzik a kiválasztott csatorna vagy videómappa.');\n  if (channelKey !== result.channelKey) throw new Error('A betöltött csatorna nem egyezik a chat választásával.');\n  if (result.missingFiles?.length) throw new Error(`Hiányzó registry fájlok: ${result.missingFiles.join(', ')}`);\n  const loadedFiles = result.files.map(file => `## ${file.path}\\n${file.content}`).join('\\n\\n');\n  const sourceContext = `Betöltött fájlok (${result.files.length}):\\n\\n${loadedFiles}`;\n  return [{json:{ok:true,chatInput:trigger.chatInput,sessionId:trigger.sessionId,channelKey,videoFolder,sourceContext}}];\n} catch (error) {\n  const message = error?.message ?? String(error);\n  return [{json:{ok:false,output:`Nem sikerült betölteni a(z) „${channelKey || 'kiválasztott'}” csatorna registry szerinti forrásfájljait, ezért az Agent nem indult el. Részlet: ${message}`}}];\n}"
+      },
+      "id": "f53cc59a-e7f4-42ab-b050-4e78d76f52a4",
+      "name": "Forráskontextus előkészítése",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7de0d11b-6ae6-4a94-ac4a-2748103f6b40",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "4309d438-ae6f-4f53-9030-204bbf67e59d",
+      "name": "Forrásbetöltés sikerült?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const message = typeof $json.output === 'string' && $json.output.trim() ? $json.output : 'A forrásfájlok betöltése nem sikerült, ezért az AI-agent nem indult el.';\nreturn [{json:{output:message}}];"
+      },
+      "id": "c764473e-4bab-48e2-a42b-9b7e8a503b31",
+      "name": "Chat-hibaüzenet",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1560,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const error = $json.error;\nif (error) {\n  const detail = error.message ?? error.description ?? JSON.stringify(error);\n  return [{json:{output:`A metaadat-agent hibát adott: ${detail}`}}];\n}\nconst answer = $json.output ?? $json.text;\nif (typeof answer !== 'string' || !answer.trim()) return [{json:{output:'A metaadat-agent üres választ adott. Próbáld újra, vagy küldd el ezt a hibaüzenetet az üzemeltetőnek.'}}];\nreturn [{json:{output:answer}}];"
+      },
+      "id": "7e8ea686-0be8-42f0-8faf-14e6d710c0cf",
+      "name": "Chat-válasz ellenőrzése",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1160,
+        540
       ]
     }
   ],
@@ -258,7 +343,7 @@
       "main": [
         [
           {
-            "node": "Metaadat Agent",
+            "node": "Csatornaforrások betöltése",
             "type": "main",
             "index": 0
           }
@@ -283,13 +368,69 @@
             "node": "Metaadat Agent",
             "type": "ai_memory",
             "index": 0
-          },
+          }
+        ]
+      ]
+    },
+    "Csatornaforrások betöltése": {
+      "main": [
+        [
           {
-            "node": "Metaadat-chat",
-            "type": "ai_memory",
+            "node": "Forráskontextus előkészítése",
+            "type": "main",
             "index": 0
           }
         ]
+      ]
+    },
+    "Forráskontextus előkészítése": {
+      "main": [
+        [
+          {
+            "node": "Forrásbetöltés sikerült?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Forrásbetöltés sikerült?": {
+      "main": [
+        [
+          {
+            "node": "Metaadat Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Chat-hibaüzenet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metaadat Agent": {
+      "main": [
+        [
+          {
+            "node": "Chat-válasz ellenőrzése",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat-hibaüzenet": {
+      "main": [
+        []
+      ]
+    },
+    "Chat-válasz ellenőrzése": {
+      "main": [
+        []
       ]
     }
   },
