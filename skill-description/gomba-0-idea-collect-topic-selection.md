@@ -55,6 +55,20 @@ szerkesztői indoklás adja, nem a korábbi `final_score`.
 
 ## Kutatási és választási elvek
 
+- A GombaFlow freelancer márka célja egyszerre a szakértői hitelesség,
+  nézettség és potenciális üzleti ügyfélszerzés. A rangsorolt jelöltek
+  szerkesztői célmegoszlása 70% edukáció (AI, n8n, NLP, üzleti
+  automatizáció, API-integráció és webalapú rendszerek) és 30%
+  ügyfélszerzés (KKV-k manuális folyamatai, költség- és időterhei).
+  Öt jelöltnél ez jellemzően 3–4 és 1–2 témát jelent; kevés megfelelő
+  jelöltnél a bizonyíték minősége az első, az arányeltérést jelezni kell.
+- Előny az egy témával elérhető edukáció és konkrét üzleti relevancia együtt.
+- Valós vállalkozói pain pointot és piaci érdeklődést keress; érdeklődési
+  vagy trendállítást csak ellenőrizhető forrással támaszd alá. Ne következtess
+  garantált YouTube-nézettségre, és ne adj szubjektív nézettségi pontszámot.
+- Gyorsan reprodukálható, létező megoldásokat és workflow-kat részesíts
+  előnyben. A demóötlet lehet a kiválasztás gyakorlati szempontja, de becsült
+  előkészítési időt vagy új, nem ellenőrizhető rekordmezőt ne adj hozzá.
 - Már megvalósított AI, local/private AI, n8n és automatizálási use case-ek.
   Bizonyíték: publikus demó, repository, workflow template, implementációs
   tutorial vagy dokumentált üzleti case study.
@@ -67,6 +81,9 @@ szerkesztői indoklás adja, nem a korábbi `final_score`.
 - Célközönség: KKV-tulajdonosok és cégvezetők. Érték: idő- vagy
   költségmegtakarítás, kevesebb kézi munka, jobb termelékenység,
   ügyfélkiszolgálás vagy sales; reális tanácsadói/implementációs lehetőség.
+- Az edukációs jelöltek is kapcsolódjanak valós, bemutatható technológiához;
+  ne legyenek puszta eszközismertetők. Az ügyfélszerző jelöltek nevezzenek
+  meg konkrét KKV-problémát és a megoldás üzleti értékét.
 - Kizárt: AI-hír, trend- vagy fundinghír, eszközlista, promptgyűjtemény,
   prompt engineering, ChatGPT-trükk, hype és meg nem valósított ötlet.
 - A kiválasztott listába csak konkrét fő forrásvideóval és a megoldást igazoló,
