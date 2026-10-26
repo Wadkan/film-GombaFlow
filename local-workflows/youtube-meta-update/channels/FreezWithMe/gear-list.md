@@ -38,6 +38,7 @@ Gear list:
 - Tartisan Titanium Long Handle Spoon
 - Tartisan Titanium Spoon & Fork Set
 - Decathlon Fire Starter
+- Grayl UltraPress® Purifier (500ml)
 - Sawyer Mini SP128 Water Filter
 - Sawyer Water Pouch
 
