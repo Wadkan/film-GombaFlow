@@ -11,7 +11,6 @@ import sys
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-
 REPO_ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW_DIR = Path(__file__).resolve().parent
 PROJECTS_DIR = WORKFLOW_DIR / "projects"
@@ -83,13 +82,15 @@ def list_ideas(path: Path) -> list[dict[str, str]]:
         video_url = html.unescape(match.group(3).replace("\\&", "&"))
         video_id = youtube_id(video_url)
         if video_id and video_id not in used_ids:
-            ideas.append({
-                "number": match.group(1),
-                "title": html.unescape(match.group(2)),
-                "url": video_url,
-                "video_id": video_id,
-                "done": "igen" if transcript_exists(video_id) else "nem",
-            })
+            ideas.append(
+                {
+                    "number": match.group(1),
+                    "title": html.unescape(match.group(2)),
+                    "url": video_url,
+                    "video_id": video_id,
+                    "done": "igen" if transcript_exists(video_id) else "nem",
+                }
+            )
     return ideas
 
 
@@ -164,7 +165,9 @@ def run() -> int:
     else:
         print("A hangfájl már nincs meg; a cleanup kész.")
 
-    print(f"\033[32mKövetkező lépés: az agent dolgozza fel ezt a transcriptet: {transcript_path} (Gomba 1 ID: {topic_id})\033[0m")
+    print(
+        f"\033[32mKövetkező lépés: az agent dolgozza fel ezt a transcriptet: {transcript_path} (Gomba 1 ID: {topic_id})\033[0m"
+    )
     return 0
 
 

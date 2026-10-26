@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Install only the protected metadata connection workflow in the existing stack."""
+
 import argparse
 import json
 import os
@@ -36,30 +37,40 @@ def wait_for_webhook():
     deadline = time.monotonic() + 45
     while time.monotonic() < deadline:
         try:
-            urllib.request.urlopen(urllib.request.Request(URL, data=b'', method='POST'), timeout=2)
+            urllib.request.urlopen(urllib.request.Request(URL, data=b"", method="POST"), timeout=2)
         except urllib.error.HTTPError as error:
             if error.code in (401, 403):
                 return
         except OSError:
             pass
         time.sleep(0.3)
-    raise RuntimeError('Az n8n webhook nem regisztrálódott 45 másodpercen belül.')
+    raise RuntimeError("Az n8n webhook nem regisztrálódott 45 másodpercen belül.")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", type=pathlib.Path, default=pathlib.Path(
-        os.environ.get("XDG_CONFIG_HOME", pathlib.Path.home() / ".config")
-    ) / "film-gombaflow/youtube-meta-update.json")
+    parser.add_argument(
+        "--config",
+        type=pathlib.Path,
+        default=pathlib.Path(os.environ.get("XDG_CONFIG_HOME", pathlib.Path.home() / ".config"))
+        / "film-gombaflow/youtube-meta-update.json",
+    )
     args = parser.parse_args()
-    registry = json.loads((ROOT / 'local-workflows/youtube-meta-update/config/channels.json').read_text())
-    channels = [channel for channel in registry['channels'] if channel.get('enabled')]
+    registry = json.loads(
+        (ROOT / "local-workflows/youtube-meta-update/config/channels.json").read_text()
+    )
+    channels = [channel for channel in registry["channels"] if channel.get("enabled")]
     if len(channels) != 1:
-        parser.error('A jelenlegi workflow pontosan egy aktív csatornát támogat.')
-    youtube_credential = channels[0].get('youtubeCredential', {})
-    if (youtube_credential.get('type') != 'youTubeOAuth2Api' or
-            not youtube_credential.get('id') or not youtube_credential.get('name')):
-        parser.error('A csatornaregiszterben meglévő YouTube OAuth credential-hivatkozás szükséges.')
+        parser.error("A jelenlegi workflow pontosan egy aktív csatornát támogat.")
+    youtube_credential = channels[0].get("youtubeCredential", {})
+    if (
+        youtube_credential.get("type") != "youTubeOAuth2Api"
+        or not youtube_credential.get("id")
+        or not youtube_credential.get("name")
+    ):
+        parser.error(
+            "A csatornaregiszterben meglévő YouTube OAuth credential-hivatkozás szükséges."
+        )
     config_path = args.config.expanduser().resolve()
     if config_path == ROOT or ROOT in config_path.parents:
         parser.error("A titkos klienskonfiguráció nem kerülhet a repóba.")
@@ -67,37 +78,61 @@ def main():
         if config_path.stat().st_mode & 0o077:
             parser.error("A meglévő konfiguráció jogosultsága legyen 600.")
         config = json.loads(config_path.read_text())
-        if config.get("webhook_url") != URL or config.get("header_name") != "X-Webhook-Token" or not config.get("header_value"):
-            parser.error("A meglévő konfiguráció más webhookhoz tartozik; adj meg külön --config útvonalat.")
+        if (
+            config.get("webhook_url") != URL
+            or config.get("header_name") != "X-Webhook-Token"
+            or not config.get("header_value")
+        ):
+            parser.error(
+                "A meglévő konfiguráció más webhookhoz tartozik; adj meg külön --config útvonalat."
+            )
     else:
-        config = {"webhook_url": URL, "header_name": "X-Webhook-Token", "header_value": secrets.token_urlsafe(32)}
+        config = {
+            "webhook_url": URL,
+            "header_name": "X-Webhook-Token",
+            "header_value": secrets.token_urlsafe(32),
+        }
         config_path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
         descriptor = os.open(config_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
         with os.fdopen(descriptor, "w") as destination:
             json.dump(config, destination, indent=2)
             destination.write("\n")
-    credential = [{"id": "youtubeMetaHeaderAuth", "name": "YouTube metadata connection Header Auth",
-        "type": "httpHeaderAuth", "data": {"name": config["header_name"], "value": config["header_value"]}}]
+    credential = [
+        {
+            "id": "youtubeMetaHeaderAuth",
+            "name": "YouTube metadata connection Header Auth",
+            "type": "httpHeaderAuth",
+            "data": {"name": config["header_name"], "value": config["header_value"]},
+        }
+    ]
     # Apply current mounts before import even if the running container predates them.
     subprocess.run(COMPOSE + ["up", "-d", "--no-deps", "n8n"], check=True)
     wait_for_n8n()
     # Bind the registry reference, never a token. Confirm the referenced credential exists.
     query = """const db=new (require('/usr/local/lib/node_modules/n8n/node_modules/sqlite3').Database)('/home/node/.n8n/database.sqlite');db.get('SELECT id FROM credentials_entity WHERE id=? AND type=?',[process.argv[1],'youTubeOAuth2Api'],(e,r)=>{if(e||!r)process.exitCode=1;db.close()});"""
-    subprocess.run(COMPOSE + ['exec', '-T', 'n8n', 'node', '-e', query, youtube_credential['id']], check=True)
-    workflow_path = ROOT / 'n8n-workflows/workflows' / (WORKFLOW_ID + '.json')
+    subprocess.run(
+        COMPOSE + ["exec", "-T", "n8n", "node", "-e", query, youtube_credential["id"]], check=True
+    )
+    workflow_path = ROOT / "n8n-workflows/workflows" / (WORKFLOW_ID + ".json")
     workflow = json.loads(workflow_path.read_text())
-    for node in workflow['nodes']:
-        if node['type'] == 'n8n-nodes-base.httpRequest':
-            node['credentials'] = {'youTubeOAuth2Api': {
-                'id': youtube_credential['id'], 'name': youtube_credential['name']}}
-        if node['name'] == 'Validate and reserve':
-            command, count = re.subn(r'credentialId: "[^"]*"',
-                lambda match: 'credentialId: ' + json.dumps(youtube_credential['id']),
-                node['parameters']['command'])
+    for node in workflow["nodes"]:
+        if node["type"] == "n8n-nodes-base.httpRequest":
+            node["credentials"] = {
+                "youTubeOAuth2Api": {
+                    "id": youtube_credential["id"],
+                    "name": youtube_credential["name"],
+                }
+            }
+        if node["name"] == "Validate and reserve":
+            command, count = re.subn(
+                r'credentialId: "[^"]*"',
+                lambda match: "credentialId: " + json.dumps(youtube_credential["id"]),
+                node["parameters"]["command"],
+            )
             if count != 1:
-                parser.error('A workflow credential-kötése hiányzik vagy többértelmű.')
-            node['parameters']['command'] = command
-    workflow_path.write_text(json.dumps(workflow, indent=2, ensure_ascii=False) + '\n')
+                parser.error("A workflow credential-kötése hiányzik vagy többértelmű.")
+            node["parameters"]["command"] = command
+    workflow_path.write_text(json.dumps(workflow, indent=2, ensure_ascii=False) + "\n")
     # Plaintext credential only exists in owner-only temporary files; never log it.
     with tempfile.TemporaryDirectory(prefix="youtube-meta-install-", dir="/tmp") as folder:
         local = pathlib.Path(folder) / "credential.json"
@@ -106,21 +141,32 @@ def main():
             json.dump(credential, destination)
         remote = "/tmp/" + pathlib.Path(folder).name + ".json"
         try:
-            subprocess.run(COMPOSE + ["exec", "-T", "n8n", "sh", "-c", 'umask 077; cat > "$1"',
-                "sh", remote], input=local.read_bytes(), check=True)
-            subprocess.run(COMPOSE + ["exec", "-T", "n8n", "n8n", "import:credentials", "--input=" + remote], check=True)
+            subprocess.run(
+                COMPOSE + ["exec", "-T", "n8n", "sh", "-c", 'umask 077; cat > "$1"', "sh", remote],
+                input=local.read_bytes(),
+                check=True,
+            )
+            subprocess.run(
+                COMPOSE + ["exec", "-T", "n8n", "n8n", "import:credentials", "--input=" + remote],
+                check=True,
+            )
         finally:
             subprocess.run(COMPOSE + ["exec", "-T", "n8n", "rm", "-f", remote], check=False)
     env = dict(os.environ, WORKFLOW_ID=WORKFLOW_ID)
     subprocess.run(["make", "-C", str(ROOT / "n8n-workflows"), "import"], env=env, check=True)
-    subprocess.run(COMPOSE + ["exec", "-T", "n8n", "n8n", "publish:workflow", "--id=" + WORKFLOW_ID], check=True)
+    subprocess.run(
+        COMPOSE + ["exec", "-T", "n8n", "n8n", "publish:workflow", "--id=" + WORKFLOW_ID],
+        check=True,
+    )
     print("Az n8n szolgáltatás rövid újraindítása az új webhook aktiválásához.", flush=True)
     subprocess.run(COMPOSE + ["restart", "n8n"], check=True)
     wait_for_n8n()
     wait_for_webhook()
     subprocess.run(["make", "-C", str(ROOT / "n8n-workflows"), "export"], env=env, check=True)
     exported = ROOT / "n8n-workflows/workflows" / (WORKFLOW_ID + ".json")
-    exported.write_text(json.dumps(json.loads(exported.read_text()), indent=2, ensure_ascii=False) + "\n")
+    exported.write_text(
+        json.dumps(json.loads(exported.read_text()), indent=2, ensure_ascii=False) + "\n"
+    )
     print(f"Webhook kész: {URL}\nKlienskonfiguráció: {config_path}")
 
 

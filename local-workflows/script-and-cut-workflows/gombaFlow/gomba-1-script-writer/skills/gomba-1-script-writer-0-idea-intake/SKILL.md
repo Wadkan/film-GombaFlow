@@ -1,6 +1,6 @@
 ---
 name: gomba-1-script-writer-0-idea-intake
-description: 'Felhasználó által kiválasztott, megvalósított automatizálási videó átvétele és magyar brief készítése. Használd a gomba-1-script-writer workflow 0. lépéséhez, meglévő ötlet és forrásvideó feldolgozásakor.'
+description: "Felhasználó által kiválasztott, megvalósított automatizálási videó átvétele és magyar brief készítése. Használd a gomba-1-script-writer workflow 0. lépéséhez, meglévő ötlet és forrásvideó feldolgozásakor."
 ---
 
 # 0. Ötletátvétel
@@ -26,13 +26,14 @@ description: 'Felhasználó által kiválasztott, megvalósított automatizálá
 1. Olvasd be a szerződés dokumentumait. A transcript beszerzéséhez kérd meg a
    felhasználót, hogy a saját termináljában futtassa:
 
-   ```bash
-   make gomba1-transcript
-   ```
+    ```bash
+    make gomba1-transcript
+    ```
 
-   Válasszon egy listázott sorszámot, majd küldje vissza a zöld sorban kiírt
-   transcript útvonalat. A target a meglévő CLI-t hívja és siker után takarít;
-   ne indíts külön letöltést. Kövesd a workflow „Helyi forrásátirat” lépését.
+    Válasszon egy listázott sorszámot, majd küldje vissza a zöld sorban kiírt
+    transcript útvonalat. A target a meglévő CLI-t hívja és siker után takarít;
+    ne indíts külön letöltést. Kövesd a workflow „Helyi forrásátirat” lépését.
+
 2. Azonosítsd a kiválasztott forrásvideót. Több jelölt közül ne válassz
    önállóan; tisztázd, melyiket dolgozzuk át. Ne végezz új népszerűségi
    kutatást; a kiválasztást ne tekintsd bizonyított közönségsikernek.

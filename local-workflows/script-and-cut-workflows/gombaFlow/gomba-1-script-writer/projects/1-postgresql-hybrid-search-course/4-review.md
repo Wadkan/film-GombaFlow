@@ -18,11 +18,11 @@
 ## Elfogadott eltérés
 
 - **R1 — a felhasználó workflow-teszt kivételként elfogadta; technikai hiányként rögzítve**
-  - Hely: `3-script.md`, C4.7 és C5; kapcsolódó terv: `2-chapters.md`, C5.
-  - Megállapítás: a fejezetterv hibás esetként embeddinghiányt vagy embeddingkészítési hibát nevez meg, és ehhez kapcsolja a tranzakció viselkedésének ellenőrzését. A script csak sikeres `demo_insert.py` mentést, külön `record_transaction.py` rollbacket, hiányzó embedding számlálást, HTTP 422 validációt és token nélküli 401/503 választ tartalmaz. Nem ellenőrzi az embeddinghiba esetén elvárt adatbázis-állapotot.
-  - Bizonyíték: `2-chapters.md` 172–176. sor; `3-script.md` 381–405., 418–466. sor. A rollback demonstráció saját leírása szerint sem a sikeres `/articles` mentést vonja vissza.
-  - Felhasználói döntés: „most ez nem gond, elfogadom ahogy van”; a workflow tesztjéhez a felhasználó kérte a review sikeresre állítását és a továbblépést.
-  - Ha később technikai teljességre van szükség, a javasolt javítás: a scriptbe biztonságos, reprodukálható embeddinghibás beszúrási próba és annak DB/HTTP ellenőrzése kerüljön; ha ez nem reprodukálható, a fejezetterv hibás esetét és a scriptet kell összhangba hozni.
+    - Hely: `3-script.md`, C4.7 és C5; kapcsolódó terv: `2-chapters.md`, C5.
+    - Megállapítás: a fejezetterv hibás esetként embeddinghiányt vagy embeddingkészítési hibát nevez meg, és ehhez kapcsolja a tranzakció viselkedésének ellenőrzését. A script csak sikeres `demo_insert.py` mentést, külön `record_transaction.py` rollbacket, hiányzó embedding számlálást, HTTP 422 validációt és token nélküli 401/503 választ tartalmaz. Nem ellenőrzi az embeddinghiba esetén elvárt adatbázis-állapotot.
+    - Bizonyíték: `2-chapters.md` 172–176. sor; `3-script.md` 381–405., 418–466. sor. A rollback demonstráció saját leírása szerint sem a sikeres `/articles` mentést vonja vissza.
+    - Felhasználói döntés: „most ez nem gond, elfogadom ahogy van”; a workflow tesztjéhez a felhasználó kérte a review sikeresre állítását és a továbblépést.
+    - Ha később technikai teljességre van szükség, a javasolt javítás: a scriptbe biztonságos, reprodukálható embeddinghibás beszúrási próba és annak DB/HTTP ellenőrzése kerüljön; ha ez nem reprodukálható, a fejezetterv hibás esetét és a scriptet kell összhangba hozni.
 
 ## Forgatás előtt ténylegesen ellenőrizendő
 

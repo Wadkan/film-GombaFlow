@@ -1,6 +1,6 @@
 ---
 name: gomba-1-script-writer-5-shoot-preparation
-description: 'Külön forgatás előtti felkészülési lista készítése a teljes, elfogadott scriptből. Használd a gomba-1-script-writer workflow 5. lépésében telepítés-, hozzáférés- és demóelőkészítés tervezéséhez.'
+description: "Külön forgatás előtti felkészülési lista készítése a teljes, elfogadott scriptből. Használd a gomba-1-script-writer workflow 5. lépésében telepítés-, hozzáférés- és demóelőkészítés tervezéséhez."
 ---
 
 # 5. Forgatás előtti felkészülés

@@ -1,6 +1,6 @@
 ---
 name: gomba-1-script-writer-2-chapter-planning
-description: 'Fix videóstruktúra kitöltése fejezetekkel, kártyaszövegekkel és átvezetésekkel. Használd a gomba-1-script-writer workflow 2. lépéséhez, meglévő brief és történet alapján.'
+description: "Fix videóstruktúra kitöltése fejezetekkel, kártyaszövegekkel és átvezetésekkel. Használd a gomba-1-script-writer workflow 2. lépéséhez, meglévő brief és történet alapján."
 ---
 
 # 2. Fejezetterv

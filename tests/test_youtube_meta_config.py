@@ -5,8 +5,10 @@ import tempfile
 import unittest
 from unittest import mock
 
-
-SCRIPT_PATH = pathlib.Path(__file__).resolve().parents[1] / "local-workflows/youtube-meta-update/youtube_meta_update.py"
+SCRIPT_PATH = (
+    pathlib.Path(__file__).resolve().parents[1]
+    / "local-workflows/youtube-meta-update/youtube_meta_update.py"
+)
 SPEC = importlib.util.spec_from_file_location("youtube_meta_update", SCRIPT_PATH)
 youtube_meta_update = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(youtube_meta_update)

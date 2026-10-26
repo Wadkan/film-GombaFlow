@@ -9,37 +9,37 @@ Ez készítői lista, nem a nézőnek felolvasandó script. A feladatok még nin
 ## Eszközök és hozzáférések
 
 - **E1 — Fejlesztői gép és forráskód**
-  - Szerep: a külön `beaucarnes/wikisearch` bemutatóprojekt klónozása és futtatása.
-  - Előkészítés és verzió: Git, Python 3.11 vagy 3.12, parancssor, webböngésző; `git clone https://github.com/beaucarnes/wikisearch.git`. A `main` változó ág, ezért a felvétel napján ellenőrizd és jegyezd fel a használt commitot. Repo-állapot ellenőrizve: 2026-10-26.
-  - Jogosultság/költség: GitHub elérés és kimenő internet a repo, Python csomagok, adat és modell letöltéséhez; külön licencdíj nincs igazolva.
-  - Fejezetek: C1, C4.1–C5.
+    - Szerep: a külön `beaucarnes/wikisearch` bemutatóprojekt klónozása és futtatása.
+    - Előkészítés és verzió: Git, Python 3.11 vagy 3.12, parancssor, webböngésző; `git clone https://github.com/beaucarnes/wikisearch.git`. A `main` változó ág, ezért a felvétel napján ellenőrizd és jegyezd fel a használt commitot. Repo-állapot ellenőrizve: 2026-10-26.
+    - Jogosultság/költség: GitHub elérés és kimenő internet a repo, Python csomagok, adat és modell letöltéséhez; külön licencdíj nincs igazolva.
+    - Fejezetek: C1, C4.1–C5.
 
 - **E2 — PostgreSQL környezet és keresési extensionök**
-  - Szerep: cikkek, BM25 indexek és vektorok tárolása, SQL/API próba.
-  - Előkészítés és verzió: a script PostgreSQL 17-et céloz; `pg_textsearch` legalább 1.5.1, továbbá `vector` és `vectorscale` legyen elérhető. Válassz Tiger Cloud szolgáltatást vagy a repo által dokumentált helyi PostgreSQL környezetet; az extension-elérhetőséget a konkrét szolgáltatásban ellenőrizd.
-  - Hozzáférés: a saját adatbázishoz tartozó `DATABASE_URL`; hosztolt környezethez szolgáltatói fiók és a szükséges adatbázis-jogosultság. Tiger Cloud URI-nál tartsd meg az `sslmode=require` paramétert; helyi PostgreSQL esetén a kapcsolat paramétereit a helyi konfigurációhoz igazítsd. Az URI maradjon titkos, `.env` fájlban.
-  - Költség és limit: a Tiger Data hivatalos ára 2026-10-26-án Performance csomagnál $30/hó induló compute és $0.177/GB-hó storage; Scale csomagnál $36/hó és $0.212/GB-hó. Az elszámolás órás compute- és tényleges tárhelyhasználatú; a compute régiónként eltérhet, a kiegészítők további díjasak lehetnek. A weboldal új felhasználóknak 30 napos Performance próbát jelez, de jogosultságodat és a szolgáltatás aktuális fiókárát a Tiger Console-ban ellenőrizd. Forrás: [Tiger Data hivatalos árlista](https://www.tigerdata.com/pricing), ellenőrizve 2026-10-26-án.
-  - Helyi futtatás költsége: nincs igazolt szolgáltatói díj, de a saját gép erőforrás- és tárhelyhasználatával számolj.
-  - Fejezetek: C1–C5.
+    - Szerep: cikkek, BM25 indexek és vektorok tárolása, SQL/API próba.
+    - Előkészítés és verzió: a script PostgreSQL 17-et céloz; `pg_textsearch` legalább 1.5.1, továbbá `vector` és `vectorscale` legyen elérhető. Válassz Tiger Cloud szolgáltatást vagy a repo által dokumentált helyi PostgreSQL környezetet; az extension-elérhetőséget a konkrét szolgáltatásban ellenőrizd.
+    - Hozzáférés: a saját adatbázishoz tartozó `DATABASE_URL`; hosztolt környezethez szolgáltatói fiók és a szükséges adatbázis-jogosultság. Tiger Cloud URI-nál tartsd meg az `sslmode=require` paramétert; helyi PostgreSQL esetén a kapcsolat paramétereit a helyi konfigurációhoz igazítsd. Az URI maradjon titkos, `.env` fájlban.
+    - Költség és limit: a Tiger Data hivatalos ára 2026-10-26-án Performance csomagnál $30/hó induló compute és $0.177/GB-hó storage; Scale csomagnál $36/hó és $0.212/GB-hó. Az elszámolás órás compute- és tényleges tárhelyhasználatú; a compute régiónként eltérhet, a kiegészítők további díjasak lehetnek. A weboldal új felhasználóknak 30 napos Performance próbát jelez, de jogosultságodat és a szolgáltatás aktuális fiókárát a Tiger Console-ban ellenőrizd. Forrás: [Tiger Data hivatalos árlista](https://www.tigerdata.com/pricing), ellenőrizve 2026-10-26-án.
+    - Helyi futtatás költsége: nincs igazolt szolgáltatói díj, de a saját gép erőforrás- és tárhelyhasználatával számolj.
+    - Fejezetek: C1–C5.
 
 - **E3 — Helyi konfiguráció és admin jogosultság**
-  - Szerep: DB-kapcsolat és az autentikált `POST /articles` demo.
-  - Előkészítés: a `.env.example` másolata `.env`-be; `DATABASE_URL` beállítása. `ADMIN_TOKEN` csak az írási demóhoz kell; helyben generáld a repo README parancsával (`python -c 'import secrets; print(secrets.token_urlsafe(32))'`).
-  - Biztonság: token- vagy URI-értéket ne küldj chatbe, ne tedd Gitbe, ne jelenítsd meg a terminálfelvételen. Szerkesztés előtt állítsd le a felvételt; rögzítés előtt zárd be a titkos értékeket tartalmazó ablakot. A `cp -n` meglévő `.env`-et nem ír felül.
-  - Fejezetek: C4.1, C4.6–C5.
+    - Szerep: DB-kapcsolat és az autentikált `POST /articles` demo.
+    - Előkészítés: a `.env.example` másolata `.env`-be; `DATABASE_URL` beállítása. `ADMIN_TOKEN` csak az írási demóhoz kell; helyben generáld a repo README parancsával (`python -c 'import secrets; print(secrets.token_urlsafe(32))'`).
+    - Biztonság: token- vagy URI-értéket ne küldj chatbe, ne tedd Gitbe, ne jelenítsd meg a terminálfelvételen. Szerkesztés előtt állítsd le a felvételt; rögzítés előtt zárd be a titkos értékeket tartalmazó ablakot. A `cp -n` meglévő `.env`-et nem ír felül.
+    - Fejezetek: C4.1, C4.6–C5.
 
 - **E4 — Lokális embeddingmodell és gépi erőforrás**
-  - Szerep: a szemantikus kereséshez a cikk- és queryvektorok készítése.
-  - Előkészítés: `sentence-transformers/all-MiniLM-L6-v2`, revízió `c9745ed1d9f207416be6d2e6f8de32d1f16199bf`, CPU, 384 dimenzió; a `sentence-transformers` csomag és a Hugging Face modell letöltési hozzáférése kell. A repo a cím és a törzs első 1 500 karakteréből készít dokumentumembeddinget.
-  - API-kulcs/költség: az alapbeállításhoz nem kell embedding API-kulcs és nincs külső embedding API-használati díj; a helyi gép számítási idejét és erőforrását igényli.
-  - Opcionális változat: az OpenAI `text-embedding-3-small` nincs benne a most elfogadott forgatókönyv futtatási útjában. Ha később erre váltasz, API-kulcs és használati díj kell, továbbá külön, a modellhez illő vektoroszlop/index és egységes új vektorhalmaz. Most ne hozz létre hozzá kulcsot.
-  - Fejezetek: C3–C5.
+    - Szerep: a szemantikus kereséshez a cikk- és queryvektorok készítése.
+    - Előkészítés: `sentence-transformers/all-MiniLM-L6-v2`, revízió `c9745ed1d9f207416be6d2e6f8de32d1f16199bf`, CPU, 384 dimenzió; a `sentence-transformers` csomag és a Hugging Face modell letöltési hozzáférése kell. A repo a cím és a törzs első 1 500 karakteréből készít dokumentumembeddinget.
+    - API-kulcs/költség: az alapbeállításhoz nem kell embedding API-kulcs és nincs külső embedding API-használati díj; a helyi gép számítási idejét és erőforrását igényli.
+    - Opcionális változat: az OpenAI `text-embedding-3-small` nincs benne a most elfogadott forgatókönyv futtatási útjában. Ha később erre váltasz, API-kulcs és használati díj kell, továbbá külön, a modellhez illő vektoroszlop/index és egységes új vektorhalmaz. Most ne hozz létre hozzá kulcsot.
+    - Fejezetek: C3–C5.
 
 - **E5 — Mesterséges példaadatok és tesztkörnyezet**
-  - Szerep: a rögzített Wikipedia-adat, a keresési esetek és az új rekord demója.
-  - Előkészítés: dedikált, tesztelésre szánt adatbázis; a loader az ellenőrzőösszeggel védett 2023-as Simple English Wikipedia snapshotot tölti be. Teljes állapotnál 241 787 pozitív forrás ID és a `Volcano`, `Bioluminescence` cím szükséges. A vektoros kohorsz legfeljebb 25 002 cikk lehet.
-  - Szintetikus cikk: a repo `demo_insert.py` segédje a `quokkatapir search demo` rekordot adja hozzá; egyszer futtasd, mert újrafuttatáskor új negatív ID-jű rekordot hoz létre. A `record_transaction.py` külön rollback demonstráció; rollback után az adatbázis sequence-e ettől még előreléphet.
-  - Fejezetek: C1, C4.2–C5.
+    - Szerep: a rögzített Wikipedia-adat, a keresési esetek és az új rekord demója.
+    - Előkészítés: dedikált, tesztelésre szánt adatbázis; a loader az ellenőrzőösszeggel védett 2023-as Simple English Wikipedia snapshotot tölti be. Teljes állapotnál 241 787 pozitív forrás ID és a `Volcano`, `Bioluminescence` cím szükséges. A vektoros kohorsz legfeljebb 25 002 cikk lehet.
+    - Szintetikus cikk: a repo `demo_insert.py` segédje a `quokkatapir search demo` rekordot adja hozzá; egyszer futtasd, mert újrafuttatáskor új negatív ID-jű rekordot hoz létre. A `record_transaction.py` külön rollback demonstráció; rollback után az adatbázis sequence-e ettől még előreléphet.
+    - Fejezetek: C1, C4.2–C5.
 
 ## Előkészítési sorrend
 

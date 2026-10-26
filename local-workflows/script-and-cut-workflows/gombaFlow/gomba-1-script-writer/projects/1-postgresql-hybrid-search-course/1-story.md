@@ -30,8 +30,8 @@
 ## Állítások és átadás
 
 - Igazolást igénylő állítások:
-  - BM25, szemantikus és hibrid keresés működése, RRF és a forrásdemó találatai → F1 időbélyegek és F3; saját eredményként csak saját funkcionális próba után mondható ki.
-  - A használt kiterjesztések, verziók, adatbetöltés, embedding modell/szolgáltató, API-konfiguráció és telepítési mód → a forrás projektfájljainak ellenőrzése még szükséges; F1 egyes műveleteket csak elmondásként rögzít.
-  - Költség, sebesség, skálázhatóság vagy javuló relevancia → az adott futtatási környezeten mért vagy hivatalos forrásból ellenőrzött adat nélkül nem állítható.
+    - BM25, szemantikus és hibrid keresés működése, RRF és a forrásdemó találatai → F1 időbélyegek és F3; saját eredményként csak saját funkcionális próba után mondható ki.
+    - A használt kiterjesztések, verziók, adatbetöltés, embedding modell/szolgáltató, API-konfiguráció és telepítési mód → a forrás projektfájljainak ellenőrzése még szükséges; F1 egyes műveleteket csak elmondásként rögzít.
+    - Költség, sebesség, skálázhatóság vagy javuló relevancia → az adott futtatási környezeten mért vagy hivatalos forrásból ellenőrzött adat nélkül nem állítható.
 - Nyitott akadályok: nincs blokkoló forráshiány. A repo `main` változó ág, ezért a konkrét parancsokat és aktuális szolgáltatási feltételeket felvétel előtt újra ellenőrizni kell; a saját keresési és hibateszt eredmények még nincsenek meg.
 - Átadás: a történeti vázlat és hook az újrafuttatott briefhez igazodik. A bemutatott WikiSearch-eredményeket felvétel előtt ténylegesen futtatni és rögzíteni kell.

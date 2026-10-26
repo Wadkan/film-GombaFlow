@@ -7,7 +7,6 @@ import threading
 import time
 import unittest
 
-
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 CLI = REPO_ROOT / "local-workflows/youtube-meta-update/youtube_meta_update.py"
 READY_META = {
@@ -39,7 +38,9 @@ class WebhookHandler(http.server.BaseHTTPRequestHandler):
         body = self.rfile.read(int(self.headers.get("Content-Length", "0")))
         type(self).received.append((self.path, self.headers.get("X-Webhook-Token"), body))
         if type(self).metadata_path:
-            type(self).local_status_on_receive = json.loads(type(self).metadata_path.read_text())["status"]
+            type(self).local_status_on_receive = json.loads(type(self).metadata_path.read_text())[
+                "status"
+            ]
         if type(self).delay_seconds:
             time.sleep(type(self).delay_seconds)
         data = json.dumps(type(self).response_body).encode()
@@ -146,7 +147,11 @@ class YoutubeMetaUpdateIntegrationTests(unittest.TestCase):
 
     def test_persists_error_returned_by_webhook(self):
         WebhookHandler.response_status = 400
-        WebhookHandler.response_body = {"status": "error", "step": "video-update", "message": "invalid video"}
+        WebhookHandler.response_body = {
+            "status": "error",
+            "step": "video-update",
+            "message": "invalid video",
+        }
 
         result = self.invoke()
 
@@ -184,8 +189,17 @@ class YoutubeMetaUpdateIntegrationTests(unittest.TestCase):
 
     def test_parallel_and_repeated_updates_are_blocked(self):
         WebhookHandler.delay_seconds = 0.25
-        command = ["python3", str(CLI), "update", str(self.meta_path), "--config", str(self.config_path)]
-        first = subprocess.Popen(command, cwd=REPO_ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        command = [
+            "python3",
+            str(CLI),
+            "update",
+            str(self.meta_path),
+            "--config",
+            str(self.config_path),
+        ]
+        first = subprocess.Popen(
+            command, cwd=REPO_ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
         self.addCleanup(lambda: first.poll() is None and first.kill())
         deadline = time.monotonic() + 2
         while not WebhookHandler.received and time.monotonic() < deadline:
@@ -199,10 +213,17 @@ class YoutubeMetaUpdateIntegrationTests(unittest.TestCase):
         self.assertEqual(len(WebhookHandler.received), 1)
 
     def test_check_does_not_change_meta_or_claim_youtube_update(self):
-        WebhookHandler.response_body = {"status": "validated", "step": "connection", "youtubeModified": False}
+        WebhookHandler.response_body = {
+            "status": "validated",
+            "step": "connection",
+            "youtubeModified": False,
+        }
         result = subprocess.run(
             ["python3", str(CLI), "check", str(self.meta_path), "--config", str(self.config_path)],
-            cwd=REPO_ROOT, text=True, capture_output=True, check=False,
+            cwd=REPO_ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.read_meta(), READY_META)

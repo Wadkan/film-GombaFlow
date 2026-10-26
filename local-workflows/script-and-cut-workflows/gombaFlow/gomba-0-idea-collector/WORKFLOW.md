@@ -37,7 +37,6 @@ A becslés tapasztalt fejlesztőre vonatkozzon, AI-kódolási segítséggel. Ré
 - Bemutatott technológia és megoldás.
 - Reprodukálhatóság (1–5), becsült idő, rövid indoklás.
 
-
 ## Eredményfájl létrehozása
 
 A kutatás kész eredményét külön Markdown-fájlba mentsd a

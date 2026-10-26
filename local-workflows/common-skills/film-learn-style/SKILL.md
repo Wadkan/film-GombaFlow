@@ -14,9 +14,9 @@ workflow-koordinátor vagy ember futtatja.
    a registry-kulcsot és a feloldott, repo-relatív workflow-gyökérútvonalat.
 4. Tedd fel ugyanabban az üzenetben, két külön sorban, pontosan ezeket a kérdéseket:
 
-   `Melyik script-and-cut-workflow sorszámát választod? Csak a sorszámot add meg.`
+    `Melyik script-and-cut-workflow sorszámát választod? Csak a sorszámot add meg.`
 
-   `Mit szeretnél hozzáadni ehhez a workflow-hoz?`
+    `Mit szeretnél hozzáadni ehhez a workflow-hoz?`
 
 5. Kérd, hogy az első kérdésre a felhasználó csak a workflow sorszámát adja
    meg, a másodikban pedig írja le a hozzáadandó szabályt. A két kérdés után

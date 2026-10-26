@@ -21,9 +21,9 @@
 Az egységazonosítókat és címeket a [videóstruktúrából](../VIDEO_STRUCTURE.md)
 vedd át; minden felső szintű egységhez legyen egy sor.
 
-| Egység ID és cím | Saját tartalmi fordulat | Nézőnek adott új információ/eredmény |
-|---|---|---|
-| [ID és cím] | [mi történik ebben a saját történetben] | [miért viszi előre] |
+| Egység ID és cím | Saját tartalmi fordulat                 | Nézőnek adott új információ/eredmény |
+| ---------------- | --------------------------------------- | ------------------------------------ |
+| [ID és cím]      | [mi történik ebben a saját történetben] | [miért viszi előre]                  |
 
 ## Állítások és átadás
 

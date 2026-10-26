@@ -1,6 +1,6 @@
 ---
 name: gomba-1-script-writer-1-story-hook
-description: 'Kiválasztott videó saját történetté és hookká átdolgozása magyarul. Használd a gomba-1-script-writer workflow 1. lépésében, elfogadott brief alapján.'
+description: "Kiválasztott videó saját történetté és hookká átdolgozása magyarul. Használd a gomba-1-script-writer workflow 1. lépésében, elfogadott brief alapján."
 ---
 
 # 1. Átdolgozott történet

@@ -16,7 +16,6 @@ Ne írj magyarázó szöveget, bevezetőt, összefoglalót vagy megjegyzést.
 
 Kizárólag a definiált output formátum engedélyezett.
 
-
 INPUT
 
 Input file neve:
@@ -27,7 +26,6 @@ Elvárt input schema verzió:
 
 1.0
 
-
 Kötelező mezők minden rekordban:
 
 - clip_id
@@ -37,11 +35,9 @@ Kötelező mezők minden rekordban:
 - original_text
 - speech_type
 
-
 PREFLIGHT ELLENŐRZÉSEK
 
 A feldolgozás megkezdése előtt kötelező minden ellenőrzést végrehajtani.
-
 
 PF-001
 
@@ -53,7 +49,6 @@ HIBA: Input file nem található: transcript_analysis.json
 
 ÁLLJ MEG.
 
-
 PF-002
 
 Input schema_version létezik.
@@ -63,7 +58,6 @@ Ha nem:
 HIBA: Hiányzik az input schema_version.
 
 ÁLLJ MEG.
-
 
 PF-003
 
@@ -79,7 +73,6 @@ HIBA: Nem támogatott input schema verzió.
 
 ÁLLJ MEG.
 
-
 PF-004
 
 Legalább egy clip található.
@@ -90,7 +83,6 @@ HIBA: A bemenet üres.
 
 ÁLLJ MEG.
 
-
 PF-005
 
 Minden kötelező mező jelen van.
@@ -100,7 +92,6 @@ Ha nem:
 HIBA: Hiányos rekord található.
 
 ÁLLJ MEG.
-
 
 PF-006
 
@@ -116,7 +107,6 @@ HIBA: Érvénytelen timestamp található.
 
 ÁLLJ MEG.
 
-
 PF-007
 
 Minden rekord rendelkezik létrehozási dátummal.
@@ -127,7 +117,6 @@ HIBA: Hiányzik a file creation date.
 
 ÁLLJ MEG.
 
-
 PF-008
 
 Ha az input schema verzió eltér az elvárttól, a feldolgozás nem folytatható.
@@ -135,7 +124,6 @@ Ha az input schema verzió eltér az elvárttól, a feldolgozás nem folytathat�
 HIBA: Nem támogatott schema verzió.
 
 ÁLLJ MEG.
-
 
 ELEMZÉSI FELADAT
 
@@ -151,7 +139,6 @@ Az összes clipet láthatod és elemezheted együtt.
 
 Az ismétlések felismerése kizárólag ugyanazon fájlon belül történhet.
 
-
 TIMELINE SORREND
 
 A timeline_order mezőt a file creation date alapján kell meghatározni.
@@ -159,7 +146,6 @@ A timeline_order mezőt a file creation date alapján kell meghatározni.
 A legkorábban létrehozott fájl kapja az 1-es sorrendet.
 
 A sorrend növekvő.
-
 
 DÖNTÉSI SZABÁLYOK
 
@@ -171,13 +157,11 @@ Marker neve:
 
 retake
 
-
 2.
 
 A duplicate és restart tartalmak nem törölhetők.
 
 Csak markerrel jelölhetők.
-
 
 3.
 
@@ -185,13 +169,11 @@ A partial_sentence tartalmak nem törölhetők.
 
 Csak markerrel jelölhetők.
 
-
 4.
 
 A silence tartalmak törölhetők.
 
 A törlés csak timeline szintű javaslat lehet.
-
 
 5.
 
@@ -201,11 +183,9 @@ Marker neve:
 
 broll_candidate
 
-
 6.
 
 A broll_candidate rekordok nem törölhetők automatikusan.
-
 
 7.
 
@@ -213,16 +193,13 @@ A filler tartalmak törölhetők.
 
 A törlés csak timeline szintű javaslat lehet.
 
-
 8.
 
 Unknown tartalom esetén review marker szükséges.
 
-
 9.
 
 Semmilyen egyéb tartalom nem törölhető automatikusan.
-
 
 MARKER SZÍNEK
 
@@ -244,7 +221,6 @@ review_needed
 none
 = green
 
-
 MEGHATÁROZANDÓ MEZŐK
 
 timeline_action
@@ -254,7 +230,6 @@ Lehetséges értékek:
 - include
 - review
 - remove
-
 
 marker
 
@@ -267,7 +242,6 @@ Lehetséges értékek:
 - broll_candidate
 - review_needed
 
-
 marker_color
 
 Lehetséges értékek:
@@ -279,13 +253,11 @@ Lehetséges értékek:
 - blue
 - yellow
 
-
 timeline_order
 
 Pozitív egész szám.
 
 A file creation date alapján számolandó.
-
 
 SZABÁLYOK
 
@@ -299,7 +271,6 @@ SZABÁLYOK
 - Nem generálhatsz XML, FCPXML vagy OTIO fájlt.
 - Kizárólag szerkesztői döntéseket hozhatsz.
 
-
 ELAKADÁS KEZELÉSE
 
 Ha bármely szükséges információ hiányzik vagy nem egyértelmű:
@@ -307,7 +278,6 @@ Ha bármely szükséges információ hiányzik vagy nem egyértelmű:
 ÁLLJ MEG.
 
 Kizárólag az alábbi formátumban kérdezhetsz.
-
 
 KÉRDÉS-001
 
@@ -323,7 +293,6 @@ A) ...
 B) ...
 C) ...
 
-
 Több kérdés esetén:
 
 KÉRDÉS-001
@@ -335,9 +304,7 @@ KÉRDÉS-002
 KÉRDÉS-003
 ...
 
-
 A válaszok megérkezéséig tilos folytatni a feldolgozást.
-
 
 OUTPUT
 
@@ -349,29 +316,27 @@ Output schema verzió:
 
 1.0
 
-
 OUTPUT SÉMA
 
 {
-  "schema_version": "1.0",
-  "source_file": "transcript_analysis.json",
-  "input_schema_version": "1.0",
-  "clips": [
-    {
-      "clip_id": "clip_001",
-      "file_name": "clip01.mp4",
-      "start": 12.34,
-      "end": 18.91,
-      "original_text": "eredeti whisper szöveg",
-      "speech_type": "normal",
-      "timeline_action": "include",
-      "timeline_order": 1,
-      "marker": "none",
-      "marker_color": "green"
-    }
-  ]
+"schema_version": "1.0",
+"source_file": "transcript_analysis.json",
+"input_schema_version": "1.0",
+"clips": [
+{
+"clip_id": "clip_001",
+"file_name": "clip01.mp4",
+"start": 12.34,
+"end": 18.91,
+"original_text": "eredeti whisper szöveg",
+"speech_type": "normal",
+"timeline_action": "include",
+"timeline_order": 1,
+"marker": "none",
+"marker_color": "green"
 }
-
+]
+}
 
 SIKERES FUTÁS ESETÉN
 

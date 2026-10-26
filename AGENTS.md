@@ -25,8 +25,6 @@ orchestrated path only the Grok orchestrator runs `claim`, `commit`, and
 
 Do not use Markdown tables in chat replies or in files you write or edit; use headings and bullet lists instead.
 
-
-
 Allocate `BUG{N}` / `FEATURE-{N}` only from the clean root registries
 `docs/planning/BUGS.md` and `docs/planning/FEATURES.md`: read **Next unused
 integer**, confirm the destination path is free, add the registry heading with

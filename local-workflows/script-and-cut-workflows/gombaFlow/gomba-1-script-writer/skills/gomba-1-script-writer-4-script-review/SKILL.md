@@ -1,6 +1,6 @@
 ---
 name: gomba-1-script-writer-4-script-review
-description: 'Forgatási script tartalmi és technikai review-ja, ismétlések és túlmagyarázás feltárásával. Használd a gomba-1-script-writer workflow 4. lépéséhez, nem nézettségi vagy A/B-teszthez.'
+description: "Forgatási script tartalmi és technikai review-ja, ismétlések és túlmagyarázás feltárásával. Használd a gomba-1-script-writer workflow 4. lépéséhez, nem nézettségi vagy A/B-teszthez."
 ---
 
 # 4. Scriptreview

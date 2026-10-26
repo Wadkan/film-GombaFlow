@@ -19,12 +19,12 @@
 
 - Input → fő feldolgozási lépések → output: keresőkifejezés → külön kulcsszavas/BM25 és szemantikus vektoros találati lista → RRF-fel összevont hibrid rangsor → FastAPI-n keresztül megjelenített keresési eredmények. Új cikk felvételekor embedding készül, majd a szöveg és vektor egy adatbázis-tranzakcióban kerül mentésre.
 - Fő eszközök és korlátok:
-  - PostgreSQL, `pg_textsearch` BM25-höz, `pgvector` és `pgvectorscale` vektoros kereséshez.
-  - Python, FastAPI és Psycopg az API-hoz; a forrás TigerCloudot használ, és helyi futtatási lehetőséget is említ.
-  - A transcript szerint a kulcsszavas korpusz körülbelül 242 000 Simple English Wikipedia-cikket tartalmaz, a szemantikus keresés pedig körülbelül 25 000 cikken fut. Ez korlátozza a két mód közvetlen összevetését.
-  - Az alapbeállítás helyben futtatja a rögzített `sentence-transformers/all-MiniLM-L6-v2` modellt CPU-n; 384 dimenziós embeddingeket készít, külső embedding API-kulcs nélkül. Az opcionális `text-embedding-3-small` alternatíva API-kulcsot és usage-alapú díjat igényel, és külön vektoroszlopot/indexet kíván.
-  - A repository Python 3.11/3.12-t és PostgreSQL 17-et céloz; a `pg_textsearch` 1.5.1 a dokumentált verziócél. A hosztolt Tiger Cloud szolgáltatás költsége és aktuális elérhetősége fiók- és szolgáltatásfüggő, felvétel előtt ellenőrizendő.
-  - A benchmarkrész harmadik fél konkrét mérését ismerteti; nem bizonyítja ennek az alkalmazásnak vagy más adatoknak a teljesítményét.
+    - PostgreSQL, `pg_textsearch` BM25-höz, `pgvector` és `pgvectorscale` vektoros kereséshez.
+    - Python, FastAPI és Psycopg az API-hoz; a forrás TigerCloudot használ, és helyi futtatási lehetőséget is említ.
+    - A transcript szerint a kulcsszavas korpusz körülbelül 242 000 Simple English Wikipedia-cikket tartalmaz, a szemantikus keresés pedig körülbelül 25 000 cikken fut. Ez korlátozza a két mód közvetlen összevetését.
+    - Az alapbeállítás helyben futtatja a rögzített `sentence-transformers/all-MiniLM-L6-v2` modellt CPU-n; 384 dimenziós embeddingeket készít, külső embedding API-kulcs nélkül. Az opcionális `text-embedding-3-small` alternatíva API-kulcsot és usage-alapú díjat igényel, és külön vektoroszlopot/indexet kíván.
+    - A repository Python 3.11/3.12-t és PostgreSQL 17-et céloz; a `pg_textsearch` 1.5.1 a dokumentált verziócél. A hosztolt Tiger Cloud szolgáltatás költsége és aktuális elérhetősége fiók- és szolgáltatásfüggő, felvétel előtt ellenőrizendő.
+    - A benchmarkrész harmadik fél konkrét mérését ismerteti; nem bizonyítja ennek az alkalmazásnak vagy más adatoknak a teljesítményét.
 - Megtartjuk: az egy adatbázisban tárolt tartalom és keresési indexek gondolatát; a kulcsszavas, szemantikus és hibrid mód eltérő szerepét; azonos tesztlekérdezéseket; a tényleges írási és keresési próbát; a költség, lefedettség és emberi mérlegelés korlátait.
 - Átdolgozzuk: a magyarázatot magyar, vállalati dokumentum- és termékkeresési problémához kötjük, miközben a bemutatott forrásprojektet és annak Wikipédiás adatait világosan megnevezzük. Saját ügyféladatot vagy nem ellenőrzött produkciós állítást nem használunk. Konkrét saját példát a felhasználó jóváhagyása után rögzítünk.
 

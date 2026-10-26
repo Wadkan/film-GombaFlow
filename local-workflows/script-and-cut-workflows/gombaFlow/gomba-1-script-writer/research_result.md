@@ -21,23 +21,23 @@ A javasolt videóhossz egy konkrét üzleti automatizálásnál 12–25 perc. En
 
 A nézettségi adatokat 2026. október 21-én ellenőriztem. Ahol a keresési felület csak relatív publikálási időt adott meg, nem alakítottam azt mesterségesen pontos dátummá.
 
-#	Videó és készítő	Publikálás	Ellenőrzött nézettség	Elemzés alapja	Megjegyzés1	How to Build an Email AI Agent Using N8N, Rajeevdaz	„1 year ago”	3,1 ezer	Leírás, chapterlista	Demo → infrastruktúra → build → áttekintés → teszt → lezárás.
-2	How To Parse ANY Document in n8n, Erik Lazar	„1y ago”	2,5 ezer	Leírás, chapterlista	Rövid, egyetlen dokumentumfeldolgozási use case köré épített tutorial.
-3	n8n AI Automation: Create a Smart Email Support Agent, Sergii Cherbadzhy	„1 year ago”	360	Leírás, részletes chapterlista	A credential setup, classification, RAG, prompt és Gmail-output külön lépés.
-4	N8N Full Tutorial: Building AI Agents in 2025 for Beginners, AI Foundations	„1 year ago”	419 ezer	Leírás, chapterlista	Alapfogalmak → interface → workflow → trigger → model → test → memory → tools → final test.
-5	Build & Sell n8n AI Agents, Nate Herk	„1 year ago”	1,9 millió	Leírás, részletes chapterlista	Nyolcórás kurzus; összehasonlítási kontrollként használható, nem ideális egyetlen normál epizód mintájának.
-6	Build an Email AI Agent with n8n, Milan Vasarhelyi	„8mo ago”	1,1 ezer	Részletes leírás	Gmail Trigger → knowledge base → labels → AI Agent → tools → draft → Telegram review.
-7	How to Build AI Agents with n8n, Howfinity	„9 months ago”	9,9 ezer	Leírás	Self-hosting, model setup, nodes, memory, tools, tesztelés és hibajavítás is szerepel.
-8	n8n Tutorial for Beginners – Full Course, Website Learners	2026. július 10.	68 898	Leírás	Három teljes példa: form-to-email, AI chat agent és webhook-to-Google Sheets.
-9	n8n: Generate Word, Excel & PDF Documents, Documentero	„1 year ago”	12 ezer	Leírás	Integráció → JSON-adat → template → dokumentumgenerálás → üzleti alkalmazások.
-10	Automate PDF Data Extraction with n8n EASILY, WorldofAI	A találatban nem elérhető	14 378	Leírás, videómetaadat	Konkrét PDF-extraction probléma, open-source technológiára építve.
+# Videó és készítő Publikálás Ellenőrzött nézettség Elemzés alapja Megjegyzés1 How to Build an Email AI Agent Using N8N, Rajeevdaz „1 year ago” 3,1 ezer Leírás, chapterlista Demo → infrastruktúra → build → áttekintés → teszt → lezárás.
+
+2 How To Parse ANY Document in n8n, Erik Lazar „1y ago” 2,5 ezer Leírás, chapterlista Rövid, egyetlen dokumentumfeldolgozási use case köré épített tutorial.
+3 n8n AI Automation: Create a Smart Email Support Agent, Sergii Cherbadzhy „1 year ago” 360 Leírás, részletes chapterlista A credential setup, classification, RAG, prompt és Gmail-output külön lépés.
+4 N8N Full Tutorial: Building AI Agents in 2025 for Beginners, AI Foundations „1 year ago” 419 ezer Leírás, chapterlista Alapfogalmak → interface → workflow → trigger → model → test → memory → tools → final test.
+5 Build & Sell n8n AI Agents, Nate Herk „1 year ago” 1,9 millió Leírás, részletes chapterlista Nyolcórás kurzus; összehasonlítási kontrollként használható, nem ideális egyetlen normál epizód mintájának.
+6 Build an Email AI Agent with n8n, Milan Vasarhelyi „8mo ago” 1,1 ezer Részletes leírás Gmail Trigger → knowledge base → labels → AI Agent → tools → draft → Telegram review.
+7 How to Build AI Agents with n8n, Howfinity „9 months ago” 9,9 ezer Leírás Self-hosting, model setup, nodes, memory, tools, tesztelés és hibajavítás is szerepel.
+8 n8n Tutorial for Beginners – Full Course, Website Learners 2026. július 10. 68 898 Leírás Három teljes példa: form-to-email, AI chat agent és webhook-to-Google Sheets.
+9 n8n: Generate Word, Excel & PDF Documents, Documentero „1 year ago” 12 ezer Leírás Integráció → JSON-adat → template → dokumentumgenerálás → üzleti alkalmazások.
+10 Automate PDF Data Extraction with n8n EASILY, WorldofAI A találatban nem elérhető 14 378 Leírás, videómetaadat Konkrét PDF-extraction probléma, open-source technológiára építve.
 A mintaválasztás korlátai
 A minta angol nyelvű videókból áll, ezért a magyar üzleti közönség tempója és előismerete eltérhet.
 Nem minden videóhoz volt nyilvánosan kereshető teljes átirat vagy pontos publikálási dátum.
 A nézettség önmagában nem bizonyítja a videó szerkezetének hatékonyságát.
 A nagy csatornák videói meglévő audience, thumbnail, cím, keresési pozíció és terjesztés miatt is előnyben lehetnek.
-A relatív teljesítmény csak korlátozottan értékelhető. Például az AI Foundations 419 ezres videója erős eredmény, de a csatornának 368 ezer feliratkozója van; Erik Lazar 2,5 ezres videója viszont egy 1,65 ezres csatornán jelent meg. Ez nem teszi automatikusan jobbá egyik szerkezetét sem, de eltérő kontextust mutat.
-3. Visszatérő minták
+A relatív teljesítmény csak korlátozottan értékelhető. Például az AI Foundations 419 ezres videója erős eredmény, de a csatornának 368 ezer feliratkozója van; Erik Lazar 2,5 ezres videója viszont egy 1,65 ezres csatornán jelent meg. Ez nem teszi automatikusan jobbá egyik szerkezetét sem, de eltérő kontextust mutat. 3. Visszatérő minták
 3.1. A kész eredmény korai bemutatása
 
 Közvetlen megfigyelés:
@@ -102,8 +102,8 @@ valós inputot;
 execution futást;
 valós outputot;
 legalább egy rövid hibás vagy határesetet;
-döntést arról, hol szükséges emberi ellenőrzés.
-4. Javasolt állandó fejezetszerkezet
+döntést arról, hol szükséges emberi ellenőrzés. 4. Javasolt állandó fejezetszerkezet
+
 1. Probléma és ígéret
 
 Cél: azonnal tisztázni, milyen üzleti problémát old meg a videó.
@@ -285,57 +285,57 @@ A költségbe az API-, hosting- és platformköltség mellett az emberi ellenőr
 Státusz: saját, tesztelendő template.
 
 6. Nézői sorrend és felvételi sorrend
-Nézői sorrend
-Probléma és ígéret
-Kész eredmény
-Előtte–utána
-Szolgáltatások és költségek
-Megvalósítás
-Teszt és korlátok
-Összefoglalás
-CTA
-Javasolt felvételi sorrend
-Projekt teljes elkészítése
-Reprodukálható tesztadatok előkészítése
-End-to-end teszt rögzítése
-Megvalósítás képernyőfelvétele
-Hibák, korlátok és edge case-ek rögzítése
-Szolgáltatáslista és költségek véglegesítése
-Előtte–utána állítások ellenőrzése
-Hook felvétele
-Összefoglalás felvétele
-CTA felvétele
+   Nézői sorrend
+   Probléma és ígéret
+   Kész eredmény
+   Előtte–utána
+   Szolgáltatások és költségek
+   Megvalósítás
+   Teszt és korlátok
+   Összefoglalás
+   CTA
+   Javasolt felvételi sorrend
+   Projekt teljes elkészítése
+   Reprodukálható tesztadatok előkészítése
+   End-to-end teszt rögzítése
+   Megvalósítás képernyőfelvétele
+   Hibák, korlátok és edge case-ek rögzítése
+   Szolgáltatáslista és költségek véglegesítése
+   Előtte–utána állítások ellenőrzése
+   Hook felvétele
+   Összefoglalás felvétele
+   CTA felvétele
 
 Ajánlás: a felvetett „előbb működő projekt, utána talking head” módszer jó irány. Így a hook nem egy előzetes feltételezésre, hanem a ténylegesen elkészült eredményre épül. Csökken annak kockázata is, hogy a videó elején többet ígérsz, mint amit a végső workflow teljesít.
 
 Státusz: saját, erősen ajánlott, de próbavideóval validálandó production workflow.
 
 7. Review-szempontok
-Unalmasság
-Van 60–90 másodpercnél hosszabb szakasz új eredmény vagy állapotváltozás nélkül?
-Látható, hogy az aktuális lépés hogyan viszi közelebb a workflow-t a célhoz?
-A credential setup hosszabb, mint amennyit a konkrét videó indokol?
-Ismétlés
-A hook, demo, előtte–utána és összefoglalás ugyanazt mondja el négyszer?
-Egy node vagy szolgáltatás szerepe többször, azonos mélységben kerül elmagyarázásra?
-Az összefoglaló eredményt ismétel, vagy a teljes buildet?
-Túlmagyarázás
-A magyarázat szükséges az adott lépés végrehajtásához?
-Általános n8n-alapfogalomról van szó, amely külön alapozó anyagba tartozna?
-Egy fontos döntést magyarázunk, vagy csak a képernyőn látható UI-t olvassuk fel?
-Ígéret–eredmény összhang
-A nyitó ígéret szó szerint teljesül?
-A demo ugyanazt mutatja, amit a videóban később felépítünk?
-Elhangzik, ha az automatizáció csak draftot készít, és nem küld automatikusan?
-Elhangzanak a lényeges költségek és korlátok?
-Technikai követhetőség
-Minden szükséges account, credential és permission szerepel?
-Minden code, expression, prompt és fontos configuration reprodukálható?
-Látszik a node inputja és outputja?
-Bemutatjuk, hogyan aktiválható és hogyan futtatható a workflow?
-A titkos adatok maszkolva vannak?
-Van end-to-end teszt?
-Egy kezdő meg tudja állapítani, hol hibázott?
+   Unalmasság
+   Van 60–90 másodpercnél hosszabb szakasz új eredmény vagy állapotváltozás nélkül?
+   Látható, hogy az aktuális lépés hogyan viszi közelebb a workflow-t a célhoz?
+   A credential setup hosszabb, mint amennyit a konkrét videó indokol?
+   Ismétlés
+   A hook, demo, előtte–utána és összefoglalás ugyanazt mondja el négyszer?
+   Egy node vagy szolgáltatás szerepe többször, azonos mélységben kerül elmagyarázásra?
+   Az összefoglaló eredményt ismétel, vagy a teljes buildet?
+   Túlmagyarázás
+   A magyarázat szükséges az adott lépés végrehajtásához?
+   Általános n8n-alapfogalomról van szó, amely külön alapozó anyagba tartozna?
+   Egy fontos döntést magyarázunk, vagy csak a képernyőn látható UI-t olvassuk fel?
+   Ígéret–eredmény összhang
+   A nyitó ígéret szó szerint teljesül?
+   A demo ugyanazt mutatja, amit a videóban később felépítünk?
+   Elhangzik, ha az automatizáció csak draftot készít, és nem küld automatikusan?
+   Elhangzanak a lényeges költségek és korlátok?
+   Technikai követhetőség
+   Minden szükséges account, credential és permission szerepel?
+   Minden code, expression, prompt és fontos configuration reprodukálható?
+   Látszik a node inputja és outputja?
+   Bemutatjuk, hogyan aktiválható és hogyan futtatható a workflow?
+   A titkos adatok maszkolva vannak?
+   Van end-to-end teszt?
+   Egy kezdő meg tudja állapítani, hol hibázott?
 8. Külön dokumentumba helyezendő szabályok
 
 A későbbi skillek ne ismételjék ezeket, csak hivatkozzanak rájuk.
@@ -374,8 +374,7 @@ tesztadatok;
 screen recording;
 talking head;
 újrafelvételek;
-titkos adatok és ügyféladatok kezelése.
-9. Bizonytalanságok és próbavideóval validálandó döntések
+titkos adatok és ügyféladatok kezelése. 9. Bizonytalanságok és próbavideóval validálandó döntések
 Demo hossza: 30, 45 vagy 60 másodperc működik-e jobban magyar üzleti audience esetén?
 Előtte–utána helye: a demo előtt, közvetlenül utána vagy a teszt részeként legyen?
 Szolgáltatások fejezet hossza: külön fejezet maradjon, vagy rövidebb workflow-knál olvadjon a buildbe?

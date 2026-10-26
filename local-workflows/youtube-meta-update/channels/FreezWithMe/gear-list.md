@@ -3,6 +3,7 @@ Gear list:
 🎥 Gear List
 
 🚴 Bike & Cycling
+
 - Focus Atlas 8.9 Full Carbon SRAM
 - Bike Multitool 900
 - Suunto Ambit 3 Sapphire / Suunto Ambit 3 Peak
@@ -20,6 +21,7 @@ Gear list:
 - BBB BHB-59 AeroComfort Arm Rest
 
 🏕️ Camping & Sleep
+
 - Khibu Winter Down Top Quilt
 - Khibu Anowa Hammock
 - Khibu Tricky Tarp
@@ -32,6 +34,7 @@ Gear list:
 - SIMOND MT500 Merino Wool Neck Gaiter
 
 🍲 Cooking & Water
+
 - Firemaple Petrel Fast Cooking System 0.6L
 - Trek’n Eat Freeze-Dried Meal
 - Ginger Tea Granules
@@ -43,6 +46,7 @@ Gear list:
 - Sawyer Water Pouch
 
 🌊 SUP & Water Gear
+
 - Starboard Touring S 14'
 - Starboard Enduro Carbon 3-Pcs / S35 Paddle
 - Gill Verso Dry Suit / S
@@ -50,6 +54,7 @@ Gear list:
 - SUP Quick Fin Screw
 
 🎥 Filming & Tech
+
 - DJI Osmo Action 5 Pro
 - Insta360 X5
 - Digital Thermometer

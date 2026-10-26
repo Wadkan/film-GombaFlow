@@ -12,9 +12,9 @@
 - Kártya szövege: „A kereső érti, mire gondol a vevő?”
 - Átvezető szöveg: „Nézzük meg, mit ad ugyanarra a kérdésre a kulcsszavas, a jelentésalapú és a kombinált keresés.”
 - Tervezett lépések:
-  1. Röviden felvázolom az értékesítő és a termékkatalógus példáját.
-  2. Megnevezem a három összevetendő keresési módot.
-  3. Jelzem, hogy a technikai bemutató WikiSearch-demó, nem vállalati katalógus.
+    1. Röviden felvázolom az értékesítő és a termékkatalógus példáját.
+    2. Megnevezem a három összevetendő keresési módot.
+    3. Jelzem, hogy a technikai bemutató WikiSearch-demó, nem vállalati katalógus.
 - Kiinduló modell-/demóállapot: még nincs bemutatva a keresési felület vagy az eredmény; a példa hipotetikus.
 - Elvárt végállapot és ellenőrzési pont: a néző érti a problémát és a videó ellenőrizhető ígéretét; nincs állítás arról, hogy a hibrid mód minden esetben jobb.
 - Fontos magyarázat vagy korlát: a termékkatalógus csak történeti analógia; nem a bemutató adatforrása.
@@ -26,9 +26,9 @@
 - Kártya szövege: „Egy kereső, három rangsorolási mód”
 - Átvezető szöveg: „Mielőtt felépítjük, nézzük meg röviden, milyen munka változik az egyszerű kereséshez képest.”
 - Tervezett lépések:
-- 1. A repo felvételi README-je szerinti `animals that make their own light` lekérdezést futtatom kulcsszavas, szemantikus és hibrid módban.
-  2. Megmutatom az aktuális találatokat, lefedettséget és tényleges futásidőt.
-  3. A sorrendet és címeket saját futtatás előtt nem ígérem meg.
+-   1. A repo felvételi README-je szerinti `animals that make their own light` lekérdezést futtatom kulcsszavas, szemantikus és hibrid módban.
+    2. Megmutatom az aktuális találatokat, lefedettséget és tényleges futásidőt.
+    3. A sorrendet és címeket saját futtatás előtt nem ígérem meg.
 - Kiinduló modell-/demóállapot: WikiSearch, teljes Simple English Wikipedia-adatkészlet és embeddingek betöltve; a `/health` lefedettség ellenőrizve.
 - Elvárt végállapot és ellenőrzési pont: a néző látja, hogy eltérő keresési módok eltérő eredményeket adhatnak; saját reprodukciókor mindhárom mód futása ellenőrzött.
 - Fontos magyarázat vagy korlát: F5 szerint a teljes forrásszám 241 787, a szemantikus kohorsz legfeljebb 25 002 (a 25 000 leghosszabb cikk plusz két demo cím). A három mód eredményeit befolyásolja az eltérő lefedettség; saját találati sorrend még nincs igazolva.
@@ -40,10 +40,10 @@
 - Kártya szövege: „Kevesebb szinkronizálás, több saját döntés”
 - Átvezető szöveg: „Ehhez több összetevő dolgozik együtt; nézzük meg, melyik mit csinál.”
 - Tervezett lépések:
-  1. A „Kézi lépések” sorban megmutatom, hogy a külön keresőrendszer használata adatmásolást és szinkronizálási folyamatot igényelhet; az egyrendszeres demóban ez a külön másolási út nincs.
-  2. Az „Időráfordítás” sorban minőségi összevetést adok, mérési szám nélkül.
-  3. A „Hibalehetőség” sorban összevetem a másolt adatok késését az embedding-, index- és lefedettségi hibákkal.
-  4. A „Költség” és „Emberi felügyelet” sorokban jelzem a hosting/API-költség és a szolgáltatási feltételek ellenőrzésének szükségességét.
+    1. A „Kézi lépések” sorban megmutatom, hogy a külön keresőrendszer használata adatmásolást és szinkronizálási folyamatot igényelhet; az egyrendszeres demóban ez a külön másolási út nincs.
+    2. Az „Időráfordítás” sorban minőségi összevetést adok, mérési szám nélkül.
+    3. A „Hibalehetőség” sorban összevetem a másolt adatok késését az embedding-, index- és lefedettségi hibákkal.
+    4. A „Költség” és „Emberi felügyelet” sorokban jelzem a hosting/API-költség és a szolgáltatási feltételek ellenőrzésének szükségességét.
 - Kiinduló modell-/demóállapot: két architekturális lehetőség elvi szinten; nincs saját mérés vagy TCO-szám.
 - Elvárt végállapot és ellenőrzési pont: a néző érti, hogy egy adatbázisban tartott kereső csökkentheti a külön keresőszolgáltatás szinkronizációs igényét, miközben új konfigurációs és minőségi ellenőrzési feladatok maradnak.
 - Fontos magyarázat vagy korlát: a külön szolgáltatás nélküli adatút a forrás megoldásának jellemzője; az idő-, költség- és hibacsökkenés nem mért eredmény.
@@ -55,11 +55,11 @@
 - Kártya szövege: „Adatbázis, keresési bővítmények, API”
 - Átvezető szöveg: „Most, hogy tudjuk, mi mire való, először az adatot és az adatbázist készítjük elő.”
 - Tervezett lépések:
-  1. PostgreSQL: rekordok, szöveg és vektorok tárolása.
-  2. `pg_textsearch`: BM25-alapú kulcsszavas rangsorolás.
-  3. `pgvector` és `pgvectorscale`: vektorok tárolása és szemantikus keresés.
-  4. Python, FastAPI és Psycopg: az API és alkalmazáskapcsolat.
-  5. TigerCloud vagy a dokumentált helyi környezet adja a PostgreSQL-szolgáltatást; az alap MiniLM helyben fut, külső embedding API-kulcs nélkül; a választható OpenAI-modellhez külön kulcs és díj tartozik.
+    1. PostgreSQL: rekordok, szöveg és vektorok tárolása.
+    2. `pg_textsearch`: BM25-alapú kulcsszavas rangsorolás.
+    3. `pgvector` és `pgvectorscale`: vektorok tárolása és szemantikus keresés.
+    4. Python, FastAPI és Psycopg: az API és alkalmazáskapcsolat.
+    5. TigerCloud vagy a dokumentált helyi környezet adja a PostgreSQL-szolgáltatást; az alap MiniLM helyben fut, külső embedding API-kulcs nélkül; a választható OpenAI-modellhez külön kulcs és díj tartozik.
 - Kiinduló modell-/demóállapot: F5 szerint Python 3.11/3.12, PostgreSQL 17, `pg_textsearch` legalább 1.5.1, `pgvector`, `pgvectorscale`, FastAPI/Psycopg és helyi `sentence-transformers/all-MiniLM-L6-v2` CPU-modell kell. A Cloud-szolgáltatás ára a fiókban ellenőrzendő; az opcionális OpenAI-modellhez külön API-kulcs és használati díj jár.
 - Elvárt végállapot és ellenőrzési pont: minden összetevő szerepe érthető, és a C4 indulása előtt ismert, milyen futtatási módot és szolgáltatásokat választunk.
 - Fontos magyarázat vagy korlát: ne nevezzük ingyenesnek vagy költségmentesnek; ár és hozzáférési feltétel csak ellenőrzött, dátumozott forrás alapján kerüljön a scriptbe.
@@ -167,11 +167,11 @@
 - Kártya szövege: „Keresés, beszúrás, hibás eset”
 - Átvezető szöveg: „A teszt alapján most már el tudjuk mondani, mit oldottunk meg, és mi maradt a felhasználó feladata.”
 - Tervezett lépések:
-  1. Ugyanazt a lekérdezést futtatom BM25-, szemantikus és hibrid módban, és rögzítem a találatokat.
-  2. Lefuttatom az új cikk teljes beszúrási és visszakeresési útját.
-  3. Hibás esetként a hiányzó vagy sikertelen embeddinget ellenőrzöm; a tranzakciós viselkedést a forráskód alapján igazolom.
-  4. Jelzem, hogy az embeddingek csak a cikkek egy részére állnak rendelkezésre.
-  5. Megadom a szolgáltatás/API/hosting költségeket csak aktuálisan ellenőrzött konfiguráció alapján; mérési adat nélkül nincs sebességígéret.
+    1. Ugyanazt a lekérdezést futtatom BM25-, szemantikus és hibrid módban, és rögzítem a találatokat.
+    2. Lefuttatom az új cikk teljes beszúrási és visszakeresési útját.
+    3. Hibás esetként a hiányzó vagy sikertelen embeddinget ellenőrzöm; a tranzakciós viselkedést a forráskód alapján igazolom.
+    4. Jelzem, hogy az embeddingek csak a cikkek egy részére állnak rendelkezésre.
+    5. Megadom a szolgáltatás/API/hosting költségeket csak aktuálisan ellenőrzött konfiguráció alapján; mérési adat nélkül nincs sebességígéret.
 - Kiinduló modell-/demóállapot: teljes, elindított alkalmazás; mesterséges tesztcikk; előre rögzített keresőkifejezés; ismert szolgáltatási konfiguráció.
 - Elvárt végállapot és ellenőrzési pont: keresés és beszúrás sikeressége, hibás eset rollbackje, eredménylisták és hiányzó vektorok dokumentáltak. Minden saját eredmény a tényleges felvételi próba után kerülhet narrációba.
 - Fontos magyarázat vagy korlát: a forrásban elhangzott sikert nem állítjuk be a saját projektünk mérésének; benchmarkot csak a módszertannal együtt, nem saját app eredményeként említünk.
@@ -183,9 +183,9 @@
 - Kártya szövege: „Három mód, saját adaton ellenőrizve”
 - Átvezető szöveg: „Ha ezt a megközelítést továbbvinnéd, itt a következő lépés.”
 - Tervezett lépések:
-  1. Egy mondatban összefoglalom a három mód funkcióját.
-  2. Megnevezem a megmaradó feladatokat: index- és embedding-lefedettség, relevanciaértékelés, költség és üzemeltetés ellenőrzése.
-  3. Nem ismétlem el újra a teljes építési folyamatot.
+    1. Egy mondatban összefoglalom a három mód funkcióját.
+    2. Megnevezem a megmaradó feladatokat: index- és embedding-lefedettség, relevanciaértékelés, költség és üzemeltetés ellenőrzése.
+    3. Nem ismétlem el újra a teljes építési folyamatot.
 - Kiinduló modell-/demóállapot: a tesztek tényleges eredménye és a rögzített korlátok rendelkezésre állnak.
 - Elvárt végállapot és ellenőrzési pont: az összefoglalás nem állít többet annál, amit a saját próba bizonyít; a felhasználó tudja, hogy saját dokumentumokon kell validálnia a relevanciát.
 - Fontos magyarázat vagy korlát: a forrásdemó nem bizonyít ügyféladatokon elért minőséget vagy sebességet.

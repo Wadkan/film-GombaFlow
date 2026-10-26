@@ -24,9 +24,9 @@
 
 ## Forrásjegyzék
 
-| ID | URL vagy pontos útvonal | Hozzáférhető anyag és hely | Alátámasztott állítás/lépés | Korlát |
-|---|---|---|---|---|
-| [F1] | [forrás] | [videó/átirat/leírás/dokumentáció; szakasz vagy elérhető időbélyeg] | [mit igazol] | [hiány vagy nincs] |
+| ID   | URL vagy pontos útvonal | Hozzáférhető anyag és hely                                          | Alátámasztott állítás/lépés | Korlát             |
+| ---- | ----------------------- | ------------------------------------------------------------------- | --------------------------- | ------------------ |
+| [F1] | [forrás]                | [videó/átirat/leírás/dokumentáció; szakasz vagy elérhető időbélyeg] | [mit igazol]                | [hiány vagy nincs] |
 
 ## Tisztázás és átadás
 

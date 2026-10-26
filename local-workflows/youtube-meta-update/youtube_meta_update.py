@@ -23,11 +23,12 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
-DEFAULT_CONFIG = pathlib.Path(
-    os.environ.get("XDG_CONFIG_HOME", pathlib.Path.home() / ".config")
-) / "film-gombaflow" / "youtube-meta-update.json"
+DEFAULT_CONFIG = (
+    pathlib.Path(os.environ.get("XDG_CONFIG_HOME", pathlib.Path.home() / ".config"))
+    / "film-gombaflow"
+    / "youtube-meta-update.json"
+)
 REQUIRED_META_FIELDS = {
     "status",
     "channelKey",
@@ -77,7 +78,9 @@ def validate_webhook_url(url: str) -> None:
             except ValueError:
                 is_loopback = False
         if not is_loopback:
-            raise ClientError("HTTP webhook csak loopback címen engedélyezett; távoli címhez HTTPS kell")
+            raise ClientError(
+                "HTTP webhook csak loopback címen engedélyezett; távoli címhez HTTPS kell"
+            )
 
 
 def config_path(value: str | None) -> pathlib.Path:
@@ -137,18 +140,26 @@ def read_ready_meta(path: pathlib.Path) -> dict:
     for name in REQUIRED_META_FIELDS - {"tags"}:
         if not isinstance(value[name], str) or not value[name].strip():
             raise ClientError(f"érvénytelen metaadatmező: {name}")
-    if not isinstance(value["tags"], list) or any(not isinstance(tag, str) or not tag.strip() for tag in value["tags"]):
+    if not isinstance(value["tags"], list) or any(
+        not isinstance(tag, str) or not tag.strip() for tag in value["tags"]
+    ):
         raise ClientError("a tags szöveges címkék listája legyen")
     if "containsSyntheticMedia" in value:
         if not isinstance(value["containsSyntheticMedia"], bool):
-            raise ClientError("érvénytelen metaadatmező: containsSyntheticMedia (true/false szükséges)")
-    if "defaultLanguage" in value and (not isinstance(value["defaultLanguage"], str) or not value["defaultLanguage"].strip()):
+            raise ClientError(
+                "érvénytelen metaadatmező: containsSyntheticMedia (true/false szükséges)"
+            )
+    if "defaultLanguage" in value and (
+        not isinstance(value["defaultLanguage"], str) or not value["defaultLanguage"].strip()
+    ):
         raise ClientError("érvénytelen metaadatmező: defaultLanguage")
     if len(value["title"]) > 100 or value["privacyStatus"] != "private":
         raise ClientError("legfeljebb 100 karakteres cím és private láthatóság szükséges")
     try:
-        scheduled = datetime.datetime.fromisoformat(value["youtube_scheduled_at"].replace("Z", "+00:00"))
-        if scheduled.tzinfo is None or scheduled <= datetime.datetime.now(datetime.timezone.utc):
+        scheduled = datetime.datetime.fromisoformat(
+            value["youtube_scheduled_at"].replace("Z", "+00:00")
+        )
+        if scheduled.tzinfo is None or scheduled <= datetime.datetime.now(datetime.UTC):
             raise ValueError("not a future timezone-aware date")
     except ValueError as exc:
         raise ClientError("jövőbeli, időzónával megadott youtube_scheduled_at szükséges") from exc
@@ -225,7 +236,10 @@ def call_webhook(meta: dict, config: dict, timeout: float, operation: str = "upd
             "message": f"a webhook teljes válasza túllépte az időkorlátot ({timeout:g} s); nem indult újrapróbálás",
         }
     if "value" not in result:
-        return {"status": "unknown", "message": "a webhook nem adott vissza eredményt az időkorláton belül"}
+        return {
+            "status": "unknown",
+            "message": "a webhook nem adott vissza eredményt az időkorláton belül",
+        }
     return result["value"]
 
 
@@ -234,10 +248,16 @@ def video_lock(meta: dict):
     """One host-wide lock per video, including callers using copied JSON files."""
     root = pathlib.Path("/tmp") / f"film-gombaflow-{os.getuid()}"
     root.mkdir(mode=0o700, exist_ok=True)
-    if root.is_symlink() or root.stat().st_uid != os.getuid() or stat.S_IMODE(root.stat().st_mode) != 0o700:
+    if (
+        root.is_symlink()
+        or root.stat().st_uid != os.getuid()
+        or stat.S_IMODE(root.stat().st_mode) != 0o700
+    ):
         raise ClientError("a helyi zárolási könyvtár tulajdonosa vagy jogosultsága hibás")
-    key = hashlib.sha256(f'{meta["youtubeChannelId"]}:{meta["videoId"]}'.encode()).hexdigest()
-    descriptor = os.open(root / f"youtube-meta-{key}.lock", os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+    key = hashlib.sha256(f"{meta['youtubeChannelId']}:{meta['videoId']}".encode()).hexdigest()
+    descriptor = os.open(
+        root / f"youtube-meta-{key}.lock", os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600
+    )
     try:
         try:
             fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -304,18 +324,28 @@ def configure(path: pathlib.Path, url_arg: str | None) -> int:
 def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Jóváhagyott YouTube meta JSON küldése n8n-nek")
     commands = parser.add_subparsers(dest="command", required=True)
-    configure_parser = commands.add_parser("configure", help="helyi webhook- és Header Auth-beállítás")
-    configure_parser.add_argument("--config", help=f"klienskonfiguráció (alapértelmezett: {DEFAULT_CONFIG})")
+    configure_parser = commands.add_parser(
+        "configure", help="helyi webhook- és Header Auth-beállítás"
+    )
+    configure_parser.add_argument(
+        "--config", help=f"klienskonfiguráció (alapértelmezett: {DEFAULT_CONFIG})"
+    )
     configure_parser.add_argument("--webhook-url")
     update_parser = commands.add_parser("update", help="ready meta JSON frissítése a YouTube-on")
-    update_parser.add_argument("--config", help=f"klienskonfiguráció (alapértelmezett: {DEFAULT_CONFIG})")
+    update_parser.add_argument(
+        "--config", help=f"klienskonfiguráció (alapértelmezett: {DEFAULT_CONFIG})"
+    )
     update_parser.add_argument("meta_json", type=pathlib.Path)
     update_parser.add_argument("--timeout", type=float, default=120)
-    check_parser = commands.add_parser("check", help="kapcsolat és bemenet ellenőrzése YouTube-módosítás nélkül")
+    check_parser = commands.add_parser(
+        "check", help="kapcsolat és bemenet ellenőrzése YouTube-módosítás nélkül"
+    )
     check_parser.add_argument("--config")
     check_parser.add_argument("meta_json", type=pathlib.Path)
     check_parser.add_argument("--timeout", type=float, default=120)
-    preflight_parser = commands.add_parser("preflight", help="YouTube-előellenőrzés kizárólag olvasással")
+    preflight_parser = commands.add_parser(
+        "preflight", help="YouTube-előellenőrzés kizárólag olvasással"
+    )
     preflight_parser.add_argument("--config")
     preflight_parser.add_argument("meta_json", type=pathlib.Path)
     preflight_parser.add_argument("--timeout", type=float, default=120)

@@ -11,9 +11,9 @@ A tervezett feladatok nem tekinthetők elvégzettnek; a jelölőnégyzetek üres
 
 Azonos igény egy sorban, az összes érintett fejezetazonosítóval szerepeljen.
 
-| Igény ID | Eszköz/szolgáltatás és szerep | Telepítés/regisztráció helye, szükséges verzió | API-kulcs, jogosultság, előfizetés igénye | Költség/limit és forrás, ellenőrzési dátum | Fejezet-ID-k |
-|---|---|---|---|---|---|
-| [E1] | [mi és mire kell] | [pontos elérhetőség, releváns verzió] | [szükséges hozzáférés, titokérték nélkül] | [igazolt adat vagy ellenőrizendő, konkrét forrással] | [ID-k] |
+| Igény ID | Eszköz/szolgáltatás és szerep | Telepítés/regisztráció helye, szükséges verzió | API-kulcs, jogosultság, előfizetés igénye | Költség/limit és forrás, ellenőrzési dátum           | Fejezet-ID-k |
+| -------- | ----------------------------- | ---------------------------------------------- | ----------------------------------------- | ---------------------------------------------------- | ------------ |
+| [E1]     | [mi és mire kell]             | [pontos elérhetőség, releváns verzió]          | [szükséges hozzáférés, titokérték nélkül] | [igazolt adat vagy ellenőrizendő, konkrét forrással] | [ID-k]       |
 
 ## Előkészítési sorrend
 
@@ -22,8 +22,8 @@ Azonos igény egy sorban, az összes érintett fejezetazonosítóval szerepeljen
 ## Példaadatok és demóállapotok
 
 | Fejezet-ID | Maszkolt/szintetikus adat | Előkészítendő állapot | Felvételhez szükséges látható eredmény |
-|---|---|---|---|
-| [ID] | [adat] | [állapot] | [bizonyíték] |
+| ---------- | ------------------------- | --------------------- | -------------------------------------- |
+| [ID]       | [adat]                    | [állapot]             | [bizonyíték]                           |
 
 ## Saját technikai próbák és állításellenőrzés
 

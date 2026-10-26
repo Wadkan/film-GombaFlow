@@ -1,6 +1,6 @@
 ---
 name: gomba-1-script-writer-3-script-writing
-description: 'Teljes magyar forgatási script kidolgozása vagy review alapján javítása. Használd a gomba-1-script-writer workflow 3. lépésében, kész fejezetterv és kiválasztott forrás alapján.'
+description: "Teljes magyar forgatási script kidolgozása vagy review alapján javítása. Használd a gomba-1-script-writer workflow 3. lépésében, kész fejezetterv és kiválasztott forrás alapján."
 ---
 
 # 3. Teljes script

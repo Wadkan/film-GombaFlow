@@ -21,8 +21,19 @@ test:
 	@python3 -m unittest discover -s tests -v
 
 format:
-	@$(call run_pre_commit,run ruff-format --all-files) || $(call run_pre_commit,run ruff-format --all-files)
-	@$(call run_pre_commit,run isort --all-files) || $(call run_pre_commit,run isort --all-files)
+	@tmp_dir=$$(mktemp -d /tmp/film-gombaflow-format.XXXXXX); \
+	trap 'rm -rf "$$tmp_dir"' EXIT; \
+	run_hook() { \
+		hook="$$1"; output="$$tmp_dir/$$hook.log"; \
+		if $(call run_pre_commit,run "$$hook" --all-files) >"$$output" 2>&1; then \
+			cat "$$output"; \
+		else \
+			status=$$?; \
+			if ! grep -q 'files were modified by this hook' "$$output"; then cat "$$output"; return "$$status"; fi; \
+			if $(call run_pre_commit,run "$$hook" --all-files) >"$$output" 2>&1; then cat "$$output"; else cat "$$output"; return 1; fi; \
+		fi; \
+	}; \
+	run_hook ruff-format && run_hook isort
 	@$(MAKE) docs-format
 
 docs-format:

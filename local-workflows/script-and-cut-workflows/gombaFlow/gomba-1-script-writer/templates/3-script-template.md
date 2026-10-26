@@ -26,11 +26,11 @@ Minden műveletre ismételd; nem technikai egységnél a bemutatás lépéseit �
 Kód, prompt vagy konfiguráció szükség esetén a művelet alatt kódblokkba kerüljön.
 
 1. **Művelet:** [pontos végrehajtási lépés és szükséges értékek]
-   - **Mutatom:** [mi látható a képernyőn vagy a felvételen]
-   - **Mondom:** [kész, elmondható narráció]
-   - **Figyelj / miért fontos:** [lényegi magyarázat vagy buktató]
-   - **Elvárt eredmény és ellenőrzés:** [output, felismerhető siker/hiba]
-   - **Forrás:** [briefbeli forrásazonosító és szakasz / saját tervezési döntés]
+    - **Mutatom:** [mi látható a képernyőn vagy a felvételen]
+    - **Mondom:** [kész, elmondható narráció]
+    - **Figyelj / miért fontos:** [lényegi magyarázat vagy buktató]
+    - **Elvárt eredmény és ellenőrzés:** [output, felismerhető siker/hiba]
+    - **Forrás:** [briefbeli forrásazonosító és szakasz / saját tervezési döntés]
 
 Az összehasonlítási egységben a [comparison-template.md](comparison-template.md)
 kitöltött tartalmát használd; ne hozz létre másik összehasonlítási formátumot.
@@ -40,9 +40,9 @@ kitöltött tartalmát használd; ne hozz létre másik összehasonlítási form
 A konkrét fejezeteket a [közös felvételi szabályok](../CONTENT_RULES.md)
 szerint rendeld felvételi sorrendbe. Ez nem készítői előkészítési checklist.
 
-| Sorrend | Fejezet-/alfejezet-ID | Felvétel | Milyen igazolt eredmény után vehető fel? |
-|---|---|---|---|
-| [sorszám] | [ID] | [képernyő vagy talking head tartalma] | [előfeltétel] |
+| Sorrend   | Fejezet-/alfejezet-ID | Felvétel                              | Milyen igazolt eredmény után vehető fel? |
+| --------- | --------------------- | ------------------------------------- | ---------------------------------------- |
+| [sorszám] | [ID]                  | [képernyő vagy talking head tartalma] | [előfeltétel]                            |
 
 ## Átadás review-ra
 

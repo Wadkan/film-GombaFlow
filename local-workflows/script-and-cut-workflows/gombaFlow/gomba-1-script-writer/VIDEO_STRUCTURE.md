@@ -11,16 +11,16 @@ teljesítménygaranciák. Nem végzünk nézettségi vagy formátumteszteket.
 
 ## Nézői sorrend és kötött címek
 
-| ID | Cím | Kötelező tartalom |
-|---|---|---|
-| H | Hook | Konkrét probléma és teljesíthető ígéret; rövid kérdés is lehet, például „Hogyan automatizálom ma a számlázást?” |
-| C1 | A kész megoldás | Tipikus input → futás → látható output rövid bemutatása, konfigurációmagyarázat nélkül. |
-| C2 | Előtte és utána | Gyors, párhuzamos összehasonlítás a [közös template](templates/comparison-template.md) szerint. |
-| C3 | Szükséges szolgáltatások | Mi mire való; ingyenes/fizetős, account/API-igény és lényeges korlát. Nem hosszú telepítési kézikönyv. |
-| C4 | Megvalósítás | Követhető építés a megoldás adatútja szerint; témaspecifikus alfejezetek és köztes ellenőrzések. |
-| C5 | Teszt és korlátok | Teljes input → futás → output, legalább egy releváns hibás/határeset, költség és emberi felügyelet. |
-| C6 | Mit oldottunk meg? | Elért eredmény, megmaradó emberi feladat és fő korlát; nem a teljes megvalósítás újramesélése. |
-| CTA | Következő lépés | Az alábbi rögzített zárószöveg. |
+| ID  | Cím                      | Kötelező tartalom                                                                                               |
+| --- | ------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| H   | Hook                     | Konkrét probléma és teljesíthető ígéret; rövid kérdés is lehet, például „Hogyan automatizálom ma a számlázást?” |
+| C1  | A kész megoldás          | Tipikus input → futás → látható output rövid bemutatása, konfigurációmagyarázat nélkül.                         |
+| C2  | Előtte és utána          | Gyors, párhuzamos összehasonlítás a [közös template](templates/comparison-template.md) szerint.                 |
+| C3  | Szükséges szolgáltatások | Mi mire való; ingyenes/fizetős, account/API-igény és lényeges korlát. Nem hosszú telepítési kézikönyv.          |
+| C4  | Megvalósítás             | Követhető építés a megoldás adatútja szerint; témaspecifikus alfejezetek és köztes ellenőrzések.                |
+| C5  | Teszt és korlátok        | Teljes input → futás → output, legalább egy releváns hibás/határeset, költség és emberi felügyelet.             |
+| C6  | Mit oldottunk meg?       | Elért eredmény, megmaradó emberi feladat és fő korlát; nem a teljes megvalósítás újramesélése.                  |
+| CTA | Következő lépés          | Az alábbi rögzített zárószöveg.                                                                                 |
 
 A felső szintű címek és sorrend maradnak; egyszerű témánál rövidebb a tartalmuk,
 nem kapnak véletlenszerű új elnevezést. A C4 alfejezetei témánként változhatnak,

@@ -57,12 +57,12 @@ Data lives in the Docker volume `n8n-docker_n8n_data`. Sandbox API state is in `
 
 Configure the sandbox in **`n8n-docker/.env`**, not in the Assistant UI:
 
-| Variable | Value |
-| --- | --- |
-| `N8N_INSTANCE_AI_SANDBOX_ENABLED` | `true` |
-| `N8N_INSTANCE_AI_SANDBOX_PROVIDER` | `n8n-sandbox` |
-| `N8N_SANDBOX_SERVICE_URL` | `http://sandbox-api:8080` |
-| `N8N_SANDBOX_SERVICE_API_KEY` | same as `SANDBOX_API_KEYS` in `sandbox/.env` |
+| Variable                           | Value                                        |
+| ---------------------------------- | -------------------------------------------- |
+| `N8N_INSTANCE_AI_SANDBOX_ENABLED`  | `true`                                       |
+| `N8N_INSTANCE_AI_SANDBOX_PROVIDER` | `n8n-sandbox`                                |
+| `N8N_SANDBOX_SERVICE_URL`          | `http://sandbox-api:8080`                    |
+| `N8N_SANDBOX_SERVICE_API_KEY`      | same as `SANDBOX_API_KEYS` in `sandbox/.env` |
 
 When these variables are set, n8n treats URL and provider as environment-managed. `make start-n8n` also sets `sandboxEnabled` / `sandboxProvider` in the database when they disagree with `.env`.
 

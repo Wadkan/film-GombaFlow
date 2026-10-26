@@ -16,7 +16,6 @@ Ne írj magyarázó szöveget, bevezetőt, összefoglalót vagy megjegyzést.
 
 Kizárólag a definiált output formátum engedélyezett.
 
-
 INPUT
 
 Input file neve:
@@ -36,7 +35,6 @@ Kötelező mezők minden rekordban:
 - end
 - text
 
-
 PREFLIGHT ELLENŐRZÉSEK
 
 A feldolgozás megkezdése előtt kötelező minden ellenőrzést végrehajtani.
@@ -50,7 +48,6 @@ HIBA: Input file nem található: master_transcript.json
 
 ÁLLJ MEG.
 
-
 PF-002
 Az input schema_version mező létezik.
 
@@ -59,7 +56,6 @@ Ha nem:
 HIBA: Hiányzik az input schema_version.
 
 ÁLLJ MEG.
-
 
 PF-003
 Az input schema_version támogatott.
@@ -74,7 +70,6 @@ HIBA: Nem támogatott input schema verzió.
 
 ÁLLJ MEG.
 
-
 PF-004
 A transcript nem üres.
 
@@ -84,7 +79,6 @@ HIBA: A transcript üres.
 
 ÁLLJ MEG.
 
-
 PF-005
 Található legalább egy nem üres text mező.
 
@@ -93,7 +87,6 @@ Ha nem:
 HIBA: Nem található elemezhető szöveg.
 
 ÁLLJ MEG.
-
 
 PF-006
 Minden rekord tartalmazza:
@@ -110,7 +103,6 @@ HIBA: Hiányos rekord található.
 
 ÁLLJ MEG.
 
-
 PF-007
 Minden timestamp érvényes.
 
@@ -124,7 +116,6 @@ HIBA: Érvénytelen timestamp található.
 
 ÁLLJ MEG.
 
-
 PF-008
 A text mezők string típusúak.
 
@@ -133,7 +124,6 @@ Ha nem:
 HIBA: Érvénytelen transcript mező típus.
 
 ÁLLJ MEG.
-
 
 ELEMZÉSI FELADAT
 
@@ -144,7 +134,6 @@ Az eredeti szöveget tilos módosítani.
 Az eredeti szöveg mellé új mezők kerüljenek.
 
 Az eredeti adat változatlan formában maradjon meg.
-
 
 Minden rekordhoz határozd meg:
 
@@ -160,37 +149,41 @@ Lehetséges értékek:
 - silence
 - unknown
 
-
 confidence
 
 Lehetséges érték:
 
 0.00 - 1.00
 
-
 SPEECH_TYPE DEFINÍCIÓK
 
 normal
+
 - normál, összefüggő beszéd
 
 restart
+
 - újrakezdett gondolat vagy újrapróbált mondat
 
 partial_sentence
+
 - félbehagyott mondat vagy töredék
 
 duplicate
+
 - korábbi tartalom lényegében ismétlése
 
 filler
+
 - főként töltelékszavakból álló rész
 
 silence
+
 - nincs értelmezhető beszédtartalom
 
 unknown
-- nem sorolható biztonsággal más kategóriába
 
+- nem sorolható biztonsággal más kategóriába
 
 SZABÁLYOK
 
@@ -205,7 +198,6 @@ SZABÁLYOK
 - Nem rendelhetsz markereket.
 - Nem találgathatsz hiányzó adatokat.
 - Nem generálhatsz új tartalmat.
-
 
 ELAKADÁS KEZELÉSE
 
@@ -228,7 +220,6 @@ A) ...
 B) ...
 C) ...
 
-
 Több kérdés esetén:
 
 KÉRDÉS-001
@@ -242,7 +233,6 @@ KÉRDÉS-003
 
 A válaszok megérkezéséig tilos folytatni a feldolgozást.
 
-
 OUTPUT
 
 Output file neve:
@@ -253,26 +243,24 @@ Output schema verzió:
 
 1.0
 
-
 OUTPUT SÉMA
 
 {
-  "schema_version": "1.0",
-  "source_file": "master_transcript.json",
-  "input_schema_version": "1.0",
-  "clips": [
-    {
-      "clip_id": "clip_001",
-      "file_name": "clip01.mp4",
-      "start": 12.34,
-      "end": 18.91,
-      "original_text": "eredeti whisper szöveg",
-      "speech_type": "normal",
-      "confidence": 0.97
-    }
-  ]
+"schema_version": "1.0",
+"source_file": "master_transcript.json",
+"input_schema_version": "1.0",
+"clips": [
+{
+"clip_id": "clip_001",
+"file_name": "clip01.mp4",
+"start": 12.34,
+"end": 18.91,
+"original_text": "eredeti whisper szöveg",
+"speech_type": "normal",
+"confidence": 0.97
 }
-
+]
+}
 
 SIKERES FUTÁS ESETÉN
 

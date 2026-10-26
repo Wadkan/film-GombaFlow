@@ -2,49 +2,39 @@ AT HOME
 !!! add AIa resz to webpage - weblap
 
 RESEARCH n8n TEAMPLATES, workflow automation templates
-    trigger.net - instead of creating it by hand in N8N
+trigger.net - instead of creating it by hand in N8N
 
 try out davinci rough cut
 try out davinci motion template
-
-
 
 TRY LOCALLY
 n8n in docker
 ollama locally for youtube rough cut
 chatGpt / GPTs / N8N Assistant - trained for n8n
 
-
 ---
 
-
 RESEARCH n8n TEAMPLATES, workflow automation templates
-    trigger.net - instead of creating it by hand in N8N
+trigger.net - instead of creating it by hand in N8N
 
 ---
 
 RESEARCH
 szuksegem van egy templatere vagy eszkozre (ai vagy nem ai) a business video (automation, n8n, ai skills, agents, stb) bemutato videoimhoz. nagyon professzionalis kell legyen, ai vagassal es fizetos davincival konnyen hasznalhato amennyire lehet automatikusan (ai driven).
 roviden listazd a 5 top lehetoseget.
- kesz templatet szeretnek, nem szeretnek nagyon belemelyedni, csak hasznalni szeretnem.
- amit en veszek fel: talking head es screenrecordings
- amire szuksegem van: cim kartyak a reszek kozott igenyes transitionnel es akar hanggal
- kiiras tipusok ha magyarazok valamit, transitionok videok kozott automatikusan, talking head elhelyezese automatikusan.
+kesz templatet szeretnek, nem szeretnek nagyon belemelyedni, csak hasznalni szeretnem.
+amit en veszek fel: talking head es screenrecordings
+amire szuksegem van: cim kartyak a reszek kozott igenyes transitionnel es akar hanggal
+kiiras tipusok ha magyarazok valamit, transitionok videok kozott automatikusan, talking head elhelyezese automatikusan.
 
 RESEARCH: milyen hosszu legyen a video?
 RESEARCH: legsikeresebb ai bemutato videok pontjai, hosszusaga, tomorsege, hook es tanulsaga
 
-
-
-
 RESEARCH: davinci transparent talking head
 
-
-
-
 ---
-NOT PRIO
 
+NOT PRIO
 
 RESEARCH grok bot teach task with recoridng - for youtube upload?
 CHECK claude code visuals
@@ -62,7 +52,7 @@ magyar vagy angol videokat erdemes kesziteni?
 
 RESEARCH corn video creation and own platform
 RESEARCH best ai content generation N8N templates
-    "Create & Upload AI-generated ASMR youtube shorts with seedance, fal ai, and gpt-4"
+"Create & Upload AI-generated ASMR youtube shorts with seedance, fal ai, and gpt-4"
 RESEARCH RAG
 
 ---

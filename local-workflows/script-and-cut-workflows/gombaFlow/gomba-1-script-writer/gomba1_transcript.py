@@ -15,7 +15,6 @@ import unicodedata
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-
 WORKFLOW_DIR = Path(__file__).resolve().parent
 PROJECTS_DIR = WORKFLOW_DIR / "projects"
 REGISTRY_PATH = PROJECTS_DIR / "registry.json"
@@ -64,9 +63,11 @@ def selected_idea(path_text: str, video_id: str) -> tuple[Path, list[str], int, 
             continue
         heading_id = youtube_video_id(html.unescape(match.group(2).replace("\\&", "&")))
         if heading_id == video_id:
-            end = next((i for i in range(index + 1, len(lines)) if lines[i].startswith("## ")), len(lines))
+            end = next(
+                (i for i in range(index + 1, len(lines)) if lines[i].startswith("## ")), len(lines)
+            )
             existing_id = None
-            for entry_line in lines[index + 1:end]:
+            for entry_line in lines[index + 1 : end]:
                 id_match = re.match(r"^-\s+Gomba 1 ID:\s*([A-Za-z0-9._-]+)\s*$", entry_line)
                 if id_match:
                     existing_id = id_match.group(1)
@@ -91,13 +92,17 @@ def load_registry() -> dict:
 
 def save_registry(registry: dict) -> None:
     try:
-        REGISTRY_PATH.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        REGISTRY_PATH.write_text(
+            json.dumps(registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
     except OSError as exc:
         raise TaskError("ID registry mentése", str(exc)) from exc
 
 
 def title_slug(title: str) -> str:
-    ascii_title = unicodedata.normalize("NFKD", title).encode("ascii", "ignore").decode("ascii").lower()
+    ascii_title = (
+        unicodedata.normalize("NFKD", title).encode("ascii", "ignore").decode("ascii").lower()
+    )
     words = re.findall(r"[a-z0-9]+", ascii_title)[:4]
     slug = "-".join(words) or "video"
     return slug[:60].rstrip("-")
@@ -119,12 +124,16 @@ def next_topic_id(registry: dict, title: str) -> str:
 
 
 def save_idea_id(path: Path, lines: list[str], heading_index: int, topic_id: str) -> None:
-    end = next((i for i in range(heading_index + 1, len(lines)) if lines[i].startswith("## ")), len(lines))
+    end = next(
+        (i for i in range(heading_index + 1, len(lines)) if lines[i].startswith("## ")), len(lines)
+    )
     id_lines = [i for i in range(heading_index + 1, end) if re.match(r"^-\s+Gomba 1 ID:", lines[i])]
     if id_lines:
         current = re.match(r"^-\s+Gomba 1 ID:\s*([A-Za-z0-9._-]+)\s*$", lines[id_lines[0]])
         if not current or current.group(1) != topic_id:
-            raise TaskError("ötletfájl ID", f"az ötlethez már más Gomba 1 ID tartozik: {lines[id_lines[0]]}")
+            raise TaskError(
+                "ötletfájl ID", f"az ötlethez már más Gomba 1 ID tartozik: {lines[id_lines[0]]}"
+            )
         return
     lines.insert(heading_index + 1, f"- Gomba 1 ID: {topic_id}")
     try:
@@ -154,7 +163,10 @@ def existing_transcript(video_id: str) -> tuple[str, Path] | None:
             except TaskError:
                 continue
     if len(matches) > 1:
-        raise TaskError("korábbi transcript ellenőrzése", f"több transcript tartozik ehhez a YouTube videóhoz: {video_id}")
+        raise TaskError(
+            "korábbi transcript ellenőrzése",
+            f"több transcript tartozik ehhez a YouTube videóhoz: {video_id}",
+        )
     return matches[0] if matches else None
 
 
@@ -167,15 +179,25 @@ def register_topic(url: str, idea_file: str) -> tuple[str, Path, bool, str]:
     if record:
         topic_id = record.get("topic_id")
         if not isinstance(topic_id, str) or not TOPIC_RE.fullmatch(topic_id):
-            raise TaskError("ID registry", f"érvénytelen topic-id ehhez a YouTube videóhoz: {video_id}")
+            raise TaskError(
+                "ID registry", f"érvénytelen topic-id ehhez a YouTube videóhoz: {video_id}"
+            )
         project_name = record.get("project_dir", topic_id)
         if not isinstance(project_name, str) or not TOPIC_RE.fullmatch(project_name):
-            raise TaskError("ID registry", f"érvénytelen projektmappa ehhez a YouTube videóhoz: {video_id}")
+            raise TaskError(
+                "ID registry", f"érvénytelen projektmappa ehhez a YouTube videóhoz: {video_id}"
+            )
         if idea_topic_id and idea_topic_id != topic_id:
-            raise TaskError("ötletfájl ID", f"az ötlet ID-ja ({idea_topic_id}) eltér a registry ID-jától ({topic_id})")
+            raise TaskError(
+                "ötletfájl ID",
+                f"az ötlet ID-ja ({idea_topic_id}) eltér a registry ID-jától ({topic_id})",
+            )
     else:
         if idea_topic_id:
-            raise TaskError("ID registry", f"az ötletfájlban már szerepel a {idea_topic_id} ID, de a registryben nincs hozzá rekord")
+            raise TaskError(
+                "ID registry",
+                f"az ötletfájlban már szerepel a {idea_topic_id} ID, de a registryben nincs hozzá rekord",
+            )
         old_transcript = existing_transcript(video_id)
         if old_transcript:
             project_name, old_path = old_transcript
@@ -218,9 +240,14 @@ def run_create(url: str, idea_file: str) -> Path:
     downloader = shutil.which("yt-dlp")
     if not downloader:
         raise TaskError("letöltés", "a yt-dlp nem található a PATH-ban")
-    python = Path(os.environ.get("GOMBA1_PYTHON", str(Path.home() / "video-ai/bin/python"))).expanduser()
+    python = Path(
+        os.environ.get("GOMBA1_PYTHON", str(Path.home() / "video-ai/bin/python"))
+    ).expanduser()
     if not python.is_file():
-        raise TaskError("átiratkészítés", f"a Faster-Whisper Pythonja nem található: {python} (GOMBA1_PYTHON felülírhatja)")
+        raise TaskError(
+            "átiratkészítés",
+            f"a Faster-Whisper Pythonja nem található: {python} (GOMBA1_PYTHON felülírhatja)",
+        )
     if audio_record.is_file():
         try:
             record = json.loads(audio_record.read_text(encoding="utf-8"))
@@ -228,7 +255,10 @@ def run_create(url: str, idea_file: str) -> Path:
         except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
             raise TaskError("függőben lévő audió ellenőrzése", str(exc)) from exc
         if audio_path.parent != audio_dir.resolve() or not audio_path.is_file():
-            raise TaskError("függőben lévő audió ellenőrzése", "a rögzített hangfájl útvonala érvénytelen vagy a fájl hiányzik")
+            raise TaskError(
+                "függőben lévő audió ellenőrzése",
+                "a rögzített hangfájl útvonala érvénytelen vagy a fájl hiányzik",
+            )
     else:
         if audio_dir.exists() and any(audio_dir.iterdir()):
             raise TaskError("letöltés", f"a témamappában nem felismert fájl található: {audio_dir}")
@@ -240,18 +270,41 @@ def run_create(url: str, idea_file: str) -> Path:
         try:
             print("Hang letöltése yt-dlp-vel:", flush=True)
             download = subprocess.run(
-                [downloader, "--newline", "--progress", "--no-playlist", "-x", "--audio-format", "mp3", "-o", str(audio_template), "--print", "after_move:filepath", url],
-                check=True, stdout=subprocess.PIPE, text=True,
+                [
+                    downloader,
+                    "--newline",
+                    "--progress",
+                    "--no-playlist",
+                    "-x",
+                    "--audio-format",
+                    "mp3",
+                    "-o",
+                    str(audio_template),
+                    "--print",
+                    "after_move:filepath",
+                    url,
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                text=True,
             )
         except subprocess.CalledProcessError as exc:
             raise TaskError("letöltés", (exc.stderr or "yt-dlp sikertelen").strip()[-500:]) from exc
         except OSError as exc:
             raise TaskError("letöltés", str(exc)) from exc
-        audio_path = Path(download.stdout.strip().splitlines()[-1]) if download.stdout.strip() else None
-        if not audio_path or not audio_path.is_file() or audio_path.parent.resolve() != audio_dir.resolve():
+        audio_path = (
+            Path(download.stdout.strip().splitlines()[-1]) if download.stdout.strip() else None
+        )
+        if (
+            not audio_path
+            or not audio_path.is_file()
+            or audio_path.parent.resolve() != audio_dir.resolve()
+        ):
             raise TaskError("letöltés", "a yt-dlp nem adott vissza ellenőrizhető hangfájlt")
         try:
-            audio_record.write_text(json.dumps({"audio": str(audio_path)}, ensure_ascii=False), encoding="utf-8")
+            audio_record.write_text(
+                json.dumps({"audio": str(audio_path)}, ensure_ascii=False), encoding="utf-8"
+            )
         except OSError as exc:
             raise TaskError("audió rögzítése", str(exc)) from exc
 
@@ -267,7 +320,9 @@ def run_create(url: str, idea_file: str) -> Path:
         print("Átirat készítése Faster-Whisperrel:", flush=True)
         result = subprocess.run(
             [str(python), "-c", transcribe_code, str(audio_path)],
-            check=True, stdout=subprocess.PIPE, text=True,
+            check=True,
+            stdout=subprocess.PIPE,
+            text=True,
         )
         transcript = json.loads(result.stdout)
     except subprocess.CalledProcessError as exc:
@@ -281,17 +336,30 @@ def run_create(url: str, idea_file: str) -> Path:
 
     try:
         project_dir.mkdir(parents=True, exist_ok=True)
-        lines = ["# Forrásvideó átirata", "", f"- Forrás: {url}", f"- Felismert nyelv: {transcript.get('language', 'ismeretlen')}", "", "## Átirat", ""]
+        lines = [
+            "# Forrásvideó átirata",
+            "",
+            f"- Forrás: {url}",
+            f"- Felismert nyelv: {transcript.get('language', 'ismeretlen')}",
+            "",
+            "## Átirat",
+            "",
+        ]
+
+        def stamp(seconds: int) -> str:
+            return f"{seconds // 3600:02d}:{seconds % 3600 // 60:02d}:{seconds % 60:02d}"
+
         for segment in segments:
             start = max(0, int(float(segment["start"])))
             end = max(start, int(float(segment["end"])))
-            stamp = lambda seconds: f"{seconds // 3600:02d}:{seconds % 3600 // 60:02d}:{seconds % 60:02d}"
             lines.append(f"[{stamp(start)}–{stamp(end)}] {segment['text']}")
         # Exclusive creation protects against an overwrite race.
         with transcript_path.open("x", encoding="utf-8") as output:
             output.write("\n".join(lines) + "\n")
     except FileExistsError as exc:
-        raise TaskError("mentés", f"a transcript időközben létrejött, nem írom felül: {transcript_path}") from exc
+        raise TaskError(
+            "mentés", f"a transcript időközben létrejött, nem írom felül: {transcript_path}"
+        ) from exc
     except (OSError, KeyError, TypeError, ValueError) as exc:
         raise TaskError("mentés", str(exc)) from exc
     registry = load_registry()
@@ -312,12 +380,16 @@ def run_cleanup(topic_id: str) -> Path:
                 break
     _, audio_dir, audio_record = topic_paths(topic_id, project_name)
     if not audio_record.is_file():
-        raise TaskError("cleanup", f"ehhez a témához nem található script által rögzített audió: {audio_dir}")
+        raise TaskError(
+            "cleanup", f"ehhez a témához nem található script által rögzített audió: {audio_dir}"
+        )
     try:
         record = json.loads(audio_record.read_text(encoding="utf-8"))
         audio_path = Path(record["audio"]).resolve()
         if audio_path.parent != audio_dir.resolve() or not audio_path.is_file():
-            raise TaskError("cleanup", "a rögzített audió útvonala érvénytelen vagy a fájl hiányzik")
+            raise TaskError(
+                "cleanup", "a rögzített audió útvonala érvénytelen vagy a fájl hiányzik"
+            )
         audio_path.unlink()
         audio_record.unlink()
         audio_dir.rmdir()
@@ -327,7 +399,9 @@ def run_cleanup(topic_id: str) -> Path:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Gomba 1 helyi transcript készítése és a jóváhagyásig tárolt audió törlése")
+    parser = argparse.ArgumentParser(
+        description="Gomba 1 helyi transcript készítése és a jóváhagyásig tárolt audió törlése"
+    )
     actions = parser.add_subparsers(dest="action", required=True)
     create = actions.add_parser("create")
     create.add_argument("youtube_url")
