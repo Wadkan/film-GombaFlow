@@ -1,4 +1,4 @@
-videoId: -Z6B0v2SX8c
+videoId: -8QDeHKJNT8
 title: Thaiföldi vadkemping: így főzök a dzsungelben #Thaiföld #outdoorfőzés #freezwithme
 description: |
   Thaiföld vadonjában készítek egy egyszerű ételt a szabadban. Megmutatom, hogyan készülök a főzéshez, és milyen élmény a természet közepén megállni egy kis időre. 🌿🔥

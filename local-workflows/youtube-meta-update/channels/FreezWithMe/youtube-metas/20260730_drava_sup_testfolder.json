@@ -1,8 +1,8 @@
 {
-  "status": "ready",
+  "status": "unknown",
   "channelKey": "freezwithme",
   "youtubeChannelId": "UCTmNLnPDniFPocALLVSFoDg",
-  "videoId": "-Z6B0v2SX8c",
+  "videoId": "-8QDeHKJNT8",
   "title": "Thaiföldi vadkemping: így főzök a dzsungelben #Thaiföld #outdoorfőzés #freezwithme",
   "description": "Thaiföld vadonjában készítek egy egyszerű ételt a szabadban. Megmutatom, hogyan készülök a főzéshez, és milyen élmény a természet közepén megállni egy kis időre. 🌿🔥\n\nFelszerelés:\n- Grayl UltraPress® Purifier (500ml)\n- Firemaple Petrel Fast Cooking System 0.6L\n\n#Thaiföld #vadkemping #outdoorfőzés",
   "tags": [
@@ -15,5 +15,21 @@
   "categoryId": "19",
   "playlistId": "PLIw2OkTTi7--Z3TYSu6s44aQIeGJm2cPM",
   "privacyStatus": "private",
-  "youtube_scheduled_at": "2026-10-27T16:00:00+01:00"
+  "youtube_scheduled_at": "2026-10-27T16:00:00+01:00",
+  "updateResult": {
+    "status": "unknown",
+    "step": "verification",
+    "code": "VERIFICATION_FAILED",
+    "message": "Három visszaellenőrzés után sem igazolható a teljes eredmény.",
+    "videoId": "-8QDeHKJNT8",
+    "videoUrl": "https://youtu.be/-8QDeHKJNT8",
+    "executionId": "467",
+    "partialSuccess": true,
+    "youtubeModified": true,
+    "completedSteps": [
+      "playlist-insert",
+      "video-update"
+    ],
+    "httpStatus": 502
+  }
 }

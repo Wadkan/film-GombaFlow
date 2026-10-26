@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-26T17:34:15.000Z",
+  "updatedAt": "2026-10-26T18:23:24.000Z",
   "createdAt": "2026-10-26T17:04:27.479Z",
   "id": "youtubeMetaConnection",
   "name": "YouTube metadata – protected connection and read-only preflight",
@@ -79,11 +79,11 @@
           "conditions": [
             {
               "id": "is-error",
-              "leftValue": "={{ $json.response.status }}",
-              "rightValue": "error",
+              "leftValue": "={{ ['error','unknown'].includes($json.response.status) ? 'error' : 'ok' }}",
+              "rightValue": "ok",
               "operator": {
                 "type": "string",
-                "operation": "equals"
+                "operation": "notEquals"
               }
             }
           ],
@@ -104,7 +104,7 @@
       "typeVersion": 3.4,
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "={\"httpCode\": 500, \"response\": {\"status\": \"error\", \"step\": \"workflow\", \"code\": \"NODE_FAILURE\", \"message\": \"Belső n8n node-hiba; ellenőrizd a hibás futást.\", \"partialSuccess\": false, \"youtubeModified\": false, \"executionId\": \"{{ $execution.id }}\"}}",
+        "jsonOutput": "={\"httpCode\": 500, \"response\": {\"status\": \"{{ $('Protected webhook').first().json.headers['x-youtube-meta-operation'] === 'update' || !$('Protected webhook').first().json.headers['x-youtube-meta-operation'] ? 'unknown' : 'error' }}\", \"step\": \"workflow\", \"code\": \"NODE_FAILURE\", \"message\": \"Belső n8n node-hiba; ellenőrizd a hibás futást.\", \"partialSuccess\": false, \"youtubeModified\": null, \"executionId\": \"{{ $execution.id }}\"}}",
         "options": {}
       },
       "position": [
@@ -544,6 +544,225 @@
         "options": {}
       },
       "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f5926b29-0a2b-46ce-b0c4-4076241af2d8",
+              "leftValue": "={{ $json.response.status }}",
+              "rightValue": "update-ready",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e53e55f8-3cd4-4e63-9adc-21573abd332f",
+      "name": "Is update action",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1000,
+        600
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "={{ $json.action.method }}",
+        "url": "={{ 'https://www.googleapis.com/youtube/v3/' + $json.action.endpoint }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "sendQuery": true,
+        "specifyQuery": "json",
+        "jsonQuery": "={{ JSON.stringify($json.action.query) }}",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.action.body || {}) }}",
+        "options": {
+          "timeout": "={{ $json.action.timeout }}",
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "56ac1aad-d7bc-41cf-8885-f9907cac9986",
+      "name": "YouTube update request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1250,
+        600
+      ],
+      "onError": "continueErrorOutput",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "f61kxtqqtpixUxer",
+          "name": "YouTube account"
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "executeOnce": true,
+        "command": "={{ \"timeout 10s node /data/n8n-workflows/runtime/youtube-meta-update.js '\" + JSON.stringify({meta: {youtubeChannelId: $('Protected webhook').first().json.body.youtubeChannelId, videoId: $('Protected webhook').first().json.body.videoId}, api: $json, executionId: $execution.id}).base64Encode() + \"'\" }}"
+      },
+      "id": "7be65529-d246-4826-b5e6-5144e155e5d3",
+      "name": "Update advance",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        600
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ JSON.parse($json.stdout) }}",
+        "options": {}
+      },
+      "id": "fe99c464-3565-491d-be87-1ecf69ddc7db",
+      "name": "Update parse",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1750,
+        600
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "executeOnce": true,
+        "command": "={{ \"timeout 10s node /data/n8n-workflows/runtime/youtube-meta-update.js '\" + JSON.stringify({meta: {youtubeChannelId: $('Protected webhook').first().json.body.youtubeChannelId, videoId: $('Protected webhook').first().json.body.videoId}, unexpected: true, executionId: $execution.id}).base64Encode() + \"'\" }}"
+      },
+      "id": "bb6df865-ece8-4d1b-856e-25e38cfcd0e4",
+      "name": "Record update node error",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        850
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ JSON.parse($json.stdout) }}",
+        "options": {}
+      },
+      "id": "a1098d19-79c9-4a35-9097-e49ed94ce529",
+      "name": "Update error parse",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1750,
+        850
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://www.googleapis.com/youtube/v3/' + $json.action.endpoint }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "sendQuery": true,
+        "specifyQuery": "json",
+        "jsonQuery": "={{ JSON.stringify($json.action.query) }}",
+        "sendBody": false,
+        "options": {
+          "timeout": "={{ $json.action.timeout }}",
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "089a26c5-4301-4a8e-b023-ed86ef22153b",
+      "name": "YouTube update read",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1250,
+        450
+      ],
+      "onError": "continueErrorOutput",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "f61kxtqqtpixUxer",
+          "name": "YouTube account"
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "bf1c7b09-4874-490a-a5be-7e010041529f",
+              "leftValue": "={{ $json.action.method }}",
+              "rightValue": "GET",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "79f51d47-9f61-487d-957e-124fa2838e37",
+      "name": "Update is read",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        600
+      ],
+      "onError": "continueErrorOutput"
     }
   ],
   "connections": {
@@ -652,7 +871,7 @@
         ],
         [
           {
-            "node": "Respond check",
+            "node": "Is update action",
             "type": "main",
             "index": 0
           }
@@ -902,6 +1121,164 @@
           }
         ]
       ]
+    },
+    "Is update action": {
+      "main": [
+        [
+          {
+            "node": "Update is read",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond check",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Record update node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube update request": {
+      "main": [
+        [
+          {
+            "node": "Update advance",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update advance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update advance": {
+      "main": [
+        [
+          {
+            "node": "Update parse",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Record update node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update parse": {
+      "main": [
+        [
+          {
+            "node": "Is error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Record update node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Record update node error": {
+      "main": [
+        [
+          {
+            "node": "Update error parse",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update error parse": {
+      "main": [
+        [
+          {
+            "node": "Respond error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update is read": {
+      "main": [
+        [
+          {
+            "node": "YouTube update read",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "YouTube update request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Record update node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube update read": {
+      "main": [
+        [
+          {
+            "node": "Update advance",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update advance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -917,9 +1294,9 @@
   },
   "nodeGroups": [],
   "pinData": {},
-  "versionId": "09364074-95f7-410c-885c-e5f89d2dcf3f",
-  "activeVersionId": "09364074-95f7-410c-885c-e5f89d2dcf3f",
-  "versionCounter": 4,
+  "versionId": "3dde6d4d-1423-47d1-aefc-044cd8a52d61",
+  "activeVersionId": "3dde6d4d-1423-47d1-aefc-044cd8a52d61",
+  "versionCounter": 5,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],

@@ -96,25 +96,25 @@ db.get('SELECT status FROM execution_entity WHERE id=? AND workflowId=?',
         auth_status, _ = self.post(self.meta, token="intentionally-wrong-test-token")
         self.assertIn(auth_status, (401, 403))
 
-    def test_update_is_gated_and_durable_duplicate_is_rejected(self):
+    def test_update_rejects_non_allowlisted_video_and_local_reentry(self):
         result = self.invoke("update")
         self.assertEqual(result.returncode, 1, result.stderr + result.stdout)
         saved = json.loads(self.meta_path.read_text())
         self.assertEqual(saved["status"], "error")
-        self.assertEqual(saved["updateResult"]["code"], "UPDATE_NOT_IMPLEMENTED")
+        self.assertEqual(saved["updateResult"]["code"], "VIDEO_NOT_ALLOWED")
         self.assertFalse(saved["updateResult"]["youtubeModified"])
         self.assert_failed_execution(saved["updateResult"]["executionId"])
         repeated = self.invoke("update")
         self.assertEqual(repeated.returncode, 2)
         status, body = self.post(self.meta, "update")
-        self.assertEqual(status, 409)
-        self.assertEqual(body["code"], "VIDEO_RESERVED")
+        self.assertEqual(status, 403)
+        self.assertEqual(body["code"], "VIDEO_NOT_ALLOWED")
         self.assert_failed_execution(body["executionId"])
 
-    def test_concurrent_webhooks_have_exactly_one_reservation(self):
+    def test_concurrent_disallowed_webhooks_never_start_updates(self):
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
             results = list(pool.map(lambda _: self.post(self.meta, "update"), range(2)))
-        self.assertEqual(sorted(status for status, _ in results), [409, 501])
+        self.assertEqual(sorted(status for status, _ in results), [403, 403])
         for _, body in results:
             self.assertFalse(body["youtubeModified"])
             self.assert_failed_execution(body["executionId"])

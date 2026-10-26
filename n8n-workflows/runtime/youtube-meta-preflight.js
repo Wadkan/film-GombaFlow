@@ -72,6 +72,9 @@ function validate(input) {
   return result(200, {status:'preflight-ready',step}, executionId);
 }
 
+module.exports = {validate, safeCode, safeMessage};
+
+if (require.main === module) {
 let input;
 try {
   input = JSON.parse(Buffer.from(process.argv[2] || '', 'base64').toString('utf8'));
@@ -79,4 +82,6 @@ try {
 } catch (error) {
   console.log(JSON.stringify(result(500, {status:'error',step:'youtube-preflight',code:'INTERNAL_ERROR',
     message:'Belső előellenőrzési hiba; ellenőrizd a hibás n8n-futást.'}, String(input?.executionId || ''))));
+}
+
 }

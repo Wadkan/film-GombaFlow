@@ -1,7 +1,5 @@
 // Executed in the n8n container, never in the external task runners.
 const fs = require('node:fs');
-const path = require('node:path');
-const crypto = require('node:crypto');
 
 const fail = (httpCode, step, code, message) => ({
   httpCode,
@@ -47,38 +45,16 @@ function run(input) {
       videoId: meta.videoId, youtubeModified: false,
       message: 'A védett kapcsolat és a bemenet ellenőrzése sikeres. YouTube-ellenőrzés még nem történt.'}};
   }
+  if (!channel.youtubeCredential || channel.youtubeCredential.type !== 'youTubeOAuth2Api' ||
+      channel.youtubeCredential.id !== input.credentialId) {
+    return fail(500, 'channel-registry', 'CREDENTIAL_CONFIG_MISMATCH',
+      'A csatorna credential-hivatkozása nem egyezik a telepített workflow-val; telepítsd újra a workflow-t.');
+  }
   if (input.operation === 'preflight') {
-    if (!channel.youtubeCredential || channel.youtubeCredential.type !== 'youTubeOAuth2Api' ||
-        channel.youtubeCredential.id !== input.credentialId) {
-      return fail(500, 'channel-registry', 'CREDENTIAL_CONFIG_MISMATCH',
-        'A csatorna credential-hivatkozása nem egyezik a telepített workflow-val; telepítsd újra a workflow-t.');
-    }
     return {httpCode: 200, response: {status: 'preflight-ready', youtubeModified: false},
       preflight: {meta, credentialId: channel.youtubeCredential.id}};
   }
-  const stateDir = process.env.YOUTUBE_META_STATE_DIR || '/home/node/.n8n/youtube-meta-update';
-  fs.mkdirSync(stateDir, {recursive: true, mode: 0o700});
-  const key = crypto.createHash('sha256').update(`${meta.youtubeChannelId}:${meta.videoId}`).digest('hex');
-  let descriptor;
-  try {
-    descriptor = fs.openSync(path.join(stateDir, `${key}.json`), 'wx', 0o600);
-  } catch (error) {
-    if (error.code === 'EEXIST') {
-      return fail(409, 'duplicate-guard', 'VIDEO_RESERVED',
-        'Ehhez a videóhoz korábbi vagy folyamatban lévő kérés tartozik; ellenőrzés nélkül nem indítható újra.');
-    }
-    throw error;
-  }
-  try {
-    fs.writeFileSync(descriptor, JSON.stringify({videoId: meta.videoId, youtubeChannelId: meta.youtubeChannelId,
-      executionId: String(input.executionId || ''), createdAt: new Date().toISOString(),
-      state: 'error', code: 'UPDATE_NOT_IMPLEMENTED'}));
-    fs.fsyncSync(descriptor);
-  } finally {
-    fs.closeSync(descriptor);
-  }
-  return fail(501, 'youtube-update', 'UPDATE_NOT_IMPLEMENTED',
-    'A YouTube-frissítés még nincs megvalósítva; nem történt YouTube-módosítás.');
+  return require('./youtube-meta-update').start(meta, String(input.executionId || ''));
 }
 
 let input;

@@ -1,210 +1,157 @@
-# YouTube-metaadat frissítő hívó
+# YouTube-metaadat frissítő
 
-A helyi agent a jóváhagyott, `ready` állapotú meta JSON-t ezen a CLI-n keresztül
-küldi az n8n **production webhookjára**. A tényleges YouTube-módosítás az n8n
-workflow feladata; ez az eszköz a workflow JSON-válaszát menti vissza a helyi
-meta JSON-ba.
+A helyi agent a jóváhagyott, `ready` meta JSON-t a védett n8n production
+webhooknak küldi. Az n8n natív HTTP Request node-jai a meglévő `YouTube account`
+credentiallel olvasnak és írnak; a CLI menti vissza az eredményt a helyi JSON-ba.
 
-## Jelenleg használható: kapcsolatpróba
+## Jelenlegi tesztkorlátozás
 
-A védett kapcsolat és bemenetellenőrzés működik. A `check` nem hívja a YouTube API-t;
-a sikerének státusza `validated`, nem `updated`. A `check` sem a helyi
-JSON-t, sem a YouTube-ot nem módosítja, és nem foglal le frissítést.
+Éles YouTube-módosítás kizárólag a `-8QDeHKJNT8` tesztvideón engedélyezett.
+A szerver a `config/channels.json` `allowedWriteVideoIds` mezőjét ellenőrzi;
+hiányzó/üres lista minden írást tilt. A listát minden módosító kérés előtt
+újra ellenőrzi. Más videóra `VIDEO_NOT_ALLOWED` hiba érkezik, írás nélkül.
+A kliens ezt nem tudja fejlécből vagy metaadatmezőből felülírni.
 
-A már telepített helyi workflow kipróbálása a repó gyökeréből:
+A jóváhagyott tesztadat:
+`channels/FreezWithMe/youtube-metas/20260730_drava_sup_testfolder.json`.
+A fájl `videoId` mezője határozza meg a célvideót; a workflow nem választ másikat.
+
+## Használat az agentből vagy terminálból
+
+A repó gyökeréből kapcsolatpróba, YouTube-hívás és fájlmódosítás nélkül:
 
 ```sh
 python3 local-workflows/youtube-meta-update/youtube_meta_update.py check \
   local-workflows/youtube-meta-update/examples/connection-check.json
 ```
 
-Elvárt: `status: validated`, `step: connection`, `youtubeModified: false`,
-és `0` kilépési kód. A példaazonosítók szándékosan nem valódi videó- és
-playlistazonosítók; ezekkel a `preflight` nem adhat sikeres YouTube-ellenőrzést.
-
-Az `update` jelenleg `501 / UPDATE_NOT_IMPLEMENTED` hibával áll le. Ez
-szándékos védőkapu, nem sikeres frissítés: a helyi fájl `error` állapotú lesz,
-az n8n futás pedig hibásként zárul. Valódi meta JSON-on még ne használd.
-
-## YouTube-előellenőrzés most
-
-A `preflight` a meglévő n8n `YouTube account` credentiallel három natív HTTP Request
-GET node-ot futtat. Ellenőrzi a hitelesített csatornát, a videó létezését és tulajdonosát,
-a jelenlegi privát és még nem időzített állapotot, majd a playlist elérhetőségét és csatornáját.
-A videó csak `privacyStatus: private`, üres/hiányzó `status.publishAt` esetén elfogadható.
-A bemenetben csak valós, időzónás, jövőbeli időpont fogadható el.
-
-A meglévő jóváhagyott meta JSON kizárólag olvasási ellenőrzése:
+A jóváhagyott videó kizárólag olvasási előellenőrzése:
 
 ```sh
 python3 local-workflows/youtube-meta-update/youtube_meta_update.py preflight \
   local-workflows/youtube-meta-update/channels/FreezWithMe/youtube-metas/20260730_drava_sup_testfolder.json
 ```
 
-Elvárt megfelelő, privát és nem időzített videónál: `status: validated`,
-`step: youtube-preflight`, `youtubeModified: false`, `0` kilépési kód.
-Ez a parancs nem módosítja a meta JSON-t, nem foglal le frissítést, és nem ír a YouTube-ra.
-Az `update` továbbra is szándékosan `UPDATE_NOT_IMPLEMENTED` hibával leáll.
+Elvárt: `status: validated`, `step: youtube-preflight`, `youtubeModified: false`.
+A `check` és `preflight` nem módosítja a JSON-t, és nem foglal frissítést.
+Mindkettő csak `ready` JSON-t fogad el.
 
-Kézi elutasításpróba: készíts másolatot a fenti JSON-ról `/tmp/youtube-preflight-manual.json`
-néven, a `videoId` mezőt állítsd egy saját nyilvános vagy már időzített videóra,
-majd futtasd ugyanezt a `preflight` parancsot a másolaton. Elvárt:
-`VIDEO_NOT_PRIVATE` vagy `VIDEO_ALREADY_SCHEDULED`, és az `executionId` szerinti
-n8n-futás hibás. Hibás videoId esetén `VIDEO_NOT_FOUND`; nem elérhető playlistnél
-`PLAYLIST_NOT_FOUND`. A másolat státusza minden esetben változatlan marad.
-Lejárt bemeneti dátum esetén a helyi CLI már a webhook hívása előtt hibát ad;
-a kézi próbához mindig jövőbeli, időzónás dátum kell.
+A jóváhagyott adatok tényleges alkalmazása:
 
-A csatornaregiszter `youtubeCredential` mezője kizárólag a meglévő n8n credential
-azonosítóját, nevét és típusát tárolja, tokent nem. A telepítő ebből köti a natív
-node-ok credentialjét; jelenleg egy aktív csatornát támogat. A regiszter és a telepített
-kötés eltérésekor hibával leáll. Új credential létrehozása vagy OAuth-kezelő kód nincs.
-A production API-címek rögzített Google HTTPS-címek, kliensadat nem írhatja át őket,
-átirányítás nincs engedélyezve, API-kérésenként 15 másodperces timeout érvényes.
+```sh
+python3 local-workflows/youtube-meta-update/youtube_meta_update.py update \
+  local-workflows/youtube-meta-update/channels/FreezWithMe/youtube-metas/20260730_drava_sup_testfolder.json
+```
 
-API-hibánál a válasz a lépést és a szolgáltató hibakódját/üzenetét is visszaadja
-(`youtubeError`), transporthibánál biztonságos timeout/hitelesítési hibát jelez.
-Az n8n ezután `Stop And Error` node-dal hibásként zárja le a futást.
+Ez valódi módosítás: playlist-tagságot, címet, leírást, címkéket, kategóriát,
+privát láthatóságot és a jóváhagyott jövőbeli publikálási időt állítja be.
+Siker csak visszaolvasással igazolt egyezés után lehet `updated`.
+A válasz tartalmazza a videó linkjét, az n8n `executionId` értékét és a megerősített
+írási lépéseket. A CLI a teljes választ `updateResult` mezőbe menti; a `status`
+mezőn kívül a jóváhagyott metaadatok változatlanok maradnak.
 
-## Workflow telepítése vagy frissítése
+Kilépési kód: `0` igazolt siker; `1` visszakapott `error`/`unknown`; `2` helyi
+bemeneti/konfigurációs hiba vagy tiltott újraindítás. A `--timeout 30` rövidebb
+várakozást állít; legfeljebb 120 másodperc engedélyezett. Nincs automatikus újraküldés.
+
+## Írási sorrend és ellenőrzések
+
+Az n8n egyezteti a hitelesített csatornát a regiszterrel, a videó tulajdonosát,
+a privát/nem időzített állapotot, a jövőbeli időpontot és a playlist csatornáját.
+Már nyilvános vagy bármilyen `publishAt` értékkel időzített videó nem módosítható.
+Ez akkor is tiltás, ha valamely kért adat már egyezik.
+
+Lekéri a playlist-tagságot, és csak hiányzó tagságnál szúr be új playlist-elemet.
+Közvetlenül minden írás előtt újra lekéri a videó aktuális állapotát.
+Ekkor a kért publikálási időnek az aktuális kérés teljes timeoutján és további
+1 másodperces indítási tartalékon túl is jövőbelinek kell lennie. Elégtelen
+tartaléknál `PUBLISH_TIME_TOO_CLOSE` hibát ment, az időpontot nem módosítja;
+a korábbi megerősített playlist-módosítás részleges sikerként megmarad.
+Először a hiányzó playlist-tagságot rendezi, utoljára a videó metaadatait és
+időzítését írja; az időzítetté vált videón ezután csak olvasást végez.
+A már egyező mezők/tagság nem indítanak fölösleges írást. A kötelező jövőbeli
+időzítés miatt egy korábban nem időzített videó sikeres alkalmazása általában
+videófrissítést igényel; a már időzített videó tiltását nem kerüli meg no-op címén.
+
+A visszaellenőrzés legfeljebb három körben olvassa a videómezőket és tagságot.
+A dátumot időpillanatként, a címkéket sorrendtől függetlenül hasonlítja össze.
+Írási kérést soha nem ismétel; csak az ellenőrző olvasások ismételhetők.
+Az API-cím rögzített Google HTTPS-host, átirányítás és natív retry tiltott.
+
+## Állapot és bizonytalan eredmény
+
+A CLI videónként host-szintű fájlzárat tart a `/tmp/film-gombaflow-<uid>/`
+könyvtárban, küldés előtt atomikusan `updating` státuszt ment, de az eredeti
+jóváhagyott `ready` tartalmat küldi. `updating`, `updated`, `error`, `unknown`
+státuszból új indítás tiltott.
+
+A szerver atomikus, kizárólagos fájllétrehozással foglalja a videót a meglévő
+n8n volume `/home/node/.n8n/youtube-meta-update/` mappájában. A foglalás az
+`executionId` tulajdonában marad, újraindítás után is blokkol. Minden kérés előtt
+menti a következő lépést; az írások megerősítését azonnal tartósan rögzíti.
+
+`error` esetén a lépés és az ismert részleges siker szerepel a válaszban.
+Írási timeout, kapcsolatvesztés, nem értelmezhető írási válasz vagy sikertelen
+visszaellenőrzés `unknown`: a módosítás történhetett, ezért automatikus retry nincs.
+A `youtubeModified: null` azt jelenti, hogy a módosítás nem igazolható;
+`true` esetén legalább egy írás megerősített. A `partialSuccess` hibás/bizonytalan
+végállapotban jelzi a korábbi megerősített lépést.
+
+Nincs automatikus feloldás vagy státusz-visszaállítás. Új próbához előbb az agent
+ellenőrizze az előző n8n-futás lezárását és a valódi YouTube-állapotot, majd csak
+külön user-kérésre készíthet elő egyeztetett új indítást. Az `updated` fájl nem
+használható újabb tesztfrissítéshez kézi `ready`-ra átírással.
+
+## Hibák az n8n-ben
+
+A kezelt hibák megfelelő HTTP-kóddal, `status`, `step`, `code`, `message`,
+`partialSuccess`, `youtubeModified`, `executionId` mezőkkel térnek vissza.
+A `youtubeError` megőrzi a szolgáltatói hibakódot és biztonságosan szűrt üzenetet;
+tokent, Authorization fejlécet és nyers hibaobjektumot nem küld vissza.
+A `Respond to Webhook` után `Stop And Error` zárja hibásként az `error` és
+`unknown` futást. Váratlan node-hiba sem válhat sikeres válasszá.
+Hibás Header Auth már futásindítás előtt 403-at ad.
+
+A feldolgozás belső határideje 85 másodperc, az n8n hard limitje 90 másodperc,
+a kliensé 120. Az egyes API-kérések legfeljebb 15 másodpercet kaphatnak, de ezt
+a még hátralévő feldolgozási idő tovább korlátozza. A jövőbeli publikálást nem várja meg.
+
+## Telepítés és titok
 
 ```sh
 python3 n8n-workflows/scripts/install-youtube-meta-connection.py
 ```
 
-Az eszköz csak a `youtubeMetaConnection` workflow-t és annak külön Header
-Auth credentialjét importálja; az egyéb workflow-khoz/credentialökhöz nem nyúl.
-A titkot automatikusan hozza létre a repón kívüli klienskonfigurációban, illetve
-titkosított n8n credentialben. Meglévő, más webhookra mutató klienskonfigurációt
-nem ír felül; külön fájlt a `--config /repón-kívüli/útvonal.json` kapcsolóval adhatsz meg.
-A jelenlegi Compose-mountokat alkalmazza, majd röviden újraindítja csak az n8n
-szolgáltatást a publikált webhook aktiválásához; a volume-okat megőrzi.
-Az import/export a meglévő `n8n-workflows` Makefile-célokkal történik, az új
-workflow-ra korlátozva (`WORKFLOW_ID=youtubeMetaConnection`).
+Csak a kezelt `youtubeMetaConnection` workflow-t és külön Header Auth credentialjét
+importálja/publikálja a meglévő stackbe, majd a meglévő import/export Makefile-célokkal
+exportálja. Röviden újraindítja csak az n8n szolgáltatást; más workflow/credential és
+volume megmarad. A csatornaregiszter `youtubeCredential` hivatkozása a meglévő OAuth
+credential id/név/típusát tartalmazza; token nincs a repóban.
 
-A production webhook: `http://127.0.0.1:5678/webhook/youtube-meta-connection`.
-Ez a helyi agent host hálózati névteréből igazoltan elérhető. Sandboxból a
-helyi hálózati hozzáférés engedélyezése szükséges; nem elérhető címre nem
-indulhat automatikus újrapróbálás. Más hálózati névtérből a host megfelelő
-HTTPS-címét kell beállítani; távoli sima HTTP tiltott.
+A Header Auth titok a repón kívül, `~/.config/film-gombaflow/youtube-meta-update.json`
+fájlban marad (`600`, könyvtár `700`). Meglévő konfigurációt nem ír felül más webhookhoz.
+Másik repón kívüli helyhez `--config <útvonal>` adható. Manuális beállítás:
+`python3 local-workflows/youtube-meta-update/youtube_meta_update.py configure`.
 
-## Egyszeri beállítás
+Production URL: `http://127.0.0.1:5678/webhook/youtube-meta-connection`.
+Ez az agent host hálózati környezetéből igazoltan elérhető; sandboxban külön helyi
+hálózati jogosultság szükséges. Nem helyi HTTP-cím tiltott, távoli címhez HTTPS kell.
 
-Futtasd a repó gyökeréből:
+## Automatizált és kézi próba
 
-```sh
-python3 local-workflows/youtube-meta-update/youtube_meta_update.py configure
-```
+`make test` az összes automatizált ellenőrzés belépési pontja. Az új teljes flow-tesztek
+a CLI-től natív n8n webhookon és HTTP node-okon át a fájlstátusz visszaírásáig futnak.
+A YouTube API-t izolált helyi tesztdupla helyettesíti, az összes tesztworkflow HTTP
+node-járól eltávolított valódi OAuth-credentiallel és helyi URL-lel. A módosító
+próbák saját `/tmp` állapotmappát használnak, a production videófoglalást nem érintik.
+Siker, tagságduplikáció, friss állapotellenőrzés, tiltott videó/állapot/csatorna,
+párhuzamosság, részleges hiba, írási timeout és legfeljebb három visszaolvasás szerepel.
+A tesztek végén a kezelt test workflow-k inaktívak, a helyi API-folyamatok és fájlok
+törlődnek; a production webhook újra elérhető. A kezelt inaktív tesztdefiníciók az
+n8n-ben maradnak, mivel a támogatott CLI nem biztosít workflow-törlő parancsot.
 
-Add meg az n8n aktivált workflow-jának production webhook URL-jét, majd az n8n
-Header Auth credentialben beállított fejléc nevét és titkát. A titok rejtve
-marad a terminálon. Az eszköz a beállítást a repón kívül tárolja itt:
-
-```text
-~/.config/film-gombaflow/youtube-meta-update.json
-```
-
-A fájl jogosultsága `600`, a könyvtáré `700`. Ha más helyet szeretnél, add meg
-a `configure` parancs `--config <útvonal>` kapcsolójával; a konfiguráció nem
-helyezhető a repóba. Meglévő konfigurációt a CLI nem ír felül: töröld vagy
-szerkeszd kézzel, majd futtasd újra a beállítást.
-
-## Frissítés indítása
-
-```sh
-python3 local-workflows/youtube-meta-update/youtube_meta_update.py update \
-  local-workflows/youtube-meta-update/channels/FreezWithMe/youtube-metas/<videó>.json
-```
-
-Egyedi konfigurációval és rövidebb várakozási korláttal:
-
-```sh
-python3 local-workflows/youtube-meta-update/youtube_meta_update.py update \
-  <meta.json> --config <kliens-konfiguráció.json> --timeout 30
-```
-
-Csak teljes és érvényes, `ready` státuszú bemenetet küld el. A teljes HTTP POST
-legfeljebb 120 másodpercig vár (a `--timeout` ezt csökkentheti), és a CLI nem
-ismétli meg a kérés küldését sem timeout, sem hiba esetén. A timeout, a
-kapcsolat megszakadása vagy az értelmezhetetlen válasz `unknown` eredményként
-kerül a meta JSON-ba, mert a YouTube-módosítás megtörténte ilyenkor nem
-igazolható. Ilyen esetben ellenőrizd az n8n futást és a YouTube állapotát, mielőtt
-új kérést indítasz.
-
-Az `update` videónként nem blokkoló fájlzárat tart a host ideiglenes
-`film-gombaflow-<uid>/` könyvtárában, és a kérés előtt atomikusan `updating`
-állapotot ment. A webhook az eredeti `ready` tartalmat kapja. Második indítás
-`updating`, `updated`, `unknown` vagy `error` állapotból tiltott. A fájlzár
-folyamatkilépéskor elenged, a megmaradó `updating` állapot továbbra is blokkol.
-
-Az n8n emellett atomikus, kizárólagos fájllétrehozással videónként tartós
-foglalást ment a meglévő `n8n_data` volume
-`/home/node/.n8n/youtube-meta-update/` mappájába. Ez konténer-újraindítás és
-azonos videó más JSON-fájlból indítása ellen is véd. Foglalást nem töröl
-automatikusan: hiba vagy bizonytalan állapot után előbb az n8n-futást és a
-tényleges YouTube-állapotot kell ellenőrizni, majd külön kérésre lehet
-egyeztetett újraindítást előkészíteni. Automatikus feloldás nincs.
-
-## Hibák az n8n-ben
-
-A kezelt hibák `Respond to Webhook` node-on keresztül megfelelő HTTP-kóddal,
-`status`, `step`, `code`, `message`, `partialSuccess`, `youtubeModified` és
-`executionId` mezővel térnek vissza. A következő `Stop And Error` node a futást
-hibásként zárja. Az `executionId` alapján az n8n Executions nézetében
-megtalálható a hiba. A parancs- vagy válaszfeldolgozó node váratlan hibája is
-ugyanerre a hibás válasz/futás útvonalra kerül, nem általános sikerre.
-A natív Header Auth már a workflow indítása előtt 403-mal utasítja el a hibás
-hitelesítést; ez nem indít workflow-futást.
-
-A workflow feldolgozási korlátja 90 másodperc, a helyi parancsfolyamaté
-85 másodperc, a kliens teljes kéréskorlátja legfeljebb 120 másodperc. A YouTube-előellenőrzés API-kérésenkénti timeoutja 15 másodperc. Kényszerű workflow-leállítás vagy
-kapcsolatszakadás esetén a kliens `unknown` állapotot rögzít és blokkolja az
-újrapróbálást.
-
-## Kézi hibapróba most
-
-1. A fenti `check` parancs után a példa JSON maradjon változatlan.
-2. Hitelesítés nélkül küldj próbát:
-   `curl -i -X POST http://127.0.0.1:5678/webhook/youtube-meta-connection`.
-   Elvárt: 403, nincs indult n8n-futás.
-3. Az `update` védőkapujához készíts külön tesztpéldányt és egyedi teszt-ID-t:
-
-```sh
-python3 - <<'PY'
-import json, pathlib, uuid
-value = json.loads(pathlib.Path('local-workflows/youtube-meta-update/examples/connection-check.json').read_text())
-value['videoId'] = 'connection-test-' + uuid.uuid4().hex
-pathlib.Path('/tmp/youtube-meta-manual.json').write_text(json.dumps(value, indent=2))
-PY
-python3 local-workflows/youtube-meta-update/youtube_meta_update.py update /tmp/youtube-meta-manual.json
-```
-
-Elvárt: `UPDATE_NOT_IMPLEMENTED`, a tesztfájl státusza `error`, az n8n-ben
-ugyanazzal az `executionId`-val hibás futás. A parancsot ugyanazzal a fájllal
-újra futtatva helyi tiltás történik, nem új webhookkérés. Valódi videóadatot
-ez a próba nem használ.
-
-## Automatizált flow-tesztek
-
-`make test` futtatja a helyi tesztwebhookos kliensfolyamatokat és a telepített,
-valódi helyi n8n connection-flow tesztjeit. A live tesztekhez fusson a stack és
-a fenti telepítő; más konfigurációt a `YOUTUBE_META_TEST_CONFIG` környezeti
-változóval adhatsz meg. Csak a helyi connection webhook elfogadott. A tesztek
-egyedi, nem valódi YouTube-azonosítókat használnak, és nem hívják a valódi YouTube API-t.
-Ellenőrzik a védett sikeres kapcsolatot, a bemeneti hibát és a valóban hibás
-n8n-futást, a blokkolt írást, valamint a szerveroldali tartós és párhuzamos
-duplázásvédelmet. A helyi tesztwebhook a timeoutot és a fájlállapotot is vizsgálja.
-
-Az n8n JSON-válasza `status` mezőben `updated`, `error` vagy `unknown`
-végállapotot adjon vissza. A válasz teljes objektuma `updateResult` mezőként
-kerül a meta JSON-ba; a többi metaadatmező változatlan marad. A CLI `0` kóddal
-fejeződik be `updated` esetén, `1` kóddal `error` vagy `unknown` esetén, és `2`
-kóddal helyi bemeneti vagy konfigurációs hibánál.
-
-A YouTube-preflight flow-tesztek a `youtubeMetaPreflightTest` izolált n8n workflow-t
-aktiválják a futás idejére. Ez ugyanazokat a natív node-okat használja helyi API-tesztduplával,
-YouTube OAuth credential nélkül. A production webhook és credential kötése változatlan.
-A tesztek után a teszt-workflow inaktív marad, a teszt API-folyamat és annak `/tmp` fájljai
-eltűnnek. A setup/cleanup röviden újraindítja az n8n szolgáltatást. Sikeres előellenőrzést,
-nyilvános/időzített videó tiltását, csatornaeltérést, hiányzó videót/playlistet, API-hibát
-és timeoutot vizsgálnak, és ellenőrzik a JSON változatlanságát és a hibás n8n-futást.
+Kézi éles próba kizárólag a fenti tesztvideóval és jóváhagyott JSON-nal:
+`preflight`, majd `update`. Az eredmény `updated` és visszaolvasással igazolt legyen;
+a videó maradjon privát a jövőbeli időzítéssel, a playlistben pontosan a kért tagsággal.
+A megismételt `update` helyben tiltott, nem küld újabb kérést. Nyilvános/időzített
+videó elutasítása `preflight` hívással ellenőrizhető; más valódi videón írási teszt tilos.

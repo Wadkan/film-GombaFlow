@@ -36,7 +36,7 @@ class YoutubeMetaPreflightFlowTests(unittest.TestCase):
         cls.folder = tempfile.TemporaryDirectory(prefix='youtube-preflight-test-', dir='/tmp')
         cls.addClassCleanup(cls.folder.cleanup)
         workflow = json.loads((ROOT / 'n8n-workflows/workflows/youtubeMetaConnection.json').read_text())
-        reads = [n for n in workflow['nodes'] if n['type'] == 'n8n-nodes-base.httpRequest']
+        reads = [n for n in workflow['nodes'] if n['name'] in ('Read authenticated channel','Read video','Read playlist')]
         if len(reads) != 3:
             raise RuntimeError('Expected 3 native read-only YouTube HTTP nodes')
         workflow['id'] = TEST_ID
@@ -53,12 +53,12 @@ class YoutubeMetaPreflightFlowTests(unittest.TestCase):
             if node['type'] == 'n8n-nodes-base.webhook':
                 node['parameters']['path'] = 'youtube-meta-preflight-test'
                 node['webhookId'] = TEST_ID
-            if node in reads:
+            if node['type'] == 'n8n-nodes-base.httpRequest':
                 node['credentials'] = {}
                 node['parameters']['authentication'] = 'none'
-                endpoint = node['parameters']['url'].rsplit('/', 1)[1]
+                endpoint = node['parameters']['url'].rsplit('/', 1)[1] if node in reads else 'unused'
                 node['parameters']['url'] = 'http://127.0.0.1:18765/youtube/v3/' + endpoint
-                node['parameters']['queryParameters']['parameters'].append(
+                node['parameters'].setdefault('queryParameters',{'parameters':[]})['parameters'].append(
                     {'name':'_case', 'value':"={{ $('Parse result').first().json.preflight.meta.videoId }}"})
                 node['parameters']['options']['timeout'] = 250
         config = json.loads(CONFIG.read_text())

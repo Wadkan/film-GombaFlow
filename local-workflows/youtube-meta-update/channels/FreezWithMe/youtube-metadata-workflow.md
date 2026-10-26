@@ -124,3 +124,19 @@ A választ a csak megadott formátumokban add. Ha file-ba kell írni az outputot
 
 A felszerelés kanonikus forrása: [`gear-list.md`](./gear-list.md).
 Az agent nem bővítheti ki saját tudásból a listát, és nem írhat át márkaneveket általánosabb vagy rövidebb megnevezésre.
+
+## A jóváhagyott JSON alkalmazása
+
+Ha a user a kész metaadat YouTube-ra alkalmazását kéri, a helyi agent hívja a
+repo gyökeréből a `python3 local-workflows/youtube-meta-update/youtube_meta_update.py
+preflight <jóváhagyott-json-útvonal>` parancsot, majd megfelelő előellenőrzésnél
+az ugyanilyen `update <jóváhagyott-json-útvonal>` parancsot. A usernek nem kell
+terminált vagy n8n felületet használnia. Meglévő egyértelmű alkalmazási engedélyt
+ne kérj újra; a puszta MD-jóváhagyás továbbra is csak a JSON elkészítését engedi.
+
+Az `update` a fájl státuszát és eredményét maga menti; `updated` csak igazolt
+visszaolvasás után siker. `error`, `unknown` vagy megmaradt `updating` esetén
+ne állítsd vissza automatikusan `ready`-ra, és ne indíts új módosítást. Előbb az
+n8n-futást és a tényleges YouTube-állapotot ellenőrizd, és külön user-kérés szükséges
+az egyeztetett új indításhoz. A jelenlegi éles tesztben csak a `-8QDeHKJNT8`
+videó módosítható; ezt az n8n szerveroldali engedélylistája is kikényszeríti.

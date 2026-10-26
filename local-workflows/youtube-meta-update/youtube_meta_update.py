@@ -163,7 +163,7 @@ def decode_result(body: bytes, http_status: int, operation: str = "update") -> d
             "message": "a webhook nem adott vissza érvényes végállapotot JSON-ban",
         }
     if http_status < 200 or http_status >= 300:
-        if result["status"] != "error":
+        if result["status"] not in {"error", "unknown"}:
             return {
                 "status": "unknown",
                 "httpStatus": http_status,
