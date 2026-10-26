@@ -1,0 +1,303 @@
+{
+  "updatedAt": "2026-10-26T17:09:17.000Z",
+  "createdAt": "2026-10-26T17:04:27.479Z",
+  "id": "youtubeMetaConnection",
+  "name": "YouTube metadata – protected agent connection",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "1e9dceab-e8e3-51e9-9ee8-c2954f78ee17",
+      "name": "Protected webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "youtube-meta-connection",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "youtube-meta-connection",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "youtubeMetaHeaderAuth",
+          "name": "YouTube metadata connection Header Auth"
+        }
+      }
+    },
+    {
+      "id": "7981f1ec-460c-5014-bd36-26f08a5072d1",
+      "name": "Validate and reserve",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "parameters": {
+        "executeOnce": true,
+        "command": "={{ \"timeout 85s node /data/n8n-workflows/runtime/youtube-meta-connection.js '\" + JSON.stringify({body: $json.body, operation: $json.headers['x-youtube-meta-operation'] || 'update', executionId: $execution.id}).base64Encode() + \"'\" }}"
+      },
+      "position": [
+        240,
+        0
+      ],
+      "onError": "continueErrorOutput",
+      "retryOnFail": false
+    },
+    {
+      "id": "a685f291-6410-5f2e-b724-a52eec241f90",
+      "name": "Parse result",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ JSON.parse($json.stdout) }}",
+        "options": {}
+      },
+      "position": [
+        480,
+        -80
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "846fb05a-0365-5006-bd0f-b75130db9bc9",
+      "name": "Is error",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "is-error",
+              "leftValue": "={{ $json.response.status }}",
+              "rightValue": "error",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "position": [
+        720,
+        -80
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "b8e77016-1148-5f1d-bb5b-534227170182",
+      "name": "Unexpected node error",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\"httpCode\": 500, \"response\": {\"status\": \"error\", \"step\": \"workflow\", \"code\": \"NODE_FAILURE\", \"message\": \"Belső n8n node-hiba; ellenőrizd a hibás futást.\", \"partialSuccess\": false, \"youtubeModified\": false, \"executionId\": \"{{ $execution.id }}\"}}",
+        "options": {}
+      },
+      "position": [
+        720,
+        200
+      ]
+    },
+    {
+      "id": "f37d6add-3a2c-5ed4-9b1e-50f25091a380",
+      "name": "Respond check",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json.response) }}",
+        "options": {
+          "responseCode": "={{ $json.httpCode }}"
+        }
+      },
+      "position": [
+        960,
+        -180
+      ]
+    },
+    {
+      "id": "9a0d6916-d7e6-5173-a1ce-e8a02003fb71",
+      "name": "Respond error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json.response) }}",
+        "options": {
+          "responseCode": "={{ $json.httpCode }}"
+        }
+      },
+      "position": [
+        960,
+        100
+      ]
+    },
+    {
+      "id": "a831f8fa-7727-5c78-bf0d-14c639b0430a",
+      "name": "Fail execution",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "parameters": {
+        "errorType": "errorObject",
+        "errorObject": "={{ JSON.stringify($json.response) }}"
+      },
+      "position": [
+        1200,
+        100
+      ]
+    }
+  ],
+  "connections": {
+    "Protected webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate and reserve",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate and reserve": {
+      "main": [
+        [
+          {
+            "node": "Parse result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse result": {
+      "main": [
+        [
+          {
+            "node": "Is error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is error": {
+      "main": [
+        [
+          {
+            "node": "Respond error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond check",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unexpected node error": {
+      "main": [
+        [
+          {
+            "node": "Respond error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond error": {
+      "main": [
+        [
+          {
+            "node": "Fail execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "executionTimeout": 90,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": true
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "9b7e0cf4-f170-4343-a64b-222c6493097f",
+  "activeVersionId": "9b7e0cf4-f170-4343-a64b-222c6493097f",
+  "versionCounter": 3,
+  "triggerCount": 1,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-10-26T17:04:27.481Z",
+      "createdAt": "2026-10-26T17:04:27.481Z",
+      "role": "workflow:owner",
+      "workflowId": "youtubeMetaConnection",
+      "projectId": "juy2m10sT9yuAddE",
+      "project": {
+        "updatedAt": "2026-10-23T18:05:43.473Z",
+        "createdAt": "2026-10-23T18:03:02.112Z",
+        "id": "juy2m10sT9yuAddE",
+        "name": "Zsolt GARAMSZEGI <zsoltgaramszegi@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "14e9e2c1-9c0e-4e94-9bd5-04e5ed597215"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

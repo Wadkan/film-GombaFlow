@@ -24,4 +24,14 @@ make -C n8n-workflows export
 make -C n8n-workflows import
 ```
 
+Egyetlen workflow importja vagy exportja a többi módosítása nélkül:
+
+```sh
+WORKFLOW_ID=youtubeMetaConnection make -C n8n-workflows import
+WORKFLOW_ID=youtubeMetaConnection make -C n8n-workflows export
+```
+
+A védett metaadatkapcsolat telepítése és a jelenleg használható `check`
+parancs: [`youtube-meta-update/README.md`](../local-workflows/youtube-meta-update/README.md).
+
 Az n8n stacket a gyökér `Makefile`-lal indítod (`make start-n8n`).

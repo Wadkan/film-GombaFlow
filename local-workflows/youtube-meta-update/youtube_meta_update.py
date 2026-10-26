@@ -4,7 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import datetime
+import fcntl
 import getpass
+import hashlib
 import ipaddress
 import json
 import os
@@ -130,15 +134,29 @@ def read_ready_meta(path: pathlib.Path) -> dict:
     missing = sorted(REQUIRED_META_FIELDS - value.keys())
     if missing:
         raise ClientError("hiányzó kötelező metaadatmezők: " + ", ".join(missing))
+    for name in REQUIRED_META_FIELDS - {"tags"}:
+        if not isinstance(value[name], str) or not value[name].strip():
+            raise ClientError(f"érvénytelen metaadatmező: {name}")
+    if not isinstance(value["tags"], list) or any(not isinstance(tag, str) or not tag.strip() for tag in value["tags"]):
+        raise ClientError("a tags szöveges címkék listája legyen")
+    if len(value["title"]) > 100 or value["privacyStatus"] != "private":
+        raise ClientError("legfeljebb 100 karakteres cím és private láthatóság szükséges")
+    try:
+        scheduled = datetime.datetime.fromisoformat(value["youtube_scheduled_at"].replace("Z", "+00:00"))
+        if scheduled.tzinfo is None or scheduled <= datetime.datetime.now(datetime.timezone.utc):
+            raise ValueError("not a future timezone-aware date")
+    except ValueError as exc:
+        raise ClientError("jövőbeli, időzónával megadott youtube_scheduled_at szükséges") from exc
     return value
 
 
-def decode_result(body: bytes, http_status: int) -> dict:
+def decode_result(body: bytes, http_status: int, operation: str = "update") -> dict:
     try:
         result = json.loads(body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
         result = None
-    if not isinstance(result, dict) or result.get("status") not in FINAL_STATES:
+    states = FINAL_STATES | ({"validated"} if operation == "check" else set())
+    if not isinstance(result, dict) or result.get("status") not in states:
         return {
             "status": "unknown",
             "httpStatus": http_status,
@@ -156,7 +174,7 @@ def decode_result(body: bytes, http_status: int) -> dict:
     return result
 
 
-def call_webhook(meta: dict, config: dict, timeout: float) -> dict:
+def call_webhook(meta: dict, config: dict, timeout: float, operation: str = "update") -> dict:
     deadline = time.monotonic() + timeout
     encoded = json.dumps(meta, ensure_ascii=False).encode("utf-8")
     request = urllib.request.Request(
@@ -165,6 +183,7 @@ def call_webhook(meta: dict, config: dict, timeout: float) -> dict:
         headers={
             "Content-Type": "application/json",
             config["header_name"]: config["header_value"],
+            "X-Youtube-Meta-Operation": operation,
         },
         method="POST",
     )
@@ -179,9 +198,9 @@ def call_webhook(meta: dict, config: dict, timeout: float) -> dict:
             opener = urllib.request.build_opener(NoRedirectHandler)
             try:
                 with opener.open(request, timeout=remaining) as response:
-                    result["value"] = decode_result(response.read(), response.status)
+                    result["value"] = decode_result(response.read(), response.status, operation)
             except urllib.error.HTTPError as exc:
-                result["value"] = decode_result(exc.read(), exc.code)
+                result["value"] = decode_result(exc.read(), exc.code, operation)
             except (TimeoutError, urllib.error.URLError, OSError) as exc:
                 reason = getattr(exc, "reason", exc)
                 if isinstance(reason, TimeoutError) or "timed out" in str(reason).lower():
@@ -203,6 +222,25 @@ def call_webhook(meta: dict, config: dict, timeout: float) -> dict:
     if "value" not in result:
         return {"status": "unknown", "message": "a webhook nem adott vissza eredményt az időkorláton belül"}
     return result["value"]
+
+
+@contextlib.contextmanager
+def video_lock(meta: dict):
+    """One host-wide lock per video, including callers using copied JSON files."""
+    root = pathlib.Path("/tmp") / f"film-gombaflow-{os.getuid()}"
+    root.mkdir(mode=0o700, exist_ok=True)
+    if root.is_symlink() or root.stat().st_uid != os.getuid() or stat.S_IMODE(root.stat().st_mode) != 0o700:
+        raise ClientError("a helyi zárolási könyvtár tulajdonosa vagy jogosultsága hibás")
+    key = hashlib.sha256(f'{meta["youtubeChannelId"]}:{meta["videoId"]}'.encode()).hexdigest()
+    descriptor = os.open(root / f"youtube-meta-{key}.lock", os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+    try:
+        try:
+            fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise ClientError("ehhez a videóhoz már fut helyi frissítés") from exc
+        yield
+    finally:
+        os.close(descriptor)
 
 
 def write_result(path: pathlib.Path, current: dict, result: dict) -> None:
@@ -268,6 +306,10 @@ def make_parser() -> argparse.ArgumentParser:
     update_parser.add_argument("--config", help=f"klienskonfiguráció (alapértelmezett: {DEFAULT_CONFIG})")
     update_parser.add_argument("meta_json", type=pathlib.Path)
     update_parser.add_argument("--timeout", type=float, default=120)
+    check_parser = commands.add_parser("check", help="kapcsolat és bemenet ellenőrzése YouTube-módosítás nélkül")
+    check_parser.add_argument("--config")
+    check_parser.add_argument("meta_json", type=pathlib.Path)
+    check_parser.add_argument("--timeout", type=float, default=120)
     return parser
 
 
@@ -283,8 +325,15 @@ def main(argv: list[str] | None = None) -> int:
         meta_path = args.meta_json.expanduser().resolve(strict=True)
         current = read_ready_meta(meta_path)
         config = load_config(path)
-        result = call_webhook(current, config, args.timeout)
-        write_result(meta_path, current, result)
+        if args.command == "check":
+            result = call_webhook(current, config, args.timeout, "check")
+            print(json.dumps(result, ensure_ascii=False))
+            return 0 if result["status"] == "validated" else 1
+        with video_lock(current):
+            current = read_ready_meta(meta_path)
+            write_result(meta_path, current, {"status": "updating", "step": "dispatch"})
+            result = call_webhook(current, config, args.timeout)
+            write_result(meta_path, current, result)
         print(json.dumps(result, ensure_ascii=False))
         return 0 if result["status"] == "updated" else 1
     except ClientError as exc:

@@ -32,10 +32,14 @@ class WebhookHandler(http.server.BaseHTTPRequestHandler):
     drip_chunks = None
     drip_delay_seconds = 0
     received = []
+    metadata_path = None
+    local_status_on_receive = None
 
     def do_POST(self):
         body = self.rfile.read(int(self.headers.get("Content-Length", "0")))
         type(self).received.append((self.path, self.headers.get("X-Webhook-Token"), body))
+        if type(self).metadata_path:
+            type(self).local_status_on_receive = json.loads(type(self).metadata_path.read_text())["status"]
         if type(self).delay_seconds:
             time.sleep(type(self).delay_seconds)
         data = json.dumps(type(self).response_body).encode()
@@ -81,6 +85,8 @@ class YoutubeMetaUpdateIntegrationTests(unittest.TestCase):
         WebhookHandler.drip_chunks = None
         WebhookHandler.drip_delay_seconds = 0
         WebhookHandler.received = []
+        WebhookHandler.metadata_path = None
+        WebhookHandler.local_status_on_receive = None
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.temp_dir = pathlib.Path(self.tmp.name)
@@ -121,6 +127,7 @@ class YoutubeMetaUpdateIntegrationTests(unittest.TestCase):
         return json.loads(self.meta_path.read_text(encoding="utf-8"))
 
     def test_posts_ready_meta_and_persists_success_without_changing_metadata(self):
+        WebhookHandler.metadata_path = self.meta_path
         result = self.invoke()
 
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -129,6 +136,7 @@ class YoutubeMetaUpdateIntegrationTests(unittest.TestCase):
         self.assertEqual(path, "/webhook/youtube-meta-update")
         self.assertEqual(token, "secret-for-test")
         self.assertEqual(json.loads(body), READY_META)
+        self.assertEqual(WebhookHandler.local_status_on_receive, "updating")
         saved = self.read_meta()
         self.assertEqual(saved["status"], "updated")
         self.assertEqual(saved["updateResult"], {"status": "updated", "videoId": "video-123"})
@@ -173,6 +181,32 @@ class YoutubeMetaUpdateIntegrationTests(unittest.TestCase):
         saved = self.read_meta()
         self.assertEqual(saved["status"], "unknown")
         self.assertIn("teljes válasza túllépte az időkorlátot", saved["updateResult"]["message"])
+
+    def test_parallel_and_repeated_updates_are_blocked(self):
+        WebhookHandler.delay_seconds = 0.25
+        command = ["python3", str(CLI), "update", str(self.meta_path), "--config", str(self.config_path)]
+        first = subprocess.Popen(command, cwd=REPO_ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        self.addCleanup(lambda: first.poll() is None and first.kill())
+        deadline = time.monotonic() + 2
+        while not WebhookHandler.received and time.monotonic() < deadline:
+            time.sleep(0.01)
+        second = self.invoke()
+        first.communicate(timeout=3)
+        third = self.invoke()
+        self.assertEqual(first.returncode, 0)
+        self.assertNotEqual(second.returncode, 0)
+        self.assertNotEqual(third.returncode, 0)
+        self.assertEqual(len(WebhookHandler.received), 1)
+
+    def test_check_does_not_change_meta_or_claim_youtube_update(self):
+        WebhookHandler.response_body = {"status": "validated", "step": "connection", "youtubeModified": False}
+        result = subprocess.run(
+            ["python3", str(CLI), "check", str(self.meta_path), "--config", str(self.config_path)],
+            cwd=REPO_ROOT, text=True, capture_output=True, check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.read_meta(), READY_META)
+        self.assertEqual(json.loads(result.stdout)["status"], "validated")
 
 
 if __name__ == "__main__":

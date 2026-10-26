@@ -1,0 +1,13 @@
+{
+  "status": "ready",
+  "channelKey": "freezwithme",
+  "youtubeChannelId": "UCTmNLnPDniFPocALLVSFoDg",
+  "videoId": "connection-check-only",
+  "title": "Kapcsolatpróba",
+  "description": "Tesztadat: nem valódi YouTube-videó.",
+  "tags": ["test"],
+  "categoryId": "19",
+  "playlistId": "connection-check-only",
+  "privacyStatus": "private",
+  "youtube_scheduled_at": "2099-01-01T16:00:00+01:00"
+}
