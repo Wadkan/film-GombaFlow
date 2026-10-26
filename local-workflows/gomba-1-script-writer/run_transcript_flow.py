@@ -58,8 +58,23 @@ def transcript_exists(video_id: str) -> bool:
         return False
 
 
+def used_video_ids() -> set[str]:
+    registry_path = PROJECTS_DIR / "registry.json"
+    if not registry_path.is_file():
+        return set()
+    try:
+        registry = json.loads(registry_path.read_text(encoding="utf-8"))
+        videos = registry.get("videos", {})
+        if not isinstance(videos, dict):
+            raise ValueError("érvénytelen videólista a Gomba 1 registryben")
+        return set(videos)
+    except (OSError, json.JSONDecodeError, AttributeError, TypeError) as exc:
+        raise ValueError(f"Nem olvasható a Gomba 1 registry: {exc}") from exc
+
+
 def list_ideas(path: Path) -> list[dict[str, str]]:
     ideas = []
+    used_ids = used_video_ids()
     heading = re.compile(r"^##\s+(\d+)\.\s+\[(.+?)\]\((https?://.+)\)\s*$")
     for line in path.read_text(encoding="utf-8").splitlines():
         match = heading.match(line)
@@ -67,7 +82,7 @@ def list_ideas(path: Path) -> list[dict[str, str]]:
             continue
         video_url = html.unescape(match.group(3).replace("\\&", "&"))
         video_id = youtube_id(video_url)
-        if video_id:
+        if video_id and video_id not in used_ids:
             ideas.append({
                 "number": match.group(1),
                 "title": html.unescape(match.group(2)),
@@ -99,7 +114,7 @@ def run() -> int:
         ideas_path = latest_ideas_file()
         ideas = list_ideas(ideas_path)
         if not ideas:
-            raise ValueError(f"Nem található választható videó: {ideas_path}")
+            raise ValueError(f"Nem található fel nem használt választható videó: {ideas_path}")
     except (OSError, ValueError) as exc:
         print(f"HIBA — {exc}", file=sys.stderr)
         return 1
