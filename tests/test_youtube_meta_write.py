@@ -68,7 +68,7 @@ class YoutubeMetaWriteFlowTests(unittest.TestCase):
             if key!='status':self.assertEqual(saved[key],value)
         state_output=docker('exec','-T','n8n','node','-e',"const fs=require('node:fs'),p=require('node:path');const d=process.argv[1];console.log(JSON.stringify(fs.existsSync(d)?fs.readdirSync(d).filter(n=>n.endsWith('.json')).map(n=>JSON.parse(fs.readFileSync(p.join(d,n),'utf8'))):[]));",self.state_dir).stdout
         states=json.loads(state_output)
-        if response.get('code') not in ('VIDEO_NOT_ALLOWED','VIDEO_RESERVED'):
+        if response.get('code') != 'VIDEO_RESERVED':
             self.assertEqual(states[0]['status'],response['status'])
             self.assertEqual(states[0]['executionId'],str(response['executionId']))
         return run,response,path,meta
@@ -105,14 +105,11 @@ class YoutubeMetaWriteFlowTests(unittest.TestCase):
                 retry=subprocess.run(['python3',str(CLI),'update',str(path),'--config',str(self.config_path)],capture_output=True,text=True)
                 self.assertEqual(retry.returncode,2)
 
-    def test_unsafe_states_allowlist_and_duplicate_never_write(self):
+    def test_unsafe_states_and_duplicate_never_write(self):
         for scenario,code in [('public','VIDEO_NOT_PRIVATE'),('scheduled','VIDEO_ALREADY_SCHEDULED'),('wrong-auth','AUTH_CHANNEL_MISMATCH'),('wrong-video-channel','VIDEO_CHANNEL_MISMATCH'),('guard-public','VIDEO_NOT_PRIVATE')]:
             with self.subTest(scenario=scenario):
                 run,body,_,_=self.invoke(scenario);self.assertEqual(run.returncode,1,body);self.assertEqual(body['code'],code);self.failed(body['executionId'])
                 self.assertFalse(any(e['method']!='GET' for e in self.entries(scenario)))
-        run,body,_,_=self.invoke('not-allowed',video='GvZA_M9qxps')
-        self.assertEqual(body['code'],'VIDEO_NOT_ALLOWED');self.assertFalse(body['youtubeModified']);self.failed(body['executionId'])
-        self.assertEqual(self.entries('not-allowed'),[])
         first=self.invoke('duplicate');second=self.invoke('duplicate',clear=False)
         self.assertEqual(first[1]['status'],'updated');self.assertEqual(second[1]['code'],'VIDEO_RESERVED');self.failed(second[1]['executionId'])
         self.assertEqual(sum(e['method']=='PUT' for e in self.entries('duplicate')),1)

@@ -12,11 +12,6 @@ function persist(state) {
   try {fs.writeFileSync(fd,JSON.stringify(state));fs.fsyncSync(fd);} finally {fs.closeSync(fd);}
   fs.renameSync(temporary,destination);
 }
-function allowed(meta) {
-  const registry=JSON.parse(fs.readFileSync(process.env.YOUTUBE_META_CHANNELS_PATH || '/data/youtube-meta-config/channels.json','utf8'));
-  const channel=registry.channels.find(item=>item.enabled && item.key===meta.channelKey && item.youtubeChannelId===meta.youtubeChannelId);
-  return Array.isArray(channel?.allowedWriteVideoIds) && channel.allowedWriteVideoIds.includes(meta.videoId);
-}
 function finish(state,status,step,code,message,extra={}) {
   state.status=status;state.phase='finished';state.finishedAt=new Date().toISOString();
   const response={status,step,...(code?{code}:{}),message,videoId:state.meta.videoId,
@@ -31,8 +26,6 @@ function issue(state,phase,method,endpoint,query,body) {
   if(remaining<=500) return finish(state,state.confirmed.length||state.uncertain?'unknown':'error',phase,'PROCESSING_DEADLINE','A feldolgozási időkorlát lejárt; nem indult újrapróbálás.');
   const timeout=Math.max(100,Math.min(15000,remaining-300));
   if(method!=='GET') {
-    if(!allowed(state.meta)) return finish(state,'error','write-allowlist','VIDEO_NOT_ALLOWED','Ehhez a videóhoz nincs módosítási engedély.');
-    // Revalidate at the mutation boundary, not only when the request arrived.
     // The requested publishAt must outlive this whole HTTP call and dispatch.
     const publishAt=Date.parse(state.meta.youtube_scheduled_at);
     if(!Number.isFinite(publishAt) || publishAt<=Date.now()+timeout+1000) {
@@ -47,7 +40,6 @@ function issue(state,phase,method,endpoint,query,body) {
 const readVideo=(s,phase)=>issue(s,phase,'GET','videos',{part:'snippet,status',id:s.meta.videoId});
 const membership=(s,phase)=>issue(s,phase,'GET','playlistItems',{part:'snippet',playlistId:s.meta.playlistId,videoId:s.meta.videoId,maxResults:'50'});
 function start(meta,executionId) {
-  if(!allowed(meta)) return {httpCode:403,response:{status:'error',step:'write-allowlist',code:'VIDEO_NOT_ALLOWED',message:'A mostani tesztben csak az engedélyezett tesztvideó módosítható.',partialSuccess:false,youtubeModified:false,executionId}};
   fs.mkdirSync(stateDir(),{recursive:true,mode:0o700});
   const state={meta,executionId:String(executionId),status:'updating',createdAt:new Date().toISOString(),deadlineAt:Date.now()+85000,confirmed:[],verifyRound:0};
   let fd;

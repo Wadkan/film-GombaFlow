@@ -4,17 +4,10 @@ A helyi agent a jóváhagyott, `ready` meta JSON-t a védett n8n production
 webhooknak küldi. Az n8n natív HTTP Request node-jai a meglévő `YouTube account`
 credentiallel olvasnak és írnak; a CLI menti vissza az eredményt a helyi JSON-ba.
 
-## Jelenlegi tesztkorlátozás
+## Célvideó
 
-Éles YouTube-módosítás kizárólag a `-8QDeHKJNT8` tesztvideón engedélyezett.
-A szerver a `config/channels.json` `allowedWriteVideoIds` mezőjét ellenőrzi;
-hiányzó/üres lista minden írást tilt. A listát minden módosító kérés előtt
-újra ellenőrzi. Más videóra `VIDEO_NOT_ALLOWED` hiba érkezik, írás nélkül.
-A kliens ezt nem tudja fejlécből vagy metaadatmezőből felülírni.
-
-A jóváhagyott tesztadat:
-`channels/FreezWithMe/youtube-metas/20260730_drava_sup_testfolder.json`.
-A fájl `videoId` mezője határozza meg a célvideót; a workflow nem választ másikat.
+A `videoId` mező határozza meg a frissítendő videót. A workflow nem rögzít
+videóazonosítót; az aktuális, jóváhagyott JSON `videoId` mezőjét használja.
 
 ## Használat az agentből vagy terminálból
 
@@ -150,8 +143,8 @@ A tesztek végén a kezelt test workflow-k inaktívak, a helyi API-folyamatok é
 törlődnek; a production webhook újra elérhető. A kezelt inaktív tesztdefiníciók az
 n8n-ben maradnak, mivel a támogatott CLI nem biztosít workflow-törlő parancsot.
 
-Kézi éles próba kizárólag a fenti tesztvideóval és jóváhagyott JSON-nal:
+Kézi éles próba jóváhagyott JSON-nal:
 `preflight`, majd `update`. Az eredmény `updated` és visszaolvasással igazolt legyen;
 a videó maradjon privát a jövőbeli időzítéssel, a playlistben pontosan a kért tagsággal.
-A megismételt `update` helyben tiltott, nem küld újabb kérést. Nyilvános/időzített
-videó elutasítása `preflight` hívással ellenőrizhető; más valódi videón írási teszt tilos.
+Az ismételt `update` helyben tiltott, nem küld újabb kérést. Nyilvános/időzített
+videó elutasítása `preflight` hívással ellenőrizhető.

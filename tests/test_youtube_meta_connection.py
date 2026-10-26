@@ -1,5 +1,4 @@
 """Full CLI → active n8n webhook → local state tests; no YouTube API calls."""
-import concurrent.futures
 import json
 import os
 import pathlib
@@ -95,29 +94,6 @@ db.get('SELECT status FROM execution_entity WHERE id=? AND workflowId=?',
         self.assertEqual(date_body["code"], "INVALID_FIELDS")
         auth_status, _ = self.post(self.meta, token="intentionally-wrong-test-token")
         self.assertIn(auth_status, (401, 403))
-
-    def test_update_rejects_non_allowlisted_video_and_local_reentry(self):
-        result = self.invoke("update")
-        self.assertEqual(result.returncode, 1, result.stderr + result.stdout)
-        saved = json.loads(self.meta_path.read_text())
-        self.assertEqual(saved["status"], "error")
-        self.assertEqual(saved["updateResult"]["code"], "VIDEO_NOT_ALLOWED")
-        self.assertFalse(saved["updateResult"]["youtubeModified"])
-        self.assert_failed_execution(saved["updateResult"]["executionId"])
-        repeated = self.invoke("update")
-        self.assertEqual(repeated.returncode, 2)
-        status, body = self.post(self.meta, "update")
-        self.assertEqual(status, 403)
-        self.assertEqual(body["code"], "VIDEO_NOT_ALLOWED")
-        self.assert_failed_execution(body["executionId"])
-
-    def test_concurrent_disallowed_webhooks_never_start_updates(self):
-        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
-            results = list(pool.map(lambda _: self.post(self.meta, "update"), range(2)))
-        self.assertEqual(sorted(status for status, _ in results), [403, 403])
-        for _, body in results:
-            self.assertFalse(body["youtubeModified"])
-            self.assert_failed_execution(body["executionId"])
 
     def test_unexpected_native_command_failure_is_an_error_execution(self):
         # Exceeds Linux's single shell argument limit before the handler starts.

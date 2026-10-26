@@ -26,10 +26,7 @@
         "FreezWithMe-playlist.md",
         "chat-messages.json"
       ],
-      "enabled": true,
-      "allowedWriteVideoIds": [
-        "-8QDeHKJNT8"
-      ]
+      "enabled": true
     }
   ]
 }
