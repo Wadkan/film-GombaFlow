@@ -9,6 +9,7 @@ A cél népszerű, gyorsan reprodukálható technikai megoldások megtalálása,
 - **Forrás:** kizárólag YouTube.
 - **Publikálás:** elmúlt 7 nap, minimum életkor nélkül.
 - **Nézettség:** legalább 5000 megtekintés.
+- **Videóhossz:** legfeljebb 25 perces forrásvideókat keress; a belőlük készülő saját videó legfeljebb 15 perces legyen.
 - **Rangsorolás:** nézettség szerint csökkenő sorrendben.
 - **Témák:** AI, n8n, NLP, AI-agentek, üzleti automatizáció, API-integrációk, webalapú üzleti rendszerek.
 - **Fókusz:** valós vállalkozói pain pointokra fejlesztők által bemutatott konkrét technikai megoldások.
