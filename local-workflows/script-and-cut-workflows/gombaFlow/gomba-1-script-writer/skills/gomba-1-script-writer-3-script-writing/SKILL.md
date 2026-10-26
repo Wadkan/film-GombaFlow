@@ -12,6 +12,7 @@ description: 'Teljes magyar forgatási script kidolgozása vagy review alapján 
   briefjóváhagyás és azonosítható bemeneti változatok.
 - **Input:** [workflow](../../WORKFLOW.md), [videóstruktúra](../../VIDEO_STRUCTURE.md),
   [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
+  [hang- és stílusszabályok](../../../style.md),
   [script-template](../../templates/3-script-template.md),
   [összehasonlítás-template](../../templates/comparison-template.md),
   `<project>/0-brief.md`, `<project>/1-story.md`, `<project>/2-chapters.md`,
@@ -23,7 +24,8 @@ description: 'Teljes magyar forgatási script kidolgozása vagy review alapján 
 
 ## Végrehajtás
 
-1. Olvasd be az inputokat. Javításkor a review alapján különítsd el a saját
+1. Olvasd be az inputokat, és alkalmazd a GombaFlow gyökérmappájának `style.md`
+   szabályait. Javításkor a review alapján különítsd el a saját
    hatáskörű hibát a korábbi tervezési hibától; az utóbbit jelezd vissza.
 2. Technikai oktató és történetmesélő forgatókönyvíróként, a workflow szerinti
    modellel, a fejezetterv azonosítóit megtartva dolgozd ki a template blokkjait.

@@ -21,6 +21,9 @@ a tényleges kipróbálás a készítő feladata.
   tartalmi szerkezet és CTA; ezek egyetlen közös szabályforrása.
 - **[CONTENT_RULES.md](CONTENT_RULES.md):** technikai, állításkezelési,
   szerkesztési és felvételi követelmények.
+- **[közös style.md](../style.md):** a GombaFlow script-and-cut workflow-k
+  közös hangja és stílusa; tanult szabályait
+  a `film-learn-style` skill kezeli.
 - **Template-ek:** az adott kimenet kötelező formátumának egyetlen hiteles forrásai.
 - **Skillek:** kizárólag a „hogyan”; a fenti dokumentumokra és template-ekre
   hivatkoznak, nem másolják vagy definiálják újra őket.
@@ -28,9 +31,12 @@ a tényleges kipróbálás a készítő feladata.
   utasítás. Hasznos következtetéseit a közös dokumentumok rögzítik.
   A kutatás teljesítménytesztelési javaslatai nem részei a workflow-nak.
 
-Minden skill olvassa ezt a workflow-t, saját `SKILL.md` fájlját, a két közös
-szabálydokumentumot és a saját template-jét. A teljes kutatást nem kell újraolvasnia.
-Külön stílusfájl nem bemenet; a hangvételt a brief rögzíti.
+Minden skill olvassa ezt a workflow-t, saját leírását, a közös
+szabálydokumentumokat és a saját template-jét. A scriptet író és review-zó
+skillek a [közös `style.md`](../style.md) szabályait is alkalmazzák. A teljes
+kutatást nem kell újraolvasnia.
+Az aktuális projekt briefje a közös stílusszabályokkal összhangban rögzítheti
+a témaspecifikus hangvételt.
 
 ## Útvonalak és fájllista
 

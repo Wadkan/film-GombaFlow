@@ -33,21 +33,6 @@ A fejezetsorrendet és CTA-t kizárólag a [VIDEO_STRUCTURE.md](VIDEO_STRUCTURE.
 - A script tervezete tartalmazhat várt eredményt, de végleges felvételi állítás
   csak a saját működő projekt ellenőrzésére épülhet.
 
-## Szerkesztői review
-
-- A hook, demó, összehasonlítás és összefoglalás külön szerepet töltsön be,
-  ne ugyanazt ismételje négyszer.
-- A lépés vigye közelebb a nézőt az eredményhez. Új információ vagy állapotváltozás
-  nélküli hosszú részhez adj konkrét rövidítési javaslatot.
-- Ne magyarázd többször ugyanazt a beállítást, ne olvasd fel a teljes felületet,
-  és ne időzz hosszan mellékes általános fogalmaknál.
-- Rövidítéskor ne vesszen el kötelező lépés, fontos döntési indok vagy
-  az elvégzéshez szükséges technikai részlet.
-- Ellenőrizd a forrás–átdolgozás, ígéret–demó–teszt összhangját, a kötött
-  szerkezetet, a brief hangvételét és a template-ek szerinti teljességet.
-- A megállapítás fejezetazonosítót és javítási javaslatot kapjon.
-  Ez szöveges minőségellenőrzés, nem retentionmérés vagy A/B-teszt.
-
 ## Felvételi sorrend — a készítőnek
 
 1. A script alapján készítsd el a saját projektet és a reprodukálható példaadatokat.

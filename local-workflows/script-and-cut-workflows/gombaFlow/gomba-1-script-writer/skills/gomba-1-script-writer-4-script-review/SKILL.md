@@ -12,6 +12,7 @@ description: 'Forgatási script tartalmi és technikai review-ja, ismétlések �
   változatok; a review nem helyettesíti az emberi scriptjóváhagyást.
 - **Input:** [workflow](../../WORKFLOW.md), [videóstruktúra](../../VIDEO_STRUCTURE.md),
   [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
+  [hang- és stílusszabályok](../../../style.md),
   `<project>/0-brief.md`, `<project>/1-story.md`, `<project>/2-chapters.md`,
   `<project>/3-script.md`, a brief releváns ellenőrzési forrásai;
   `<project>/source-transcript.md`;
