@@ -14,6 +14,7 @@ description: 'Forgatási script tartalmi és technikai review-ja, ismétlések �
   [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
   `<project>/0-brief.md`, `<project>/1-story.md`, `<project>/2-chapters.md`,
   `<project>/3-script.md`, a brief releváns ellenőrzési forrásai;
+  `<project>/source-transcript.md`;
   [brief-template](../../templates/0-brief-template.md),
   [story-template](../../templates/1-story-template.md),
   [fejezet-template](../../templates/2-chapters-template.md),
@@ -29,8 +30,10 @@ description: 'Forgatási script tartalmi és technikai review-ja, ismétlések �
    kösd. Hiányzó vagy elavult anyagnál ne adj megfelelt döntést.
 2. Hasonlítsd össze a dokumentumokat saját template-jükkel és a közös
    követelményekkel; a review-template ellenőrzési csoportjain haladj végig.
-3. Kövesd végig a forrás megoldásától a saját történeten át a műveletekig
-   és várt eredményig vezető láncot. A hiányzó kritikus lépést konkrétan nevezd meg.
+3. Kövesd végig a jóváhagyott transcriptet és egyéb forrásokat a saját
+   történeten át a műveletekig és várt eredményig vezető láncban. Az átirat
+   csak beszédet és időzítést igazol; képi technikai bizonyítékként ne kezeld.
+   A hiányzó kritikus lépést konkrétan nevezd meg.
 4. Olvasd végig a narrációt nézőként is. Jelöld, mely részt rövidítenéd vagy
    vonnád össze és miért; az unalmasságot szöveges jelekkel indokold,
    ne állíts mért közönségreakciót. A kötött felső szintű szerkezet maradjon.

@@ -15,7 +15,9 @@ description: 'Teljes magyar forgatási script kidolgozása vagy review alapján 
   [script-template](../../templates/3-script-template.md),
   [összehasonlítás-template](../../templates/comparison-template.md),
   `<project>/0-brief.md`, `<project>/1-story.md`, `<project>/2-chapters.md`,
-  a brief technikai forrásai; javításkor `<project>/4-review.md`.
+  `<project>/source-transcript.md`, a brief technikai forrásai;
+  javításkor `<project>/4-review.md`. Az átirat nem igazolja a csak képen
+  látható műveleteket.
 - **Output:** kizárólag `<project>/3-script.md`, a script-template szerint.
   A változó útvonalak a workflow mappájához képest értendők.
 

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "next_id": 2,
+  "videos": {
+    "kT7nXO32L-Q": {
+      "topic_id": "1-postgresql-hybrid-search-course",
+      "project_dir": "1-postgresql-hybrid-search-course",
+      "transcript_ready": true,
+      "transcript": "projects/1-postgresql-hybrid-search-course/source-transcript.md"
+    }
+  }
+}

@@ -35,7 +35,13 @@ Külön stílusfájl nem bemenet; a hangvételt a brief rögzíti.
 ## Útvonalak és fájllista
 
 Minden útvonal ehhez a mappához képest relatív.
-`<project>` = `projects/<topic-id>`, ahol az azonosítót a felhasználó adja meg.
+`<project>` = `projects/<topic-id>`. A transcript script a
+`projects/registry.json` alapján osztja ki a Gomba 1 ID-t, és a kiválasztott
+Gomba 0 ötlet bejegyzéséhez is hozzáírja még a letöltés előtt. Az ID alakja
+`1-rovid-cim`: a sorszám növekvő, a rövid cím az ötlet címéből készül. A
+registry a YouTube videóazonosítót rendeli ehhez az ID-hoz, és jelzi, hogy
+elkészült-e a transcript. Újrafuttatáskor ugyanaz az ID használatos; ha a
+transcript már megvan, nincs új letöltés vagy felülírás.
 `<selected-topic-path>` a felhasználó által kiválasztott bejegyzés a
 `../gomba-0-idea-collector/results/YYYYMMDD-ideas.md` fájlok egyikéből.
 Add meg a videó URL-jét és az elérhető forrásanyagot; külön JSON témarekordra
@@ -63,14 +69,48 @@ gomba-1-script-writer/
     gomba-1-script-writer-4-script-review/SKILL.md
     gomba-1-script-writer-5-shoot-preparation/SKILL.md
   projects/
+    registry.json        # YouTube ID → Gomba 1 ID és transcript állapot
     <topic-id>/
+      source-audio/        # yt-dlp hangfájl és takarítási rekord; .gitignore kezeli
+        source.mp3
       0-brief.md
+      source-transcript.md
       1-story.md
       2-chapters.md
       3-script.md
       4-review.md
       5-preparation.md
 ```
+
+## Helyi forrásátirat
+
+A kiválasztott YouTube-videó transcriptjét a `gomba1_transcript.py` készíti
+helyi `yt-dlp` és Faster-Whisper használatával. A CLI-függőségek telepítési
+útmutatója a gyökér `cli-commands.md` fájlban található; a Faster-Whisper
+alapértelmezett Pythonja `~/video-ai/bin/python`, amit a `GOMBA1_PYTHON`
+környezeti változóval lehet megadni.
+
+1. A videó kiválasztása után, a brief előtt futtasd a scriptet a kiválasztott
+   Gomba 0 eredményfájllal:
+
+   ```bash
+   python3 local-workflows/gomba-1-script-writer/gomba1_transcript.py create \
+     <youtube-url> <selected-topic-path>
+   ```
+
+   A script rögzíti az ID-t a Gomba 0 ötletnél, majd letölt és transcriptet készít.
+2. Mutasd meg a létrejött `projects/<topic-id>/source-transcript.md` fájlt,
+   és kifejezetten kérj jóváhagyást az átiratra. A jóváhagyásig állj meg;
+   az audió a `projects/<topic-id>/source-audio/` alatt megmarad. Ez a
+   mappa Git-ignore alatt van, de a repóban látható.
+3. Jóváhagyás után futtasd a
+   `python3 local-workflows/gomba-1-script-writer/gomba1_transcript.py cleanup <topic-id>`
+   parancsot, és csak sikeres törlés után folytasd a briefet.
+
+Hibaüzenet esetén állj meg, és add át a lépést és az okot; ne próbáld újra
+automatikusan. Meglévő transcriptet a script nem ír felül. A transcript a
+beszéd és időzítés forrása; nem helyettesíti a videóképet, a csak képen látható
+technikai lépéseket vagy azok ellenőrzését.
 
 A számozott template-ek és skillek a fenti útvonalakon találhatók.
 Minden számozott template az azonos sorszámú projektkimenet formátumát adja meg.
@@ -90,10 +130,11 @@ kötelező bemenet, saját skill és template létezése.
 ### 0. Ötletátvétel — `gomba-1-script-writer-0-idea-intake`
 
 - **Goal:** jóváhagyható brief a már kiválasztott videó átdolgozásához.
-- **Prerequisite:** egy felhasználó által kiválasztott videóbejegyzés és elérhető forrásvideó
-  vagy annak megfelelő, az elemzés korlátait jelző átirata/leírása.
-- **Olvas:** `<selected-topic-path>`, `templates/0-brief-template.md` és a
-  kiválasztott videó releváns forrásai.
+- **Prerequisite:** egy felhasználó által kiválasztott videóbejegyzés és az
+  ahhoz jóváhagyott `<project>/source-transcript.md`, valamint a képi
+  technikai részletek ellenőrzéséhez elérhető videó vagy kiegészítő forrás.
+- **Olvas:** `<selected-topic-path>`, `<project>/source-transcript.md`,
+  `templates/0-brief-template.md` és a kiválasztott videó releváns forrásai.
 - **Ír:** `<project>/0-brief.md`.
 - **Rögzíti:** a kiválasztott bejegyzés, a forrásvideó URL-je és a hozzáférhető forrásanyag,
   a forrás működése és fő lépései, probléma, ígéret, közönség, scope, videóhossz,
@@ -105,7 +146,9 @@ kötelező bemenet, saját skill és template létezése.
 - **Goal:** a forrás megoldásának saját történetbe illesztett, nem másolt változata.
 - **Prerequisite:** elfogadott, aktuális brief.
 - **Olvas:** `<project>/0-brief.md`, `templates/1-story-template.md`,
-  a briefben azonosított forrásvideó és releváns források.
+  `<project>/source-transcript.md`, a briefben azonosított forrásvideó és
+  releváns források. Az átirat a kimondott tartalmat és időbélyegeket adja;
+  képi technikai részletet önmagában nem igazol.
 - **Ír:** `<project>/1-story.md`.
 - **Rögzíti:** saját példa és történeti ív, hook szövege és bemutatandó tartalma,
   a forrásból megtartott és átdolgozott elemek. Nem talál ki új, kísérleti scope-ot.
@@ -129,7 +172,8 @@ kötelező bemenet, saját skill és template létezése.
 - **Prerequisite:** aktuális brief, történet és fejezetterv.
 - **Olvas:** `<project>/0-brief.md`, `<project>/1-story.md`,
   `<project>/2-chapters.md`, `templates/3-script-template.md`,
-  `templates/comparison-template.md`, a brief technikai forrásai;
+  `templates/comparison-template.md`, `<project>/source-transcript.md`,
+  a brief technikai forrásai;
   javítási körben `<project>/4-review.md`.
 - **Ír:** `<project>/3-script.md`.
 - **Rögzíti:** fejezetenként narráció, lépésenkénti műveletek, mutatott tartalom,
@@ -144,6 +188,7 @@ kötelező bemenet, saját skill és template létezése.
 - **Prerequisite:** teljes script és aktuális előzményei.
 - **Olvas:** `<project>/0-brief.md`, `<project>/1-story.md`,
   `<project>/2-chapters.md`, `<project>/3-script.md`,
+  `<project>/source-transcript.md`,
   `templates/0-brief-template.md`, `templates/1-story-template.md`,
   `templates/2-chapters-template.md`, `templates/3-script-template.md`,
   `templates/4-review-template.md`, `templates/comparison-template.md`,
@@ -186,6 +231,9 @@ kötelező bemenet, saját skill és template létezése.
   Nincs kitalált forrástartalom, titokbekérés vagy titokmentés.
 - Minden skill csak a saját projektkimenetét írhatja; nincs törlés, mozgatás,
   párhuzamos projektírás vagy collector-/index-/publikálásiállapot-módosítás.
+- A `topic-id` a projektet azonosítja, nem az újrafuttatást. Ha a lépés
+  célfájlja már létezik, ne indítsd újra és ne írd felül; használd a meglévő
+  kimenetet, vagy állj meg és kérj kifejezett jóváhagyást az újrafuttatáshoz.
 - Megváltozott input, közös szabály vagy template után az érintett lépéstől
   a függő kimeneteket újra kell készíteni és jóváhagyatni. A koordinátor követi
   az aktuális változatokat; régi fájl létezése nem jelent érvényes kaput.

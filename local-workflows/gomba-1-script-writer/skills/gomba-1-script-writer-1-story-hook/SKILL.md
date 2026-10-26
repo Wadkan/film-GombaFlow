@@ -13,7 +13,9 @@ description: 'Kiválasztott videó saját történetté és hookká átdolgozás
 - **Input:** [workflow](../../WORKFLOW.md), [videóstruktúra](../../VIDEO_STRUCTURE.md),
   [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
   [story-template](../../templates/1-story-template.md),
-  `<project>/0-brief.md`, a briefben azonosított forrásvideó és releváns források.
+  `<project>/0-brief.md`, `<project>/source-transcript.md`, a briefben
+  azonosított forrásvideó és releváns források. Az átirat a beszéd és
+  időbélyegek forrása, a csak képen látható technikai részleteké nem.
 - **Output:** kizárólag `<project>/1-story.md`, a story-template szerint.
   A változó útvonalak a workflow mappájához képest értendők.
 

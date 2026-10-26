@@ -46,3 +46,7 @@ formátuma `YYYYMMDD-ideas.md`, ahol a dátum a kutatás napja, például
 szerepeljen. Meglévő fájlt ne írj felül; azonos napi ismételt futásnál
 használj sorszámot, például `20261025-ideas-2.md`. Ha a mappa hiányzik,
 hozd létre.
+
+A Gomba 0 lista sorszámai rangsorok, nem Gomba 1 ID-k. A Gomba 1 transcript
+CLI a kiválasztott videóhoz rendelt ID-t az adott ötletbe írja, még a letöltés
+előtt; az ID forrása a Gomba 1 registry.

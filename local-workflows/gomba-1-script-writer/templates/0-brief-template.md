@@ -1,6 +1,6 @@
 # Brief — [téma címe]
 
-- Projektazonosító: [a futtató által megadott topic-id]
+- Projektazonosító: [a registry által kiosztott Gomba 1 ID]
 - Kiválasztott videóbejegyzés: [Gomba 0 dátumozott `results/YYYYMMDD-ideas.md`, videó címe és URL-je]
 - Bemeneti változatok: [a futtató által megadott referenciák]
 - Kiválasztott forrásvideó: [cím és URL]
