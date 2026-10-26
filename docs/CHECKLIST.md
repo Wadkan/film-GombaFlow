@@ -72,3 +72,12 @@ Az ellenőrzött n8n-ben négy korábbi, inaktív workflow van: `YouTube – Met
 - [n8n Stop And Error](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.stopanderror/): a kezelt hiba végrehajtási hibaként történő lezárása.
 - [YouTube videos.update](https://developers.google.com/youtube/data/reference/rest/v3/videos/update): írható mezők, időzítés feltételei és kihagyott mezők törlési viselkedése.
 - [YouTube playlistItems.list](https://developers.google.com/youtube/data/reference/rest/v3/playlistItems/list): playlist- és videóazonosító szerinti tagságellenőrzés a duplázás elkerüléséhez.
+
+## Külön feladat: Gomba 1 helyi transcript — szűk MVP
+
+- [ ] Megkeresni a meglévő YouTube-letöltó CLI és a Faster-Whisper tényleges helyi hívását; ezeket használni.
+- [ ] Egyetlen, agentből hívható script készüljön a `local-workflows/gomba-1-script-writer/` alatt, két művelettel: `create <youtube-url> <topic-id>` és `cleanup <topic-id>`.
+- [ ] A `create` letölti az audiót egy témához rendelt `/tmp` mappába, majd helyi Faster-Whisperrel elkészíti a `projects/<topic-id>/source-transcript.md` fájlt forrás-URL-lel és időbélyegekkel. Meglévő transcriptet nem ír felül. Az audió jóváhagyásig megmarad.
+- [ ] Siker esetén a script kiírja a transcript útvonalát; hiba esetén nem nulla kilépési kódot és rövid üzenetet ad a hibás lépéssel és okával. Az agent ezt közli a userrel. Nincs automatikus újrapróbálás.
+- [ ] A Gomba 1 workflow és a 0. skill a videó kiválasztása után, a brief előtt hívja a scriptet. Az agent megmutatja a transcript linkjét, kifejezetten jóváhagyást kér, és a válaszig megáll. Jóváhagyás után meghívja a `cleanup` műveletet, amely csak az adott témához letöltött audiót törli; ezután indulhat a brief. A további lépések a megőrzött transcriptet használják forrásként; a 0., 1., 3. és 4. skill bemeneteiben ez legyen egyértelmű. A transcript nem pótolja a csak képen látható technikai részleteket.
+- [ ] Egy kézi végigpróba: elkészül a transcript, az agent megáll jóváhagyásra, majd jóváhagyás után az audió törlődik és a transcript megmarad. Ehhez a külön feladathoz nem kell TDD vagy új automatizált teszt.
