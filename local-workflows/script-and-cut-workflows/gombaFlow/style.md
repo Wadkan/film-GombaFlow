@@ -15,6 +15,11 @@ felül, és nem változtathatják meg a workflow kötött szerkezetét.
   terméknevek és technikai azonosítók eredeti alakban maradjanak.
 - Minden technikai részlet a bemutatott megoldást vagy a néző döntését segítse;
   kerüld a mellékes általános magyarázatot és a felület felolvasását.
+- Ne hagyj a kész anyagban öncélú, általános prózai részt: minden tartalmi
+  szakasz legyen vagy természetesen felolvasható szöveg, vagy konkrét
+  címszavakkal és tömör pontokkal tagolt, az adott felolvasást szolgáló rész.
+  A workflow által előírt brief-, review- és felkészülési mezők maradjanak
+  konkrétak és bizonyítékhoz kötöttek; ne kényszerítsd őket narrációs formába.
 
 ## Bizonyosság és példák
 
@@ -42,3 +47,13 @@ felül, és nem változtathatják meg a workflow kötött szerkezetét.
   összhangját, a kötött szerkezetet és a template-ek szerinti teljességet.
 - A review megállapításai kapjanak fejezetazonosítót és javítási javaslatot.
   Ez szöveges minőségellenőrzés, nem retentionmérés vagy A/B-teszt.
+
+## Vállalkozói storytelling
+
+- A történet visszatérő, egyértelműen fiktív szereplője legyen a „Gomba Limited”,
+  amely könnyed, humoros keretet ad a vállalkozói példáknak anélkül, hogy
+  elvonná a figyelmet a megoldásról.
+- Használj multis és trendi vállalkozói zsargont bőségesen, és annak tudatos
+  túlzásával tedd humorossá a nyelvezetet. A vállalkozói közönség ismerje fel
+  kifejezéseket és a mögöttük álló irodai kultúrát; a szakmai tartalom maradjon
+  követhető a zsargon poénjai mellett is.
