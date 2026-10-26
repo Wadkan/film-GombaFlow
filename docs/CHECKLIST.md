@@ -4,7 +4,7 @@
 > **Történeti terv:** a metaadat-chat n8n workflow-k kivezetése folyamatban van.
 > A metaadatok egyeztetése és a `meta.md` / `meta.json` létrehozása
 > most közvetlenül chatben történik; az agent aktuális szabályait lásd
-> [`local-workflows/youtube-upload/channels/FreezWithMe/style.md`](../local-workflows/youtube-upload/channels/FreezWithMe/style.md).
+> [`local-workflows/youtube-meta-update/channels/FreezWithMe/youtube-metadata-workflow.md`](../local-workflows/youtube-meta-update/channels/FreezWithMe/youtube-metadata-workflow.md).
 > A további útvonalak az eredeti n8n MVP terv korabeli hivatkozásai.
 > Az alábbi részletek az eredeti n8n MVP tervet dokumentálják, nem aktív
 > végrehajtási listát.
@@ -22,7 +22,7 @@
 - **Git-állapot kezelése:** az n8n-ben futó agent és workflow soha nem stage-el, commitol vagy pushol. Repóbeli fájlmódosítás után rövid, néhány szavas commitüzenet-javaslatot ad a usernek, de a Git-műveletet teljes egészében a user végzi. Repón kívüli módosításnál nincs commitüzenet; a chatben kötelező röviden jelenteni a módosítás pontos PATH-ját.
 - **Szűk automatizált tesztelés:** csak két teljes flow E2E alapellenőrzése készül `pytest`-tel; nincs unit teszt, külön meta-contract tesztcsomag vagy részletes esetmátrix. A cél annak ellenőrzése, hogy az elkészített workflow-k működnek. A paraméter nélküli gyökérszintű `make test` ezeket futtatja, valódi YouTube-feltöltés és valódi Telegram-küldés nélkül.
 - **Tesztelési biztonság:** a `make test` soha nem indít és nem buildel Docker konténert. Csak a már kézzel elindított környezethez csatlakozhat. A tesztek semmilyen valódi videó-, metaadat-, repo- vagy Git-fájlt nem módosíthatnak; kizárólag izolált ideiglenes fixture-t használhatnak. Hiányzó vagy nem futó előfeltételnél a teszt egyértelműen kiírja, pontosan mi hiányzik és milyen kézi parancs szükséges, majd hibával leáll. A valódi adatokkal és szolgáltatásokkal végzett tesztek külön kézi körbe tartoznak.
-  - **A csatorna metaadatai csatornánként elkülönülnek.** Minden csatorna saját `style.md` és `rules.md` fájlt tartalmaz. A további fájlok és almappák opcionálisak, csatornánként eltérhetnek; például nem minden csatornának lesz gear-listája vagy playlist-forrása. Az agent csak a kiválasztott csatorna könyvtárából és az ott ténylegesen létező, releváns fájlokból dolgozik. Feltöltéshez azonban minden csatornának kell definiált playlist-feloldási mód; MVP-ben ez kötelezően egy csatornafájlból történő feloldás. A feltöltő a jóváhagyott `meta.json` csatorna- és `playlistId` mezőjét használja.
+  - **A csatorna metaadatai csatornánként elkülönülnek.** Minden csatorna saját `youtube-metadata-workflow.md` és `rules.md` fájlt tartalmaz. A további fájlok és almappák opcionálisak, csatornánként eltérhetnek; például nem minden csatornának lesz gear-listája vagy playlist-forrása. Az agent csak a kiválasztott csatorna könyvtárából és az ott ténylegesen létező, releváns fájlokból dolgozik. Feltöltéshez azonban minden csatornának kell definiált playlist-feloldási mód; MVP-ben ez kötelezően egy csatornafájlból történő feloldás. A feltöltő a jóváhagyott `meta.json` csatorna- és `playlistId` mezőjét használja.
 - **A valódi feltöltéses teszt és az end screen kézi lépés:** az implementációs sorrenden kívül, a külön tesztelési blokk szerint. Az end screen feltöltés után, a YouTube Studióban állítható be. Playwright ebben a körben nincs.
 - **Az n8n indítása és leállítása a meglévő Makefile-okban marad** (`make start-n8n`, `make stop-n8n`). Az export és az import a `n8n-workflows/youtube-upload/Makefile`-ban van.
 
@@ -37,7 +37,7 @@ Workflow csomag: `n8n-workflows/youtube-upload/` (csoportosítás: [`n8n-workflo
 - `Makefile`: `export` és `import`.
 - `config/settings.json`: az alapértelmezett mappa konténerbeli útvonala (`/data/videos`), a Telegram chat ID, az időzóna, az alapértelmezett megjelenési idő. Mac-útvonal nincs benne.
 - `config/channels.json`: a választható YouTube-csatornák regisztere. Minden bejegyzés tartalmazza a stabil csatornaazonosítót, a megjelenítendő nevet, az OAuth-credential kulcsát, a csatorna-forráskönyvtár relatív útvonalát, a playlist-feloldási módot és az adott csatornához ténylegesen betöltendő `sourceFiles` listát.
-- `channels/<ChannelName>/style.md`: az adott csatorna kötelező stílus-, SEO- és metaadat-szabályai.
+- `channels/<ChannelName>/youtube-metadata-workflow.md`: az adott csatorna fő utasításfájlja a metaadatok elkészítéséhez és YouTube-ra frissítéséhez; minden csatornamappában ezen a fix néven szerepel.
 - `channels/<ChannelName>/rules.md`: az adott csatorna kötelező tanult szabályai.
 - `channels/<ChannelName>/`: további csatornaspecifikus fájlok és almappák szabadon, csak akkor, ha az adott csatornának szüksége van rájuk. Például a gear-list és playlist-forrás opcionális.
 - `examples/meta.json` és `examples/upload-state.json`: a formátum példája. A valódi fájlokat a workflow a videómappába írja.
@@ -134,7 +134,7 @@ Egy fázis az előző lezárása után indul. Egy workflow üzleti folyamata a h
 
 ### 5. Metaadat-chat forrásainak lezárása — lokális agent
 
-- [ ] TODO A már elkészült feltöltő bemenetéhez és az 1. fázis mintájához igazítja a csatornaforrásokat. A userrel lezárja a még nyitott `style.md` / `rules.md` tartalmi kérdéseket; nem ír át saját döntéssel csatornapreferenciát.
+- [ ] TODO A már elkészült feltöltő bemenetéhez és az 1. fázis mintájához igazítja a csatornaforrásokat. A userrel lezárja a még nyitott `youtube-metadata-workflow.md` / `rules.md` tartalmi kérdéseket; nem ír át saját döntéssel csatornapreferenciát.
 - [ ] TODO Ellenőrzi az engedélyezett csatorna `sourceFiles` és `playlistSource` hivatkozásait. A metaadat-chat építése előtt átadja az n8n agentnek a végleges forráslistát, a playlistnév → ID forrást és a `meta.md` mintát.
 - **Előfeltétel:** 4. fázis. Nem készül külön unit vagy forrásfájlonkénti tesztcsomag.
 - **Lezárás feltétele:** a metaadat-agent által olvasandó források és a feltöltőnek átadandó fájlformátum véglegesek.
@@ -189,9 +189,9 @@ Ez külön, a workflow-k elkészülése után indítható kör. Nem része a `ma
 3. [x] DONE **Google Cloud / YouTube (OAuth):** GCP projekt, consent, Web OAuth kliens, n8n **YouTube OAuth2 API** credential connected. Audit / nyilvános ütemezés korlát **később**. Repó: `n8n-workflows/youtube-upload/config/google-oauth.n8n.json`, `n8n-workflows/youtube-upload/docs/google-cloud-teendok.md`.
 4. [x] DONE **Telegram:** BotFather token → n8n **Telegram API** credential; chat ID a `n8n-workflows/youtube-upload/config/settings.json` `telegramChatId` mezőben (token nem a repóban).
 5. [x] DONE **AI:** OpenRouter API key és n8n **AI Assistant** beállítva az n8n UI-ban (metaadat-chat workflow építéshez).
-6. [x] DONE **Csatorna-források:** a struktúra `channels/FreezWithMe/style.md`, `rules.md`, valamint a csatorna által igényelt opcionális fájlok. A `channels/` rename a munkafában ellenőrizve.
+6. [x] DONE **Csatorna-források:** a struktúra `channels/FreezWithMe/youtube-metadata-workflow.md`, `rules.md`, valamint a csatorna által igényelt opcionális fájlok. A `channels/` rename a munkafában ellenőrizve.
 7. [x] DONE **Csatorna-, videómappa-választó és chat-belépés:** a weboldal két dropdownnal továbbadja a `channelKey` és `videoFolder` értékeket, majd megnyitja a DeepSeek-alapú Chatet a kiválasztásokhoz kötött sessionnel. Workflow: `youtube meta workflow`; JSON: `n8n-workflows/youtube-upload/workflows/youtube-meta-folder-picker.json`.
-8. [ ] TODO **`style.md` és csatornaszabályok véglegesítése:** a lokális agenttel, az 5. fázisban; csak a még nyitott tartalmi kérdésekben kell userdöntés.
+8. [ ] TODO **`youtube-metadata-workflow.md` és csatornaszabályok véglegesítése:** a lokális agenttel, az 5. fázisban; csak a még nyitott tartalmi kérdésekben kell userdöntés.
 9. [ ] TODO **Valódi kézi próba és későbbi end screen:** kizárólag a külön tesztelési blokk szerint, a workflow-k elkészülése után.
 10. [ ] TODO **Workflow export:** a lokális agent végzi minden lezárt workflow-változtatás után a `make -C n8n-workflows/youtube-upload export` paranccsal. Stage, commit és push a user feladata.
 
