@@ -15,19 +15,24 @@ description: 'Felhasználó által kiválasztott, megvalósított automatizálá
   [brief-template](../../templates/0-brief-template.md),
   `<selected-topic-path>` a Gomba 0 dátumozott `results/YYYYMMDD-ideas.md`
   fájljának kiválasztott videóbejegyzésével, `<project>/source-transcript.md`
-  fájllal és a videó releváns forrásaival. A brief előtt a közös workflow
-  szerinti transcript-jóváhagyási kapunak teljesülnie kell. A transcript CLI
-  a kiválasztott Gomba 0 fájlban rögzíti a registry által kiosztott Gomba 1 ID-t.
+  fájllal és a videó releváns forrásaival. A transcript a workflow „Helyi
+  forrásátirat” lépése után érhető el. A transcript CLI a kiválasztott Gomba 0
+  fájlban rögzíti a registry által kiosztott Gomba 1 ID-t.
 - **Output:** kizárólag `<project>/0-brief.md`, a brief-template szerint.
   A változó útvonalak a workflow mappájához képest értendők.
 
 ## Végrehajtás
 
-1. Olvasd be a szerződés dokumentumait. Egyeztesd a felhasználó által
-   kiválasztott videót a Gomba 0 eredményfájllal. A brief előtt futtasd a
-   workflow szerinti `create <youtube-url> <selected-topic-path>` parancsot;
-   ez írja az ID-t az ötletbe, majd létrehozza vagy visszakeresi az átiratot.
-   Ha transcript már létezik, ne indítsd újra a letöltést.
+1. Olvasd be a szerződés dokumentumait. A transcript beszerzéséhez kérd meg a
+   felhasználót, hogy a saját termináljában futtassa:
+
+   ```bash
+   make gomba1-transcript
+   ```
+
+   Válasszon egy listázott sorszámot, majd küldje vissza a zöld sorban kiírt
+   transcript útvonalat. A target a meglévő CLI-t hívja és siker után takarít;
+   ne indíts külön letöltést. Kövesd a workflow „Helyi forrásátirat” lépését.
 2. Azonosítsd a kiválasztott forrásvideót. Több jelölt közül ne válassz
    önállóan; tisztázd, melyiket dolgozzuk át. Ne végezz új népszerűségi
    kutatást; a kiválasztást ne tekintsd bizonyított közönségsikernek.

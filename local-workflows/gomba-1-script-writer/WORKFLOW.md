@@ -90,22 +90,11 @@ helyi `yt-dlp` és Faster-Whisper használatával. A CLI-függőségek telepít�
 alapértelmezett Pythonja `~/video-ai/bin/python`, amit a `GOMBA1_PYTHON`
 környezeti változóval lehet megadni.
 
-1. A videó kiválasztása után, a brief előtt futtasd a scriptet a kiválasztott
-   Gomba 0 eredményfájllal:
-
-   ```bash
-   python3 local-workflows/gomba-1-script-writer/gomba1_transcript.py create \
-     <youtube-url> <selected-topic-path>
-   ```
-
-   A script rögzíti az ID-t a Gomba 0 ötletnél, majd letölt és transcriptet készít.
-2. Mutasd meg a létrejött `projects/<topic-id>/source-transcript.md` fájlt,
-   és kifejezetten kérj jóváhagyást az átiratra. A jóváhagyásig állj meg;
-   az audió a `projects/<topic-id>/source-audio/` alatt megmarad. Ez a
-   mappa Git-ignore alatt van, de a repóban látható.
-3. Jóváhagyás után futtasd a
-   `python3 local-workflows/gomba-1-script-writer/gomba1_transcript.py cleanup <topic-id>`
-   parancsot, és csak sikeres törlés után folytasd a briefet.
+1. A videó kiválasztása után, a brief előtt a 0. skill kéri be a transcriptet
+   a felhasználó helyi termináljából a `make gomba1-transcript` targettel; a
+   target a meglévő CLI műveleteit használja, majd siker után takarít.
+2. A skill a target által kiírt útvonal alapján olvassa be a transcriptet és
+   készíti el a briefet.
 
 Hibaüzenet esetén állj meg, és add át a lépést és az okot; ne próbáld újra
 automatikusan. Meglévő transcriptet a script nem ír felül. A transcript a
