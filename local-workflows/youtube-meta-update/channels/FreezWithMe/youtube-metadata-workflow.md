@@ -40,7 +40,9 @@ nem egyértelmű kötelező adatokat csak ezután tisztázd.
 
 ### Első kérdés
 
-Mi a videó témája, mi történik benne, mik a fontos pillanatok, és hol készült, ha ez számít? Short vagy long videó? Milyen felszerelést használtál, melyik playlist illik hozzá, és milyen dátumra (ÉÉÉÉ-HH-NN) időzítsük a publikálást?
+Mi a videó témája, mi történik benne, mik a fontos pillanatok, és hol készült, ha ez számít? Mi a YouTube-linkje? Short vagy long videó? Milyen felszerelést használtál, melyik playlist illik hozzá, és milyen dátumra (ÉÉÉÉ-HH-NN) időzítsük a publikálást?
+
+A YouTube-link kötelező adat, mert a kész metaadatot egy már feltöltött videóhoz kell kapcsolni. A linkből nyerd ki a videóazonosítót (`videoId`): `youtube.com/watch?v=...`, `youtu.be/...` és `youtube.com/shorts/...` formátumot fogadj el. Ha a link nem egyértelműen egy videóra mutat, kérj javított linket; ne találgass. A `videoId` kerüljön az MD-be és az abból készített JSON-ba.
 
 A publikálási dátum kötelező: ha a user nem ad meg dátumot, kérdezd meg, és ne válassz helyette. Az aktuális dátumot a `config/settings.json` időzónájában határozd meg; relatív publikálási dátumot kizárólag ebből számolj. Ha a relatív dátum ebből sem egyértelmű, kérdezz vissza. Ha nincs külön idő megadva, az időpont 16:00.
 
@@ -99,14 +101,14 @@ A választ a csak megadott formátumokban add. Ha file-ba kell írni az outputot
 
 - Az egyeztetés alatt csak a három számozott címjavaslatot és a szükséges tisztázó kérdéseket mutasd a chatben. Az MD előtt ne adj metaadat-összesítőt vagy teljes tervezetet.
 - Amikor minden döntés egyértelmű, az első fájlművelet a metaadatmappába mentett, videómappa nevét viselő `.md` fájl. Ne kérj újabb általános jóváhagyást a fájl elkészítéséhez, és ne állj meg egy chatbeli összesítőnél.
-- Az MD-ben csak a metaadat-mezőnevek és végleges értékeik lehetnek: egy kiválasztott cím, leírás, címkék, playlistnév és időzítés. Ajánlás, alternatív cím, sorszám, indoklás és chatbeli megjegyzés nem kerülhet bele.
+- Az MD-ben csak a metaadat-mezőnevek és végleges értékeik lehetnek: `videoId`, egy kiválasztott cím, leírás, címkék, playlistnév és időzítés. Ajánlás, alternatív cím, sorszám, indoklás és chatbeli megjegyzés nem kerülhet bele.
 - A helyi agent mentse el és olvassa vissza a fájlt. MD mentése után kizárólag a fájlútvonalat és az átnézés kérését jelezze; összesítőt ne írjon.
 - Az MD és a JSON két külön forduló. MD mentésekor JSON nem készülhet. Várd meg, hogy a user az elkészült MD-t átnézze és egy későbbi üzenetben jóváhagyja.
 - A jóváhagyást a beszélgetés értelme alapján ismerd fel. Ne követelj meghatározott szót, kifejezést vagy formátumot. A címválasztás, egy részlet tisztázása vagy egy korábbi változat elfogadása nem a jelenlegi MD végső jóváhagyása. Ha a szándék bizonytalan, kérdezz vissza röviden.
 - Az aktuális, videómappa nevével egyező `.md` és `.json` fájl tartalmát minden válasz előtt közvetlenül olvasd be, ha léteznek. A beolvasott fájl az elsődleges forrás, nem a korábbi chatbeli állítás.
 - Szerkesztéskor őrizd meg az aktuális MD kézi javításait, és csak a kért részeket módosítsd. Írd újra az MD-t, majd várj az új változat jóváhagyására.
 - A jóváhagyott, videómappa nevével egyező `.md` fájlból készítsd el az ugyanilyen nevű `.json` fájlt, a playlistnév helyett a csatorna playlist-forrásában szereplő `playlistId` értékkel. Ne találj ki ID-t.
-- A JSON kötelező mezői: `status`, `channelKey`, `youtubeChannelId`, `title`, `description`, `tags`, `playlistId`, `youtube_scheduled_at`. A státusz csak teljes, egyértelműen jóváhagyott adatokkal lehet `ready`.
+- A JSON kötelező mezői: `status`, `channelKey`, `youtubeChannelId`, `videoId`, `title`, `description`, `tags`, `categoryId`, `playlistId`, `privacyStatus`, `youtube_scheduled_at`. A `categoryId` értékét a kiválasztott csatorna `youtubeCategory.categoryId` mezőjéből vedd át; ne találd ki. A `privacyStatus` értéke `private`. A státusz csak teljes, egyértelműen jóváhagyott adatokkal lehet `ready`.
 - A két fájl kizárólag a metaadatmappába kerülhet. A JSON nem forrása az MD felülírásának.
 
 ## Playlist-egyeztetés

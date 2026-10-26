@@ -5,6 +5,10 @@
       "displayName": "FreezWithMe | FagyjVelem",
       "youtubeHandle": "@FreezWithMe",
       "youtubeChannelId": "UCTmNLnPDniFPocALLVSFoDg",
+      "youtubeCategory": {
+        "key": "travel",
+        "categoryId": "19"
+      },
       "sourcePath": "channels/FreezWithMe",
       "playlistSource": {
         "mode": "file",

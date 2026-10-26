@@ -2,9 +2,12 @@
   "status": "draft",
   "channelKey": "",
   "youtubeChannelId": "",
+  "videoId": "",
   "title": "",
   "description": "",
   "tags": [],
+  "categoryId": "19",
   "playlistId": "",
+  "privacyStatus": "private",
   "youtube_scheduled_at": "2026-10-24T18:00:00+02:00"
 }
