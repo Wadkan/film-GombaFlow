@@ -155,7 +155,7 @@ def decode_result(body: bytes, http_status: int, operation: str = "update") -> d
         result = json.loads(body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
         result = None
-    states = FINAL_STATES | ({"validated"} if operation == "check" else set())
+    states = FINAL_STATES | ({"validated"} if operation in {"check", "preflight"} else set())
     if not isinstance(result, dict) or result.get("status") not in states:
         return {
             "status": "unknown",
@@ -310,6 +310,10 @@ def make_parser() -> argparse.ArgumentParser:
     check_parser.add_argument("--config")
     check_parser.add_argument("meta_json", type=pathlib.Path)
     check_parser.add_argument("--timeout", type=float, default=120)
+    preflight_parser = commands.add_parser("preflight", help="YouTube-előellenőrzés kizárólag olvasással")
+    preflight_parser.add_argument("--config")
+    preflight_parser.add_argument("meta_json", type=pathlib.Path)
+    preflight_parser.add_argument("--timeout", type=float, default=120)
     return parser
 
 
@@ -325,8 +329,8 @@ def main(argv: list[str] | None = None) -> int:
         meta_path = args.meta_json.expanduser().resolve(strict=True)
         current = read_ready_meta(meta_path)
         config = load_config(path)
-        if args.command == "check":
-            result = call_webhook(current, config, args.timeout, "check")
+        if args.command in {"check", "preflight"}:
+            result = call_webhook(current, config, args.timeout, args.command)
             print(json.dumps(result, ensure_ascii=False))
             return 0 if result["status"] == "validated" else 1
         with video_lock(current):

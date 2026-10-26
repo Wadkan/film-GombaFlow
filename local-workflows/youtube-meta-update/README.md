@@ -7,8 +7,8 @@ meta JSON-ba.
 
 ## Jelenleg használható: kapcsolatpróba
 
-A védett kapcsolat és bemenetellenőrzés működik. YouTube API-hívás még nincs;
-a `check` sikerének státusza `validated`, nem `updated`. A `check` sem a helyi
+A védett kapcsolat és bemenetellenőrzés működik. A `check` nem hívja a YouTube API-t;
+a sikerének státusza `validated`, nem `updated`. A `check` sem a helyi
 JSON-t, sem a YouTube-ot nem módosítja, és nem foglal le frissítést.
 
 A már telepített helyi workflow kipróbálása a repó gyökeréből:
@@ -20,11 +20,51 @@ python3 local-workflows/youtube-meta-update/youtube_meta_update.py check \
 
 Elvárt: `status: validated`, `step: connection`, `youtubeModified: false`,
 és `0` kilépési kód. A példaazonosítók szándékosan nem valódi videó- és
-playlistazonosítók; a következő chunk végzi majd a YouTube-oldali ellenőrzést.
+playlistazonosítók; ezekkel a `preflight` nem adhat sikeres YouTube-ellenőrzést.
 
 Az `update` jelenleg `501 / UPDATE_NOT_IMPLEMENTED` hibával áll le. Ez
 szándékos védőkapu, nem sikeres frissítés: a helyi fájl `error` állapotú lesz,
 az n8n futás pedig hibásként zárul. Valódi meta JSON-on még ne használd.
+
+## YouTube-előellenőrzés most
+
+A `preflight` a meglévő n8n `YouTube account` credentiallel három natív HTTP Request
+GET node-ot futtat. Ellenőrzi a hitelesített csatornát, a videó létezését és tulajdonosát,
+a jelenlegi privát és még nem időzített állapotot, majd a playlist elérhetőségét és csatornáját.
+A videó csak `privacyStatus: private`, üres/hiányzó `status.publishAt` esetén elfogadható.
+A bemenetben csak valós, időzónás, jövőbeli időpont fogadható el.
+
+A meglévő jóváhagyott meta JSON kizárólag olvasási ellenőrzése:
+
+```sh
+python3 local-workflows/youtube-meta-update/youtube_meta_update.py preflight \
+  local-workflows/youtube-meta-update/channels/FreezWithMe/youtube-metas/20260730_drava_sup_testfolder.json
+```
+
+Elvárt megfelelő, privát és nem időzített videónál: `status: validated`,
+`step: youtube-preflight`, `youtubeModified: false`, `0` kilépési kód.
+Ez a parancs nem módosítja a meta JSON-t, nem foglal le frissítést, és nem ír a YouTube-ra.
+Az `update` továbbra is szándékosan `UPDATE_NOT_IMPLEMENTED` hibával leáll.
+
+Kézi elutasításpróba: készíts másolatot a fenti JSON-ról `/tmp/youtube-preflight-manual.json`
+néven, a `videoId` mezőt állítsd egy saját nyilvános vagy már időzített videóra,
+majd futtasd ugyanezt a `preflight` parancsot a másolaton. Elvárt:
+`VIDEO_NOT_PRIVATE` vagy `VIDEO_ALREADY_SCHEDULED`, és az `executionId` szerinti
+n8n-futás hibás. Hibás videoId esetén `VIDEO_NOT_FOUND`; nem elérhető playlistnél
+`PLAYLIST_NOT_FOUND`. A másolat státusza minden esetben változatlan marad.
+Lejárt bemeneti dátum esetén a helyi CLI már a webhook hívása előtt hibát ad;
+a kézi próbához mindig jövőbeli, időzónás dátum kell.
+
+A csatornaregiszter `youtubeCredential` mezője kizárólag a meglévő n8n credential
+azonosítóját, nevét és típusát tárolja, tokent nem. A telepítő ebből köti a natív
+node-ok credentialjét; jelenleg egy aktív csatornát támogat. A regiszter és a telepített
+kötés eltérésekor hibával leáll. Új credential létrehozása vagy OAuth-kezelő kód nincs.
+A production API-címek rögzített Google HTTPS-címek, kliensadat nem írhatja át őket,
+átirányítás nincs engedélyezve, API-kérésenként 15 másodperces timeout érvényes.
+
+API-hibánál a válasz a lépést és a szolgáltató hibakódját/üzenetét is visszaadja
+(`youtubeError`), transporthibánál biztonságos timeout/hitelesítési hibát jelez.
+Az n8n ezután `Stop And Error` node-dal hibásként zárja le a futást.
 
 ## Workflow telepítése vagy frissítése
 
@@ -117,9 +157,7 @@ A natív Header Auth már a workflow indítása előtt 403-mal utasítja el a hi
 hitelesítést; ez nem indít workflow-futást.
 
 A workflow feldolgozási korlátja 90 másodperc, a helyi parancsfolyamaté
-85 másodperc, a kliens teljes kéréskorlátja legfeljebb 120 másodperc. A mostani
-chunk nem indít külső API-kérést; annak külön kérésenkénti timeoutja a
-YouTube-integrációnál kerül be. Kényszerű workflow-leállítás vagy
+85 másodperc, a kliens teljes kéréskorlátja legfeljebb 120 másodperc. A YouTube-előellenőrzés API-kérésenkénti timeoutja 15 másodperc. Kényszerű workflow-leállítás vagy
 kapcsolatszakadás esetén a kliens `unknown` állapotot rögzít és blokkolja az
 újrapróbálást.
 
@@ -152,7 +190,7 @@ ez a próba nem használ.
 valódi helyi n8n connection-flow tesztjeit. A live tesztekhez fusson a stack és
 a fenti telepítő; más konfigurációt a `YOUTUBE_META_TEST_CONFIG` környezeti
 változóval adhatsz meg. Csak a helyi connection webhook elfogadott. A tesztek
-egyedi, nem valódi YouTube-azonosítókat használnak, és nem hívják a YouTube API-t.
+egyedi, nem valódi YouTube-azonosítókat használnak, és nem hívják a valódi YouTube API-t.
 Ellenőrzik a védett sikeres kapcsolatot, a bemeneti hibát és a valóban hibás
 n8n-futást, a blokkolt írást, valamint a szerveroldali tartós és párhuzamos
 duplázásvédelmet. A helyi tesztwebhook a timeoutot és a fájlállapotot is vizsgálja.
@@ -162,3 +200,11 @@ végállapotot adjon vissza. A válasz teljes objektuma `updateResult` mezőkén
 kerül a meta JSON-ba; a többi metaadatmező változatlan marad. A CLI `0` kóddal
 fejeződik be `updated` esetén, `1` kóddal `error` vagy `unknown` esetén, és `2`
 kóddal helyi bemeneti vagy konfigurációs hibánál.
+
+A YouTube-preflight flow-tesztek a `youtubeMetaPreflightTest` izolált n8n workflow-t
+aktiválják a futás idejére. Ez ugyanazokat a natív node-okat használja helyi API-tesztduplával,
+YouTube OAuth credential nélkül. A production webhook és credential kötése változatlan.
+A tesztek után a teszt-workflow inaktív marad, a teszt API-folyamat és annak `/tmp` fájljai
+eltűnnek. A setup/cleanup röviden újraindítja az n8n szolgáltatást. Sikeres előellenőrzést,
+nyilvános/időzített videó tiltását, csatornaeltérést, hiányzó videót/playlistet, API-hibát
+és timeoutot vizsgálnak, és ellenőrzik a JSON változatlanságát és a hibás n8n-futást.

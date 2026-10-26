@@ -5,6 +5,11 @@
       "displayName": "FreezWithMe | FagyjVelem",
       "youtubeHandle": "@FreezWithMe",
       "youtubeChannelId": "UCTmNLnPDniFPocALLVSFoDg",
+      "youtubeCredential": {
+        "id": "f61kxtqqtpixUxer",
+        "name": "YouTube account",
+        "type": "youTubeOAuth2Api"
+      },
       "youtubeCategory": {
         "key": "travel",
         "categoryId": "19"

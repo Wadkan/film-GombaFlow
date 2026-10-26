@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-10-26T17:09:17.000Z",
+  "updatedAt": "2026-10-26T17:34:15.000Z",
   "createdAt": "2026-10-26T17:04:27.479Z",
   "id": "youtubeMetaConnection",
-  "name": "YouTube metadata – protected agent connection",
+  "name": "YouTube metadata – protected connection and read-only preflight",
   "description": null,
   "active": true,
   "isArchived": false,
@@ -38,7 +38,7 @@
       "typeVersion": 1,
       "parameters": {
         "executeOnce": true,
-        "command": "={{ \"timeout 85s node /data/n8n-workflows/runtime/youtube-meta-connection.js '\" + JSON.stringify({body: $json.body, operation: $json.headers['x-youtube-meta-operation'] || 'update', executionId: $execution.id}).base64Encode() + \"'\" }}"
+        "command": "={{ \"timeout 85s node /data/n8n-workflows/runtime/youtube-meta-connection.js '\" + JSON.stringify({body: $json.body, operation: $json.headers['x-youtube-meta-operation'] || 'update', executionId: $execution.id, credentialId: \"f61kxtqqtpixUxer\"}).base64Encode() + \"'\" }}"
       },
       "position": [
         240,
@@ -159,6 +159,391 @@
         1200,
         100
       ]
+    },
+    {
+      "id": "6e70bc83-cbca-4688-85e0-1900fda00a87",
+      "name": "Is YouTube preflight",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f5212d1b-676a-417b-9518-9354f12d7d33",
+              "leftValue": "={{ $json.response.status }}",
+              "rightValue": "preflight-ready",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "f5c2aed9-f314-4e56-b9a7-1ff913672db1",
+      "name": "Read authenticated channel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1000,
+        300
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.googleapis.com/youtube/v3/channels",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "id"
+            },
+            {
+              "name": "mine",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "f61kxtqqtpixUxer",
+          "name": "YouTube account"
+        }
+      },
+      "retryOnFail": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "e0f23de7-17bf-4af6-9c66-025b6a1504ac",
+      "name": "Validate YouTube channel",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        300
+      ],
+      "parameters": {
+        "executeOnce": true,
+        "command": "={{ \"timeout 10s node /data/n8n-workflows/runtime/youtube-meta-preflight.js '\" + JSON.stringify({stage: \"channel\", meta: $('Parse result').first().json.preflight.meta, api: $json, executionId: $execution.id}).base64Encode() + \"'\" }}"
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "8f3697f4-65d5-4de0-acbf-584ec5b5a311",
+      "name": "Parse YouTube channel",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1400,
+        300
+      ],
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ JSON.parse($json.stdout) }}",
+        "options": {}
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "9ea2d849-d171-418a-8507-7f071cdb46d2",
+      "name": "YouTube channel failed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1600,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4d339c8a-e6d2-43b2-a7e8-143b4330c40d",
+              "leftValue": "={{ $json.response.status }}",
+              "rightValue": "error",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "b5d79af4-b0d4-473c-adde-82b36c45519a",
+      "name": "Read video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1800,
+        300
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.googleapis.com/youtube/v3/videos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet,status"
+            },
+            {
+              "name": "id",
+              "value": "={{ $('Parse result').first().json.preflight.meta.videoId }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "f61kxtqqtpixUxer",
+          "name": "YouTube account"
+        }
+      },
+      "retryOnFail": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "b47d9cee-4d1b-4151-b6f9-db7e6bd1d602",
+      "name": "Validate YouTube video",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        300
+      ],
+      "parameters": {
+        "executeOnce": true,
+        "command": "={{ \"timeout 10s node /data/n8n-workflows/runtime/youtube-meta-preflight.js '\" + JSON.stringify({stage: \"video\", meta: $('Parse result').first().json.preflight.meta, api: $json, executionId: $execution.id}).base64Encode() + \"'\" }}"
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "4d88c783-e5ae-4b52-bff9-122fbad50cb6",
+      "name": "Parse YouTube video",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2200,
+        300
+      ],
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ JSON.parse($json.stdout) }}",
+        "options": {}
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "c698c913-25b5-458e-84e7-6add029a7606",
+      "name": "YouTube video failed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2400,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "063d463d-305f-4653-8404-d3141644d821",
+              "leftValue": "={{ $json.response.status }}",
+              "rightValue": "error",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "ae66a1cd-b949-4cef-8803-76662f484aea",
+      "name": "Read playlist",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2600,
+        300
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.googleapis.com/youtube/v3/playlists",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet"
+            },
+            {
+              "name": "id",
+              "value": "={{ $('Parse result').first().json.preflight.meta.playlistId }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "f61kxtqqtpixUxer",
+          "name": "YouTube account"
+        }
+      },
+      "retryOnFail": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "328f9802-ad5b-46dc-9464-7b872286d680",
+      "name": "Validate YouTube playlist",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2800,
+        300
+      ],
+      "parameters": {
+        "executeOnce": true,
+        "command": "={{ \"timeout 10s node /data/n8n-workflows/runtime/youtube-meta-preflight.js '\" + JSON.stringify({stage: \"playlist\", meta: $('Parse result').first().json.preflight.meta, api: $json, executionId: $execution.id}).base64Encode() + \"'\" }}"
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "3a153342-40b8-4d54-a374-a74ac374c267",
+      "name": "Parse YouTube playlist",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3000,
+        300
+      ],
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ JSON.parse($json.stdout) }}",
+        "options": {}
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "59889124-7075-4c17-a6e0-c2c9b7729452",
+      "name": "YouTube playlist failed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3200,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6d55ab22-253d-424e-bdd1-3c31cf7a59b9",
+              "leftValue": "={{ $json.response.status }}",
+              "rightValue": "error",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "onError": "continueErrorOutput"
     }
   ],
   "connections": {
@@ -220,7 +605,7 @@
         ],
         [
           {
-            "node": "Respond check",
+            "node": "Is YouTube preflight",
             "type": "main",
             "index": 0
           }
@@ -255,6 +640,268 @@
           }
         ]
       ]
+    },
+    "Is YouTube preflight": {
+      "main": [
+        [
+          {
+            "node": "Read authenticated channel",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond check",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read authenticated channel": {
+      "main": [
+        [
+          {
+            "node": "Validate YouTube channel",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Validate YouTube channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate YouTube channel": {
+      "main": [
+        [
+          {
+            "node": "Parse YouTube channel",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse YouTube channel": {
+      "main": [
+        [
+          {
+            "node": "YouTube channel failed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube channel failed": {
+      "main": [
+        [
+          {
+            "node": "Respond error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read video": {
+      "main": [
+        [
+          {
+            "node": "Validate YouTube video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Validate YouTube video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate YouTube video": {
+      "main": [
+        [
+          {
+            "node": "Parse YouTube video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse YouTube video": {
+      "main": [
+        [
+          {
+            "node": "YouTube video failed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube video failed": {
+      "main": [
+        [
+          {
+            "node": "Respond error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read playlist",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read playlist": {
+      "main": [
+        [
+          {
+            "node": "Validate YouTube playlist",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Validate YouTube playlist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate YouTube playlist": {
+      "main": [
+        [
+          {
+            "node": "Parse YouTube playlist",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse YouTube playlist": {
+      "main": [
+        [
+          {
+            "node": "YouTube playlist failed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube playlist failed": {
+      "main": [
+        [
+          {
+            "node": "Respond error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond check",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unexpected node error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -270,9 +917,9 @@
   },
   "nodeGroups": [],
   "pinData": {},
-  "versionId": "9b7e0cf4-f170-4343-a64b-222c6493097f",
-  "activeVersionId": "9b7e0cf4-f170-4343-a64b-222c6493097f",
-  "versionCounter": 3,
+  "versionId": "09364074-95f7-410c-885c-e5f89d2dcf3f",
+  "activeVersionId": "09364074-95f7-410c-885c-e5f89d2dcf3f",
+  "versionCounter": 4,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],

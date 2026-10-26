@@ -21,8 +21,8 @@ function isFutureTimestamp(value) {
 
 function run(input) {
   const meta = input.body;
-  if (!['check', 'update'].includes(input.operation)) {
-    return fail(400, 'input', 'INVALID_OPERATION', 'A művelet check vagy update legyen.');
+  if (!['check', 'preflight', 'update'].includes(input.operation)) {
+    return fail(400, 'input', 'INVALID_OPERATION', 'A művelet check, preflight vagy update legyen.');
   }
   if (!meta || typeof meta !== 'object' || Array.isArray(meta) || meta.status !== 'ready') {
     return fail(400, 'input', 'INVALID_META', 'Ready állapotú meta JSON objektum szükséges.');
@@ -46,6 +46,15 @@ function run(input) {
     return {httpCode: 200, response: {status: 'validated', step: 'connection',
       videoId: meta.videoId, youtubeModified: false,
       message: 'A védett kapcsolat és a bemenet ellenőrzése sikeres. YouTube-ellenőrzés még nem történt.'}};
+  }
+  if (input.operation === 'preflight') {
+    if (!channel.youtubeCredential || channel.youtubeCredential.type !== 'youTubeOAuth2Api' ||
+        channel.youtubeCredential.id !== input.credentialId) {
+      return fail(500, 'channel-registry', 'CREDENTIAL_CONFIG_MISMATCH',
+        'A csatorna credential-hivatkozása nem egyezik a telepített workflow-val; telepítsd újra a workflow-t.');
+    }
+    return {httpCode: 200, response: {status: 'preflight-ready', youtubeModified: false},
+      preflight: {meta, credentialId: channel.youtubeCredential.id}};
   }
   const stateDir = process.env.YOUTUBE_META_STATE_DIR || '/home/node/.n8n/youtube-meta-update';
   fs.mkdirSync(stateDir, {recursive: true, mode: 0o700});
