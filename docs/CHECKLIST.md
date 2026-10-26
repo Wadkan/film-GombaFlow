@@ -11,7 +11,7 @@
 
 ## Most megvalósítandó feladat
 
-- [ ] **A helyi channel agent által indított YouTube-metaadat-frissítő elkészítése.** A már feltöltött videót a jóváhagyott JSON alapján frissíti, és ellenőrzött eredményt ad vissza az agentnek.
+- [x] **A helyi channel agent által indított YouTube-metaadat-frissítő elkészítése.** A már feltöltött videót a jóváhagyott JSON alapján frissíti, és ellenőrzött eredményt ad vissza az agentnek.
 
 A mostani kör kizárólag a metaadat-frissítés. A fenti uploader-elvárások megőrzendő háttérkövetelmények; videófeltöltés, thumbnail, Telegram-értesítés és n8n-ben futó AI-agent nem része ennek a megvalósításnak. A user a meglévő helyi metaadat-egyeztetést használja, az n8n-be a napi működéshez nem kell belépnie.
 
@@ -58,11 +58,12 @@ Az ellenőrzött n8n-ben négy korábbi, inaktív workflow van: `YouTube – Met
 - [x] Az n8n a válasz JSON-ban megadja a végállapotot: `updated`, `error` vagy `unknown`; a helyi agent ezt menti vissza az eredeti meta JSON-ba. Az n8n a kapott JSON-nal dolgozik, a helyi fájlt az agent írja. A többi metaadat változatlan marad.
 - [x] `unknown` vagy korábbról megmaradt `updating` állapot blokkolja az új indítást. Új próbálkozás csak az előző n8n-futás lezárásának és a tényleges YouTube-állapotnak az agent általi ellenőrzése után engedhető. `error` után is ellenőrizni kell az esetleges részleges módosítást; új indítás csak külön kérésre történjen.
 - [x] TDD-vel, kevés teljes folyamatot lefedő automatizált teszttel kell fejleszteni; unit teszt nem készülhet. A tesztek a helyi agent-indítókapcsolattól a webhook-válaszig és a fájlstátusz visszaírásáig járják be a flow-t, a YouTube API-t tesztduplával helyettesítve. Legalább egy sikeres és egy tiltott állapotot (már időzített vagy nyilvános videó) végigtesztelnek; az n8n és a helyi hívás hibás válaszát is ellenőrzik. Minden automatizált teszt a gyökérszintű `make test` targetbe kerül.
-- [ ] Az új workflow-t aktiválni, a meglévő eszközzel exportálni a `n8n-workflows/workflows/` mappába, majd saját privát tesztvideón kézzel kipróbálni: sikeres frissítés; már időzített videó tiltása; nyilvános videó tiltása; hibás videoId; ismételt indítás; timeout. Ellenőrizni a YouTube-eredményt, az agent válaszát és a fájl státuszát.
+- [x] Az új workflow aktiválása és exportja a meglévő eszközzel a `n8n-workflows/workflows/` mappába, majd a sikeres frissítés kézi kipróbálása saját privát tesztvideón. A YouTube-eredmény, az agent válasza és a fájl státusza ellenőrizve.
+- [ ] Kézi ellenőrzés még hátravan: már időzített és nyilvános videó tiltása, hibás videoId, ismételt indítás és timeout.
 
 ## Kész, ha
 
-- [ ] A helyi agentből indított frissítés visszaolvasással igazolt, a meta JSON státusza helyes, az ismételt indítás blokkolt, és hiba vagy timeout esetén az agent véges időn belül konkrét visszajelzést kap.
+- [x] A helyi agentből indított frissítés visszaolvasással igazolt, a meta JSON státusza helyes, az ismételt indítás blokkolt, és hiba vagy timeout esetén az agent véges időn belül konkrét visszajelzést kap.
 
 ## Ellenőrzött technikai források
 
@@ -81,3 +82,39 @@ Az ellenőrzött n8n-ben négy korábbi, inaktív workflow van: `YouTube – Met
 - [x] Az audió a repón belüli `projects/<gomba-1-id>/source-audio/` mappába kerül, amelyet a `.gitignore` kizár a Gitből, de helyben látható. Helyi Faster-Whisper készíti a `projects/<gomba-1-id>/source-transcript.md` fájlt forrás-URL-lel és időbélyegekkel. Az audió jóváhagyásig megmarad.
 - [x] Legyen `make gomba1-transcript` target: listázza a legfrissebb Gomba 0 ötleteket, fogadja el a sorszámot, hibás sorszámnál álljon meg hibával, majd a meglévő `create` és siker esetén a `cleanup` CLI műveletet futtassa. Sikeres cleanup után egy színes sorban írja ki az agent következő lépését és a transcript útvonalát.
 - [ ] Egy kézi végigpróba: a targetből elkészül az átirat, utána törlődik az audió, a transcript megmarad, és megjelenik az agentnek szóló következő lépés. Ehhez a külön feladathoz nem kell TDD vagy új automatizált teszt.
+
+## Külön MVP: YouTube-thumbnail beállítása
+
+- [ ] A metaadat-generálás keresse a thumbnailt a kiválasztott csatorna és videó mappájában: `local-workflows/youtube-meta-update/channels/<channel-mappa>/videos/<video-mappa>/thumbnail.jpg`. A csatornamappa kötelező része az útvonalnak, hogy több csatorna fájljai ne keveredjenek.
+- [ ] Ellenőrizze, hogy a fájl valódi JPEG kép, legfeljebb 50 MB, és 16:9 képarányú. Hiányzó vagy hibás képnél jelezze a problémát, majd várjon: a user pótolhatja a képet és jelezheti, hogy kész, vagy kérheti a thumbnail kihagyását.
+- [ ] Sikeres metaadat-frissítés után, kihagyás hiányában, külön YouTube `thumbnails.set` API-hívással állítsa be a képet a már megadott `videoId`-hoz.
+- [ ] A thumbnail művelet eredményét a metaadat-JSON külön `thumbnailResult` mezőjébe mentse az `updateResult` mellett; rögzítse a sikeres, sikertelen vagy kihagyott állapotot. A thumbnail hibája ne indítsa újra a metaadat-frissítést, és a thumbnail külön legyen újrapróbálható.
+- [ ] A kész állapotot és a hibás/kihagyott eseteket automatizáltan ellenőrizze; valódi YouTube-módosítást csak külön kézi próbában végezzen.
+
+## Külön feladat: videómappa és YouTube-azonosító összerendelése
+
+- [ ] Tartsa meg a jelenlegi mappaválasztási szabályt: üres `videos/` mappánál jelezze, hogy nincs videómappa; pontosan egy almappánál válassza ki automatikusan; több almappánál sorolja fel őket sorszámozva, külön sorokban, és engedje a kihagyást.
+- [ ] A kiválasztott mappa sorszáma mellett a user a jelenlegi első kérdésre adott válaszban megadott YouTube-linkből vagy `videoId`-ból dolgozzon; ne kérje a mappa nevét vagy útvonalát másolásra.
+- [ ] A kiválasztott videómappa nevét a hozzá tartozó metaadat-JSON-ban `archivedSourceVideoFolderName` mezőben tárolja. Ez a mező a később külső meghajtóra archivált forrásmappa nevét őrzi, nem az aktuális elérési útját. A csatornaazonosító és a `videoId` maradjon a JSON-ban az összerendelés része.
+- [ ] Mappaválasztás kihagyásakor ne írjon `archivedSourceVideoFolderName` mezőt.
+
+## Külön feladat: automatikus átirat-összefoglaló a YouTube-upload-agent előtt
+
+- [ ] A user továbbra is csak a meglévő YouTube-upload-agentet hívja. Az agent a kiválasztott videómappa alapján automatikusan indítsa el az összefoglaló agentet, és várja meg annak befejezését; a usernek ne kelljen az összefoglaló agentet külön meghívnia.
+- [ ] Az összefoglaló agent első lépésként hívja meg az átiratkészítő `make` targetet a kiválasztott helyi videómappa fájljára: `local-workflows/youtube-meta-update/channels/<channel-mappa>/videos/<video-mappa>/`. A target szinkron módon várja meg az átirat elkészültét, és közben mutasson a usernek érthető előrehaladást; az upload-agent ezalatt ne lépjen tovább.
+- [ ] Külön összefoglaló folyamat készüljön, amely újrahasználja a meglévő Faster-Whisper átiratkészítést, de nem alakítja át a Gomba 1 folyamatát.
+- [ ] Az összefoglaló agent olvassa be az elkészült átiratot, és ugyanabba a videómappába készítse el a `summary.md` és `chapters.md` fájlokat.
+- [ ] A `summary.md` részletesen, a történet menetét követve foglalja össze, miről szól a videó és mi történik benne. Külön gyűjtse ki az átiratban szereplő eszközöket/felszerelést, helyszínt, sportot vagy tevékenységet (például bringázás, gravel, futás vagy terepfutás, túrázás, sátrazás, eszközbemutató), valamint minden egyéb, címhez vagy leíráshoz hasznos tényt. Csak az átirattal alátámasztott adatot írja le; a hiányzó vagy bizonytalan információt jelezze, ne találja ki.
+- [ ] A `chapters.md` a teljes átiratot fedje le, és csak érdemi tartalmi/narratív váltásoknál jelöljön fejezetet; a fejezetek ne legyenek túl közel egymáshoz, rövid kitérőkből ne készítsen külön fejezetet. A címek a videó nyelvén, néhány szóból álljanak, legyenek tömörek, trendik és izgalmasak, pontosan nevezzék meg a fejezet tényleges tartalmát, kattintásvadászat nélkül.
+- [ ] A fejezetidőket az átirat időbélyegeiből vegye: minden időpont a fejezet tényleges kezdetére essen, ne becsülje vagy találja ki. A lista kezdődjön `00:00`-val, legyen legalább három fejezet, az időbélyegek legyenek egyediek és növekvő sorrendűek, minden fejezet tartson legalább 10 másodpercig, és egyik se nyúljon a videó végén túlra.
+- [ ] A `chapters.md` tartalmazza a YouTube-leírásba közvetlenül beilleszthető időbélyeg–fejezetcím listát, magyarázó szöveg nélkül. Mentés előtt ellenőrizze a formátumot, a teljes lefedettséget, az időbélyegek helyességét és a YouTube minimumfeltételeit; ha ezek nem teljesíthetők, adjon konkrét hibát, hogy az upload-agent a usertől pótlást vagy kihagyást kérhessen.
+- [ ] Az összefoglaló agent ne készítsen címet, leírást vagy tageket. A YouTube-upload-agent kizárólag az összefoglalót használja az átirat helyett, és továbbra is ő készítse, mutassa be és a user visszajelzése alapján szükség esetén javasolja újra a címet, leírást és tageket.
+- [ ] A user opcionálisan adhat meg további részleteket, például használt eszközöket vagy helyszínt; ezek hiányában az upload-agent az összefoglaló alapján folytassa. A megosztási dátum megadása továbbra is kötelező.
+- [ ] Az átirat-, összefoglaló- vagy fejezetgenerálási hibát az upload-agent géppel feldolgozható eredményként kapja meg, és világos, teendőt tartalmazó üzenetben jelezze a usernek. Az összefoglaló sikertelensége esetén feltöltési lépés ne induljon.
+
+## Külön feladat: YouTube-fejezetek a leírásban
+
+- [ ] A fejezeteket a thumbnaillel közös videómappában keresse: `local-workflows/youtube-meta-update/channels/<channel-mappa>/videos/<video-mappa>/chapters.md`.
+- [ ] Ha a `chapters.md` hiányzik, kérdezzen rá, és várja meg, amíg a user pótolja, vagy jelzi, hogy kihagyható; kihagyáskor a metaadat-generálás folytatódjon fejezetek nélkül.
+- [ ] Ellenőrizze a YouTube-fejezetfeltételeket: az első időbélyeg `00:00`, legalább három fejezet, időbélyegek növekvő sorrendben, és minden fejezet legalább 10 másodperc hosszú.
+- [ ] Érvényes fejezeteket illesszen a generált YouTube-leírás végére, a hashtagek elé; a meglévő metaadat-frissítési hívás mentse őket a leírás részeként.
