@@ -76,7 +76,7 @@ Az ellenőrzött n8n-ben négy korábbi, inaktív workflow van: `YouTube – Met
 ## Külön feladat: Gomba 1 helyi transcript — szűk MVP
 
 - [x] Megkeresni a meglévő YouTube-letöltó CLI és a Faster-Whisper tényleges helyi hívását; ezeket használni.
-- [x] Egyetlen, agentből hívható script készüljön a `local-workflows/gomba-1-script-writer/` alatt, két művelettel: `create <youtube-url> <selected-topic-path>` és `cleanup <gomba-1-id>`.
+- [x] Egyetlen, agentből hívható script készüljön a `local-workflows/script-and-cut/gombaFlow/gomba-1-script-writer/` alatt, két művelettel: `create <youtube-url> <selected-topic-path>` és `cleanup <gomba-1-id>`.
 - [x] A `create` a kiválasztott Gomba 0 ötlethez az audió letöltése előtt Gomba 1 ID-t rendel, és a `projects/registry.json` fájlban a YouTube videó ID-jához rögzíti. Az ID alakja `1-rovid-cim`; a projektmappa neve is pontosan ez az ID. Ha registry szerint transcript már készült, ne töltsön le és ne írjon felül.
 - [x] Az audió a repón belüli `projects/<gomba-1-id>/source-audio/` mappába kerül, amelyet a `.gitignore` kizár a Gitből, de helyben látható. Helyi Faster-Whisper készíti a `projects/<gomba-1-id>/source-transcript.md` fájlt forrás-URL-lel és időbélyegekkel. Az audió jóváhagyásig megmarad.
 - [x] Legyen `make gomba1-transcript` target: listázza a legfrissebb Gomba 0 ötleteket, fogadja el a sorszámot, hibás sorszámnál álljon meg hibával, majd a meglévő `create` és siker esetén a `cleanup` CLI műveletet futtassa. Sikeres cleanup után egy színes sorban írja ki az agent következő lépését és a transcript útvonalát.
