@@ -37,7 +37,8 @@ python3 local-workflows/youtube-meta-update/youtube_meta_update.py update \
 ```
 
 Ez valódi módosítás: playlist-tagságot, címet, leírást, címkéket, kategóriát,
-privát láthatóságot és a jóváhagyott jövőbeli publikálási időt állítja be.
+privát láthatóságot, a jóváhagyott jövőbeli publikálási időt, a videó nyelvét
+és a valósághű módosított/szintetikus tartalom jelölését állítja be.
 Siker csak visszaolvasással igazolt egyezés után lehet `updated`.
 A válasz tartalmazza a videó linkjét, az n8n `executionId` értékét és a megerősített
 írási lépéseket. A CLI a teljes választ `updateResult` mezőbe menti; a `status`
@@ -70,6 +71,11 @@ A visszaellenőrzés legfeljebb három körben olvassa a videómezőket és tags
 A dátumot időpillanatként, a címkéket sorrendtől függetlenül hasonlítja össze.
 Írási kérést soha nem ismétel; csak az ellenőrző olvasások ismételhetők.
 Az API-cím rögzített Google HTTPS-host, átirányítás és natív retry tiltott.
+
+A YouTube Data API a paid promotion állapotát vissza tudja olvasni, de nem tudja
+módosítani; ezt a beállítást a YouTube Studio-ban kell kezelni. Az age restriction
+mezőt az API nem tudja írni vagy ellenőrizni, ezért az automatizálás sem beállítást,
+sem ellenőrzést nem végez rajta; ezt is a YouTube Studio-ban kell kezelni.
 
 ## Állapot és bizonytalan eredmény
 

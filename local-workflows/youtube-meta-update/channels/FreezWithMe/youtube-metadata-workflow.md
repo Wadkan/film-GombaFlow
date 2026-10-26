@@ -77,38 +77,48 @@ A választ a csak megadott formátumokban add. Ha file-ba kell írni az outputot
 
 - A cím legfeljebb 100 karakter legyen.
 - A legfontosabb keresőkifejezés lehetőleg a cím elejére kerüljön.
-- A címben mindig szerepeljen a `#freezwithme` hashtag.
-- A címben összesen 3–4 releváns hashtag szerepeljen.
-- A hashtagek a videó témájához, kihívásához vagy ténylegesen használt márkájához kapcsolódjanak.
+- A címben mindig szerepeljen a kiválasztott csatorna `channels.json`-beli `requiredDescriptionHashtag` értéke.
+- Ha természetesen belefér a 100 karakteres limitbe, a címben is szerepelhetnek a videóhoz illő, SEO-szempontból fontos hashtagek; ne rövidítsd vagy gyengítsd miattuk a címet.
 - Ha a user shortot kér, legyen a cím rövidebb és ütősebb.
 
 ## Description
 
 - A leírás elején legyen rövid, konkrét, sztoriszerű összefoglaló arról, mi történik a videóban.
 - A szöveg legyen keresőbarát és természetes; ne ismételjen kulcsszavakat gépiesen.
-- A leírás végére kerüljenek a user által ehhez a videóhoz megadott vagy vele egyeztetett felszerelések.
+- A leírásban a user által ehhez a videóhoz megadott vagy vele egyeztetett felszerelések szerepeljenek a leírás végső hashtagsora előtt.
 - Nem kerülhet bele automatikusan a teljes `gear-list.md`; csak a videóban ténylegesen használt és megadott felszerelés szerepelhet.
 - A felszerelésneveket mindig a [`gear-list.md`](./gear-list.md) pontos megnevezéséből vedd át.
+- A JSON `tags` mezőjében tartsd meg változtatás nélkül a már meglévő tageket, és egészítsd ki az összes további releváns keresőkifejezéssel a videó tényleges tartalma alapján: többek között a helyszínnel, tevékenységgel vagy sportággal, bemutatott vagy használt felszerelésekkel és más fontos videóinformációkkal.
+- A ténylegesen használt vagy bemutatott, `gear-list.md`-ben szereplő tagelhető felszerelésnevek is kerüljenek a `tags` mezőbe; használd a lista pontos megnevezéseit. Ne hagyj ki releváns elemet csak azért, mert a leírásban már szerepel.
 - Ha a user rövid vagy pontatlan nevet ír, keresd meg hozzá a lista pontos elemét. Például a „starboard sup” megnevezésből a listában szereplő pontos Starboard-terméknevet használd.
 - Ha több listaelem is szóba jöhet, ne találgass: kérdezz vissza egyetlen tisztázó kérdéssel.
 - Minden megadott felszerelést ellenőrizz a `gear-list.md`-ben; találat nélkül ne hagyd ki csendben, és ne készítsd el a `.md` fájlt.
 - Ha a felszerelés nem található a listában, mondd meg pontosan, melyik név hiányzik. Javasold vagy az eredeti név változtatás nélküli beillesztését, vagy — ha a lista alapján van valóban hasonló tétel — nevezd meg lehetséges egyezésként, és kérdezd meg, melyiket használja. Hasonlóságot ne állíts biztos egyezésként.
 - Amíg a user nem erősítette meg, hogy az eredeti nevet vagy a javasolt listabeli nevet használhatod, ne tedd be a felszerelést a leírásba, és ne írd ki a `.md` fájlt. Jóváhagyás után a kiválasztott nevet pontosan, egyszer szerepeltesd a leírásban.
 - A gear-list egy videó descriptionjében csak egyszer szerepeljen.
-- A description végén legyenek a videóhoz releváns hashtagek.
+- A description legvégére kerüljön egy hashtagsor: a kiválasztott csatorna `channels.json`-beli `requiredDescriptionHashtag` értéke kötelezően elsőként szerepeljen, és utána legfeljebb két további, SEO-szempontból legfontosabb hashtag jöjjön. Összesen legfeljebb három hashtag legyen.
+- A további hashtageket a videó alapján válaszd: érdekes helyszínnél a helyszín, sportnál vagy eszköznél a releváns tevékenység (például SUP, bringázás, túrázás, kajakozás vagy terepfutás), felszerelésbemutatónál a fő termék, többféle felszerelés bemutatásakor pedig egy megfelelő gyűjtőtéma (például főzés vagy bikepacking gear) legyen a legfontosabbak között. Keress természetes, SEO-szempontból erős hashtaget; ne válassz általános vagy a videóhoz nem illő címkét.
+- A leírás törzse és a felszereléslista maradjon a hashtagsor előtt.
+
+## YouTube-beállítások
+
+- A JSON tartalmazza a `containsSyntheticMedia` és `defaultLanguage` mezőket.
+- `containsSyntheticMedia` alapértéke `false`; ez a YouTube valósághű, módosított vagy szintetikus tartalomra vonatkozó jelölése, nem általános AI-használati címke.
+- A `defaultLanguage` értékét a title és description nyelve alapján állapítsd meg, és ISO nyelvkóddal add meg (például `hu` vagy `en`). Ha a két szöveg nyelve eltér vagy nem egyértelmű, kérdezz vissza.
+- A YouTube Data API frissítése kezeli a `defaultLanguage` és `containsSyntheticMedia` mezőket.
 
 ## Output és fájlmentés
 
 - Az egyeztetés alatt csak a három számozott címjavaslatot és a szükséges tisztázó kérdéseket mutasd a chatben. Az MD előtt ne adj metaadat-összesítőt vagy teljes tervezetet.
 - Amikor minden döntés egyértelmű, az első fájlművelet a metaadatmappába mentett, videómappa nevét viselő `.md` fájl. Ne kérj újabb általános jóváhagyást a fájl elkészítéséhez, és ne állj meg egy chatbeli összesítőnél.
-- Az MD-ben csak a metaadat-mezőnevek és végleges értékeik lehetnek: `videoId`, egy kiválasztott cím, leírás, címkék, playlistnév és időzítés. Ajánlás, alternatív cím, sorszám, indoklás és chatbeli megjegyzés nem kerülhet bele.
+- Az MD-ben csak a metaadat-mezőnevek és végleges értékeik lehetnek: `videoId`, egy kiválasztott cím, leírás, címkék, playlistnév, időzítés, `containsSyntheticMedia` és `defaultLanguage`. Ajánlás, alternatív cím, sorszám, indoklás és chatbeli megjegyzés nem kerülhet bele.
 - A helyi agent mentse el és olvassa vissza a fájlt. MD mentése után kizárólag a fájlútvonalat és az átnézés kérését jelezze; összesítőt ne írjon.
 - Az MD és a JSON két külön forduló. MD mentésekor JSON nem készülhet. Várd meg, hogy a user az elkészült MD-t átnézze és egy későbbi üzenetben jóváhagyja.
 - A jóváhagyást a beszélgetés értelme alapján ismerd fel. Ne követelj meghatározott szót, kifejezést vagy formátumot. A címválasztás, egy részlet tisztázása vagy egy korábbi változat elfogadása nem a jelenlegi MD végső jóváhagyása. Ha a szándék bizonytalan, kérdezz vissza röviden.
 - Az aktuális, videómappa nevével egyező `.md` és `.json` fájl tartalmát minden válasz előtt közvetlenül olvasd be, ha léteznek. A beolvasott fájl az elsődleges forrás, nem a korábbi chatbeli állítás.
 - Szerkesztéskor őrizd meg az aktuális MD kézi javításait, és csak a kért részeket módosítsd. Írd újra az MD-t, majd várj az új változat jóváhagyására.
 - A jóváhagyott, videómappa nevével egyező `.md` fájlból készítsd el az ugyanilyen nevű `.json` fájlt, a playlistnév helyett a csatorna playlist-forrásában szereplő `playlistId` értékkel. Ne találj ki ID-t.
-- A JSON kötelező mezői: `status`, `channelKey`, `youtubeChannelId`, `videoId`, `title`, `description`, `tags`, `categoryId`, `playlistId`, `privacyStatus`, `youtube_scheduled_at`. A `categoryId` értékét a kiválasztott csatorna `youtubeCategory.categoryId` mezőjéből vedd át; ne találd ki. A `privacyStatus` értéke `private`. A státusz csak teljes, egyértelműen jóváhagyott adatokkal lehet `ready`.
+- A JSON kötelező mezői: `status`, `channelKey`, `youtubeChannelId`, `videoId`, `title`, `description`, `tags`, `categoryId`, `playlistId`, `privacyStatus`, `youtube_scheduled_at`, `containsSyntheticMedia`, `defaultLanguage`. A `containsSyntheticMedia` logikai érték legyen. A `categoryId` értékét a kiválasztott csatorna `youtubeCategory.categoryId` mezőjéből vedd át; ne találd ki. A `privacyStatus` értéke `private`. A státusz csak teljes, egyértelműen jóváhagyott adatokkal lehet `ready`.
 - A két fájl kizárólag a metaadatmappába kerülhet. A JSON nem forrása az MD felülírásának.
 
 ## Playlist-egyeztetés

@@ -70,7 +70,10 @@ function metadataMatches(video,meta,includeTags=true) {
   const snippet=video?.snippet||{},status=video?.status||{};
   return snippet.title===meta.title && snippet.description===meta.description &&
     (!includeTags || JSON.stringify([...(snippet.tags||[])].sort())===JSON.stringify([...meta.tags].sort())) &&
-    String(snippet.categoryId)===meta.categoryId && status.privacyStatus==='private' &&
+    String(snippet.categoryId)===meta.categoryId &&
+    (meta.defaultLanguage===undefined || snippet.defaultLanguage===meta.defaultLanguage) &&
+    (status.containsSyntheticMedia===true)===(meta.containsSyntheticMedia===true) &&
+    status.privacyStatus==='private' &&
     Date.parse(status.publishAt)===Date.parse(meta.youtube_scheduled_at);
 }
 function containsVideo(items,meta) {
@@ -88,7 +91,12 @@ function advance(input) {
     if(validation.response.status==='error') return finish(state,'error',validation.response.step,validation.response.code,validation.response.message,{httpCode:validation.httpCode,...(validation.response.youtubeError?{youtubeError:validation.response.youtubeError}:{})});
   }
   if(phase==='channel') return readVideo(state,'video');
-  if(phase==='video') return issue(state,'playlist','GET','playlists',{part:'snippet',id:state.meta.playlistId});
+  if(phase==='video') {
+    const video=body.items.find(item=>item.id===state.meta.videoId);
+    if(state.meta.containsSyntheticMedia===undefined) state.meta.containsSyntheticMedia=video?.status?.containsSyntheticMedia===true;
+    if(state.meta.defaultLanguage===undefined && video?.snippet?.defaultLanguage) state.meta.defaultLanguage=video.snippet.defaultLanguage;
+    return issue(state,'playlist','GET','playlists',{part:'snippet',id:state.meta.playlistId});
+  }
   if(phase==='playlist') return membership(state,'membership');
   if(phase==='membership') {
     if(!Array.isArray(body?.items)) return finish(state,'error',phase,'YOUTUBE_INVALID_RESPONSE','Hibás playlist-tagsági válasz.');
@@ -107,8 +115,9 @@ function advance(input) {
   if(phase==='guard-video') {
     const video=body.items.find(item=>item.id===state.meta.videoId);
     if(metadataMatches(video,state.meta)) return readVideo(state,'verify-video');
+    if(state.meta.defaultLanguage===undefined && video?.snippet?.defaultLanguage) state.meta.defaultLanguage=video.snippet.defaultLanguage;
     return issue(state,'video-update','PUT','videos',{part:'snippet,status'},
-      {id:state.meta.videoId,snippet:{title:state.meta.title,description:state.meta.description,tags:state.meta.tags,categoryId:state.meta.categoryId},status:{privacyStatus:'private',publishAt:state.meta.youtube_scheduled_at}});
+      {id:state.meta.videoId,snippet:{title:state.meta.title,description:state.meta.description,tags:state.meta.tags,categoryId:state.meta.categoryId,...(state.meta.defaultLanguage?{defaultLanguage:state.meta.defaultLanguage}:{})},status:{privacyStatus:'private',publishAt:state.meta.youtube_scheduled_at,containsSyntheticMedia:state.meta.containsSyntheticMedia===true}});
   }
   if(phase==='video-update') {
     if(body?.id!==state.meta.videoId) {state.uncertain=phase;return finish(state,'unknown',phase,'YOUTUBE_INVALID_RESPONSE','A videófrissítés eredménye nem igazolható.');}

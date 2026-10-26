@@ -139,6 +139,11 @@ def read_ready_meta(path: pathlib.Path) -> dict:
             raise ClientError(f"érvénytelen metaadatmező: {name}")
     if not isinstance(value["tags"], list) or any(not isinstance(tag, str) or not tag.strip() for tag in value["tags"]):
         raise ClientError("a tags szöveges címkék listája legyen")
+    if "containsSyntheticMedia" in value:
+        if not isinstance(value["containsSyntheticMedia"], bool):
+            raise ClientError("érvénytelen metaadatmező: containsSyntheticMedia (true/false szükséges)")
+    if "defaultLanguage" in value and (not isinstance(value["defaultLanguage"], str) or not value["defaultLanguage"].strip()):
+        raise ClientError("érvénytelen metaadatmező: defaultLanguage")
     if len(value["title"]) > 100 or value["privacyStatus"] != "private":
         raise ClientError("legfeljebb 100 karakteres cím és private láthatóság szükséges")
     try:
