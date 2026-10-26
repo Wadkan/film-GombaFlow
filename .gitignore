@@ -9,3 +9,4 @@ tooling/git
 /local-workflows/youtube-meta-update/channels/*/videos/**
 !/local-workflows/youtube-meta-update/channels/*/videos/.gitkeep
 /local-workflows/gomba-1-script-writer/projects/*/source-audio/
+*.pyc
