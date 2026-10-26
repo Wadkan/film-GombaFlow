@@ -3,8 +3,9 @@
 
 > **Történeti terv:** a metaadat-chat n8n workflow-k kivezetése folyamatban van.
 > A metaadatok egyeztetése és a `meta.md` / `meta.json` létrehozása
-> most közvetlenül chatben történik; lásd
-> [`n8n-workflows/youtube-upload/CHAT_WORKFLOW.md`](../n8n-workflows/youtube-upload/CHAT_WORKFLOW.md).
+> most közvetlenül chatben történik; az agent aktuális szabályait lásd
+> [`local-workflows/youtube-upload/channels/FreezWithMe/style.md`](../local-workflows/youtube-upload/channels/FreezWithMe/style.md).
+> A további útvonalak az eredeti n8n MVP terv korabeli hivatkozásai.
 > Az alábbi részletek az eredeti n8n MVP tervet dokumentálják, nem aktív
 > végrehajtási listát.
 

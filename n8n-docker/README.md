@@ -7,7 +7,7 @@ Self-hosted [n8n Assistant](https://docs.n8n.io/deploy/host-n8n/configure-n8n/se
 - `compose.yaml` — n8n, external task runners, SearXNG (web search)
 - `sandbox/compose.yaml` — `sandbox-certs`, `sandbox-api`, `sandbox-runner-1` (privileged DinD)
 
-Általános n8n export/import eszközök: [`../n8n-workflows/README.md`](../n8n-workflows/README.md), a konténer útvonala `/data/n8n-workflows`. A YouTube-metaadat chat helyi fájljai a `n8n-workflows/youtube-upload/` könyvtárban maradnak.
+Általános n8n export/import eszközök: [`../n8n-workflows/README.md`](../n8n-workflows/README.md), a konténer útvonala `/data/n8n-workflows`.
 
 Both stacks share the Docker network `n8n_assistant` so n8n can reach `http://sandbox-api:8080`.
 

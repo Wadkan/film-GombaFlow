@@ -19,7 +19,7 @@ nem egyértelmű kötelező adatokat csak ezután tisztázd.
 ## Helyi végrehajtás
 
 - A videógyökér: `/Users/wadkan/Desktop/cam/cam final/SHARE_ME_CUEUE`. Másik videógyökeret akkor használj, ha a user megadja.
-- Közvetlenül olvasd el a `n8n-workflows/youtube-upload/config/channels.json` fájlt, kövesd a fenti csatornaválasztási szabályt, majd a kiválasztott csatorna `sourcePath` és `sourceFiles` mezői alapján olvasd el a csatornaforrásokat. Az időzónát a `config/settings.json` tartalmazza.
+- Közvetlenül olvasd el a `local-workflows/youtube-meta-upload/config/channels.json` fájlt, kövesd a fenti csatornaválasztási szabályt, majd a kiválasztott csatorna `sourcePath` és `sourceFiles` mezői alapján olvasd el a csatornaforrásokat. Az időzónát a `local-workflows/youtube-meta-upload/config/settings.json` tartalmazza.
 - Minden válasz előtt olvasd el közvetlenül a kiválasztott videómappa `meta.md` és `meta.json` fájlját, hogy a kézi módosítások és az aktuális állapot megmaradjanak.
 - A videómappának a videógyökér közvetlen almappájának kell lennie. Ellenőrizd, hogy a célmappa ezen belül van; a `meta.md` és `meta.json` nem lehet szimbolikus link.
 - A helyi fájlolvasáshoz és -íráshoz használd közvetlenül a rendelkezésre álló fájlrendszer-eszközöket; ne futtass loader scriptet.
