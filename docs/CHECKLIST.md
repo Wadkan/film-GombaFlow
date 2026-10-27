@@ -13,7 +13,7 @@
 
 - [x] **A helyi channel agent által indított YouTube-metaadat-frissítő elkészítése.** A már feltöltött videót a jóváhagyott JSON alapján frissíti, és ellenőrzött eredményt ad vissza az agentnek.
 
-A mostani kör kizárólag a metaadat-frissítés. A fenti uploader-elvárások megőrzendő háttérkövetelmények; videófeltöltés, thumbnail, Telegram-értesítés és n8n-ben futó AI-agent nem része ennek a megvalósításnak. A user a meglévő helyi metaadat-egyeztetést használja, az n8n-be a napi működéshez nem kell belépnie.
+A mostani kör a metaadat-frissítés, valamint a YouTube Studio-ban elvégzett videónyelv- és záróképernyő-beállítás. A fenti uploader-elvárások megőrzendő háttérkövetelmények; videófeltöltés, thumbnail, Telegram-értesítés és n8n-ben futó AI-agent nem része ennek a megvalósításnak. A user a meglévő helyi metaadat-egyeztetést használja, az n8n-be a napi működéshez nem kell belépnie.
 
 ## Már kész, újrahasználandó alapok
 

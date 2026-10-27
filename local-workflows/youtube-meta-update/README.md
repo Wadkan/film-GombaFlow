@@ -42,6 +42,10 @@ nyelvét, valamint a valósághű módosított/szintetikus tartalom jelölését
 Az n8n nem alkalmazza a JSON `tags` értékét a YouTube-on; a meglévő YouTube-tageket
 átviszi a videófrissítéskor. A beszélt videó nyelvét az agent a YouTube Studio-ban
 állítja be a JSON `defaultLanguage` értéke alapján, majd mentés után ellenőrzi.
+Ugyanebben a Studio-lépésben a záróképernyőt „1 video, 1 playlist, 1 subscribe”
+elrendezésre állítja: a videó „Best for viewer”, a playlist pedig a videó
+adatlapján beállított playlist. Mindkét Studio-módosítást mentés után ellenőrizni
+kell; az n8n válasza önmagában egyiket sem igazolja.
 Siker csak visszaolvasással igazolt egyezés után lehet `updated`.
 A válasz tartalmazza a videó linkjét, az n8n `executionId` értékét és a megerősített
 írási lépéseket. A CLI a teljes választ `updateResult` mezőbe menti; a `status`

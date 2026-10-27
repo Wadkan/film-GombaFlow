@@ -152,6 +152,18 @@ a beállítást. A cím és leírás nyelvét is ellenőrizze. Ha a Studio nem �
 jelezze, hogy a videó nyelvének beállítása még hátravan; az n8n `updated`
 válasza önmagában nem igazolja ezt a Studio-beállítást.
 
+Ezután a Studio „End screen” szerkesztőjében állítsa be az „1 video, 1 playlist,
+1 subscribe” elrendezést. A videóelem ajánlása legyen „Best for viewer”. A
+playlist elemhez azt a playlistet válassza ki, amelyet a videó adatlapja mutat;
+ennek egyeznie kell a JSON `playlistId` mezője alapján beállított playlisttel.
+Mentse a módosításokat, majd ellenőrizze, hogy a szerkesztő mentett állapotot
+jelez, vagy újbóli megnyitás után is pontosan egy video, egy playlist és egy
+subscribe elem szerepel a kívánt értékekkel. Ha a Studio nem érhető el vagy a
+mentés nem igazolható, jelezze, hogy a záróképernyő beállítása hátravan; az n8n
+`updated` válasza ezt sem igazolja. Privát/időzített videón a Studio jelezheti,
+hogy a záróképernyő nem látható a watch oldalon; ez nem akadálya a mentett
+beállítás publikáláskori használatának.
+
 Az `update` a fájl státuszát és eredményét maga menti; `updated` csak igazolt
 visszaolvasás után siker. `error`, `unknown` vagy megmaradt `updating` esetén
 ne állítsd vissza automatikusan `ready`-ra, és ne indíts új módosítást. Előbb az
