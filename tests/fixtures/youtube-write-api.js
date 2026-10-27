@@ -29,7 +29,7 @@ http.createServer((req,res)=>{
    }
    state.videoReads++;
    const desired=state.video;
-   const snippet=state.updated?{...desired.snippet,channelId:channel}:{channelId:scenario==='wrong-video-channel'?'other':channel,title:'Old title',description:'Old description',tags:[],categoryId:'19'};
+   const snippet=state.updated?{...desired.snippet,channelId:channel}:{channelId:scenario==='wrong-video-channel'?'other':channel,title:'Old title',description:'Old description',tags:scenario==='preserve-tags'?['existing-youtube-tag']:[],categoryId:'19'};
    if(scenario==='verify-mismatch' && state.updated) snippet.title='Not propagated';
    if(scenario==='verify-tags-omitted' && state.updated) delete snippet.tags;
    const status=state.updated?desired.status:{privacyStatus:scenario==='public'||(scenario==='guard-public'&&state.videoReads>=2)?'public':'private',...(scenario==='scheduled'?{publishAt:'2099-01-01T15:00:00Z'}:{})};

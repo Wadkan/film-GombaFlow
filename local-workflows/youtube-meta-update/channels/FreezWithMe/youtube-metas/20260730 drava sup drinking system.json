@@ -1,0 +1,51 @@
+{
+  "status": "updated",
+  "channelKey": "freezwithme",
+  "youtubeChannelId": "UCTmNLnPDniFPocALLVSFoDg",
+  "videoId": "XsynNGbQpjE",
+  "title": "Grayl UltraPress vagy Sawyer Mini? Két vízszűrő összehasonlítása #freezwithme",
+  "description": "💧 Grayl UltraPress vagy Sawyer Mini? Ebben a videóban összehasonlítom a két vízszűrőmet, és bemutatom a víztároláshoz használt kiegészítőimet is. A vízszűrők mellett előkerül a Sawyer víztasakom, valamint a Decathlonból és a Temuról beszerzett szopókás puha kulacsom. 🎒\n\n🚣 A SUP-os felszerelésem részeként mutatom meg ezt az ivórendszert: a vízszűrés mellett a víz tárolását és a kulacsokat is végigveszem.\n\n🧰 A videóban használt felszerelésem:\n• Grayl UltraPress® Purifier (500ml)\n• Sawyer Mini SP128 Water Filter\n• Sawyer Water Pouch\n• KIPRUN Puha kulacs futáshoz, 500 ml (Decathlon)\n• Szopókás puha kulacs (Temu)\n\n#freezwithme #vízszűrő #SUP",
+  "tags": [
+    "freezwithme",
+    "Grayl UltraPress® Purifier (500ml)",
+    "Sawyer Mini SP128 Water Filter",
+    "Sawyer Water Pouch",
+    "Grayl UltraPress",
+    "Sawyer Mini",
+    "Grayl vs Sawyer",
+    "vízszűrő összehasonlítás",
+    "vízszűrés",
+    "víztisztítás",
+    "túrafelszerelés",
+    "SUP",
+    "SUP túra",
+    "ivórendszer",
+    "víztasak",
+    "soft flask",
+    "szopókás puha kulacs",
+    "KIPRUN Puha kulacs futáshoz, 500 ml",
+    "Decathlon",
+    "Temu",
+    "outdoor felszerelés"
+  ],
+  "categoryId": "19",
+  "playlistId": "PLIw2OkTTi7-8BLCbWVdxTkcasQ4Wu99Gx",
+  "privacyStatus": "private",
+  "youtube_scheduled_at": "2026-10-28T16:00:00+01:00",
+  "containsSyntheticMedia": false,
+  "defaultLanguage": "hu",
+  "updateResult": {
+    "status": "updated",
+    "step": "verification",
+    "message": "A metaadatok és a playlist-tagság visszaolvasással igazoltak.",
+    "videoId": "XsynNGbQpjE",
+    "videoUrl": "https://youtu.be/XsynNGbQpjE",
+    "executionId": "536",
+    "partialSuccess": false,
+    "youtubeModified": true,
+    "completedSteps": [
+      "playlist-insert",
+      "video-update"
+    ]
+  }
+}

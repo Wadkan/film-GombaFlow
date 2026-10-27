@@ -36,9 +36,12 @@ python3 local-workflows/youtube-meta-update/youtube_meta_update.py update \
   local-workflows/youtube-meta-update/channels/FreezWithMe/youtube-metas/20260730_drava_sup_testfolder.json
 ```
 
-Ez valódi módosítás: playlist-tagságot, címet, leírást, címkéket, kategóriát,
-privát láthatóságot, a jóváhagyott jövőbeli publikálási időt, a videó nyelvét
-és a valósághű módosított/szintetikus tartalom jelölését állítja be.
+Ez valódi módosítás: playlist-tagságot, címet, leírást, kategóriát,
+privát láthatóságot, a jóváhagyott jövőbeli publikálási időt, a cím és leírás
+nyelvét, valamint a valósághű módosított/szintetikus tartalom jelölését állítja be.
+Az n8n nem alkalmazza a JSON `tags` értékét a YouTube-on; a meglévő YouTube-tageket
+átviszi a videófrissítéskor. A beszélt videó nyelvét az agent a YouTube Studio-ban
+állítja be a JSON `defaultLanguage` értéke alapján, majd mentés után ellenőrzi.
 Siker csak visszaolvasással igazolt egyezés után lehet `updated`.
 A válasz tartalmazza a videó linkjét, az n8n `executionId` értékét és a megerősített
 írási lépéseket. A CLI a teljes választ `updateResult` mezőbe menti; a `status`
@@ -67,8 +70,10 @@ A már egyező mezők/tagság nem indítanak fölösleges írást. A kötelező 
 időzítés miatt egy korábban nem időzített videó sikeres alkalmazása általában
 videófrissítést igényel; a már időzített videó tiltását nem kerüli meg no-op címén.
 
-A visszaellenőrzés legfeljebb három körben olvassa a videómezőket és tagságot.
-A dátumot időpillanatként, a címkéket sorrendtől függetlenül hasonlítja össze.
+A visszaellenőrzés legfeljebb három körben olvassa a videómezőket és playlist-tagságot.
+A dátumot időpillanatként hasonlítja össze; a JSON-tag értékét nem ellenőrzi
+a YouTube-on, mert azt nem alkalmazza. A Studio „Video language” beállítását
+az agent külön ellenőrzi.
 Írási kérést soha nem ismétel; csak az ellenőrző olvasások ismételhetők.
 Az API-cím rögzített Google HTTPS-host, átirányítás és natív retry tiltott.
 

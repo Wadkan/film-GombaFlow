@@ -66,10 +66,9 @@ function apiError(state,api) {
   }
   return null;
 }
-function metadataMatches(video,meta,includeTags=true) {
+function metadataMatches(video,meta) {
   const snippet=video?.snippet||{},status=video?.status||{};
   return snippet.title===meta.title && snippet.description===meta.description &&
-    (!includeTags || JSON.stringify([...(snippet.tags||[])].sort())===JSON.stringify([...meta.tags].sort())) &&
     String(snippet.categoryId)===meta.categoryId &&
     (meta.defaultLanguage===undefined || snippet.defaultLanguage===meta.defaultLanguage) &&
     (status.containsSyntheticMedia===true)===(meta.containsSyntheticMedia===true) &&
@@ -116,8 +115,10 @@ function advance(input) {
     const video=body.items.find(item=>item.id===state.meta.videoId);
     if(metadataMatches(video,state.meta)) return readVideo(state,'verify-video');
     if(state.meta.defaultLanguage===undefined && video?.snippet?.defaultLanguage) state.meta.defaultLanguage=video.snippet.defaultLanguage;
+    // videos.update replaces omitted snippet fields, so pass through YouTube's tags without using meta.tags.
+    const existingTags=video?.snippet?.tags;
     return issue(state,'video-update','PUT','videos',{part:'snippet,status'},
-      {id:state.meta.videoId,snippet:{title:state.meta.title,description:state.meta.description,tags:state.meta.tags,categoryId:state.meta.categoryId,...(state.meta.defaultLanguage?{defaultLanguage:state.meta.defaultLanguage}:{})},status:{privacyStatus:'private',publishAt:state.meta.youtube_scheduled_at,containsSyntheticMedia:state.meta.containsSyntheticMedia===true}});
+      {id:state.meta.videoId,snippet:{title:state.meta.title,description:state.meta.description,...(Array.isArray(existingTags)?{tags:existingTags}:{}),categoryId:state.meta.categoryId,...(state.meta.defaultLanguage?{defaultLanguage:state.meta.defaultLanguage}:{})},status:{privacyStatus:'private',publishAt:state.meta.youtube_scheduled_at,containsSyntheticMedia:state.meta.containsSyntheticMedia===true}});
   }
   if(phase==='video-update') {
     if(body?.id!==state.meta.videoId) {state.uncertain=phase;return finish(state,'unknown',phase,'YOUTUBE_INVALID_RESPONSE','A videófrissítés eredménye nem igazolható.');}
@@ -126,7 +127,7 @@ function advance(input) {
   }
   if(phase==='verify-video') {
     state.verifyRound++;
-    state.videoVerified=Array.isArray(body?.items) && metadataMatches(body.items.find(item=>item.id===state.meta.videoId && item.snippet?.channelId===state.meta.youtubeChannelId),state.meta,false);
+    state.videoVerified=Array.isArray(body?.items) && metadataMatches(body.items.find(item=>item.id===state.meta.videoId && item.snippet?.channelId===state.meta.youtubeChannelId),state.meta);
     return membership(state,'verify-membership');
   }
   if(phase==='verify-membership') {

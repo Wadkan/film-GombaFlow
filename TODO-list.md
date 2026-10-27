@@ -15,7 +15,6 @@ CLAUDE MODELS
 THINKING: claude opus 5.5 and fabble 5.1 xhigh
 BUILDING: sonnet 5.5 medium
 
-
 NEW TOOLS TO TRY
 !downloaded
 ? Parakeet - transcript with timestamps
@@ -28,9 +27,9 @@ FFMpeg - finsiher (already in davinci)
 CHECK prompt-motion.com for animations
 
 claude - turn on browse internet in settings
-    ask ai to create a video editing system with using hyperframes, ffmpeg, tella.
-    add these tools as connectors in claude
-    learn: put it into rules (I already have it)
+ask ai to create a video editing system with using hyperframes, ffmpeg, tella.
+add these tools as connectors in claude
+learn: put it into rules (I already have it)
 
 ---
 
@@ -41,37 +40,30 @@ continue from 14:35
 
 SCRIPT WRITING
 0 psichology:
-    reality beats expectations in the first 5 seconds
+reality beats expectations in the first 5 seconds
 1 packaging
-    promise in title + thumbnail MUST be confirmed -> click confirmation
-    IDEA: viewers should be eager to watch
-    title tools: vidIQ. süprter studio, view stats
-    MEASURE TWICE CUT ONCE
+promise in title + thumbnail MUST be confirmed -> click confirmation
+IDEA: viewers should be eager to watch
+title tools: vidIQ. süprter studio, view stats
+MEASURE TWICE CUT ONCE
 2 outline
-    Bullet-Point Outline (Gut Check for Uniqueness)
-    • Hook Fast – Grab attention in the first 5 seconds.
-    • Structure Like a Story – Keep a clear beginning, middle, and end.
-    • Create Curiosity Loops – Leave questions open to keep viewers engaged.
+Bullet-Point Outline (Gut Check for Uniqueness)
+• Hook Fast – Grab attention in the first 5 seconds.
+• Structure Like a Story – Keep a clear beginning, middle, and end.
+• Create Curiosity Loops – Leave questions open to keep viewers engaged.
 3 intro
-    Part 1: Give immediate context on what the video is about
-    Part 2: Establish the common take or belief
-        The easiest way to build common ground is by restating the common belief.
-    3. rész: Teremts kontrasztot egy ellentmondó megközelítés megosztásával
-        Múld felül az elvárásokat azonnal egy általános hiedelem kijelentésével. Majd kérdőjelezd meg azt egy friss, ellentmondó meglátással.
-    4. rész: Adj bizonyítékot
-    5. rész: Oszd meg a terved
+Part 1: Give immediate context on what the video is about
+Part 2: Establish the common take or belief
+The easiest way to build common ground is by restating the common belief. 3. rész: Teremts kontrasztot egy ellentmondó megközelítés megosztásával
+Múld felül az elvárásokat azonnal egy általános hiedelem kijelentésével. Majd kérdőjelezd meg azt egy friss, ellentmondó meglátással. 4. rész: Adj bizonyítékot 5. rész: Oszd meg a terved
 4 body of the script points:
-    -ne azt ismetelegesse amit mar amugy is mindenki tud, legyen az eleje brutal egyedi es erdekes
-    -a MASODIK legjobb body point menjen legyen az elso
-    -value loop:
-        1. context: say what is is and explain it very simple,
-        2. application: say how to do it with relevant examples (SHOW TULELO BEVAGASOK TEREPROL)
-        3. framing: say why it matters, abd how it fits into the whole puzzle of the story
+-ne azt ismetelegesse amit mar amugy is mindenki tud, legyen az eleje brutal egyedi es erdekes
+-a MASODIK legjobb body point menjen legyen az elso
+-value loop: 1. context: say what is is and explain it very simple, 2. application: say how to do it with relevant examples (SHOW TULELO BEVAGASOK TEREPROL) 3. framing: say why it matters, abd how it fits into the whole puzzle of the story
 
 continue from 14:35
 
 5 outro
-
 
 ---
 
@@ -94,19 +86,19 @@ whisper and cut silente, repeats, etc.
 
 DESIGN
 -find what is nice and analize
-    create screenshots of images and animations
-    choose from prompt-motion.com AND GET THE PROMPT from it
-    -> make AI write design guidelines for them
-    -> use HyperFrames for implementation
+create screenshots of images and animations
+choose from prompt-motion.com AND GET THE PROMPT from it
+-> make AI write design guidelines for them
+-> use HyperFrames for implementation
 -beat-map: mit mondok, mi latszik alatt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    -ne legyen tul sok, legyen ido elolvasni
-    -egy otlethez egy grafika menjen
+-ne legyen tul sok, legyen ido elolvasni
+-egy otlethez egy grafika menjen
 split the full-video beat-map plan into sections
-    add subagent for each section
+add subagent for each section
 render:
-    define how many at a time
-    half quality for review, full quality only when accepted and final
-    "Build one graphic as a webpage first. Then turn the rest into a storyboard so I can look at it and fix it. Only then turn it into video."
+define how many at a time
+half quality for review, full quality only when accepted and final
+"Build one graphic as a webpage first. Then turn the rest into a storyboard so I can look at it and fix it. Only then turn it into video."
 
 REVIEW:
 check 10 frames every second
@@ -121,13 +113,11 @@ FEEDBACK:
 ---
 
 IDEAS FOR VIDEO EDITING EXTRAS
-    sound effects when: click on something, opening animation, zoom
-    when zoom from full screen talking head into small bbubble, add a sound, change sometimes the shape, and do it often.
-
+sound effects when: click on something, opening animation, zoom
+when zoom from full screen talking head into small bbubble, add a sound, change sometimes the shape, and do it often.
 
 ADD SKILL FOR ADDING OWN IDEAS:
 copy this https://www.youtube.com/watch?v=REAOFI534lk
-
 
 ---
 
@@ -144,13 +134,11 @@ amit en veszek fel: talking head es screenrecordings
 amire szuksegem van: cim kartyak a reszek kozott igenyes transitionnel es akar hanggal
 kiiras tipusok ha magyarazok valamit, transitionok videok kozott automatikusan, talking head elhelyezese automatikusan.
 
-
 ---
 
 NOT PRIO
 CHECK claude code visuals
 CHECK futurpedia courses
-
 
 RESEARCH eros modellel: mivel tudok a leghatekonyabban sok penzt keresni ai eszkozok hasznalataval 2026-ban. ezek kozul melyikbe tudok a legegyszerubben boteroni? fo kerdes: meghatarozni, ha sikerult a piacra betorni valamelyik temaban a lentiek kozul, melyik fogja a beletett idobol a legtobb profitot kihozni? melyikkel mennyi munkaval havi munkaval mennyi megterules varhato havonta ft-ban?
 magyar vagy angol videokat erdemes kesziteni?

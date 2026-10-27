@@ -105,7 +105,8 @@ A választ a csak megadott formátumokban add. Ha file-ba kell írni az outputot
 - A JSON tartalmazza a `containsSyntheticMedia` és `defaultLanguage` mezőket.
 - `containsSyntheticMedia` alapértéke `false`; ez a YouTube valósághű, módosított vagy szintetikus tartalomra vonatkozó jelölése, nem általános AI-használati címke.
 - A `defaultLanguage` értékét a title és description nyelve alapján állapítsd meg, és ISO nyelvkóddal add meg (például `hu` vagy `en`). Ha a két szöveg nyelve eltér vagy nem egyértelmű, kérdezz vissza.
-- A YouTube Data API frissítése kezeli a `defaultLanguage` és `containsSyntheticMedia` mezőket.
+- A YouTube Data API a `defaultLanguage` értékét a cím és leírás nyelvéhez, a `containsSyntheticMedia` értékét a szintetikus tartalom jelöléséhez használja. A Studio külön „Video language” beállítását az API-frissítés nem állítja be.
+- A JSON `tags` mezője a metaadat-egyeztetésben és a helyi fájlokban marad. Az agent nem alkalmazza ezeket a YouTube-tag mezőjére. Az n8n a már létező YouTube-tageket változatlanul viszi át a videófrissítéskor.
 
 ## Output és fájlmentés
 
@@ -144,9 +145,15 @@ az ugyanilyen `update <jóváhagyott-json-útvonal>` parancsot. A usernek nem ke
 terminált vagy n8n felületet használnia. Meglévő egyértelmű alkalmazási engedélyt
 ne kérj újra; a puszta MD-jóváhagyás továbbra is csak a JSON elkészítését engedi.
 
+Sikeres `update` után az agent nyissa meg ugyanazt a videót a YouTube Studio-ban,
+és a JSON `defaultLanguage` értékéből állítsa be a „Video language” mezőt
+(például `hu` → Hungarian, `en` → English). Mentés után újratöltéssel ellenőrizze
+a beállítást. A cím és leírás nyelvét is ellenőrizze. Ha a Studio nem érhető el,
+jelezze, hogy a videó nyelvének beállítása még hátravan; az n8n `updated`
+válasza önmagában nem igazolja ezt a Studio-beállítást.
+
 Az `update` a fájl státuszát és eredményét maga menti; `updated` csak igazolt
 visszaolvasás után siker. `error`, `unknown` vagy megmaradt `updating` esetén
 ne állítsd vissza automatikusan `ready`-ra, és ne indíts új módosítást. Előbb az
 n8n-futást és a tényleges YouTube-állapotot ellenőrizd, és külön user-kérés szükséges
-az egyeztetett új indításhoz. A jelenlegi éles tesztben csak a `-8QDeHKJNT8`
-videó módosítható; ezt az n8n szerveroldali engedélylistája is kikényszeríti.
+az egyeztetett új indításhoz.

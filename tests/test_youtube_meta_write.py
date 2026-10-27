@@ -184,7 +184,12 @@ class YoutubeMetaWriteFlowTests(unittest.TestCase):
             time.sleep(0.1)
 
     def test_update_success_membership_skip_and_fresh_guards(self):
-        for scenario, inserts in [("success", 1), ("member", 0), ("verify-tags-omitted", 1)]:
+        for scenario, inserts in [
+            ("success", 1),
+            ("member", 0),
+            ("verify-tags-omitted", 1),
+            ("preserve-tags", 1),
+        ]:
             with self.subTest(scenario=scenario):
                 run, body, path, meta = self.invoke(scenario)
                 self.assertEqual(run.returncode, 0, body)
@@ -195,11 +200,12 @@ class YoutubeMetaWriteFlowTests(unittest.TestCase):
                 writes = [e for e in entries if e["method"] != "GET"]
                 self.assertEqual(sum(e["method"] == "POST" for e in writes), inserts)
                 self.assertEqual(sum(e["method"] == "PUT" for e in writes), 1)
-                if scenario == "verify-tags-omitted":
-                    update = next(e for e in writes if e["method"] == "PUT")
-                    self.assertEqual(
-                        update["requestBody"]["snippet"]["tags"], ["verify-tags-omitted"]
-                    )
+                update = next(e for e in writes if e["method"] == "PUT")
+                self.assertEqual(
+                    update["requestBody"]["snippet"]["tags"],
+                    ["existing-youtube-tag"] if scenario == "preserve-tags" else [],
+                )
+                self.assertEqual(json.loads(path.read_text())["tags"], meta["tags"])
                 self.assertTrue(all(not e["authorization"] for e in entries))
                 for index, entry in enumerate(entries):
                     if entry["method"] != "GET":

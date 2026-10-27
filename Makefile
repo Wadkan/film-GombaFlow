@@ -38,15 +38,11 @@ format:
 
 docs-format:
 	@repo_root=$$(pwd); \
-	files=$$(find "$$repo_root" -type f \( -name '*.md' -o -name '*.mdx' \) \
+	find "$$repo_root" -type f \( -name '*.md' -o -name '*.mdx' \) \
 		-not -path "$$repo_root/.git/*" \
 		-not -path '*/node_modules/*' \
 		-not -path '*/.next/*' \
 		-not -path '*/.pytest_cache/*' \
-		-not -path '*/.venv/*'); \
-	if [ -z "$$files" ]; then \
-		echo "No Markdown documentation files found."; \
-	else \
-		npx --yes prettier@3.8.3 --write $$files; \
-	fi
+		-not -path '*/.venv/*' \
+		-exec npx --yes prettier@3.8.3 --write {} +
 

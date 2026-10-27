@@ -44,12 +44,12 @@ Az ellenőrzött n8n-ben négy korábbi, inaktív workflow van: `YouTube – Met
 
 ### 3. Az n8n frissíti a metaadatokat
 
-- [x] Beépített YouTube vagy HTTP Request node-okkal, a meglévő credentialt használva frissíti a `title`, `description`, `tags`, `categoryId`, `privacyStatus: private` és `youtube_scheduled_at` → `publishAt` mezőket. A kategória a meglévő regiszterből jön: FreezWithMe esetén `19`. Meglévő videó egyéb mezőinek megőrzése nem követelmény.
+- [x] Beépített YouTube vagy HTTP Request node-okkal, a meglévő credentialt használva frissíti a `title`, `description`, `categoryId`, `privacyStatus: private` és `youtube_scheduled_at` → `publishAt` mezőket. A JSON `tags` mezője megmarad helyben; a YouTube meglévő tagjeit a videófrissítés átviszi. A kategória a meglévő regiszterből jön: FreezWithMe esetén `19`. Meglévő videó egyéb mezőinek megőrzése nem követelmény.
 - [ ] A megadott playlisthez csak akkor adja hozzá a videót, ha még nincs benne. Ha a kért metaadatok és a tagság már egyeznek, nem ír újra. Írási hívást nem ismétel automatikusan.
 
 ### 4. Az n8n ellenőriz és visszajelez a helyi agentnek
 
-- [x] A módosítás után visszaolvassa a cím, leírás, kategória, láthatóság, időzítés és playlist-tagság állapotát. A YouTube GET-válaszában hiányzó tageket nem hasonlítja össze. Legfeljebb három ellenőrzés után egyértelmű JSON-választ küld: siker, konkrét hiba vagy nem igazolható eredmény. A jövőbeli publikálást nem várja meg.
+- [x] A módosítás után visszaolvassa a cím, leírás, kategória, láthatóság, időzítés és playlist-tagság állapotát. A JSON-tag értékét nem hasonlítja össze a YouTube-on, mert azt nem alkalmazza. Legfeljebb három ellenőrzés után egyértelmű JSON-választ küld: siker, konkrét hiba vagy nem igazolható eredmény. A jövőbeli publikálást nem várja meg.
 - [x] Legyen kérésenkénti API-timeout, 90 másodperces feldolgozási határidő és a helyi hívásra 120 másodperces teljes korlát. Az agent nem várhat végtelenül; kapcsolatvesztés vagy timeout esetén nem indíthat automatikusan új módosítást.
 - [x] `Respond to Webhook` küldi a választ megfelelő HTTP-kóddal. Hiba esetén szerepeljen a hibás lépés, a YouTube hibakódja/üzenete és az esetleges részleges siker; az n8n-ben is hibás futásként látszódjon. Hibából nem lehet általános sikeres válasz.
 
