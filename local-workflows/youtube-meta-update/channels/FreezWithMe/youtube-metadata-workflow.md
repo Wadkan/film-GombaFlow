@@ -113,12 +113,13 @@ A választ a csak megadott formátumokban add. Ha file-ba kell írni az outputot
 - Az egyeztetés alatt csak a három számozott címjavaslatot és a szükséges tisztázó kérdéseket mutasd a chatben. Az MD előtt ne adj metaadat-összesítőt vagy teljes tervezetet.
 - Amikor minden döntés egyértelmű, az első fájlművelet a metaadatmappába mentett, videómappa nevét viselő `.md` fájl. Ne kérj újabb általános jóváhagyást a fájl elkészítéséhez, és ne állj meg egy chatbeli összesítőnél.
 - Az MD-ben csak a metaadat-mezőnevek és végleges értékeik lehetnek: `videoId`, egy kiválasztott cím, leírás, címkék, playlistnév, időzítés, `containsSyntheticMedia` és `defaultLanguage`. Ajánlás, alternatív cím, sorszám, indoklás és chatbeli megjegyzés nem kerülhet bele.
-- A helyi agent mentse el és olvassa vissza a fájlt. MD mentése után kizárólag a fájlútvonalat és az átnézés kérését jelezze; összesítőt ne írjon.
+- A helyi agent mentse el és olvassa vissza a fájlt. MD mentése után kizárólag a fájlútvonalat jelezze, és kérje meg a usert, hogy ellenőrizze és hagyja jóvá az MD-t; összesítőt ne írjon.
 - Az MD és a JSON két külön forduló. MD mentésekor JSON nem készülhet. Várd meg, hogy a user az elkészült MD-t átnézze és egy későbbi üzenetben jóváhagyja.
 - A jóváhagyást a beszélgetés értelme alapján ismerd fel. Ne követelj meghatározott szót, kifejezést vagy formátumot. A címválasztás, egy részlet tisztázása vagy egy korábbi változat elfogadása nem a jelenlegi MD végső jóváhagyása. Ha a szándék bizonytalan, kérdezz vissza röviden.
 - Az aktuális, videómappa nevével egyező `.md` és `.json` fájl tartalmát minden válasz előtt közvetlenül olvasd be, ha léteznek. A beolvasott fájl az elsődleges forrás, nem a korábbi chatbeli állítás.
 - Szerkesztéskor őrizd meg az aktuális MD kézi javításait, és csak a kért részeket módosítsd. Írd újra az MD-t, majd várj az új változat jóváhagyására.
 - A jóváhagyott, videómappa nevével egyező `.md` fájlból készítsd el az ugyanilyen nevű `.json` fájlt, a playlistnév helyett a csatorna playlist-forrásában szereplő `playlistId` értékkel. Ne találj ki ID-t.
+- A JSON-t mentsd el és olvasd vissza. Ezután a chatben röviden jelezd a JSON fájl útvonalát, és kérd meg a usert, hogy ellenőrizze és hagyja jóvá. A JSON létrehozása önmagában nem jelent jóváhagyást vagy engedélyt a YouTube-frissítésre; várd meg a JSON-ra vonatkozó, későbbi egyértelmű jóváhagyást.
 - A JSON kötelező mezői: `status`, `channelKey`, `youtubeChannelId`, `videoId`, `title`, `description`, `tags`, `categoryId`, `playlistId`, `privacyStatus`, `youtube_scheduled_at`, `containsSyntheticMedia`, `defaultLanguage`. A `containsSyntheticMedia` logikai érték legyen. A `categoryId` értékét a kiválasztott csatorna `youtubeCategory.categoryId` mezőjéből vedd át; ne találd ki. A `privacyStatus` értéke `private`. A státusz csak teljes, egyértelműen jóváhagyott adatokkal lehet `ready`.
 - A két fájl kizárólag a metaadatmappába kerülhet. A JSON nem forrása az MD felülírásának.
 
@@ -138,12 +139,14 @@ Az agent nem bővítheti ki saját tudásból a listát, és nem írhat át már
 
 ## A jóváhagyott JSON alkalmazása
 
-Ha a user a kész metaadat YouTube-ra alkalmazását kéri, a helyi agent hívja a
-repo gyökeréből a `python3 local-workflows/youtube-meta-update/youtube_meta_update.py
+Csak a JSON user általi ellenőrzése és jóváhagyása után, valamint ha a user a
+kész metaadat YouTube-ra alkalmazását is kéri, hívja a helyi agent a repo
+gyökeréből a `python3 local-workflows/youtube-meta-update/youtube_meta_update.py
 preflight <jóváhagyott-json-útvonal>` parancsot, majd megfelelő előellenőrzésnél
 az ugyanilyen `update <jóváhagyott-json-útvonal>` parancsot. A usernek nem kell
-terminált vagy n8n felületet használnia. Meglévő egyértelmű alkalmazási engedélyt
-ne kérj újra; a puszta MD-jóváhagyás továbbra is csak a JSON elkészítését engedi.
+terminált vagy n8n felületet használnia. A JSON jóváhagyása önmagában nem
+alkalmazási engedély; a puszta MD-jóváhagyás pedig továbbra is csak a JSON
+elkészítését engedi.
 
 Sikeres `update` után az agent nyissa meg ugyanazt a videót a YouTube Studio-ban,
 és a JSON `defaultLanguage` értékéből állítsa be a „Video language” mezőt
