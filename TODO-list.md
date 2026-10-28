@@ -33,6 +33,33 @@ learn: put it into rules (I already have it)
 
 ---
 
+MY RECEPIES
+
+CHALLENGES SERIES:
+-otlet
+-vajon megvalosithato?
+-lepesek es felkeszules, beszerzes
+-eles proba
+-osszefoglalas, eredmeny ertekelese
+
+CHALLENGES IDEAS
+-hidegben alvas
+-fagy a vizen
+-projekt epites: jakuzzi
+-ultra trail run with sleeping
+-multisport: sup+bike, bike+hike, run+fly
+
+TERMEK BEMUTATO vagy OSSZEHASONLITAS
+-temu vs draga
+    -sator, halozsak
+    -fozoszerko
+-fozoszerkok osszehasonlitasa
+-Garmin Enduro 3
+-cheap vs pro sup
+-winter sup equipment: srysuite, glowes, boots
+
+---
+
 tegyuk be a hook utan a bemutatkozasomat nagyon roviden
 
 https://www.youtube.com/watch?v=7I50PECz7SU&list=PLIw2OkTTi7-9JrqsVsdDyLi-OMxoKjns4&index=4
