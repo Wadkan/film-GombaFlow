@@ -15,7 +15,7 @@ stop-n8n:
 	@$(MAKE) -C n8n-docker stop-n8n
 
 gomba1-transcript:
-	@python3 local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/run_transcript_flow.py
+	@python3 local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/scripts/run_transcript_flow.py
 
 test:
 	@python3 -m unittest discover -s tests -v
@@ -45,4 +45,3 @@ docs-format:
 		-not -path '*/.pytest_cache/*' \
 		-not -path '*/.venv/*' \
 		-exec npx --yes prettier@3.8.3 --write {} +
-

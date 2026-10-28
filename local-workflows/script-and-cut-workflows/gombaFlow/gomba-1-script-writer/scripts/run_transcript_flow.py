@@ -11,11 +11,14 @@ import sys
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-WORKFLOW_DIR = Path(__file__).resolve().parent
+WORKFLOW_DIR = Path(__file__).resolve().parents[1]
+REPO_ROOT = WORKFLOW_DIR.parents[3]
 PROJECTS_DIR = WORKFLOW_DIR / "projects"
-RESULTS_DIR = REPO_ROOT / "local-workflows/gomba-0-idea-collector/results"
-TRANSCRIPT_CLI = WORKFLOW_DIR / "gomba1_transcript.py"
+RESULTS_DIR = (
+    REPO_ROOT
+    / "local-workflows/script-and-cut-workflows/gombaFlow/gomba-0-idea-collector/results"
+)
+TRANSCRIPT_CLI = WORKFLOW_DIR / "scripts" / "gomba1_transcript.py"
 
 
 def youtube_id(url: str) -> str | None:

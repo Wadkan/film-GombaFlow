@@ -15,7 +15,7 @@ import unicodedata
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-WORKFLOW_DIR = Path(__file__).resolve().parent
+WORKFLOW_DIR = Path(__file__).resolve().parents[1]
 PROJECTS_DIR = WORKFLOW_DIR / "projects"
 REGISTRY_PATH = PROJECTS_DIR / "registry.json"
 TOPIC_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$")

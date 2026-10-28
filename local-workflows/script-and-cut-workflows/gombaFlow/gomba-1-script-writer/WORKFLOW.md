@@ -59,6 +59,9 @@ gomba-1-script-writer/
   VIDEO_STRUCTURE.md
   CONTENT_RULES.md
   research_result.md
+  scripts/
+    gomba1_transcript.py
+    run_transcript_flow.py
   templates/
     comparison-template.md
     0-brief-template.md
@@ -90,8 +93,10 @@ gomba-1-script-writer/
 
 ## Helyi forrásátirat
 
-A kiválasztott YouTube-videó transcriptjét a `gomba1_transcript.py` készíti
-helyi `yt-dlp` és Faster-Whisper használatával. A CLI-függőségek telepítési
+A kiválasztott YouTube-videó transcriptjét a
+`scripts/gomba1_transcript.py` készíti helyi `yt-dlp` és Faster-Whisper
+használatával; a `scripts/run_transcript_flow.py` biztosítja a
+`make gomba1-transcript` interaktív indítását. A CLI-függőségek telepítési
 útmutatója a gyökér `cli-commands.md` fájlban található; a Faster-Whisper
 alapértelmezett Pythonja `~/video-ai/bin/python`, amit a `GOMBA1_PYTHON`
 környezeti változóval lehet megadni.
