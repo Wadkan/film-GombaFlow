@@ -36,34 +36,79 @@ learn: put it into rules (I already have it)
 tegyuk be a hook utan a bemutatkozasomat nagyon roviden
 
 https://www.youtube.com/watch?v=7I50PECz7SU&list=PLIw2OkTTi7-9JrqsVsdDyLi-OMxoKjns4&index=4
-continue from 14:35
+
+CHECK sandcastles.ai - for script writing
 
 SCRIPT WRITING
 0 psichology:
 reality beats expectations in the first 5 seconds
+
 1 packaging
 promise in title + thumbnail MUST be confirmed -> click confirmation
 IDEA: viewers should be eager to watch
 title tools: vidIQ. süprter studio, view stats
 MEASURE TWICE CUT ONCE
+
 2 outline
 Bullet-Point Outline (Gut Check for Uniqueness)
 • Hook Fast – Grab attention in the first 5 seconds.
 • Structure Like a Story – Keep a clear beginning, middle, and end.
 • Create Curiosity Loops – Leave questions open to keep viewers engaged.
+Introduce the pain point then offer solution
+OR
+Quickly cover a framework, then offer your your resource to speed up the solution.
+
 3 intro
 Part 1: Give immediate context on what the video is about
 Part 2: Establish the common take or belief
 The easiest way to build common ground is by restating the common belief. 3. rész: Teremts kontrasztot egy ellentmondó megközelítés megosztásával
 Múld felül az elvárásokat azonnal egy általános hiedelem kijelentésével. Majd kérdőjelezd meg azt egy friss, ellentmondó meglátással. 4. rész: Adj bizonyítékot 5. rész: Oszd meg a terved
+
 4 body of the script points:
 -ne azt ismetelegesse amit mar amugy is mindenki tud, legyen az eleje brutal egyedi es erdekes
 -a MASODIK legjobb body point menjen legyen az elso
--value loop: 1. context: say what is is and explain it very simple, 2. application: say how to do it with relevant examples (SHOW TULELO BEVAGASOK TEREPROL) 3. framing: say why it matters, abd how it fits into the whole puzzle of the story
-
-continue from 14:35
+-value loop:
+    1. context: say what is is and explain it very simple,
+        consize, easy to understand
+    2. application: say how to do it with relevant examples (SHOW TULELO BEVAGASOK TEREPROL)
+        engaging, simple enough to watchers do it alone
+    3. framing: say why it matters, abd how it fits into the whole puzzle of the story
+        zoom out, udnertsand why it worth to watch the video
+contant zoom in adnd zoom through out the video WATCH CHANNEL VIDEOS RYTHM: https://www.youtube.com/watch?v=7I50PECz7SU&list=PLIw2OkTTi7-9JrqsVsdDyLi-OMxoKjns4&index=4
+re-hooking: ez nagyon fontos. VISZONT ha nem csinalod EZZEL egyutt, akkor nem mukodik.
 
 5 outro
+    summarize, remind wathers the pain point is solved.
+
+---
+https://www.youtube.com/watch?v=jaOIw-NiEPM&list=PLIw2OkTTi7-9JrqsVsdDyLi-OMxoKjns4&index=5
+
+1 fundations
+    know your audience, content shoudl resonate
+re-hook: always leave some point unresolved
+    "but uf you dont do this next step, everything else falls apart"
+emotions: fear, surprise, relief, humor
+30-40 seconds, change:
+    -new example
+    re-hook
+    question
+CTA: summarize, plus imagination the result: "now you know that, you can..."
+    plus CTA: here is the next roudblock
+    poppi ai
+
+--
+https://www.youtube.com/watch?v=sGt1ACELN4k
+github project
+    add this to claude or chatgpt: "set this up for me: https://claude.ai/artifact/
+BYH6Mcma5to3kt2KogkEzB"
+
+
+---
+
+RESEARCH
+lights and backgrounds
+use led lights in the background and whie korvaku for talking head?
+
 
 ---
 
