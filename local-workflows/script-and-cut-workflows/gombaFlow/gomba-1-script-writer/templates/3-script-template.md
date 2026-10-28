@@ -8,7 +8,10 @@
 
 Minden fejezethez és alfejezethez ismételd az alábbi blokkot.
 A kötött címek és CTA forrása a [videóstruktúra](../VIDEO_STRUCTURE.md).
-A fejezetterv azonosítói maradjanak meg.
+A fejezetterv azonosítói maradjanak meg. A hookot közvetlenül az O — Mit
+mutatok meg? outline kövesse; az animációs brief a
+`<project>/1-outline-hyperframes-brief.md` fájlban található. Az O egység
+bulletpointjai a briefben megadott sorrendben jelenjenek meg.
 
 ### [ID] — [cím]
 

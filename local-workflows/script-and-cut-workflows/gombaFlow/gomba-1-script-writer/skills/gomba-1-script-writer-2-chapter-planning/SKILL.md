@@ -14,7 +14,9 @@ description: "Fix videóstruktúra kitöltése fejezetekkel, kártyaszövegekkel
   [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
   [fejezet-template](../../templates/2-chapters-template.md),
   [összehasonlítás-template](../../templates/comparison-template.md),
-  `<project>/0-brief.md`, `<project>/1-story.md`.
+  `<project>/0-brief.md`, `<project>/1-story.md`,
+  `<project>/1-thumbnail-prompt.md`,
+  `<project>/1-outline-hyperframes-brief.md`.
 - **Output:** kizárólag `<project>/2-chapters.md`, a fejezet-template szerint.
   A változó útvonalak a workflow mappájához képest értendők.
 
@@ -22,15 +24,19 @@ description: "Fix videóstruktúra kitöltése fejezetekkel, kártyaszövegekkel
 
 1. Olvasd be az inputokat, majd a közös videóstruktúrából vedd át a kötött
    egységeket és sorrendet. Ne a forrás saját fejezetcímeit másold.
-2. A történet elemeit rendeld hozzájuk. Az építési részt a megoldás adatútján,
+2. Az O egységben közvetlenül a hook után vedd át a story outline-ját;
+   ne ismételd meg a részletes fejezettervet. Ellenőrizd, hogy a külön
+   Hyperframes-brief ugyanazokat a bulletpointokat és sorrendet tartalmazza.
+3. A történet elemeit rendeld hozzájuk. Az építési részt a megoldás adatútján,
    technikai függőségein és látható köztes eredményein alapulva bontsd fel.
-3. A template ismételhető blokkjával dolgozd ki az összes egységet és
+4. A template ismételhető blokkjával dolgozd ki az összes egységet és
    szükséges alfejezetet. Meglévő azonosítót javításkor őrizz meg;
    szükséges új egységet ütközésmentesen adj hozzá.
-4. Készíts rövid, a következő tevékenységet előkészítő kártyaszöveget
+5. Készíts rövid, a következő tevékenységet előkészítő kártyaszöveget
    és átvezetést; vizuális kivitelezést ne tervezz.
-5. Töltsd ki a hivatkozott összehasonlítás-template-et a kijelölt részben.
+6. Töltsd ki a hivatkozott összehasonlítás-template-et a kijelölt részben.
    Ne találj ki mérőszámokat; relevanciahiányt indokolj.
-6. Ellenőrizd a teljes történet lefedését, a kiinduló és végállapotok
+7. Ellenőrizd a title–thumbnail–hook pain point és ígéret összhangját, majd
+   a teljes történet lefedését, a kiinduló és végállapotok
    folytonosságát. Kritikus tartalmi hiányt az előzményhez jelezz vissza,
    ne pótold kitalált technikai lépéssel.

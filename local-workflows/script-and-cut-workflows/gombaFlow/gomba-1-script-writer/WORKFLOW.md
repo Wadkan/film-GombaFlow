@@ -66,6 +66,8 @@ gomba-1-script-writer/
     comparison-template.md
     0-brief-template.md
     1-story-template.md
+    1-thumbnail-prompt-template.md
+    1-outline-hyperframes-brief-template.md
     2-chapters-template.md
     3-script-template.md
     4-review-template.md
@@ -85,6 +87,8 @@ gomba-1-script-writer/
       0-brief.md
       source-transcript.md
       1-story.md
+      1-thumbnail-prompt.md
+      1-outline-hyperframes-brief.md
       2-chapters.md
       3-script.md
       4-review.md
@@ -123,8 +127,8 @@ azonosítók eredeti alakja megmarad.
 
 ## Lépések
 
-A közös olvasmányokon felüli **Olvas** és az egyetlen engedélyezett **Ír**
-kimenet lépésenként alább szerepel. Minden lépés előfeltétele az összes felsorolt
+A közös olvasmányokon felüli **Olvas** és az engedélyezett **Ír**
+kimenetek lépésenként alább szerepelnek. Minden lépés előfeltétele az összes felsorolt
 kötelező bemenet, saját skill és template létezése.
 
 ### 0. Ötletátvétel — `gomba-1-script-writer-0-idea-intake`
@@ -146,23 +150,35 @@ kötelező bemenet, saját skill és template létezése.
 - **Goal:** a forrás megoldásának saját történetbe illesztett, nem másolt változata.
 - **Prerequisite:** elfogadott, aktuális brief.
 - **Olvas:** `<project>/0-brief.md`, `templates/1-story-template.md`,
+  `templates/1-thumbnail-prompt-template.md`,
+  `templates/1-outline-hyperframes-brief-template.md`,
   `<project>/source-transcript.md`, a briefben azonosított forrásvideó és
   releváns források. Az átirat a kimondott tartalmat és időbélyegeket adja;
   képi technikai részletet önmagában nem igazol.
-- **Ír:** `<project>/1-story.md`.
-- **Rögzíti:** saját példa és történeti ív, hook szövege és bemutatandó tartalma,
-  a forrásból megtartott és átdolgozott elemek. Nem talál ki új, kísérleti scope-ot.
-- **Kapu:** az átdolgozás a forrás megoldására épül, az ígéret nem túlzó.
+- **Ír:** `<project>/1-story.md`, `<project>/1-thumbnail-prompt.md` és
+  `<project>/1-outline-hyperframes-brief.md`.
+- **Rögzíti:** saját példa és történeti ív, videócím, title/thumbnaillel egyező
+  pain pointot megnevező hook és bemutatási tartalma; közvetlenül utána rövid,
+  bulletpointos outline. Külön thumbnail prompt készül a pontos címmel,
+  néhány szavas képfelirattal és legfeljebb két egyszerű cselekvésötlettel;
+  a thumbnailen a felhasználó (készítő) szerepeljen. A külön Hyperframes-brief
+  ugyanazokat az outline pontokat tartalmazza az animációhoz, sorrendben.
+  Animáció nem készül. Nem talál ki új, kísérleti scope-ot.
+- **Kapu:** az átdolgozás a forrás megoldására épül; a hook rögtön vállalja
+  a pain point megoldását vagy annak vizsgálatát, hogy megoldható-e egyáltalán.
+  A title, thumbnail, hook és outline összhangban van, túlzó állítás nélkül.
 
 ### 2. Fejezetterv — `gomba-1-script-writer-2-chapter-planning`
 
 - **Goal:** az állandó videóstruktúra kitöltése az adott átdolgozással.
 - **Prerequisite:** aktuális brief és történet.
 - **Olvas:** `<project>/0-brief.md`, `<project>/1-story.md`,
+  `<project>/1-thumbnail-prompt.md`,
+  `<project>/1-outline-hyperframes-brief.md`,
   `templates/2-chapters-template.md`, `templates/comparison-template.md`.
 - **Ír:** `<project>/2-chapters.md`.
-- **Rögzíti:** stabil fejezetazonosítók, kötött címek, rövid „mit csinálok”
-  leírások, fejezet előtti kártyaszövegek és átvezetések,
+- **Rögzíti:** stabil fejezetazonosítók, a hook utáni outline egység, kötött
+  címek, rövid „mit csinálok” leírások, fejezet előtti kártyaszövegek és átvezetések,
   előtte–utána összehasonlítás, induló és elvárt demóállapotok.
 - **Kapu:** a közös szerkezet teljes, a megvalósítás a megoldás adatútját követi.
 
@@ -171,12 +187,15 @@ kötelező bemenet, saját skill és template létezése.
 - **Goal:** a forrás saját változatának végrehajtás és bemutatás közben követhető scriptje.
 - **Prerequisite:** aktuális brief, történet és fejezetterv.
 - **Olvas:** `<project>/0-brief.md`, `<project>/1-story.md`,
-  `<project>/2-chapters.md`, `templates/3-script-template.md`,
+  `<project>/1-thumbnail-prompt.md`,
+  `<project>/1-outline-hyperframes-brief.md`, `<project>/2-chapters.md`,
+  `templates/3-script-template.md`,
   `templates/comparison-template.md`, `<project>/source-transcript.md`,
   a brief technikai forrásai;
   javítási körben `<project>/4-review.md`.
 - **Ír:** `<project>/3-script.md`.
-- **Rögzíti:** fejezetenként narráció, lépésenkénti műveletek, mutatott tartalom,
+- **Rögzíti:** a hookot követő outline egységet, fejezetenként narráció,
+  lépésenkénti műveletek, mutatott tartalom,
   kártya és átvezetés, mire figyelj és miért, reprodukálható technikai részletek,
   demóállapot és várt eredmény; a felvételi sorrendet is azonosíthatóvá teszi.
 - **Kapu:** teljes szöveg, nincs hiányzó kritikus lépés; a tervezett és ténylegesen
@@ -187,15 +206,21 @@ kötelező bemenet, saját skill és template létezése.
 - **Goal:** forráshű megoldás, önálló szöveg, követhető és nem unalmas bemutató.
 - **Prerequisite:** teljes script és aktuális előzményei.
 - **Olvas:** `<project>/0-brief.md`, `<project>/1-story.md`,
+  `<project>/1-thumbnail-prompt.md`,
+  `<project>/1-thumbnail-prompt.md`, `<project>/1-outline-hyperframes-brief.md`,
   `<project>/2-chapters.md`, `<project>/3-script.md`,
   `<project>/source-transcript.md`,
   `templates/0-brief-template.md`, `templates/1-story-template.md`,
+  `templates/1-thumbnail-prompt-template.md`,
+  `templates/1-outline-hyperframes-brief-template.md`,
   `templates/2-chapters-template.md`, `templates/3-script-template.md`,
   `templates/4-review-template.md`, `templates/comparison-template.md`,
   a briefben azonosított, állítások ellenőrzéséhez szükséges források.
 - **Ír:** `<project>/4-review.md`.
 - **Ellenőrzi:** formátum, forrás–átdolgozás összhang, fejezetek, CTA,
-  technikai teljesség, ígéret–eredmény, ismétlés, túlmagyarázás és lendület.
+  technikai teljesség, title–thumbnail–hook pain point és ígéretösszhang,
+  hook megoldási/megoldhatósági vállalása, outline és Hyperframes-brief
+  egyezése, ígéret–eredmény, ismétlés, túlmagyarázás és lendület.
   Konkrét rövidítési/összevonási javaslatot ad, lényegi lépések elvesztése nélkül.
 - **Kapu:** megfelelt/nem felelt meg döntés; hiba esetén fejezetazonosítóval
   visszairányít a legkorábbi érintett lépéshez. Nem ír át más kimenetet.

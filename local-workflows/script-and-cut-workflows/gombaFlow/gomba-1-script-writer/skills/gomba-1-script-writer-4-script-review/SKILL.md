@@ -14,10 +14,14 @@ description: "Forgatási script tartalmi és technikai review-ja, ismétlések �
   [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
   [hang- és stílusszabályok](../../../style.md),
   `<project>/0-brief.md`, `<project>/1-story.md`, `<project>/2-chapters.md`,
-  `<project>/3-script.md`, a brief releváns ellenőrzési forrásai;
+  `<project>/1-thumbnail-prompt.md`, `<project>/1-outline-hyperframes-brief.md`,
+  `<project>/3-script.md`,
+  a brief releváns ellenőrzési forrásai;
   `<project>/source-transcript.md`;
   [brief-template](../../templates/0-brief-template.md),
   [story-template](../../templates/1-story-template.md),
+  [thumbnail-prompt-template](../../templates/1-thumbnail-prompt-template.md),
+  [outline-Hyperframes-brief-template](../../templates/1-outline-hyperframes-brief-template.md),
   [fejezet-template](../../templates/2-chapters-template.md),
   [script-template](../../templates/3-script-template.md),
   [review-template](../../templates/4-review-template.md),
@@ -37,7 +41,11 @@ description: "Forgatási script tartalmi és technikai review-ja, ismétlések �
    A hiányzó kritikus lépést konkrétan nevezd meg.
 4. Olvasd végig a narrációt nézőként is. Jelöld, mely részt rövidítenéd vagy
    vonnád össze és miért; az unalmasságot szöveges jelekkel indokold,
-   ne állíts mért közönségreakciót. A kötött felső szintű szerkezet maradjon.
+   ne állíts mért közönségreakciót. Ellenőrizd, hogy a thumbnail prompt
+   videócíme és képfelirata ugyanazt a pain pointot mutatja-e, amelyet a hook
+   megnevez, és hogy a hook rögtön vállalja-e a megoldást vagy a megoldhatóság
+   vizsgálatát. Ellenőrizd az O outline sorrendjét, és hogy a Hyperframes-brief
+   bulletpointjai egyeznek-e vele. A kötött felső szintű szerkezet maradjon.
 5. Minden hibát köss fejezethez, forráshelyhez és a legkorábbi felelős lépéshez.
    Válaszd külön a kaput blokkoló hibát, az opcionális finomítást és a későbbi
    tényleges demópróbát; az utóbbi hiánya önmagában nem tervezési hiba.

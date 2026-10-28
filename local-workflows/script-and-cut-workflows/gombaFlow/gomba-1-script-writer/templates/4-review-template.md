@@ -10,6 +10,9 @@
 A követelményeket a [workflow](../WORKFLOW.md), a [videóstruktúra](../VIDEO_STRUCTURE.md),
 a [közös szabályok](../CONTENT_RULES.md) és a vizsgált kimenetek template-jei adják.
 Minden sorhoz konkrét hivatkozás és eredmény kell, nem elég egy általános „rendben”.
+Külön ellenőrizd, hogy a title, thumbnail és hook ugyanazt a pain pointot
+mutatja-e; a hook rögtön megoldást vállal-e vagy a megoldhatóságot vizsgálja;
+valamint az O outline és a Hyperframes-brief bulletpointjai egyeznek-e.
 
 | Ellenőrzés                                                          | Eredmény és bizonyíték         | Kapcsolódó hiba ID |
 | ------------------------------------------------------------------- | ------------------------------ | ------------------ |

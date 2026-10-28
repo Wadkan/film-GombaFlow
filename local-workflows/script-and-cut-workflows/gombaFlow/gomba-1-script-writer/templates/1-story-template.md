@@ -13,8 +13,16 @@
 ## Hook
 
 - Elmondandó szöveg: [kész, rövid magyar nyitómondatok]
-- Bemutatandó tartalom: [probléma vagy input/futás/output]
+- Pain point: [ugyanaz a konkrét probléma, amit a videócím és thumbnail mutat]
+- Azonnali vállalás: [megoldom / megvizsgálom, megoldható-e egyáltalán]
+- Bemutatandó tartalom: [a pain pointot és vállalást azonnal alátámasztó kép]
 - Ígéret ellenőrzésének alapja: [forrásbizonyíték és szükséges saját próba]
+
+## O — Mit mutatok meg?
+
+- Outline bulletpointjai: [rövid, nézőnek szóló pontok a videó fő lépéseiről]
+- Sorrend és cím/hook összhang: [közvetlenül a hook után; ugyanaz a pain point]
+- Hyperframes-brief: [`<project>/1-outline-hyperframes-brief.md`]
 
 ## Történetvezetés a közös struktúrában
 

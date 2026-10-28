@@ -7,6 +7,8 @@
 
 Az alábbi blokkot minden egységre ismételd a [videóstruktúra](../VIDEO_STRUCTURE.md)
 azonosítóival, címeivel és sorrendjében, a szükséges alfejezetekkel együtt.
+Az O egység külön, rövid bulletpointos outline; a scripthez tartozó animációs
+brief a `<project>/1-outline-hyperframes-brief.md` fájlban van.
 
 ### [ID] — [cím]
 
@@ -15,6 +17,7 @@ azonosítóival, címeivel és sorrendjében, a szükséges alfejezetekkel együ
 - Kártya szövege: [rövid szöveg, nem design]
 - Átvezető szöveg: [kész mondat]
 - Tervezett lépések: [rövid, sorrendben felsorolt műveletek]
+- Outline bulletpointjai: [csak az O egységnél; a storyban rögzített pontok]
 - Kiinduló modell-/demóállapot: [input és szükséges állapot]
 - Elvárt végállapot és ellenőrzési pont: [output és felismerhető eredmény]
 - Fontos magyarázat vagy korlát: [miért lényeges]
