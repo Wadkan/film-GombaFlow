@@ -14,6 +14,8 @@ description: "Teljes magyar forgatási script kidolgozása vagy review alapján 
   [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
   [hang- és stílusszabályok](../../../style.md),
   [script-template](../../templates/3-script-template.md),
+  [felvételi beállítás](../../../../../recording-config.json),
+  [parancsszótár](../../RECORDING_COMMANDS.md),
   [összehasonlítás-template](../../templates/comparison-template.md),
   `<project>/0-brief.md`, `<project>/1-story.md`,
   `<project>/1-thumbnail-prompt.md`,
@@ -31,6 +33,8 @@ description: "Teljes magyar forgatási script kidolgozása vagy review alapján 
    hatáskörű hibát a korábbi tervezési hibától; az utóbbit jelezd vissza.
 2. Technikai oktató és történetmesélő forgatókönyvíróként, a workflow szerinti
    modellel, a fejezetterv azonosítóit megtartva dolgozd ki a template blokkjait.
+   A felvételi jelöléseket a template „Kitöltési és review-szabályok” blokkja
+   szerint készítsd el; a szabályblokkot ne másold a kimenetbe.
 3. Fejben kövesd végig az adat és az állapot útját. A néző minden szükséges
    műveletet a scriptből tudjon követni; a narráció a döntést magyarázza,
    ne pusztán a felület feliratát olvassa fel. Az O outline utáni törzsben,

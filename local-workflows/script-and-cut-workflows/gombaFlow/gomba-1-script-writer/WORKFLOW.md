@@ -190,6 +190,7 @@ kötelező bemenet, saját skill és template létezése.
   `<project>/1-thumbnail-prompt.md`,
   `<project>/1-outline-hyperframes-brief.md`, `<project>/2-chapters.md`,
   `templates/3-script-template.md`,
+  `../../../recording-config.json`, `RECORDING_COMMANDS.md`,
   `templates/comparison-template.md`, `<project>/source-transcript.md`,
   a brief technikai forrásai;
   javítási körben `<project>/4-review.md`.
@@ -198,6 +199,9 @@ kötelező bemenet, saját skill és template létezése.
   lépésenkénti műveletek, mutatott tartalom,
   kártya és átvezetés, mire figyelj és miért, reprodukálható technikai részletek,
   demóállapot és várt eredmény; a felvételi sorrendet is azonosíthatóvá teszi.
+  A felvételi jelöléseket a scripttemplate közös kitöltési szabályai szerint készíti el.
+  A vágói átadási blokk a későbbi videófeldolgozáshoz ad részenkénti hivatkozásokat;
+  az átirat–jegyzék–timeline kapcsolat szerződését a scripttemplate tartalmazza.
 - **Kapu:** teljes szöveg, nincs hiányzó kritikus lépés; a tervezett és ténylegesen
   igazolt eredmény megkülönböztethető. Nem tartalmazza a külön készítői checklistet.
 
@@ -221,6 +225,7 @@ kötelező bemenet, saját skill és template létezése.
   technikai teljesség, title–thumbnail–hook pain point és ígéretösszhang,
   hook megoldási/megoldhatósági vállalása, outline és Hyperframes-brief
   egyezése, ígéret–eredmény, ismétlés, túlmagyarázás és lendület.
+  A felvételi jelölések követelményeit a scripttemplate közös szabályblokkjából veszi át.
   Konkrét rövidítési/összevonási javaslatot ad, lényegi lépések elvesztése nélkül.
 - **Kapu:** megfelelt/nem felelt meg döntés; hiba esetén fejezetazonosítóval
   visszairányít a legkorábbi érintett lépéshez. Nem ír át más kimenetet.

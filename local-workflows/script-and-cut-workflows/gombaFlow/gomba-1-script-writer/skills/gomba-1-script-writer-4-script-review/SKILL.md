@@ -35,6 +35,8 @@ description: "Forgatási script tartalmi és technikai review-ja, ismétlések �
    kösd. Hiányzó vagy elavult anyagnál ne adj megfelelt döntést.
 2. Hasonlítsd össze a dokumentumokat saját template-jükkel és a közös
    követelményekkel; a review-template ellenőrzési csoportjain haladj végig.
+   A felvételi jelöléseket a script-template „Kitöltési és review-szabályok”
+   blokkja szerint ellenőrizd, a belőle hivatkozott parancsszótárral együtt.
 3. Kövesd végig a jóváhagyott transcriptet és egyéb forrásokat a saját
    történeten át a műveletekig és várt eredményig vezető láncban. Az átirat
    csak beszédet és időzítést igazol; képi technikai bizonyítékként ne kezeld.

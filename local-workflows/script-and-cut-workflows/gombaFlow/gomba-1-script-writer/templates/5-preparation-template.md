@@ -5,15 +5,20 @@
 - Emberi scriptjóváhagyás: [a futtató által igazolt referencia]
 
 Ez készítői lista, nem a nézőnek felolvasandó script.
+Tartalma a bemutatandó megoldás technikai előkészítése: letöltések,
+telepítések, implementáció, beállítások, regisztrációk és szükséges hozzáférések.
 A tervezett feladatok nem tekinthetők elvégzettnek; a jelölőnégyzetek üresek maradnak.
 
 ## Eszközök és hozzáférések
 
-Azonos igény egy sorban, az összes érintett fejezetazonosítóval szerepeljen.
+Azonos igény egy blokkban, az összes érintett fejezetazonosítóval szerepeljen.
 
-| Igény ID | Eszköz/szolgáltatás és szerep | Telepítés/regisztráció helye, szükséges verzió | API-kulcs, jogosultság, előfizetés igénye | Költség/limit és forrás, ellenőrzési dátum           | Fejezet-ID-k |
-| -------- | ----------------------------- | ---------------------------------------------- | ----------------------------------------- | ---------------------------------------------------- | ------------ |
-| [E1]     | [mi és mire kell]             | [pontos elérhetőség, releváns verzió]          | [szükséges hozzáférés, titokérték nélkül] | [igazolt adat vagy ellenőrizendő, konkrét forrással] | [ID-k]       |
+- Igény ID: [E1]
+- Eszköz/szolgáltatás és szerep: [mi és mire kell]
+- Telepítés/regisztráció helye, szükséges verzió: [pontos elérhetőség, releváns verzió]
+- API-kulcs, jogosultság, előfizetés igénye: [szükséges hozzáférés, titokérték nélkül]
+- Költség/limit és forrás, ellenőrzési dátum: [igazolt adat vagy ellenőrizendő, konkrét forrással]
+- Fejezet-ID-k: [ID-k]
 
 ## Előkészítési sorrend
 
@@ -21,9 +26,12 @@ Azonos igény egy sorban, az összes érintett fejezetazonosítóval szerepeljen
 
 ## Példaadatok és demóállapotok
 
-| Fejezet-ID | Maszkolt/szintetikus adat | Előkészítendő állapot | Felvételhez szükséges látható eredmény |
-| ---------- | ------------------------- | --------------------- | -------------------------------------- |
-| [ID]       | [adat]                    | [állapot]             | [bizonyíték]                           |
+Minden szükséges demóállapothoz ismételd:
+
+- Fejezet-ID: [ID]
+- Maszkolt/szintetikus adat: [adat]
+- Előkészítendő állapot: [állapot]
+- Felvételhez szükséges látható eredmény: [bizonyíték]
 
 ## Saját technikai próbák és állításellenőrzés
 
