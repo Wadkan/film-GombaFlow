@@ -76,7 +76,7 @@ gomba-1-script-writer/
     gomba-1-script-writer-0-idea-intake/SKILL.md
     gomba-1-script-writer-1-story-hook/SKILL.md
     gomba-1-script-writer-2-chapter-planning/SKILL.md
-    gomba-1-script-writer-3-script-writing/SKILL.md
+    gomba-1-script-writer-3a-script-writing/SKILL.md
     gomba-1-script-writer-4-script-review/SKILL.md
     gomba-1-script-writer-5-shoot-preparation/SKILL.md
   projects/
@@ -182,7 +182,7 @@ kötelező bemenet, saját skill és template létezése.
   előtte–utána összehasonlítás, induló és elvárt demóállapotok.
 - **Kapu:** a közös szerkezet teljes, a megvalósítás a megoldás adatútját követi.
 
-### 3. Teljes script — `gomba-1-script-writer-3-script-writing`
+### 3. Teljes script — `gomba-1-script-writer-3a-script-writing`
 
 - **Goal:** a forrás saját változatának végrehajtás és bemutatás közben követhető scriptje.
 - **Prerequisite:** aktuális brief, történet és fejezetterv.

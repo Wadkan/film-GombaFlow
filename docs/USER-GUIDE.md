@@ -16,7 +16,7 @@ Rövid belépési pontok a film-GombaFlow repóhoz. A parancsokat a repó gyöke
 - További scriptlépések, mindig az előző kimenet jóváhagyása után:
     - Történet: `gomba-1-script-writer-1-story-hook`
     - Fejezetterv: `gomba-1-script-writer-2-chapter-planning`
-    - Script: `gomba-1-script-writer-3-script-writing`
+    - Script: `gomba-1-script-writer-3a-script-writing`
     - Script review: `gomba-1-script-writer-4-script-review`
     - Forgatási felkészülés: `gomba-1-script-writer-5-shoot-preparation`
 

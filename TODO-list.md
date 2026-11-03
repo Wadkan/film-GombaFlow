@@ -1,7 +1,6 @@
 AT HOME
 try out hyperframe - add skill with specific stlyes
 
-
 CHECK ARTLIST layer changing videos
 
 !!! add AIa resz to webpage - weblap
@@ -38,6 +37,9 @@ learn: put it into rules (I already have it)
 
 MY RECEPIES
 
+TODO
+FELMONDANI MAGYARAZASOMAT PL AI-ROL MAJD AI-JAL SCRIPTESITENI!!!!!
+
 CHALLENGES SERIES:
 -otlet
 -vajon megvalosithato?
@@ -55,8 +57,8 @@ CHALLENGES IDEAS
 
 TERMEK BEMUTATO vagy OSSZEHASONLITAS
 -temu vs draga
-    -sator, halozsak
-    -fozoszerko
+-sator, halozsak
+-fozoszerko
 -fozoszerkok osszehasonlitasa
 -Garmin Enduro 3
 -cheap vs pro sup
@@ -84,7 +86,7 @@ MEASURE TWICE CUT ONCE
 Bullet-Point Outline (Gut Check for Uniqueness)
 DONE • Hook Fast – Grab attention in the first 5 seconds.
 DONE • Structure Like a Story – Keep a clear beginning, middle, and end.
-IN PROGRESS  • Create Curiosity Loops – Leave questions open to keep viewers engaged.
+IN PROGRESS • Create Curiosity Loops – Leave questions open to keep viewers engaged.
 Introduce the pain point then offer solution
 OR
 Quickly cover a framework, then offer your resource to speed up the solution.
@@ -98,50 +100,46 @@ Múld felül az elvárásokat azonnal egy általános hiedelem kijelentésével.
 4 body of the script points:
 -ne azt ismetelegesse amit mar amugy is mindenki tud, legyen az eleje brutal egyedi es erdekes
 -> -a MASODIK legjobb body point menjen legyen az elso
-->-value loop:
-    1. context: say what is and explain it very simple,
-        consize, easy to understand
-    2. application: say how to do it with relevant examples (SHOW TULELO BEVAGASOK TEREPROL)
-        engaging, simple enough to watchers do it alone
-    3. framing: say why it matters, abd how it fits into the whole puzzle of the story
-        zoom out, udnertsand why it worth to watch the video
+->-value loop: 1. context: say what is and explain it very simple,
+consize, easy to understand 2. application: say how to do it with relevant examples (SHOW TULELO BEVAGASOK TEREPROL)
+engaging, simple enough to watchers do it alone 3. framing: say why it matters, abd how it fits into the whole puzzle of the story
+zoom out, udnertsand why it worth to watch the video
 -> contant zoom in and zoom through out the video WATCH CHANNEL VIDEOS RYTHM: https://www.youtube.com/watch?v=7I50PECz7SU&list=PLIw2OkTTi7-9JrqsVsdDyLi-OMxoKjns4&index=4
 re-hooking: ez nagyon fontos. VISZONT ha nem csinalod EZZEL egyutt, akkor nem mukodik.
 
 5 outro
-->    summarize, remind wathers the pain point is solved.
+-> summarize, remind wathers the pain point is solved.
 
 ---
+
 https://www.youtube.com/watch?v=jaOIw-NiEPM&list=PLIw2OkTTi7-9JrqsVsdDyLi-OMxoKjns4&index=5
 
 1 fundations
-    know your audience, content shoudl resonate
+know your audience, content shoudl resonate
 DONE re-hook: always leave some point unresolved
-    "but uf you dont do this next step, everything else falls apart"
+"but uf you dont do this next step, everything else falls apart"
 -> emotions: fear, surprise, relief, humor
 
 DONE 30-40 seconds, change:
-    -new example
-    re-hook
-    question
+-new example
+re-hook
+question
 
 CTA: summarize, plus imagination the result: "now you know that, you can..."
-    plus CTA: here is the next roudblock
-    poppi ai
+plus CTA: here is the next roudblock
+poppi ai
 
 --
 https://www.youtube.com/watch?v=sGt1ACELN4k
 github project
-    add this to claude or chatgpt: "set this up for me: https://claude.ai/artifact/
+add this to claude or chatgpt: "set this up for me: https://claude.ai/artifact/
 BYH6Mcma5to3kt2KogkEzB"
-
 
 ---
 
 RESEARCH
 lights and backgrounds
 use led lights in the background and whie korvaku for talking head?
-
 
 ---
 
