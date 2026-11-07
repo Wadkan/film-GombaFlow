@@ -83,7 +83,19 @@ A vágó az átadási blokkból hivatkozott jelen szerződést alkalmazza.
   részt jelölje tisztázandónak, automatikus kivágás és elhelyezés nélkül.
   A forrásidőbélyegekből határozza meg a tartalom határait a parancsszótár szerint.
   A jegyzékbe mentés után a cél-timeline-ra helyezett változatból a teljes
-  utasításblokkot távolítsa el, mindkét varázsszóval együtt.
+  utasításblokkot távolítsa el, mindkét varázsszóval együtt, az alábbi képi kivétellel.
+- **Csak azonosítóbemondást tartalmazó képi rész:** ha a script szerinti
+  `clip-type` nem `talking head`, és az adott azonosított részben az egyetlen
+  beszéd az érvényes azonosítóbemondás, a rész azonosítottnak számít, nem hiánynak.
+  Az azonosító alatti képet is tartsa meg: a klip a bemondás kezdetétől a
+  következő azonosítóbemondás kezdetéig vagy a fájl végéig tartson. Ezt a
+  feltételt részenként vizsgálja, ne a teljes felvételfájlra egyszerre.
+  Több B-roll-ID egy felvételben külön klipeket eredményezzen, a hozzájuk tartozó
+  bemondás alatti képpel együtt.
+- **B-roll hang:** a `b-roll` klipek eredeti hangját tartsa meg, de a timeline-on
+  kapcsolja ki (`audio_enabled: false`). Ne törölje a hangsávot és ne módosítsa
+  a forrás hangját. A jegyzék rögzítse a megtartott bemondási tartományt és a
+  kikapcsolt hang állapotát, hogy a későbbi vágás is megőrizze ezt a kivételt.
 - **Timeline-kapcsolat:** minden behelyezett klippéldányhoz őrizze meg a
   jegyzékrekord kapcsolatát, a vágó által visszakereshető klippéldány-azonosítót,
   a timeline-t, a sávot, a timeline-beli tartományt és a megtartott forrástartományt.
