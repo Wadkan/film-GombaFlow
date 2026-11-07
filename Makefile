@@ -1,4 +1,4 @@
-.PHONY: start-n8n stop-n8n gomba1-transcript test format docs-format
+.PHONY: start-n8n stop-n8n gomba1-transcript test test-n8n test-localworkflows format docs-format
 
 .DEFAULT_GOAL := start-n8n
 
@@ -17,8 +17,20 @@ stop-n8n:
 gomba1-transcript:
 	@python3 local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/scripts/run_transcript_flow.py
 
-test:
-	@python3 -m unittest discover -s tests -v
+test: test-n8n test-localworkflows
+
+test-n8n:
+	@python3 -m unittest -v \
+		test_youtube_meta_config \
+		test_youtube_meta_connection \
+		test_youtube_meta_preflight \
+		test_youtube_meta_update \
+		test_youtube_meta_write
+
+test-localworkflows:
+	@python3 -m unittest -v test_recording_transcription
+
+export PYTHONPATH := tests
 
 format:
 	@tmp_dir=$$(mktemp -d /tmp/film-gombaflow-format.XXXXXX); \
