@@ -4,6 +4,21 @@ Ez a blokk a scriptíró és a review közös szabályforrása. A kész kimenet 
 „Forgatási script” címtől kezdődik; ezt a szabályblokkot és a kitöltési
 utasításokat ne másold bele.
 
+### Használható tagtípusok
+
+Ez a központi lista a teljes tagkészlet. Más tagtípust ne vezess be.
+
+- `<agent-cue>` — a vágói `timeline`, `script-id` és `clip-type` attribútumok;
+  benne az egyetlen bemondandó `<spoken-cue>`. A felolvasó nézet ezt, majd a
+  narrációt mutatja; az attribútumokat nem olvassa fel.
+- `<spoken-cue>` — a varázsszóval keretezett azonosítóutasítás; a benne mondott
+  timeline és ID egyezzen az `agent-cue` attribútumaival.
+- `<narration>` — a felolvasandó szöveg a spoken cue után; a cue-t ne ismételje.
+- `<screen-action>` — a képernyőművelet és az eközben látható eredmény egyetlen
+  blokkban; előadói utasítás, nem felolvasandó szöveg.
+- `<production-note>` — opcionális, nem felolvasandó háttér-, ellenőrzési vagy
+  technikai megjegyzés; csak szükség esetén szerepeljen.
+
 ### Felvételi jelölések
 
 - Generáláskor olvasd be a [központi beállítás](../../../../recording-config.json)
@@ -25,17 +40,12 @@ utasításokat ne másold bele.
   közül töltsd ki. Ez nem felolvasandó metaadat.
   A vágói átadás a részhez már rögzített ID-kat, timeline-t és kliptípust vegye át,
   rövid leírását pedig a rész művelete és mutatott tartalma alapján fogalmazza meg.
-- Az `<agent-cue timeline="…" script-id="…" clip-type="…">` a készítő által bemondandó
-  agentutasítás. Tartalma a tényleges varázsszóval kezdődjön és végződjön;
-  a kimondandó timeline és ID egyezzen az attribútumokkal. A tageket és
-  attribútumokat nem kell felolvasni.
 - A tagelt blokkok XML-ként olvashatók legyenek: szövegben az `&` és `<`,
   attribútumban az idézőjel is megfelelő XML-entitással szerepeljen.
   Ez tárolási jelölés; a felolvasandó szöveg és a timeline neve a feloldott érték.
-- A `<narration>` a nézőnek szánt, felolvasandó beszéd, a `<production-note>`
-  a nem felolvasandó készítői művelet, megjegyzés és technikai háttér jelölése.
-  A bemondás előzze meg az általa azonosított tartalmat. A tagelt blokkokat
-  a generált Markdownban is kódblokkokban őrizd meg, hogy láthatók maradjanak.
+- A felvételi blokkokban a fenti tagtípusokat használd; a bemondás előzze meg az
+  általa azonosított tartalmat. A tagelt blokkokat a generált Markdownban
+  kódblokkokban őrizd meg, hogy láthatók maradjanak.
 - Review-ban ellenőrizd a fejlécben tárolt varázsszó és a bemondások egyezését,
   a kötelező timeline-t, az egyedi script-ID-kat, a szótár szerinti kliptípust,
   az átadási adatok és a részek egyezését, a tagpárokat és a tartalmak
@@ -46,15 +56,19 @@ Kitöltött példa, `serpenyő` beállítás esetén:
 
 ```xml
 <agent-cue timeline="Film címe" script-id="15" clip-type="talking head">
-serpenyő timeline Film címe script 15 serpenyő
+<spoken-cue>serpenyő timeline Film címe script 15 serpenyő</spoken-cue>
 </agent-cue>
 
 <narration>
 Most megmutatom a kész megoldást.
 </narration>
 
+<screen-action>
+Válts a böngészőre, futtasd a megadott keresést, és mutasd a tényleges találati sort.
+</screen-action>
+
 <production-note>
-Válts a böngészőre.
+A találatok a tényleges futástól függenek; ne használj előre rögzített vagy kitalált eredményt.
 </production-note>
 ```
 
@@ -155,22 +169,19 @@ első megfelelő narrációja tartalmazza a kész átvezető mondatot is.
 
 ```xml
 <agent-cue timeline="[cél-timeline neve]" script-id="[egyedi script-ID]" clip-type="[típus a RECORDING_COMMANDS.md szótárából]">
-[varázsszó] timeline [cél-timeline neve] script [egyedi script-ID] [varázsszó]
+<spoken-cue>[varázsszó] timeline [cél-timeline neve] script [egyedi script-ID] [varázsszó]</spoken-cue>
 </agent-cue>
-
-<production-note>
-Művelet: [pontos végrehajtási lépés és szükséges értékek]
-Mutatom: [mi látható a képernyőn vagy a felvételen]
-</production-note>
 
 <narration>
 [kész, elmondható narráció, szükség esetén az átvezetéssel]
 </narration>
 
+<screen-action>
+[A végrehajtandó képernyőművelet és az eközben látható eredmény, egyetlen leírásban]
+</screen-action>
+
 <production-note>
-Figyelj / miért fontos: [lényegi magyarázat vagy buktató]
-Elvárt eredmény és ellenőrzés: [output, felismerhető siker/hiba]
-Forrás: [briefbeli forrásazonosító és szakasz / saját tervezési döntés]
+[Lényegi magyarázat vagy buktató; elvárt eredmény és ellenőrzés; forrás.]
 </production-note>
 ```
 
