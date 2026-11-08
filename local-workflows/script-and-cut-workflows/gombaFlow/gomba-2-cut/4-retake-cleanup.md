@@ -1,10 +1,11 @@
-# 4. Ismétlések kivágása
+# 4. Ismétlések kivágása — teljes terv
 
 ## Cél és bemenet
 
-Önállóan vágd ki az újramondott beszéd korábbi változatait a már összeállított
-timeline-ról. Mindig az utolsó megfogalmazás maradjon meg; a korábbi részekből
-csak azt hagyd ki, amit később újramondtak. Törlési varázsszó nem szükséges.
+Készíts teljes vágási tervet az újramondott beszéd korábbi változatairól.
+Ebben a lépésben a timeline-t ne módosítsd. A terv az utolsó megfogalmazást
+tartsa meg; a korábbi részekből csak azt jelölje kivágásra, amit később
+újramondtak. Törlési varázsszó nem szükséges.
 
 Bemenet a [3. lépés](3-timeline-assembly.md) `completed` állapotú
 `timeline_assembly.json` fájlja, az eredeti `recording_index.json`, a hivatkozott
@@ -12,13 +13,30 @@ szóidőbélyeges átiratok és az elfogadott script. Alkalmazd a scriptből hiv
 [vágói szerződést](../gomba-1-script-writer/templates/3-script-template.md).
 A bemeneti dokumentumok, eredeti videók és átiratok változatlanok maradnak.
 
+## Elemzési egység és költségkeret
+
+Egyszerre egy script-ID-t dolgozz fel. Az ID-k sorrendjét a scriptből vedd.
+A `recording_index.json` `recordings` listájából válaszd ki az adott ID-hoz
+tartozó összes rekordot, majd a rekordok `transcript_path`, `content_start` és
+`content_end` mezői alapján olvasd ki a hivatkozott átiratok megfelelő
+szóidőbélyeges részeit. Ne olvass be tartalmi elemzésre más script-ID-khez
+tartozó beszédet. Ezt az agent a fájlok közvetlen olvasásával végzi; külön
+helyi szűrőprogram nem kell.
+
+Az adott ID minden felvételváltozatát együtt vizsgáld, rögzítési sorrendben,
+akkor is, ha külön videófájlokban vannak. A cue-bemondásokat hagyd ki a
+narráció összevetéséből. Az eredeti szóidőbélyegeket és a `recording_id`
+kapcsolatot őrizd meg, hogy a vágási tervet a megfelelő timeline-klipre tudd
+alkalmazni. A beszéd nélküli képi részeket tartsd meg tartalmi elemzés nélkül.
+Ehhez nem szükséges klipenként új subagent.
+
 ## Ellenőrzés és felvételi sorrend
 
 Ellenőrizd az `1.0` bemeneti sémákat, a script és a források tartalomlenyomatait,
 a projekt azonosságát és a timeline-klipkapcsolatokat. Olvasd vissza az aktuális
 timeline-t; ha az eltér a 3. lépés rögzített eredményétől, ne alkalmazz elavult
-pozíciókra vágást. Jelezd az eltérést, és várj tisztázásra. Nem dokumentált kézi
-vágások automatikus visszafejtése nem része ennek a lépésnek.
+pozíciókra tervet. Jelezd az eltérést, és várj tisztázásra. Nem dokumentált
+kézi vágások automatikus visszafejtése nem része ennek a lépésnek.
 
 Az ismétléseket egy script-ID-n és cél-timeline-on belül keresd, külön fájlok
 között is. Külön script-részek szándékosan ismételt magyarázatát ne vond össze.
@@ -37,7 +55,7 @@ Az utolsó változat meghatározásához:
    Ha egyik elfogadott forrás sem dönt, a kérdéses ismétléscsoporthoz kérj
    közérthető pontosítást; addig minden változata maradjon meg.
 
-## Tartalmi összevetés és vágás
+## Tartalmi összevetés és vágástervezés
 
 1. Csoportonként rögzítési sorrendben dolgozd fel a beszédet. A varázsszavas
    azonosítók nem narrációk, nem vesznek részt az ismétléskeresésben.
@@ -72,50 +90,44 @@ törlési felhatalmazások: töltelékszót, csendet vagy félmondatot ebben a l
 csak akkor hagyhatsz ki, ha az igazolt újramondási tartomány része.
 A beszédhiány nem ismétlés; B-rollt vagy animációt ne törölj szöveghiány miatt.
 
-## Timeline-műveletek és visszaellenőrzés
+## Mentett terv és végrehajtási kapu
 
-Az átirat szavait az eredeti forrásidővel illeszd a tényleges klipekhez.
-Egy eredeti felvételből több megtartott tartomány is keletkezhet. A kép és
-kapcsolt hang vágása szinkronban történjen, a kihagyások helye záródjon össze;
-a többi script-rész sorrendje maradjon változatlan. A B-roll bemondás alatti
-képe és kikapcsolt, megőrzött hangja továbbra is maradjon meg.
+Mindig csak az éppen feldolgozott script-ID vágását tervezd meg. Az adott ID
+tervét mentsd a jegyzék mappájában lévő `retake_plan.json` fájl `groups`
+listájába, majd folytasd a következő ID elemzésével. Ne tarts több ID beszédét
+egyidejűleg az elemzési kontextusban. Timeline-t ne módosíts; a teljes tervet
+csak az összes csoport elkészülte után add át. A végrehajtás külön, felhasználó
+által indított [5. lépésben](5-retake-execution.md) történik.
 
-Ha a 3. lépés ideiglenes fájlsorrendet használt, az adott script-rész megtartott
-beszédét a most igazolt rögzítési sorrendben állítsd össze. A vágóprogram
-aktuális API-jából ellenőrizd a szükséges műveleteket; terv vagy JSON mentése
-önmagában nem végrehajtott vágás. Ne használj markert a vágás helyettesítésére.
+A terv sémája `1.0`, kötelező mezői:
 
-A vágás után olvasd vissza az összes érintett timeline-t. Ellenőrizd a
-megtartott forrástartományokat, a hangkapcsolatot, a klipneveket és a végső
-beszédet hallgatással is. Képkockára illesztéskor ne vágj le megtartandó szót.
-Minden új klippéldányt kapcsolj vissza az eredeti jegyzékrekordhoz; a későbbi
-klipek eltolódott timeline-pozícióit is rögzítsd.
+- `schema_version`, `project_id`, `script_sha256`, `recording_index_sha256`,
+  `timeline_assembly_sha256`: a pontos bemeneti állapot azonosítói.
+- `status`: `ready_for_execution` vagy `needs_review`; csak minden csoport
+  elkészülte és ellenőrzése után legyen `ready_for_execution`.
+- `groups`: script-ID-nként `script_id`, `timeline_id`, `status` (`validated`
+  vagy `blocked`), a timeline kiinduló állapotának lenyomata, a felvételi
+  sorrend és bizonyítéka, valamint az adott ID tervezett döntései. Minden
+  timeline-on szereplő script-ID-hoz legyen egy csoport.
+- Minden törlési döntés: a korábbi rész `recording_id` és szóhivatkozásai,
+  az eredeti kivágandó szöveg, a helyette megtartott újabb rész szóhivatkozásai
+  és az ismétlési megfelelés indoka.
+- Minden csoportban `retained_ranges`: a végeredményben megmaradó tartományok
+  rendezett listája, az eredeti felvétel- és szóhivatkozásokkal; a megőrzendő
+  képi részeknél a jegyzék szerinti forrástartománnyal.
+- `unresolved`: még tisztázandó tételek.
 
-## Kimenet: `retake_cleanup.json` — 1.0
+A tervbe írt szóhivatkozásokat az átirat szóidőiből oldd fel forrásidőkre és
+tényleges timeline-klippekre. Ellenőrizd az ID-egyezést, a forrástartományokat,
+a bizonyított újabb változatot, a törlések átfedéseit, a megtartási sorrendet és
+a képi/hang-kivételeket. A terv tartalmazza a feloldott forrásidőket és a
+klippéldány-hivatkozásokat is. Hiányzó vagy érvénytelen hivatkozásnál ne
+találgass; az érintett csoport legyen `blocked`, a teljes terv pedig
+`needs_review`.
 
-A jegyzék mappájában új fájlt készíts; meglévő eredményt ne írj felül
-automatikusan. Újrafuttatás előtt egyeztesd, melyik rögzített állapotból induljon.
+Csak visszaolvasott és ellenőrzött, minden csoportban `validated` állapotú,
+üres `unresolved` listájú terv jelölhető `ready_for_execution` állapotúnak.
 
-- `schema_version`: `"1.0"`; `status`: `completed` vagy `incomplete`.
-- Bemeneti referenciák: `timeline_assembly_path`, `timeline_assembly_sha256`,
-  `recording_index_path`, `recording_index_sha256`, `script_sha256`, `project_id`.
-- `ordering`: script-ID-nként a felvételazonosítók tényleges sorrendje,
-  az alkalmazott metaadat vagy fájlnévsorszám és az azt alátámasztó eredeti adat.
-- `decisions`: törölt korábbi tartományonként `script_id`, `recording_id`,
-  `source_id`, `source_start`, `source_end`, `original_text`, a helyébe lépő
-  felvételazonosító és forrástartomány, valamint a konkrét ismétlési megfelelés indoka.
-- `final_clips`: minden megmaradt timeline-klippéldány a 3. lépés `clips`
-  mezőivel, az aktuális időpontokkal és az eredeti jegyzékhez vezető kapcsolattal.
-  A nem vágott, de eltolódott klipek is szerepeljenek.
-- `unresolved`: pontosítandó sorrend vagy fel nem oldott tartalmi probléma;
-  elemenként script-ID, érintett felvételazonosítók és konkrét indok.
-- `error`: végrehajtási hiba vagy `null`. Részleges eszközhibánál az addig
-  létrejött állapot is legyen visszakereshető, `incomplete` státusszal.
-
-Feloldatlan `unresolved` tételnél a státusz `incomplete`; ne jelentkezz
-teljesen késznek olyan csoporttal, amelyben még döntésre váró változatok maradtak.
-
-A bemenetek változatlanok; a kimenet a friss timeline-kapcsolatok hiteles
-pillanatképe. A későbbi agent ezt használja a 3. lépés elavult pozíciói helyett.
-A felhasználónak rövid készjelzést adj, vagy csak a konkrét elakadást jelezd;
-a sikeresen kivágott ismétléseket ne listázd.
+A 4. lépés kimenete kizárólag a teljes `retake_plan.json`; a timeline-hoz nem
+nyúl. A terv elkészülte után add át a fájl útvonalát, és várd meg, amíg a
+felhasználó külön elindítja az 5. lépést.

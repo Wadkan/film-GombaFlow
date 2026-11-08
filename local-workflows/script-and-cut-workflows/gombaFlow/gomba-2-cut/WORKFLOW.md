@@ -19,11 +19,19 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    timeline-okon, klipnevekkel és a bemondásokra vonatkozó képi/hangszabályokkal.
    Az ismétlések ekkor egymás után megmaradnak. A felhasználónak csak a scriptben
    szereplő, de a felvételekből hiányzó részeket listázza.
-4. [Ismétlések kivágása](4-retake-cleanup.md).
-   Az utolsó megfogalmazást tartja meg; a korábbi részekből csak az újramondott
-   tartományokat vágja ki, több ismétlésen át, értelmileg összefüggő szöveget hagyva.
-   A felvételi sorrend alapja a média rögzítési metaadata, ennek hiányában
-   a felvételi fájlnevek egyértelmű sorszáma.
+4. [Teljes ismétlésvágási terv](4-retake-cleanup.md).
+   ID-nként elemzi az átiratokat, majd elkészíti és ellenőrzi az összes
+   timeline-on szereplő ID teljes `retake_plan.json` tervét. Timeline-t nem
+   módosít; a felhasználó külön indítja a következő lépést.
+5. [Vágási terv végrehajtása](5-retake-execution.md).
+   Külön felhasználói indításra ellenőrzi a teljes tervet, végrehajtja a benne
+   rögzített vágásokat, és elkészíti a `retake_cleanup.json` eredményt.
+
+Előbb a 3. lépés összeállítja a script szerinti timeline-t az összes
+felvételváltozattal, és rögzíti a forrás–klip kapcsolatokat. Ezután a 4. lépés
+a jegyzék alapján ID-nként olvassa a releváns átiratrészeket; nem kér külön
+helyi szűrőprogramot, és nem elemzi egyszerre a teljes film beszédét. Az 5.
+lépés csak a teljes terv külön felhasználói indítása után módosít timeline-t.
 
 ## Közös szerződés
 
