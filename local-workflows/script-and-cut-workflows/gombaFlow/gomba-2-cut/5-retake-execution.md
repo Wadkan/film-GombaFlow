@@ -36,6 +36,14 @@ minden változat maradjon meg a tervben jelzett ideiglenes sorrendben. A vágóp
 aktuális API-jából ellenőrizd a szükséges műveleteket; terv vagy JSON mentése
 önmagában nem végrehajtott vágás. Ne használj markert a vágás helyettesítésére.
 
+A bizonytalanul vágható, ezért a Rough Cut timeline-on teljesen megtartott
+tartományokat rögzítsd az adott script mappájának `problems.md` fájljában a
+[központi problémánapló](../PROBLEM_LOG.md) `Kézi vágást igénylő részek`
+fejléce alatt. Minden bejegyzéshez add meg a script-ID-t, a bizonytalanság okát,
+a forrásfájl útvonalát és forrásidő-tartományát, valamint a Rough Cut timeline
+nevét és a `REVIEW START` / `REVIEW END` markerek helyét. A tartomány maradjon
+bent; a naplózás nem helyettesíti a timeline-markereket.
+
 A vágás után olvasd vissza az összes érintett timeline-t. Ellenőrizd a
 megtartott forrástartományokat, a hangkapcsolatot, a klipneveket és a végső
 beszédet hallgatással is. Képkockára illesztéskor ne vágj le megtartandó szót.
