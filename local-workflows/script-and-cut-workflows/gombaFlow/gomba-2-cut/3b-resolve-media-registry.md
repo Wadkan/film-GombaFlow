@@ -24,7 +24,7 @@ terv változatlan marad; a médiaregiszter kapcsolja a forrásokat a Resolve-hoz
     - `source_fps`: a forrásklip képkockasebessége pontos tört alakú szövegként,
       például `"30000/1001"`.
 
-Ugyanaz a forrás több felvételrészt vagy cél-timeline-t is kiszolgálhat;
+Ugyanaz a forrás több felvételrészt vagy különböző scripteket is kiszolgálhat;
 ezek mind ugyanarra a forrásrekordra hivatkoznak. A regiszter a kiválasztott
 Resolve-projektben érvényes Media Pool-azonosítókat tárolja.
 

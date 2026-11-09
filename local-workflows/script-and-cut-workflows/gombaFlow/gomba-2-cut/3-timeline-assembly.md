@@ -8,7 +8,7 @@ a Resolve-hoz.
 
 A [jegyzékkészítés](2-recording-index.md) `recording_index.json` kimenete és az
 abban hivatkozott, elfogadott `3-script.md` alapján ténylegesen helyezd el a
-felvett részeket a vágóprogram timeline-jain. Az eredeti videókat és átiratokat
+felvett részeket a script egyetlen cél-timeline-ján. Az eredeti videókat és átiratokat
 ne módosítsd. Ebben a lépésben minden azonosított felvételváltozat megmarad;
 az ismétlések kivágását az elkészült terv szerint az 5. lépés végzi.
 
@@ -28,6 +28,8 @@ Ellenőrizd a scriptet, indexet, forrásokat és tartományokat is; bármely hib
 - A jegyzék sémája `1.0`, a script tartalomlenyomata és részenkénti adatai
   megegyeznek az aktuálisan olvasott scripttel. Az ID-k és a felvételazonosítók
   érvényesek és egyediek a saját tartományukban.
+- A script és a jegyzék minden része ugyanarra, a script fejlécében megadott
+  egyetlen cél-timeline-ra mutat. Eltérésnél állj meg konkrét hibával.
 - A források léteznek, tartalomazonosítójuk változatlan; minden megtartandó
   tartomány nem üres és a forrás időtartamán belül van.
 - A jegyzékben ne maradjon `needs_review` rekord. Ilyenkor a 2. lépésben kell
@@ -53,7 +55,7 @@ exportot ne készíts. Az azonosítót és nevet a lépés saját
   rendelkezésre áll működő kapcsolat. A használt eszköz aktuális API-leírásából
   ellenőrizd a médiaimportot, forrástartományt, klipelhelyezést, klipnevet,
   hang engedélyezését és a visszaolvasható klippéldány-azonosítót.
-- A script szerinti timeline-nevek használhatók. Meglévő, nem üres cél-timeline
+- A script szerinti timeline-név használható. Meglévő, nem üres cél-timeline
   vagy korábbi `timeline_assembly.json` esetén állj meg újrafuttatási döntésre;
   ne törölj felhasználói vágást és ne duplikáld automatikusan a tartalmat.
 
@@ -63,7 +65,7 @@ vágási terv elkészítése önmagában nem jelenti a timeline összeállítás
 ## Elhelyezés
 
 1. A script törzséből származó `script_order` alapján járd be a részeket,
-   cél-timeline-onként megtartva ezt a sorrendet. Ne a script-ID számértéke,
+   a cél-timeline-on megtartva ezt a sorrendet. Ne a script-ID számértéke,
    fájlnév vagy fájldátum határozza meg a különböző script-részek sorrendjét.
 2. Minden rész összes azonosított felvételét helyezd egymás után a megfelelő
    timeline-ra. Egy forrásban a felvételek sorrendje a forrásidő szerinti.
@@ -101,8 +103,9 @@ A gyökér mezői:
 - `resolve_project_id`, `resolve_project_name`: a használt Resolve-projektből
   visszaolvasott egyedi azonosító és látható név.
 - `status`: `completed` vagy `incomplete`.
-- `timelines`: elemenként `timeline_id`, `timeline_name`, `frame_rate`,
-  `start_frame`; a vágóprogramból visszaolvasva.
+- `timelines`: a script egyetlen cél-timeline-ját tartalmazó lista;
+  az elem `timeline_id`, `timeline_name`, `frame_rate` és `start_frame` mezői
+  a vágóprogramból visszaolvasva.
 - `clips`: minden ténylegesen elhelyezett klippéldány kapcsolata.
 - `missing_parts`: a script azon részei, amelyekhez nincs azonosított felvétel;
   elemenként `script_id`, `chapter_id`, `timeline`, `description`.

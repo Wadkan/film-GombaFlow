@@ -41,6 +41,9 @@ A script tényleges felvehető részeiből olvasd ki a `script-id`, `timeline` �
 `clip-type` attribútumokat, a fejezetazonosítót és a rövid leírást. Az átadási
 összesítés ugyanarra a részre mutató sorait ne tekintsd újabb részeknek.
 Ellenőrizd az ID-k egyediségét és az összesítés egyezését a törzzsel.
+A script összes felvehető részének és átadási összesítésének timeline-ja
+egyezzen a script fejlécében szereplő egyetlen cél-timeline-nal; eltérésnél
+jelezz hibát, és ne találj ki hozzárendelést.
 A `script_order` a törzsben szereplő sorrend, nem az ID számértéke.
 
 Sérült bemenetnél állj meg konkrét hibával; hiányzó adatot ne találj ki.

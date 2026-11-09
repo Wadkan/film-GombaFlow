@@ -31,13 +31,15 @@ Ez a központi lista a teljes tagkészlet. Más tagtípust ne vezess be.
   [parancsszótár](../RECORDING_COMMANDS.md) adja. Minden azonosításban a
   felhasználó a témaazonosító kezdő számrészét mondja be a timeline címe helyett,
   majd az egyedi script-ID-t. A timeline címe továbbra is szerepeljen a scriptben.
-  Egy script egy timeline-t jelöl.
+  Egy script egy cél-timeline-t jelöl: a fejlécben szereplő timeline neve minden
+  felvehető rész és a vágói átadás timeline-adatával egyezzen.
 - Minden külön felvehető rész kapjon a teljes scripten belül egyedi, pozitív
   egész script-ID-t. Ez külön azonosító a fejezet-ID mellett. Javításkor a már
   kiosztott ID-k maradjanak meg; új rész szabad ID-t kapjon, újraszámozás nélkül.
   A scriptíró osztja ki őket a részek létrehozásakor. A fejezet-ID-t a
-  `2-chapters.md` megfelelő fejezetéből veszi át; a cél-timeline a fent megadott
-  elfogadott címből vagy külön egyeztetett hozzárendelésből származik.
+  `2-chapters.md` megfelelő fejezetéből veszi át. A teljes script közös
+  cél-timeline-jának neve az elfogadott cím vagy a teljes scriptre külön
+  egyeztetett név.
 - A részenkénti `agent-cue` `clip-type` attribútumát a parancsszótár kliptípusai
   közül töltsd ki. Ez nem felolvasandó metaadat.
   A vágói átadás a részhez már rögzített ID-kat, timeline-t és kliptípust vegye át,
@@ -50,7 +52,8 @@ Ez a központi lista a teljes tagkészlet. Más tagtípust ne vezess be.
   általa azonosított tartalmat. A tagelt blokkokat a generált Markdownban
   kódblokkokban őrizd meg, hogy láthatók maradjanak.
 - Review-ban ellenőrizd a fejlécben tárolt varázsszó és a bemondások egyezését,
-  a témaazonosító számának helyes bemondását, a timeline címét, az egyedi
+  a témaazonosító számának helyes bemondását, az egyetlen közös timeline címét
+  és minden részben, valamint a vágói átadásban való egyezését, az egyedi
   script-ID-kat, a szótár szerinti kliptípust,
   az átadási adatok és a részek egyezését, a tagpárokat és a tartalmak
   helyes elkülönítését. Az elfogadott scriptet a saját rögzített értékéhez

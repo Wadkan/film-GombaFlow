@@ -17,7 +17,7 @@ felhasználói indítás után nyiss vagy hozz létre Resolve-projektet.
 
 1. A jegyzékből gyűjtsd ki az egyedi `source_id` értékeket és a hozzájuk
    tartozó abszolút forrásútvonalakat. Egy fájlt akkor is csak egyszer kezelj,
-   ha több script-részhez vagy timeline-hoz tartozik. Ellenőrizd a fájlok
+   ha több script-részhez vagy különböző scriptekhez tartozik. Ellenőrizd a fájlok
    SHA-256 azonosítóját a jegyzékhez.
 2. A választott projekt Media Pooljában a gyökérmappát és almappáit is nézd át
    (`GetRootFolder`, `GetSubFolderList`, `GetClipList`). A klipek
