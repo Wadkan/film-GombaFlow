@@ -6,6 +6,10 @@ Agentként értelmezd a felvett azonosítóbemondásokat, és készíts visszake
 jegyzéket. Ebben a lépésben nem vágsz videót, nem hozol létre timeline-t,
 nem választasz felvételt és nem távolítasz el ismétlést.
 
+Előfeltétel a sikeres [timeline-preflight](0-preflight.md).
+Ha az átírás óta a forrásanyag változott, futtasd újra a preflightot; fel nem
+oldott eltérésnél ne készíts jegyzéket.
+
 Olvasd be:
 
 - Az [átírási lépés](1-transcription.md) `master_transcript.json` fájlját és

@@ -11,26 +11,30 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    Faster-Whisper feldolgozás a [scripttel](scripts/transcribe_recordings.py).
    Kimenet: videónként szóidőbélyeges átirat és `master_transcript.json`;
    szükség esetén felhasználói leírások a `recording_assignments.json` fájlban.
-2. [Felvételek azonosítása és jegyzék](2-recording-index.md): varázsszavas
+2. [Timeline-preflight](0-preflight.md): az átiratban
+   talált timeline-nevek összevetése a megadott script céljaival. Több
+   vagy ismeretlen timeline esetén tájékoztatja a felhasználót és megáll;
+   önállóan nem választ és nem hoz létre timeline-t.
+3. [Felvételek azonosítása és jegyzék](2-recording-index.md): varázsszavas
    azonosítók és természetes nyelvű hozzárendelések értelmezése.
    Kimenet: `recording_index.json`, a forrásokhoz és a scripthez visszavezethető adatokkal.
-3. [Timeline összeállítása](3-timeline-assembly.md).
+4. [Timeline összeállítása](3-timeline-assembly.md).
    A jegyzék alapján a script sorrendjében helyezi el a részeket a megadott
    timeline-okon, klipnevekkel és a bemondásokra vonatkozó képi/hangszabályokkal.
    Az ismétlések ekkor egymás után megmaradnak. A felhasználónak csak a scriptben
    szereplő, de a felvételekből hiányzó részeket listázza.
-4. [Teljes ismétlésvágási terv](4-retake-cleanup.md).
+5. [Teljes ismétlésvágási terv](4-retake-cleanup.md).
    ID-nként elemzi az átiratokat, majd elkészíti és ellenőrzi az összes
    timeline-on szereplő ID teljes `retake_plan.json` tervét. Timeline-t nem
    módosít; a felhasználó külön indítja a következő lépést.
-5. [Vágási terv végrehajtása](5-retake-execution.md).
+6. [Vágási terv végrehajtása](5-retake-execution.md).
    Külön felhasználói indításra ellenőrzi a teljes tervet, végrehajtja a benne
    rögzített vágásokat, és elkészíti a `retake_cleanup.json` eredményt.
 
-Előbb a 3. lépés összeállítja a script szerinti timeline-t az összes
-felvételváltozattal, és rögzíti a forrás–klip kapcsolatokat. Ezután a 4. lépés
-a jegyzék alapján ID-nként olvassa a releváns átiratrészeket; nem kér külön
-helyi szűrőprogramot, és nem elemzi egyszerre a teljes film beszédét. Az 5.
+Az átírás után a preflight fut, és csak sikeres ellenőrzés után indul a
+jegyzékkészítés. A 4. lépés előbb összeállítja a script szerinti timeline-t az
+összes felvételváltozattal, és rögzíti a forrás–klip kapcsolatokat. Ezután az 5. lépés a jegyzék alapján ID-nként olvassa a releváns átiratrészeket; nem kér
+külön helyi szűrőprogramot, és nem elemzi egyszerre a teljes film beszédét. A 6.
 lépés csak a teljes terv külön felhasználói indítása után módosít timeline-t.
 
 ## Közös szerződés
