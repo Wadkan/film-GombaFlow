@@ -11,13 +11,13 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    Faster-Whisper feldolgozás a [scripttel](scripts/transcribe_recordings.py).
    Kimenet: videónként szóidőbélyeges átirat és `master_transcript.json`;
    szükség esetén felhasználói leírások a `recording_assignments.json` fájlban.
-2. [Timeline-preflight](0-preflight.md): az átiratban
-   talált témaazonosító-számok összevetése a megadott script témaazonosítójával. Több
-   vagy ismeretlen timeline esetén tájékoztatja a felhasználót és megáll;
-   önállóan nem választ és nem hoz létre timeline-t.
-3. [Felvételek azonosítása és jegyzék](2-recording-index.md): varázsszavas
-   azonosítók és természetes nyelvű hozzárendelések értelmezése.
-   Kimenet: `recording_index.json`, a forrásokhoz és a scripthez visszavezethető adatokkal.
+2. [Felvételek azonosítása és jegyzék](2-recording-index.md): az átírt
+   anyagot témaazonosító szerint csoportosítja, és minden csoporthoz az ahhoz
+   tartozó meglévő scriptmappába ír egy `recording_index.json` fájlt.
+3. [Vágás előtti preflight](0-preflight.md): egy indexnél azzal folytat;
+   többnél megkérdezi, melyikkel dolgozzon. Minden esetben megkérdezi, hogy
+   meglévő Resolve-projektet használjon-e, vagy újat hozzon létre. Új projektnél
+   a script címét javasolja, majd a jóváhagyott nevet a registry-be menti.
 4. [Timeline összeállítása](3-timeline-assembly.md).
    A jegyzék alapján a script sorrendjében helyezi el a részeket a megadott
    timeline-okon, klipnevekkel és a bemondásokra vonatkozó képi/hangszabályokkal.
@@ -31,11 +31,11 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    Külön felhasználói indításra ellenőrzi a teljes tervet, végrehajtja a benne
    rögzített vágásokat, és elkészíti a `retake_cleanup.json` eredményt.
 
-Az átírás után a preflight fut, és csak sikeres ellenőrzés után indul a
-jegyzékkészítés. A 4. lépés előbb összeállítja a script szerinti timeline-t az
-összes felvételváltozattal, és rögzíti a forrás–klip kapcsolatokat. Ezután az 5. lépés a jegyzék alapján ID-nként olvassa a releváns átiratrészeket; nem kér
-külön helyi szűrőprogramot, és nem elemzi egyszerre a teljes film beszédét. A 6.
-lépés csak a teljes terv külön felhasználói indítása után módosít timeline-t.
+Az indexek elkészülte után a preflight kiválaszt egyetlen scriptet, majd
+annak scriptmappáját, indexét és a registry-ben rögzített Resolve-projektnévvel
+adja át a 4. lépésnek. A további Resolve-műveletek ugyanezt a projektet
+használják és natívan mentik. Az eredeti médiafájlokat egyik lépés sem mozgatja,
+másolja vagy módosítja; a jegyzékek csak hivatkoznak rájuk.
 
 ## Közös szerződés
 

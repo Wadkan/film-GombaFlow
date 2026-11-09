@@ -33,7 +33,7 @@ Ehhez nem szükséges klipenként új subagent.
 ## Ellenőrzés és felvételi sorrend
 
 Ellenőrizd az `1.0` bemeneti sémákat, a script és a források tartalomlenyomatait,
-a projekt azonosságát és a timeline-klipkapcsolatokat. Olvasd vissza az aktuális
+a Gomba 1 registry-ben tárolt `resolve_project_name` egyezését és a timeline-klipkapcsolatokat. Olvasd vissza az aktuális
 timeline-t; ha az eltér a 3. lépés rögzített eredményétől, ne alkalmazz elavult
 pozíciókra tervet. Jelezd az eltérést, és várj tisztázásra. Nem dokumentált
 kézi vágások automatikus visszafejtése nem része ennek a lépésnek.
@@ -101,7 +101,7 @@ csak az összes csoport elkészülte után add át. A végrehajtás külön, fel
 
 A terv sémája `1.0`, kötelező mezői:
 
-- `schema_version`, `project_id`, `script_sha256`, `recording_index_sha256`,
+- `schema_version`, `resolve_project_name`, `script_sha256`, `recording_index_sha256`,
   `timeline_assembly_sha256`: a pontos bemeneti állapot azonosítói.
 - `status`: `ready_for_execution` vagy `needs_review`; csak minden csoport
   elkészülte és ellenőrzése után legyen `ready_for_execution`.

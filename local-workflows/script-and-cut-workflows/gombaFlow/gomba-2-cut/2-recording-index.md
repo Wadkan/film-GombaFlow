@@ -6,21 +6,25 @@ Agentként értelmezd a felvett azonosítóbemondásokat, és készíts visszake
 jegyzéket. Ebben a lépésben nem vágsz videót, nem hozol létre timeline-t,
 nem választasz felvételt és nem távolítasz el ismétlést.
 
-Előfeltétel a sikeres [timeline-preflight](0-preflight.md).
-Ha az átírás óta a forrásanyag változott, futtasd újra a preflightot; fel nem
-oldott eltérésnél ne készíts jegyzéket.
-
 Olvasd be:
 
 - Az [átírási lépés](1-transcription.md) `master_transcript.json` fájlját és
   minden benne hivatkozott videónkénti átiratot.
-- Az elfogadott projekt `3-script.md` fájlját. Ha nincs megadva az útvonala,
-  kérdezd meg, és várd meg a választ.
+- A Gomba 1 `projects/registry.json` fájlját és az átírt felvételek
+  bemondásaiban szereplő témaazonosítóknak megfelelő `3-script.md` fájlokat.
+  A registry `topic_id` és `project_dir` mezői adják meg a script helyét.
 - A scriptből hivatkozott
   [közös vágói szerződést](../gomba-1-script-writer/templates/3-script-template.md)
   és [parancsszótárat](../gomba-1-script-writer/RECORDING_COMMANDS.md).
 - A manifest mellett lévő `recording_assignments.json` fájlt, ha van ilyen:
   a beszéd nélkül maradt anyagok felhasználói leírásait és hozzárendeléseit.
+
+Egy bemeneti forrás több témaazonosítóhoz tartozó felvételt is tartalmazhat.
+Az átiratok rekordjait témaazonosító és a hozzá tartozó script szerint külön
+csoportosítsd. Minden csoporthoz külön jegyzék készül a már létező
+`projects/<project_dir>/` scriptmappában; új mappát ne hozz létre. A jegyzék
+az eredeti média- és átiratfájlok helyére hivatkozik, azokat ne mozgasd,
+ne másold és ne módosítsd.
 
 A varázsszó értékét kizárólag az adott script fejlécéből vedd át, ne az
 aktuális központi konfigurációból. A bemeneti fájlok csak olvashatók.
@@ -78,13 +82,15 @@ Egymást átfedő hozzárendeléseknél kérj pontosítást.
 
 ## Kimenet: `recording_index.json` — 1.0
 
-A manifest mappájában készíts új JSON-fájlt. Meglévő jegyzéket ne írj felül
-automatikusan; az újrafeldolgozást egyeztesd. A bemenetek és az eredeti
-átiratszöveg változatlanok maradnak; a kimenet új értelmezési adatokat ad hozzá.
+A fenti kimeneti szabály szerinti scriptmappában készíts új
+`recording_index.json` fájlt minden témaazonosítóhoz. Meglévő jegyzéket ne írj
+felül automatikusan; az újrafeldolgozást egyeztesd. Az eredeti médiafájlok és
+átiratszövegek változatlanok maradnak; a kimenet új értelmezési adatokat ad hozzá.
 
 A gyökér mezői:
 
 - `schema_version`: `"1.0"`.
+- `topic_id`: a bemondással és a script fejlécével ellenőrzött témaazonosító.
 - `script_path`, `script_sha256`, `script_version`: a ténylegesen olvasott script
   útvonala, tartalomlenyomata és benne rögzített változatreferenciája.
 - `manifest_path`, `assignments_path`: abszolút bemeneti útvonalak;
@@ -99,13 +105,15 @@ Minden `recordings` rekord mezői:
 - `recording_id`: a jegyzékkészítő által kiosztott, jegyzéken belül egyedi
   felvételazonosító. A technikai kiosztási sorrend nem bizonyít felvételi időrendet.
 - `source_id`, `source_path`, `transcript_path`: az eredeti bemenethez vezető
-  kapcsolat. Másolatok esetén `source_aliases` listában az összes további útvonal.
+  kapcsolat; mindhárom fájlútvonal legyen abszolút, hogy a scriptmappába írt
+  indexből is feloldható legyen. Másolatok esetén `source_aliases` listában
+  az összes további útvonal.
 - `source_start`, `source_end`: az azonosított rész teljes forrástartománya,
   a bemondással együtt. Minden tartomány másodpercben értendő, félig nyílt `[start, end)`.
 - `cue`: a bemondás `start`, `end`, `original_text` mezői; kézi hozzárendelésnél `null`.
 - `content_start`, `content_end`: a bemondás utáni tartalom tartománya;
   csak bemondásból álló résznél a két érték egyenlő is lehet.
-- `retained_start`, `retained_end`: a 3. lépés számára javasolt nem üres
+- `retained_start`, `retained_end`: a timeline-összeállítás számára javasolt nem üres
   forrástartomány. Normál esetben a bemondás után kezdődik; a képi kivételnél
   annak kezdetén. Bizonytalan rekordnál mindkettő `null`.
 - `script_id`, `chapter_id`, `script_order`, `timeline`, `clip_type`, `description`:
@@ -118,7 +126,7 @@ Minden `recordings` rekord mezői:
 - `status`: `identified` vagy `needs_review`; `issue`: pontos probléma vagy `null`.
 
 A felvételfájlok közötti rögzítési sorrend nem vezethető le a manifest
-betűrendjéből. A [4. lépés](4-retake-cleanup.md) ezt rögzítési metaadatból,
+betűrendjéből. Az ismétlésvágási lépés ezt rögzítési metaadatból,
 ennek hiányában egyértelmű fájlnévsorszámból állapítja meg; itt ne találd ki,
 melyik felvétel volt az utolsó.
 
@@ -126,7 +134,7 @@ melyik felvétel volt az utolsó.
 
 Ellenőrizd, hogy minden eredeti felvétel és hozzárendelt tartomány
 visszakereshető a jegyzékben, beleértve a néma és csak bemondásos részeket is.
-A scriptből hiányzó felvételek listázása a 3. lépés feladata.
+A scriptből hiányzó felvételek listázása a timeline-összeállítás feladata.
 
 Add át a jegyzék útvonalát. Csak a pontosítást igénylő tételeket kérdezd meg;
 a sikeresen azonosított részeket ne sorold fel. Bizonytalan részeknél jelezd

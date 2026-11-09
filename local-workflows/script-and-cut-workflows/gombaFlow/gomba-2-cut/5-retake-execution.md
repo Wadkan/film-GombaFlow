@@ -6,12 +6,15 @@ Ezt a lépést a felhasználó külön indítja a 4. lépés `ready_for_executio
 állapotú `retake_plan.json` fájljával. Ne indítsd automatikusan a 4. lépés
 befejezése után. Olvasd be a tervben hivatkozott scriptet, jegyzéket és
 `timeline_assembly.json` fájlt, majd ellenőrizd a fájlok tartalomlenyomatait,
-a projekt azonosságát és a terv összes klipkapcsolatát.
+a Gomba 1 registry `resolve_project_name` értékével való egyezést és a terv
+összes klipkapcsolatát.
 
 Ha a terv nem `ready_for_execution`, valamelyik hivatkozás hiányzik vagy a
 projekt/timeline eltér a terv kiinduló állapotától, ne vágj; jelezd a konkrét
-eltérést. Nem dokumentált kézi vágások automatikus visszafejtése nem része ennek
-a lépésnek.
+eltérést. A Resolve-projektet a registry-ben megadott `resolve_project_name`
+alapján nyisd meg, a vágás után pedig natívan mentsd a Resolve-ban; `.drp`
+exportot ne készíts.
+Nem dokumentált kézi vágások automatikus visszafejtése nem része ennek a lépésnek.
 
 ## Timeline-műveletek és visszaellenőrzés
 
@@ -42,7 +45,8 @@ automatikusan. Újrafuttatás előtt egyeztesd, melyik rögzített állapotból 
 
 - `schema_version`: `"1.0"`; `status`: `completed` vagy `incomplete`.
 - Bemeneti referenciák: `timeline_assembly_path`, `timeline_assembly_sha256`,
-  `recording_index_path`, `recording_index_sha256`, `script_sha256`, `project_id`.
+  `recording_index_path`, `recording_index_sha256`, `script_sha256`,
+  `resolve_project_name`.
 - `retake_plan_path`, `retake_plan_sha256`: a ténylegesen végrehajtott,
   előzetesen ellenőrzött vágási terv hivatkozása és tartalomlenyomata.
 - `ordering`: script-ID-nként a felvételazonosítók tényleges sorrendje,

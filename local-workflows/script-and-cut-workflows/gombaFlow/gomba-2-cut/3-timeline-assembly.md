@@ -18,13 +18,18 @@ A varázsszót az adott scriptben tárolt értékkel kezeld.
 - A jegyzék sémája `1.0`, a script tartalomlenyomata és részenkénti adatai
   megegyeznek az aktuálisan olvasott scripttel. Az ID-k és a felvételazonosítók
   érvényesek és egyediek a saját tartományukban.
+- A Gomba 1 `projects/registry.json` kiválasztott `topic_id` rekordjában
+  szereplő `resolve_project_name` megegyezik a preflight átadásával. Ezen a
+  néven töltsd be a projektet a Resolve projektkönyvtárából.
 - A források léteznek, tartalomazonosítójuk változatlan; minden megtartandó
   tartomány nem üres és a forrás időtartamán belül van.
 - A jegyzékben ne maradjon `needs_review` rekord. Ilyenkor a 2. lépésben kell
   tisztázni a hozzárendelést, és utána újraindítani ezt a lépést; a bizonytalan
   felvételt ne minősítsd hiányzónak és ne hagyd el csendben.
 - A cél-vágóprojekt egyértelmű, a médiakezeléshez és timeline-műveletekhez
-  rendelkezésre áll működő kapcsolat. A használt eszköz aktuális API-leírásából
+  rendelkezésre áll működő kapcsolat. A Resolve-ban a registry-ből beolvasott
+  `resolve_project_name` nevű projektet töltsd be, a módosítások után pedig
+  a Resolve natív mentését használd; `.drp` exportot ne készíts. A használt eszköz aktuális API-leírásából
   ellenőrizd a médiaimportot, forrástartományt, klipelhelyezést, klipnevet,
   hang engedélyezését és a visszaolvasható klippéldány-azonosítót.
 - A script szerinti timeline-nevek használhatók. Meglévő, nem üres cél-timeline
@@ -72,7 +77,7 @@ A gyökér mezői:
 - `schema_version`: `"1.0"`.
 - `recording_index_path`, `recording_index_sha256`, `script_sha256`: a felhasznált
   bemenetek visszakereshető referenciái.
-- `project_id`: a tényleges vágóprojekt visszaolvasható azonosítója.
+- `resolve_project_name`: a registry-ből átvett, használt Resolve-projektnév.
 - `status`: `completed` vagy `incomplete`.
 - `timelines`: elemenként `timeline_id`, `timeline_name`, `frame_rate`,
   `start_frame`; a vágóprogramból visszaolvasva.
