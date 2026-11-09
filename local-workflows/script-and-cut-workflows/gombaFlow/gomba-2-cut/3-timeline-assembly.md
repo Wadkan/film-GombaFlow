@@ -17,6 +17,15 @@ Alkalmazd a scriptből hivatkozott
 [parancsszótárat](../gomba-1-script-writer/RECORDING_COMMANDS.md).
 A varázsszót az adott scriptben tárolt értékkel kezeld.
 
+## Timeline-nevek
+
+A `topic_id` a kiválasztott `recording_index.json` témaazonosítója. A scriptben
+megadott közös cél-timeline a forgatókönyvhöz tartozó logikai cél; a Resolve-ban
+az ehhez tartozó munkaváltozatok neve:
+
+- `<topic_id> - 1. Full Takes - Marker Review`: az első, felülvizsgálati timeline.
+- `<topic_id> - 2. Rough Cut`: a későbbi, markerek alapján összeállított vágat.
+
 ## Végrehajtás előtti ellenőrzések
 
 Mielőtt Resolve-projektet nyitnál vagy hoznál létre, ellenőrizd, hogy a
@@ -55,7 +64,7 @@ exportot ne készíts. Az azonosítót és nevet a lépés saját
   rendelkezésre áll működő kapcsolat. A használt eszköz aktuális API-leírásából
   ellenőrizd a médiaimportot, forrástartományt, klipelhelyezést, klipnevet,
   hang engedélyezését és a visszaolvasható klippéldány-azonosítót.
-- A script szerinti timeline-név használható. Meglévő, nem üres cél-timeline
+- Az első timeline fenti neve használható. Meglévő, nem üres cél-timeline
   vagy korábbi `timeline_assembly.json` esetén állj meg újrafuttatási döntésre;
   ne törölj felhasználói vágást és ne duplikáld automatikusan a tartalmat.
 
