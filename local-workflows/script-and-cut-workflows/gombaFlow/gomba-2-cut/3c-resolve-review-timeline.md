@@ -22,8 +22,10 @@ duplikálj tartalmat; állj meg és jelezd. A második timeline-t ne készítsd 
 
 ## Teljes felvételek és markerek
 
-1. Script-sorrendben helyezd el az adott `topic_id` minden azonosított
-   felvételváltozatát. A jegyzék `source_start`–`source_end` tartományait
+1. Felvételi sorrendben helyezd el az adott `topic_id` minden azonosított
+   felvételváltozatát: külön forrásoknál a média rögzítési ideje, ennek
+   hiányában a fájl létrehozási dátuma szerint; egy forráson belül a
+   forrásidő szerint. A jegyzék `source_start`–`source_end` tartományait
    használd, az azonosítóbemondásokkal együtt. Ha egy forrás több témát
    tartalmaz, csak a kiválasztott témához tartozó részeit helyezd el.
    A felvételek eredeti képét és hangját szinkronban őrizd meg.

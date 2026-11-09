@@ -24,9 +24,9 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    végrehajtásra. Resolve-projektet és timeline-t nem nyit meg.
    A kész tervet a felhasználó review-zza; az agent itt megáll.
 5. A review és külön felhasználói indítás után [timeline-összeállítás](3-timeline-assembly.md):
-   ekkor választ vagy hoz létre Resolve-projektet, majd a jegyzék alapján,
-   script-sorrendben elhelyezi a felvételeket a script cél-timeline-ján. Az ismétlések
-   ekkor még megmaradnak.
+   ekkor választ vagy hoz létre Resolve-projektet, majd a
+   [review timeline](3c-resolve-review-timeline.md) lépés felvételi sorrendben
+   helyezi el a felvételeket az első timeline-on. Az ismétlések ekkor még megmaradnak.
 6. [Vágási terv végrehajtása](5-retake-execution.md): a timeline-összeállítás
    után, külön felhasználói indításra végrehajtja a tervben rögzített vágásokat,
    és elkészíti a `retake_cleanup.json` eredményt.

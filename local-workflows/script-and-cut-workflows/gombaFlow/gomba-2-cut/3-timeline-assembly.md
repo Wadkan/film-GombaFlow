@@ -75,28 +75,20 @@ vágási terv elkészítése önmagában nem jelenti a timeline összeállítás
 
 ## Elhelyezés
 
-1. A script törzséből származó `script_order` alapján járd be a részeket,
-   a cél-timeline-on megtartva ezt a sorrendet. Ne a script-ID számértéke,
-   fájlnév vagy fájldátum határozza meg a különböző script-részek sorrendjét.
-2. Minden rész összes azonosított felvételét helyezd egymás után a megfelelő
-   timeline-ra. Egy forrásban a felvételek sorrendje a forrásidő szerinti.
-   Külön források igazolt rögzítési sorrendjét használd, ha rendelkezésre áll;
-   enélkül a jegyzék listájának sorrendje csak ideiglenes elhelyezési sorrend.
-   Ezt `provisional_index_order` értékkel rögzítsd, és ne állítsd, hogy ebből
-   eldönthető az utolsó ismétlés. Itt egyik felvételt se dobd el.
-3. A média eredeti video- és hangsávját őrizd meg. A képet és a hozzá tartozó
+1. Az első timeline felvételeinek elhelyezését és a markerezést a
+   [Resolve review timeline](3c-resolve-review-timeline.md) szerint végezd.
+   A felvételek rögzítési sorrendet követnek, nem script-sorrendet.
+2. A média eredeti video- és hangsávját őrizd meg. A képet és a hozzá tartozó
    hangot szinkronban helyezd el, egymáshoz kapcsolva. A részek ebben a menetben
    egymás után kerülnek; átfedést, áttűnést vagy önálló új narrációt ne találj ki.
-4. A jegyzék `retained_start`–`retained_end` tartományát használd.
-   Normál esetben ez kihagyja az azonosítóbemondást mindkét varázsszóval együtt.
-   A csak bemondásos, nem talking head rész kivételénél a bemondás alatti kép
-   megmarad. Több B-roll-ID egy fájlban külön klip legyen.
-5. B-rollnál a meglévő hangot kapcsold ki, ne töröld. Az `audio_enabled`
+3. A teljes felvételek forrástartományát a review timeline lépése határozza meg,
+   az azonosítóbemondásokkal együtt. Több B-roll-ID egy fájlban külön klip legyen.
+4. B-rollnál a meglévő hangot kapcsold ki, ne töröld. Az `audio_enabled`
    állapotot a jegyzékből alkalmazd, és a vágóprogramból olvasd vissza.
    Hang nélküli forráshoz ne hozz létre mesterséges hangot.
-6. A megjelenített klipnév: `S{script_id} · {recording_id} · {clip_type} · {description}`.
-   Az értékek a jegyzékből származnak. Az azonosításhoz ne készíts markert.
-7. A forrásmásodperceket a vágóprogram által megkövetelt időalapra alakítsd;
+5. A megjelenített klipnév: `S{script_id} · {recording_id} · {clip_type} · {description}`.
+   Az értékek a jegyzékből származnak. A markereket a review timeline lépése szerint kezeld.
+6. A forrásmásodperceket a vágóprogram által megkövetelt időalapra alakítsd;
    ne kezeld a másodpercértéket képkockaszámként. A tényleges forrás- és
    timeline-határokat olvasd vissza és mentsd el. Ellenőrizd, hogy a képkockás
    határillesztés nem vág le megtartandó beszédet vagy B-roll-képet.
@@ -135,8 +127,8 @@ Minden `clips` bejegyzés:
 - `timeline_start_frame`, `timeline_end_frame`: tényleges timeline-képkockák,
   félig nyílt tartományként, az adott timeline időalapjában.
 - `take_order_basis`: `source_time`, `verified_recording_order` vagy
-  `provisional_index_order`. Igazolt sorrendnél `take_order_evidence` mezőben
-  az azt alátámasztó adat is szerepeljen.
+  `file_creation_date`. A sorrendet alátámasztó adatot a `take_order_evidence`
+  mezőben rögzítsd.
 
 Minden jegyzékbeli azonosított felvételhez legyen elhelyezés. Az elhelyezett
 részek sorrendjét, forrástartományait, nevét és hangállapotát a timeline
