@@ -17,6 +17,19 @@ A varázsszó értékét a készülő script a központi `local-workflows/record
   ugyanabban a fájlban a következő azonosító parancsig tart. Külön lezáró azonosító nem szükséges.
 - **Példa:** `serpenyő timeline 1 script 15 serpenyő`.
 
+## Hibás rész újramondása: `HIBA újra`
+
+- **Cél:** a készítő egyértelműen hibásnak jelölje a közvetlenül előtte
+  felvett beszédrészt, majd újramondja azt.
+- **Alak:** `[varázsszó] HIBA újra [varázsszó]`.
+- **Hatókör:** ugyanazon script-ID-n belül a hibajelzés utáni újramondás
+  javítja a jelzés előtti, hibás beszédrészt.
+- **Vágás:** csak akkor jelöld kivágásra a hibás próbálkozást, ha az utána
+  következő újramondás kezdete és a lecserélendő tartomány egyértelműen
+  azonosítható. A hibajelzés önmagában nem adja meg a vágási határt.
+  Bizonytalan illesztésnél mindkét részt tartsd meg, és alkalmazd a
+  [közös problémánapló](../PROBLEM_LOG.md) szabályait.
+
 ## Kliptípusok
 
 A script részenkénti `agent-cue` `clip-type` attribútumában és a timeline-klip nevében az

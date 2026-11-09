@@ -13,6 +13,12 @@ szóidőbélyeges átiratok és az elfogadott script. Alkalmazd a scriptből hiv
 [vágói szerződést](../gomba-1-script-writer/templates/3-script-template.md).
 A bemeneti dokumentumok, eredeti videók és átiratok változatlanok maradnak.
 
+Alkalmazd a [közös problémánapló](../PROBLEM_LOG.md) szabályait.
+Tartalmi vagy felvételi sorrendi bizonytalanságnál az érintett ismétléscsoport
+minden változata maradjon vágatlanul, a csoport legyen `blocked`, a probléma
+kerüljön az `unresolved` listába. A többi csoport elemzését folytasd;
+a teljes terv végrehajtási kapuja továbbra is zárva marad.
+
 ## Elemzési egység és költségkeret
 
 Egyszerre egy script-ID-t dolgozz fel. Az ID-k sorrendjét a scriptből vedd.
@@ -29,6 +35,15 @@ narráció összevetéséből. Az eredeti szóidőbélyegeket és a `recording_i
 kapcsolatot őrizd meg, hogy a vágási tervet a megfelelő timeline-klipre tudd
 alkalmazni. A beszéd nélküli képi részeket tartsd meg tartalmi elemzés nélkül.
 Ehhez nem szükséges klipenként új subagent.
+
+A [parancsszótár](../gomba-1-script-writer/RECORDING_COMMANDS.md) `HIBA újra`
+jelzése egyértelművé teszi, hogy közvetlenül előtte lévő beszédrész hibás és
+újramondásra szánt. Keresd meg az utána következő újramondást, és annak
+illesztéséből határozd meg a korábbi hibás tartomány vágási határát. Ne
+követelj szó szerinti egyezést a scripttel. Ha az újramondás vagy a határ nem
+azonosítható biztosan, vagy nem követi újramondás, tartsd meg a hibás részt;
+ha van újramondás, azt is. Rögzítsd a hiányzó vagy bizonytalan javítást a
+közös problémánaplóban, és hagyd a csoportot blokkolva.
 
 ## Ellenőrzés és felvételi sorrend
 
@@ -52,8 +67,8 @@ Az utolsó változat meghatározásához:
    Több számsorozat, egyező sorszám vagy eltérő kamera-számozás esetén ne találgass.
 4. Másolási/módosítási dátum, a manifest listája, script-ID vagy klipnévbe tett
    technikai felvételazonosító nem helyettesíti a rögzítési sorrendet.
-   Ha egyik elfogadott forrás sem dönt, a kérdéses ismétléscsoporthoz kérj
-   közérthető pontosítást; addig minden változata maradjon meg.
+   Ha egyik elfogadott forrás sem dönt, a közös problémánapló szabályai
+   szerint járj el; a pontosítást az elemzés végén kérd.
 
 ## Tartalmi összevetés és vágástervezés
 
@@ -128,6 +143,10 @@ találgass; az érintett csoport legyen `blocked`, a teljes terv pedig
 Csak visszaolvasott és ellenőrzött, minden csoportban `validated` állapotú,
 üres `unresolved` listájú terv jelölhető `ready_for_execution` állapotúnak.
 
-A 4. lépés kimenete kizárólag a teljes `retake_plan.json`; a timeline-hoz nem
-nyúl. A terv elkészülte után add át a fájl útvonalát, és várd meg, amíg a
-felhasználó külön elindítja az 5. lépést.
+A 4. lépés gépi kimenete a teljes `retake_plan.json`; bizonytalanságnál a
+hivatkozott közös problémánapló is készül. A timeline-hoz ne nyúlj.
+Az elemzés végén a közös problémánapló szerinti egyeztetéssel oldd fel a
+bizonytalanságokat, majd frissítsd és ellenőrizd újra a tervet. Feloldatlan
+tételnél a terv maradjon `needs_review`; ne add át végrehajthatóként.
+Csak `ready_for_execution` tervnél add át a fájl útvonalát az 5. lépéshez,
+és várd meg, amíg a felhasználó azt külön elindítja.
