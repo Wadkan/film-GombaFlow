@@ -3,15 +3,16 @@
 ## Külön indítás és bemenetellenőrzés
 
 Ezt a lépést a felhasználó külön indítja a 4. lépés `ready_for_execution`
-állapotú `retake_plan.json` fájljával. Ne indítsd automatikusan a 4. lépés
-befejezése után. Olvasd be a tervben hivatkozott scriptet, jegyzéket és
-`timeline_assembly.json` fájlt, majd ellenőrizd a fájlok tartalomlenyomatait,
-a Gomba 1 registry `resolve_project_name` értékével való egyezést és a terv
-összes klipkapcsolatát.
+állapotú `retake_plan.json` fájljával, a 3. timeline-összeállítás után. Ne
+indítsd automatikusan sem a terv, sem az összeállítás befejezése után. Olvasd
+be a tervben hivatkozott scriptet, jegyzéket és `timeline_assembly.json` fájlt,
+majd ellenőrizd a fájlok tartalomlenyomatait, a Gomba 1 registry
+`resolve_project_name` értékével való egyezést, valamint hogy a terv forrás-
+útvonalai és forrásidői megfelelnek az összeállításban szereplő klipeknek.
 
-Ha a terv nem `ready_for_execution`, valamelyik hivatkozás hiányzik vagy a
-projekt/timeline eltér a terv kiinduló állapotától, ne vágj; jelezd a konkrét
-eltérést. A Resolve-projektet a registry-ben megadott `resolve_project_name`
+Ha a terv nem `ready_for_execution`, valamelyik hivatkozás hiányzik, vagy a
+tervben hivatkozott forrásrész nem található a timeline-összeállításban, ne
+vágj; jelezd a konkrét eltérést. A Resolve-projektet a registry-ben megadott `resolve_project_name`
 alapján nyisd meg, a vágás után pedig natívan mentsd a Resolve-ban; `.drp`
 exportot ne készíts.
 Nem dokumentált kézi vágások automatikus visszafejtése nem része ennek a lépésnek.

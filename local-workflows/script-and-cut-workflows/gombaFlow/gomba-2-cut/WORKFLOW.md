@@ -15,26 +15,25 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    anyagot témaazonosító szerint csoportosítja, és minden csoporthoz az ahhoz
    tartozó meglévő scriptmappába ír egy `recording_index.json` fájlt.
 3. [Vágás előtti preflight](0-preflight.md): egy indexnél azzal folytat;
-   többnél megkérdezi, melyikkel dolgozzon. Minden esetben megkérdezi, hogy
-   meglévő Resolve-projektet használjon-e, vagy újat hozzon létre. Új projektnél
-   a script címét javasolja, majd a jóváhagyott nevet a registry-be menti.
-4. [Timeline összeállítása](3-timeline-assembly.md).
-   A jegyzék alapján a script sorrendjében helyezi el a részeket a megadott
-   timeline-okon, klipnevekkel és a bemondásokra vonatkozó képi/hangszabályokkal.
-   Az ismétlések ekkor egymás után megmaradnak. A felhasználónak csak a scriptben
-   szereplő, de a felvételekből hiányzó részeket listázza.
-5. [Teljes ismétlésvágási terv](4-retake-cleanup.md).
-   ID-nként elemzi az átiratokat, majd elkészíti és ellenőrzi az összes
-   timeline-on szereplő ID teljes `retake_plan.json` tervét. Timeline-t nem
-   módosít; a felhasználó külön indítja a következő lépést.
-6. [Vágási terv végrehajtása](5-retake-execution.md).
-   Külön felhasználói indításra ellenőrzi a teljes tervet, végrehajtja a benne
-   rögzített vágásokat, és elkészíti a `retake_cleanup.json` eredményt.
+   többnél megkérdezi, melyikkel dolgozzon. Ez csak fájlalapú scriptválasztás;
+   Resolve-projektet nem választ és nem hoz létre.
+4. [Teljes ismétlésvágási terv](4-retake-cleanup.md).
+   Az index és az átiratok alapján ID-nként elkészíti és ellenőrzi a teljes
+   `retake_plan.json` tervet. Resolve-projektet és timeline-t nem nyit meg.
+   A kész tervet a felhasználó review-zza; az agent itt megáll.
+5. A review és külön felhasználói indítás után [timeline-összeállítás](3-timeline-assembly.md):
+   ekkor választ vagy hoz létre Resolve-projektet, majd a jegyzék alapján,
+   script-sorrendben elhelyezi a felvételeket a timeline-okon. Az ismétlések
+   ekkor még megmaradnak.
+6. [Vágási terv végrehajtása](5-retake-execution.md): a timeline-összeállítás
+   után, külön felhasználói indításra végrehajtja a tervben rögzített vágásokat,
+   és elkészíti a `retake_cleanup.json` eredményt.
 
-Az indexek elkészülte után a preflight kiválaszt egyetlen scriptet, majd
-annak scriptmappáját, indexét és a registry-ben rögzített Resolve-projektnévvel
-adja át a 4. lépésnek. A további Resolve-műveletek ugyanezt a projektet
-használják és natívan mentik. Az eredeti médiafájlokat egyik lépés sem mozgatja,
+Az indexek elkészülte után a preflight kiválaszt egyetlen scriptet, majd a 4. tervlépésnek átadja annak scriptmappáját és indexét. A terv elkészülte után
+az agent átadja a fájl útvonalát és rövid review-ellenőrzést ad, de nem indítja
+el a timeline-összeállítást. A felhasználó külön indítja a 3. Resolve-lépést;
+az ott választott vagy létrehozott projektet használja az 5. vágási lépés is,
+natív Resolve-mentéssel. Az eredeti médiafájlokat egyik lépés sem mozgatja,
 másolja vagy módosítja; a jegyzékek csak hivatkoznak rájuk.
 
 ## Közös szerződés

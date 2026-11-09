@@ -7,9 +7,9 @@ Ebben a lépésben a timeline-t ne módosítsd. A terv az utolsó megfogalmazás
 tartsa meg; a korábbi részekből csak azt jelölje kivágásra, amit később
 újramondtak. Törlési varázsszó nem szükséges.
 
-Bemenet a [3. lépés](3-timeline-assembly.md) `completed` állapotú
-`timeline_assembly.json` fájlja, az eredeti `recording_index.json`, a hivatkozott
-szóidőbélyeges átiratok és az elfogadott script. Alkalmazd a scriptből hivatkozott
+Bemenet az eredeti `recording_index.json`, a hivatkozott szóidőbélyeges
+átiratok és az elfogadott script. Ezt a tervet Resolve-művelet nélkül készítsd
+el. Alkalmazd a scriptből hivatkozott
 [vágói szerződést](../gomba-1-script-writer/templates/3-script-template.md).
 A bemeneti dokumentumok, eredeti videók és átiratok változatlanok maradnak.
 
@@ -31,9 +31,10 @@ helyi szűrőprogram nem kell.
 
 Az adott ID minden felvételváltozatát együtt vizsgáld, rögzítési sorrendben,
 akkor is, ha külön videófájlokban vannak. A cue-bemondásokat hagyd ki a
-narráció összevetéséből. Az eredeti szóidőbélyegeket és a `recording_id`
-kapcsolatot őrizd meg, hogy a vágási tervet a megfelelő timeline-klipre tudd
-alkalmazni. A beszéd nélküli képi részeket tartsd meg tartalmi elemzés nélkül.
+narráció összevetéséből. Az eredeti szóidőbélyegeket, `recording_id`-t és
+forrásazonosítót őrizd meg, hogy a terv forrásidői a későbbi összeállításkor
+feloldhatók legyenek. A beszéd nélküli képi részeket tartsd meg tartalmi elemzés
+nélkül.
 Ehhez nem szükséges klipenként új subagent.
 
 A [parancsszótár](../gomba-1-script-writer/RECORDING_COMMANDS.md) `HIBA újra`
@@ -48,10 +49,8 @@ közös problémánaplóban, és hagyd a csoportot blokkolva.
 ## Ellenőrzés és felvételi sorrend
 
 Ellenőrizd az `1.0` bemeneti sémákat, a script és a források tartalomlenyomatait,
-a Gomba 1 registry-ben tárolt `resolve_project_name` egyezését és a timeline-klipkapcsolatokat. Olvasd vissza az aktuális
-timeline-t; ha az eltér a 3. lépés rögzített eredményétől, ne alkalmazz elavult
-pozíciókra tervet. Jelezd az eltérést, és várj tisztázásra. Nem dokumentált
-kézi vágások automatikus visszafejtése nem része ennek a lépésnek.
+valamint a forrásfájlokat és időtartományokat. Resolve-projektet, timeline-t
+vagy timeline-klipet ebben a lépésben ne olvass és ne módosíts.
 
 Az ismétléseket egy script-ID-n és cél-timeline-on belül keresd, külön fájlok
 között is. Külön script-részek szándékosan ismételt magyarázatát ne vond össze.
@@ -116,37 +115,40 @@ csak az összes csoport elkészülte után add át. A végrehajtás külön, fel
 
 A terv sémája `1.0`, kötelező mezői:
 
-- `schema_version`, `resolve_project_name`, `script_sha256`, `recording_index_sha256`,
-  `timeline_assembly_sha256`: a pontos bemeneti állapot azonosítói.
+- `schema_version`, `script_sha256`, `recording_index_sha256`: a pontos
+  bemeneti állapot azonosítói.
 - `status`: `ready_for_execution` vagy `needs_review`; csak minden csoport
   elkészülte és ellenőrzése után legyen `ready_for_execution`.
-- `groups`: script-ID-nként `script_id`, `timeline_id`, `status` (`validated`
-  vagy `blocked`), a timeline kiinduló állapotának lenyomata, a felvételi
-  sorrend és bizonyítéka, valamint az adott ID tervezett döntései. Minden
-  timeline-on szereplő script-ID-hoz legyen egy csoport.
+- `groups`: script-ID-nként `script_id`, a scriptből átvett timeline-név,
+  `status` (`validated` vagy `blocked`), a felvételi sorrend és bizonyítéka,
+  valamint az adott ID tervezett döntései. Minden script-ID-hoz legyen csoport.
 - Minden törlési döntés: a korábbi rész `recording_id` és szóhivatkozásai,
   az eredeti kivágandó szöveg, a helyette megtartott újabb rész szóhivatkozásai
   és az ismétlési megfelelés indoka.
-- Minden csoportban `retained_ranges`: a végeredményben megmaradó tartományok
-  rendezett listája, az eredeti felvétel- és szóhivatkozásokkal; a megőrzendő
-  képi részeknél a jegyzék szerinti forrástartománnyal.
+- Minden csoportban `retained_ranges`: a végeredményben megmaradó forrás-
+  tartományok rendezett listája, az eredeti felvétel- és szóhivatkozásokkal;
+  a megőrzendő képi részeknél a jegyzék szerinti forrástartománnyal.
 - `unresolved`: még tisztázandó tételek.
 
-A tervbe írt szóhivatkozásokat az átirat szóidőiből oldd fel forrásidőkre és
-tényleges timeline-klippekre. Ellenőrizd az ID-egyezést, a forrástartományokat,
-a bizonyított újabb változatot, a törlések átfedéseit, a megtartási sorrendet és
-a képi/hang-kivételeket. A terv tartalmazza a feloldott forrásidőket és a
-klippéldány-hivatkozásokat is. Hiányzó vagy érvénytelen hivatkozásnál ne
-találgass; az érintett csoport legyen `blocked`, a teljes terv pedig
+Az átirat szóidőit oldd fel forrásidőkre. Ellenőrizd az ID-egyezést, a
+forrástartományokat, a bizonyított újabb változatot, a törlések átfedéseit,
+a megtartási sorrendet és a képi/hang-kivételeket. Resolve-klipkapcsolatot ne
+keress és ne tárolj. Hiányzó vagy érvénytelen forráshivatkozásnál ne találgass;
+az érintett csoport legyen `blocked`, a teljes terv pedig
 `needs_review`.
 
 Csak visszaolvasott és ellenőrzött, minden csoportban `validated` állapotú,
 üres `unresolved` listájú terv jelölhető `ready_for_execution` állapotúnak.
 
 A 4. lépés gépi kimenete a teljes `retake_plan.json`; bizonytalanságnál a
-hivatkozott közös problémánapló is készül. A timeline-hoz ne nyúlj.
+hivatkozott közös problémánapló is készül. Resolve-hoz ne nyúlj.
 Az elemzés végén a közös problémánapló szerinti egyeztetéssel oldd fel a
 bizonytalanságokat, majd frissítsd és ellenőrizd újra a tervet. Feloldatlan
 tételnél a terv maradjon `needs_review`; ne add át végrehajthatóként.
-Csak `ready_for_execution` tervnél add át a fájl útvonalát az 5. lépéshez,
-és várd meg, amíg a felhasználó azt külön elindítja.
+Csak `ready_for_execution` tervnél add át a fájl útvonalát, és állj meg.
+Mondd ki, hogy a Resolve-projekt és timeline még nem készült el, a terv pedig
+nincs végrehajtva. Rövid review-listában emeld ki a kivágandó és megtartott
+beszédrészeket, a take-sorrendet és a feloldatlan bizonytalanságokat. A
+felhasználói review és külön indítás után indulhat a
+[3. timeline-összeállítás](3-timeline-assembly.md); a vágási tervet azután,
+újabb külön indításra hajtsa végre az [5. lépés](5-retake-execution.md).

@@ -2,11 +2,15 @@
 
 ## Cél és bemenet
 
+Ezt a lépést csak az elfogadott vágási terv felhasználói review-ja és külön
+felhasználói indítás után hajtsd végre. A terv előtti preflight nem csatlakozik
+a Resolve-hoz.
+
 A [jegyzékkészítés](2-recording-index.md) `recording_index.json` kimenete és az
 abban hivatkozott, elfogadott `3-script.md` alapján ténylegesen helyezd el a
 felvett részeket a vágóprogram timeline-jain. Az eredeti videókat és átiratokat
 ne módosítsd. Ebben a lépésben minden azonosított felvételváltozat megmarad;
-az ismétlések felismerése és kivágása a 4. lépés feladata.
+az ismétlések kivágását az elkészült terv szerint az 5. lépés végzi.
 
 Alkalmazd a scriptből hivatkozott
 [vágói szerződést](../gomba-1-script-writer/templates/3-script-template.md) és
@@ -15,21 +19,40 @@ A varázsszót az adott scriptben tárolt értékkel kezeld.
 
 ## Végrehajtás előtti ellenőrzések
 
+Mielőtt Resolve-projektet nyitnál vagy hoznál létre, ellenőrizd, hogy a
+felhasználó a review után külön elindította ezt a lépést, a `retake_plan.json`
+`ready_for_execution` állapotú, és a benne lévő script/index hash-ek egyeznek.
+Ellenőrizd a scriptet, indexet, forrásokat és tartományokat is; bármely hibánál
+állj meg Resolve-művelet nélkül.
+
 - A jegyzék sémája `1.0`, a script tartalomlenyomata és részenkénti adatai
   megegyeznek az aktuálisan olvasott scripttel. Az ID-k és a felvételazonosítók
   érvényesek és egyediek a saját tartományukban.
-- A Gomba 1 `projects/registry.json` kiválasztott `topic_id` rekordjában
-  szereplő `resolve_project_name` megegyezik a preflight átadásával. Ezen a
-  néven töltsd be a projektet a Resolve projektkönyvtárából.
 - A források léteznek, tartalomazonosítójuk változatlan; minden megtartandó
   tartomány nem üres és a forrás időtartamán belül van.
 - A jegyzékben ne maradjon `needs_review` rekord. Ilyenkor a 2. lépésben kell
   tisztázni a hozzárendelést, és utána újraindítani ezt a lépést; a bizonytalan
   felvételt ne minősítsd hiányzónak és ne hagyd el csendben.
+
+Miután az összes fájl- és tervellenőrzés sikeres, olvasd ki a Resolve
+projektlistáját, és keresd meg a kiválasztott `topic_id` nevű projektet.
+
+- Ha létezik pontos névegyezés, csak ezt az egy projektet ajánld fel
+  alapértelmezett választásként; a többi projektet ne listázd.
+- Ha nincs ilyen projekt, listázd a meglévő Resolve-projekteket, és ajánld fel
+  alapértelmezettként egy új projekt létrehozását pontosan a `topic_id` névvel.
+  A felhasználó listából választhasson meglévőt, vagy fogadja el az új név
+  javaslatát; szabad szöveges projektnevet ne kérj.
+
+A választott projekt Resolve-ban látható nevét írd a Gomba 1 registry
+kiválasztott `topic_id` rekordjának `resolve_project_name` mezőjébe, ha még
+nincs rögzítve vagy a választás megváltozott. Ezután nyisd meg vagy hozd létre
+a projektet. Natívan mentsd; `.drp` exportot ne készíts.
+
+- A Gomba 1 `projects/registry.json` kiválasztott `topic_id` rekordjának
+  `resolve_project_name` mezője egyezzen a felhasználó mostani projektválasztásával.
 - A cél-vágóprojekt egyértelmű, a médiakezeléshez és timeline-műveletekhez
-  rendelkezésre áll működő kapcsolat. A Resolve-ban a registry-ből beolvasott
-  `resolve_project_name` nevű projektet töltsd be, a módosítások után pedig
-  a Resolve natív mentését használd; `.drp` exportot ne készíts. A használt eszköz aktuális API-leírásából
+  rendelkezésre áll működő kapcsolat. A használt eszköz aktuális API-leírásából
   ellenőrizd a médiaimportot, forrástartományt, klipelhelyezést, klipnevet,
   hang engedélyezését és a visszaolvasható klippéldány-azonosítót.
 - A script szerinti timeline-nevek használhatók. Meglévő, nem üres cél-timeline
@@ -114,7 +137,8 @@ közérthető részleírással. A behelyezett részeket és ismétléseiket ne s
 Ha nincs hiány, röviden jelezd, hogy az összeállítás kész, nincs hiányzó rész.
 Végrehajtási akadályt hibaként jelezz, ne hiányzó felvételként.
 
-A gépi átadás a `timeline_assembly.json` útvonala; a 4. lépés ezt és az eredeti
-jegyzéket/átiratokat használja. A felhasználónak nem kell vágásnaplót készítenie.
+A gépi átadás a `timeline_assembly.json` útvonala; az 5. lépés ezt, az eredeti
+jegyzéket/átiratokat és a review-zott `retake_plan.json` fájlt használja. A
+felhasználónak nem kell vágásnaplót készítenie.
 A későbbi, nem dokumentált kézi vágások automatikus egyeztetése nem része
 ennek a lépésnek.
