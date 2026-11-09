@@ -12,7 +12,7 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    Kimenet: videónként szóidőbélyeges átirat és `master_transcript.json`;
    szükség esetén felhasználói leírások a `recording_assignments.json` fájlban.
 2. [Timeline-preflight](0-preflight.md): az átiratban
-   talált timeline-nevek összevetése a megadott script céljaival. Több
+   talált témaazonosító-számok összevetése a megadott script témaazonosítójával. Több
    vagy ismeretlen timeline esetén tájékoztatja a felhasználót és megáll;
    önállóan nem választ és nem hoz létre timeline-t.
 3. [Felvételek azonosítása és jegyzék](2-recording-index.md): varázsszavas

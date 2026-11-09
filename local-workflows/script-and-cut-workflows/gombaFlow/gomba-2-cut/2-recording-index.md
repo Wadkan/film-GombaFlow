@@ -49,7 +49,9 @@ A néma felvétel nem hibás vagy törlendő bemenet.
    illetve egyértelműen számként felismert/bemondott ID normalizálható, az
    eredeti szöveg módosítása nélkül. Hiányzó szót, ID-t vagy zárójelet ne pótolj.
 2. Az azonosító parancs a parancsszótár alakjának feleljen meg. A bemondott
-   script-ID és timeline egyezzen a script megfelelő részével. A kliptípust
+   timeline utáni szám egyezzen a script fejlécében szereplő témaazonosító
+   kezdő számrészével; a script-ID egyezzen a megfelelő résszel. A timeline
+   nevét a scriptből vedd át. A kliptípust
    az adott `agent-cue` attribútumából vedd át; ezt nem kell bemondani.
 3. A rész a bemondástól a következő azonosítóbemondás kezdetéig vagy a
    forrásfájl végéig tart. Külön tárold a bemondás és az utána következő

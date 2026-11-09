@@ -12,7 +12,8 @@ Ez a központi lista a teljes tagkészlet. Más tagtípust ne vezess be.
   benne az egyetlen bemondandó `<spoken-cue>`. A felolvasó nézet ezt, majd a
   narrációt mutatja; az attribútumokat nem olvassa fel.
 - `<spoken-cue>` — a varázsszóval keretezett azonosítóutasítás; a benne mondott
-  timeline és ID egyezzen az `agent-cue` attribútumaival.
+  timeline utáni szám a fejléc témaazonosítójának kezdő számrésze legyen;
+  a script-ID egyezzen az `agent-cue` attribútumával.
 - `<narration>` — a felolvasandó szöveg a spoken cue után; a cue-t ne ismételje.
 - `<screen-action>` — a képernyőművelet és az eközben látható eredmény egyetlen
   blokkban; előadói utasítás, nem felolvasandó szöveg.
@@ -27,9 +28,10 @@ Ez a központi lista a teljes tagkészlet. Más tagtípust ne vezess be.
   A vágó az adott scriptből olvassa, így egy későbbi központi változtatás
   nem értelmezi át a már elkészült scripthez tartozó felvételeket.
 - A parancsok jelentését és hatókörét a
-  [parancsszótár](../RECORDING_COMMANDS.md) adja. Minden azonosításban szerepeljen
-  a cél-timeline neve és az egyedi script-ID. Alapértelmezett timeline a
-  történetben elfogadott teljes videócím; eltérő cél csak egyeztetett adatból vehető át.
+  [parancsszótár](../RECORDING_COMMANDS.md) adja. Minden azonosításban a
+  felhasználó a témaazonosító kezdő számrészét mondja be a timeline címe helyett,
+  majd az egyedi script-ID-t. A timeline címe továbbra is szerepeljen a scriptben.
+  Egy script egy timeline-t jelöl.
 - Minden külön felvehető rész kapjon a teljes scripten belül egyedi, pozitív
   egész script-ID-t. Ez külön azonosító a fejezet-ID mellett. Javításkor a már
   kiosztott ID-k maradjanak meg; új rész szabad ID-t kapjon, újraszámozás nélkül.
@@ -42,12 +44,14 @@ Ez a központi lista a teljes tagkészlet. Más tagtípust ne vezess be.
   rövid leírását pedig a rész művelete és mutatott tartalma alapján fogalmazza meg.
 - A tagelt blokkok XML-ként olvashatók legyenek: szövegben az `&` és `<`,
   attribútumban az idézőjel is megfelelő XML-entitással szerepeljen.
-  Ez tárolási jelölés; a felolvasandó szöveg és a timeline neve a feloldott érték.
+  Ez tárolási jelölés; a felolvasandó szövegben a témaazonosító száma hangzik el
+  a timeline címe helyett.
 - A felvételi blokkokban a fenti tagtípusokat használd; a bemondás előzze meg az
   általa azonosított tartalmat. A tagelt blokkokat a generált Markdownban
   kódblokkokban őrizd meg, hogy láthatók maradjanak.
 - Review-ban ellenőrizd a fejlécben tárolt varázsszó és a bemondások egyezését,
-  a kötelező timeline-t, az egyedi script-ID-kat, a szótár szerinti kliptípust,
+  a témaazonosító számának helyes bemondását, a timeline címét, az egyedi
+  script-ID-kat, a szótár szerinti kliptípust,
   az átadási adatok és a részek egyezését, a tagpárokat és a tartalmak
   helyes elkülönítését. Az elfogadott scriptet a saját rögzített értékéhez
   ellenőrizd; a központi érték későbbi változása önmagában nem hiba.
@@ -56,7 +60,7 @@ Kitöltött példa, `serpenyő` beállítás esetén:
 
 ```xml
 <agent-cue timeline="Film címe" script-id="15" clip-type="talking head">
-<spoken-cue>serpenyő timeline Film címe script 15 serpenyő</spoken-cue>
+<spoken-cue>serpenyő timeline 1 script 15 serpenyő</spoken-cue>
 </agent-cue>
 
 <narration>
@@ -93,6 +97,8 @@ A vágó az átadási blokkból hivatkozott jelen szerződést alkalmazza.
   Ugyanazon script-ID újrafelvételei külön felvételazonosítókat kapjanak.
 - **Felismerés és vágás:** csak a két felismert varázsszó közé zárt,
   parancsszótárnak megfelelő utasítást dolgozza fel. Az ID a scriptben létezzen;
+  a bemondott `timeline` utáni szám egyezzen a script `Témaazonosító` mezőjének
+  kezdő számrészével. A cél timeline nevét a scriptből vegye át;
   hiányzó pár, ismeretlen ID vagy bizonytalan hozzárendelés esetén az érintett
   részt jelölje tisztázandónak, automatikus kivágás és elhelyezés nélkül.
   A forrásidőbélyegekből határozza meg a tartalom határait a parancsszótár szerint.
@@ -130,7 +136,7 @@ A vágó az átadási blokkból hivatkozott jelen szerződést alkalmazza.
 
 # Forgatási script — [téma címe]
 
-- Témaazonosító: [id]
+- Témaazonosító: [a projekthez már kiosztott topic-id, például 1-rovid-cim]
 - Bemeneti változatok és briefjóváhagyás: [futtatói referenciák]
 - Javítási kör review-referenciája: [referencia / első változat]
 - Felvételi varázsszó: [a beolvasott magic_word tényleges értéke]
@@ -169,7 +175,7 @@ első megfelelő narrációja tartalmazza a kész átvezető mondatot is.
 
 ```xml
 <agent-cue timeline="[cél-timeline neve]" script-id="[egyedi script-ID]" clip-type="[típus a RECORDING_COMMANDS.md szótárából]">
-<spoken-cue>[varázsszó] timeline [cél-timeline neve] script [egyedi script-ID] [varázsszó]</spoken-cue>
+<spoken-cue>[varázsszó] timeline [a témaazonosító kezdő számrésze] script [egyedi script-ID] [varázsszó]</spoken-cue>
 </agent-cue>
 
 <narration>

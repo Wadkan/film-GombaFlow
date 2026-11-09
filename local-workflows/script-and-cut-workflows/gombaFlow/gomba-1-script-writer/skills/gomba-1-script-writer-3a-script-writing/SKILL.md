@@ -33,6 +33,8 @@ description: "Teljes magyar forgatási script kidolgozása vagy review alapján 
    hatáskörű hibát a korábbi tervezési hibától; az utóbbit jelezd vissza.
 2. Technikai oktató és történetmesélő forgatókönyvíróként, a workflow szerinti
    modellel, a fejezetterv azonosítóit megtartva dolgozd ki a template blokkjait.
+   A projekt már kiosztott témaazonosítóját használd; a bemondásba annak kezdő
+   számrésze kerüljön a timeline címe helyett.
    A felvételi jelöléseket a template „Kitöltési és review-szabályok” blokkja
    szerint készítsd el; a szabályblokkot ne másold a kimenetbe.
 3. Fejben kövesd végig az adat és az állapot útját. A néző minden szükséges

@@ -9,10 +9,13 @@ A varázsszó értékét a készülő script a központi `local-workflows/record
 
 - **Cél:** a következő felvett rész cél-timeline-jának és egyedi script-ID-jának
   megadása.
-- **Kötelező adatok:** timeline neve és a scriptben szereplő egyedi részazonosító.
+- **Kötelező adatok:** a script fejlécében szereplő témaazonosító kezdő
+  számrésze és a scriptben szereplő egyedi részazonosító. A felhasználó a
+  témaazonosító számát mondja be; külön azonosítót ne
+  ossz ki.
 - **Hatókör:** a záró varázsszó után kezdődik, és a felvételi fájl végéig vagy
   ugyanabban a fájlban a következő azonosító parancsig tart. Külön lezáró azonosító nem szükséges.
-- **Példa:** `serpenyő timeline Film címe script 15 serpenyő`.
+- **Példa:** `serpenyő timeline 1 script 15 serpenyő`.
 
 ## Kliptípusok
 

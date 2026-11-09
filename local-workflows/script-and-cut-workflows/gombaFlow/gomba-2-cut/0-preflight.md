@@ -1,6 +1,6 @@
 ---
 name: 0-preflight
-description: "Rövid ellenőrzés a felvételek átírása után: a bemondott timeline-nevek egyeztetése a script céljaival, még a jegyzékkészítés előtt."
+description: "Rövid ellenőrzés a felvételek átírása után: a bemondott témaazonosító-szám ellenőrzése a scripthez, még a jegyzékkészítés előtt."
 ---
 
 # Timeline-preflight
@@ -13,14 +13,15 @@ description: "Rövid ellenőrzés a felvételek átírása után: a bemondott ti
 
 ## Ellenőrzés
 
-1. Olvasd ki a scriptben engedélyezett cél-timeline-neveket.
-2. Az átiratokból keresd ki a felismert azonosító-bemondások timeline-mezőit.
+1. Olvasd ki a script fejlécének témaazonosítójából a kezdő számrészt.
+2. Az átiratokból gyűjtsd ki az érvényes azonosító-bemondásokban a `timeline`
+   után szereplő számokat.
    A hibás, hiányos vagy bizonytalan bemondást ne értelmezd találgatással.
-3. Vesd össze a talált timeline-okat a script céljaival.
+3. Vesd össze a talált számokat a script témaazonosítójának számrészével.
 
 ## Eredmény és kapu
 
-- Egyetlen, scriptben szereplő timeline és egyértelmű bemondások esetén jelezd röviden: `READY`, majd add meg a timeline-nevet.
-- Több talált timeline, scriptben nem szereplő timeline vagy bizonytalan bemondás esetén sorold fel röviden az érintett neveket, jelezd a problémát a felhasználónak, és állj meg a jegyzékkészítés előtt. Várd meg a felhasználó hozzárendelését vagy javítását.
+- Egyetlen, script témaazonosítójával egyező szám és egyértelmű bemondások esetén jelezd röviden: `READY`.
+- Több különböző szám, eltérő szám vagy bizonytalan bemondás esetén sorold fel a talált értékeket, tájékoztasd a felhasználót, és állj meg a jegyzékkészítés előtt. Várd meg a javítást.
 - Ne válaszd ki önállóan a cél-timeline-t, ne olvassz össze timeline-okat, és ne hozz létre új timeline-t.
 - A preflight csak ellenőriz és tájékoztat; nem módosít fájlt vagy timeline-t.
