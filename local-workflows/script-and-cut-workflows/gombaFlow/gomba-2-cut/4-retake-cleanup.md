@@ -11,7 +11,8 @@ Bemenet az eredeti `recording_index.json`, a hivatkozott szóidőbélyeges
 átiratok és az elfogadott script. Ezt a tervet Resolve-művelet nélkül készítsd
 el. Alkalmazd a scriptből hivatkozott
 [vágói szerződést](../gomba-1-script-writer/templates/3-script-template.md).
-A bemeneti dokumentumok, eredeti videók és átiratok változatlanok maradnak.
+Az eredeti videók és átiratok változatlanok maradnak. A felvételi jegyzéket
+csak a felhasználó által jelzett pótfelvétellel, az alábbi folytatásban bővítsd.
 
 Alkalmazd a [közös problémánapló](../PROBLEM_LOG.md) szabályait.
 Tartalmi vagy felvételi sorrendi bizonytalanságnál az érintett ismétléscsoport
@@ -126,7 +127,9 @@ Az ismétlések tervezése után, a terv végrehajthatónak jelölése előtt:
    felvétel meglétét vizsgáld; a narráció hiánya nem hiba.
 3. A teljesen hiányzó felvételeket és mondatokat a script saját `problems.md`
    fájljának a közös problémánapló szerinti hiányzó felvételrészek címe alá
-   írd, script-ID-val kezdődő tételekben. Teljesen hiányzó talking head résznél
+   írd, script-ID-val kezdődő tételekben. Minden hiányhoz azonnal oszd ki és
+   írd a folytatási szabály szerinti stabil `H1`, `H2`, … azonosítót is.
+   Teljesen hiányzó talking head résznél
    a script felolvasandó szövegét idézd szó szerint; képi résznél a kapcsolódó
    `screen-action` szövegét. A nem megbízható átirat miatti bizonytalanságot
    `ellenőrizendő` jelzéssel különböztesd meg a hiányzóként azonosított résztől;
@@ -134,13 +137,15 @@ Az ismétlések tervezése után, a terv végrehajthatónak jelölése előtt:
    meg és `manual_review_required: true` értékkel jelöld kézi review-ra. Az
    érintett csoport korábbi törlési döntéseit vesd el, és a `retained_ranges`
    listába minden felvétel teljes, jegyzék szerinti megtartandó tartományát írd.
-4. Gyűjtsd össze az összes hiányt, majd a terv legyen `needs_review`. A chatben
+4. Gyűjtsd össze az összes hiányt a terv `missing_items` listájába ugyanazzal
+   a hiányazonosítóval, `awaiting_decision` állapottal, majd a terv legyen
+   `needs_review`. A chatben
    csak a hibafájl útvonalát és a döntés szükségességét jelezd; a hiányzó ID-kat
    és szövegeket kizárólag a fájlban listázd. A felhasználó részenként dönthet
    a kihagyásról vagy új felvételről; az átirat hibáját is jelezheti.
 5. A felhasználó döntését a problémánapló szabályai szerint rögzítsd. Kihagyás
-   esetén a terv `approved_omissions` listájában őrizd meg a script-ID-t, a
-   kihagyott scriptbeli szöveget és a döntés hivatkozását. Teljes script-rész
+   esetén a terv `approved_omissions` listájában őrizd meg a hiányazonosítót,
+   a script-ID-t, a kihagyott scriptbeli szöveget és a döntés hivatkozását. Teljes script-rész
    kihagyásánál a csoport `validated`, a felvételi sorrend és `retained_ranges`
    listája üres, sorrendi bizonyítéka `null`, `manual_review_required` értéke
    `false`. Új felvétel esetén a terv maradjon
@@ -152,6 +157,63 @@ Az ismétlések tervezése után, a terv végrehajthatónak jelölése előtt:
 Az ismétlésvágás tartalmi bizonytalansága továbbra sem blokkolja a tervet, ha
 az érintett felvételek teljesen megmaradnak. A hiányzó felvételrész miatti
 felhasználói döntés külön végrehajtási feltétel.
+
+## Folytatás hiányzó felvétel után
+
+A skill újraindításakor először olvasd be a meglévő `retake_plan.json` fájlt.
+Ha annak állapota `needs_review`, a `missing_items` alapján folytasd; ne kezdd
+újra a kész csoportokat, és ne kérdezd újra a már rögzített döntéseket.
+Először oldd fel az esetleges `pending_index_update` állapotot az alábbi
+szabály szerint, majd ellenőrizd a script és a jegyzék lenyomatát; váratlan
+eltérésnél állj meg és jelezz.
+
+Korábbi `1.1` tervnél, ha még nincs `missing_items`, a `problems.md` és a terv
+hiánytételeiből egyértelműen azonosítható hiányokhoz készíts állapotot, a már
+rögzített döntések megőrzésével. Ha a tétel vagy döntés nem azonosítható
+egyértelműen, jelezd az akadályt, ne találgass. Hiány nélkül a lista üres.
+
+- Hiányonként adj stabil `H1`, `H2`, … azonosítót, amelyet későbbi futásokban
+  ne változtass meg vagy használj fel más hiányhoz; a már lezárt tételek ID-ja
+  sem használható újra. A `problems.md` tétele a
+  script-ID-val kezdődjön, és tartalmazza a hiányazonosítót és a pontos szöveget.
+- Egy válasz több hiányra is vonatkozhat. Kihagyáskor rögzítsd az
+  `approved_omissions` bejegyzést és a hiány `omitted` állapotát. Az „újra
+  felveszem” döntés `awaiting_recording`; ha a felhasználó megadja a kész
+  pótfelvétel külön mappáját, `recording_received`, a mappa útvonalával.
+  A döntéseket a problémánaplóba is jegyezd be, és a tervet az átírás előtt
+  mentsd el.
+- A már kész pótfelvételeket a többi hiány döntésétől függetlenül dolgozd fel.
+  Ha ezután egy hiány még döntésre vagy felvételre vár, mentsd a tervet
+  `needs_review` állapottal, a chatben csak a problémalista útvonalát és a
+  szükséges következő lépést jelezd, majd várj.
+- A megadott külön mappát a meglévő [átírással](1-transcription.md) dolgozd fel,
+  majd mentsd a létrejött manifest útvonalát és a `transcribed` állapotot. Ha
+  a feldolgozás megszakadt, a már létező manifestet csak akkor használd újra,
+  ha a mappa, forrásútvonalak és forráshashek alapján igazolhatóan ehhez a
+  pótfelvételhez tartozik. Meglévő átiratot ne írj felül.
+- A [jegyzékkészítés](2-recording-index.md) pótfelvételi lépésével csak az új
+  rekordokat add a kiválasztott script jegyzékéhez. Ha a manifest és az
+  ellenőrzött forrásai már szerepelnek a jegyzékben, ne fűzd hozzá újra; folytasd
+  az érintett hiányok újraellenőrzésével. A jegyzék mentése előtt
+  ments `pending_index_update` állapotot a tervbe a régi és a tervezett új
+  jegyzék-SHA-256-tal és a manifest útvonalával; a terv legyen `needs_review`,
+  a `coverage_checked` pedig `false`. Mentés után ellenőrizd az új
+  hash-t, vezesd át a `recording_index_sha256` mezőbe, majd töröld a függő
+  állapotot. Megszakítás után a régi hash esetén a mentés még hátravan; az
+  újra előállított jegyzék hash-e egyezzen a tervezettel. A tervezett új hash
+  esetén csak az átvezetés maradt hátra. Más hash-nél állj meg.
+- Az érintett csoportokat és hiányokat ellenőrizd újra. A hiány csak a tényleges
+  lefedettség igazolása után legyen `resolved`; ha továbbra is hiányzik, maradjon
+  `awaiting_recording`. A korábbi kihagyási döntéseket őrizd meg. A problémalista
+  megfelelő tételéhez fűzd hozzá az eredményt. A `resolved` és `omitted` hiányok
+  ne maradjanak döntésre váróként az `unresolved` listában. Az érintett részek
+  ellenőrzése után a korábban változatlan csoportok eredményével együtt újra
+  állapítsd meg a `coverage_checked` értékét.
+
+Ha a felhasználó átirathibát jelez, a felvételt őrizd meg kézi review-ra, és a
+döntést rögzítsd; beszédet ne találj ki. Egyik folytatási lépés se módosítson
+Resolve-timeline-t. Csak akkor legyen a terv `ready_for_execution`, ha minden
+hiány `omitted` vagy `resolved`, és a többi meglévő tervkapu is teljesül.
 
 ## Mentett terv és végrehajtási kapu
 
@@ -188,9 +250,17 @@ A terv sémája `1.1`, kötelező mezői:
 - `unresolved`: kézi vágásra vagy tényleges bemeneti hiba miatt tisztázásra
   váró tételek, valamint döntésre váró hiányzó felvételrészek, az érintett
   script-ID-vel és indokkal.
+- `missing_items`: a hiányok listája; elemenként stabil `issue_id`, `script_id`,
+  a pontos `script_text`, `status`, valamint ha rendelkezésre áll,
+  `recording_dir`, `manifest_path` és a döntés hivatkozása. A `status` értéke
+  `awaiting_decision`, `awaiting_recording`, `recording_received`, `transcribed`,
+  `resolved` vagy `omitted`. Hiány nélkül üres lista.
 - `approved_omissions`: a felhasználó által jóváhagyott kihagyások listája;
-  elemenként a script-ID, a kihagyott scriptbeli szöveg és a döntés hivatkozása.
+  elemenként `issue_id`, script-ID, a kihagyott scriptbeli szöveg és a döntés hivatkozása.
   Ha nincs jóváhagyott kihagyás, üres lista.
+- `pending_index_update`: folyamatban lévő pótfelvételi jegyzékmentésnél a
+  `manifest_path`, `before_sha256` és `after_sha256`; egyébként `null`. Korábbi
+  `1.1` tervben a hiányzó mezőt `null` értékként kezeld.
 
 Az átirat szóidőit oldd fel forrásidőkre. Ellenőrizd az ID-egyezést, a
 forrástartományokat, a bizonyított újabb változatot, a törlések átfedéseit,

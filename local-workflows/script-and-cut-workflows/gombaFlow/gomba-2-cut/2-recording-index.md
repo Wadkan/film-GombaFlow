@@ -87,7 +87,8 @@ Egymást átfedő hozzárendeléseknél kérj pontosítást.
 
 A fenti kimeneti szabály szerinti scriptmappában készíts új
 `recording_index.json` fájlt minden témaazonosítóhoz. Meglévő jegyzéket ne írj
-felül automatikusan; az újrafeldolgozást egyeztesd. Az eredeti médiafájlok és
+felül automatikusan; az újrafeldolgozást egyeztesd. A felhasználó által jelzett
+pótfelvétel hozzáadása a lent leírt kivétel. Az eredeti médiafájlok és
 átiratszövegek változatlanok maradnak; a kimenet új értelmezési adatokat ad hozzá.
 
 A gyökér mezői:
@@ -98,6 +99,9 @@ A gyökér mezői:
   útvonala, tartalomlenyomata és benne rögzített változatreferenciája.
 - `manifest_path`, `assignments_path`: abszolút bemeneti útvonalak;
   hozzárendelési fájl hiányában az utóbbi `null`.
+- `additional_manifests`: pótfelvételekhez opcionális lista; elemenként az
+  abszolút `manifest_path` és `assignments_path`, utóbbi hiányában `null`.
+  Hiányzó lista üresnek számít; az eredeti `manifest_path` változatlan marad.
 - `magic_word`: a scriptben tárolt érték.
 - `script_parts`: a script összes része, a törzs sorrendjében; elemenként
   `script_id`, `chapter_id`, `script_order`, `timeline`, `clip_type`, `description`.
@@ -132,6 +136,28 @@ A felvételfájlok közötti rögzítési sorrend nem vezethető le a manifest
 betűrendjéből. Az ismétlésvágási lépés ezt rögzítési metaadatból,
 ennek hiányában egyértelmű fájlnévsorszámból állapítja meg; itt ne találd ki,
 melyik felvétel volt az utolsó.
+
+## Pótfelvétel hozzáadása
+
+Csak a [vágási terv](4-retake-cleanup.md) mentett, felhasználó által jelzett
+pótfelvételénél bővíts meglévő jegyzéket. A külön mappában átírt új manifestet
+és esetleges hozzárendeléseit a fenti bemenetellenőrzés és azonosítás szerint
+dolgozd fel, a kiválasztott scriptre és annak `topic_id` értékére szűrve. Az új
+manifest átiratútvonalait az új manifest mappájához képest oldd fel.
+
+A meglévő rekordokat és `recording_id` értékeket őrizd meg; kizárólag az új,
+azonosított forrásrészeket add hozzá, egyedi új `recording_id` értékekkel.
+Azonos `source_id` másolataiból ne hozz létre új felvételt. Az új manifest és
+hozzárendelési fájl útvonalát egyszer rögzítsd az `additional_manifests`
+listában. Az eredeti manifestet, átiratokat és forrásokat ne módosítsd.
+A hozzáfűzést és a mentett JSON bájtjait azonos bemenetnél azonosan állítsd elő,
+hogy megszakítás után a tervezett hash újra ellenőrizhető legyen.
+
+Mentés előtt a bővített jegyzék tervezett pontos tartalmának SHA-256 értékét
+add át a tervlépésnek a folytatási állapot rögzítéséhez. Csak a tervlépés
+mentett `pending_index_update` állapota után írd le ugyanazt a jegyzéktartalmat.
+Olvasd vissza, és az új hash-t add át a tervlépésnek. Az érintett script- és
+forrásazonosság vagy a tervezett hash eltérésénél állj meg konkrét hibával.
 
 ## Átadás
 

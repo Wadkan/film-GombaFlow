@@ -3,8 +3,9 @@
 ## Cél és bemenet
 
 A felhasználó saját, eredeti videófájljainak átírása a helyi Faster-Whisperrel.
-Bemenet az eredeti felvételek gyökérmappája. Először kérdezd meg a felhasználótól
-az útvonalat, és várd meg a választ; addig ne indíts feldolgozást. A kimeneti
+Bemenet az eredeti felvételek gyökérmappája. Ha a felhasználó az útvonalat már
+megadta, azt használd; különben kérdezd meg, és várd meg a választ, mielőtt
+feldolgozást indítasz. A kimeneti
 mappára ne kérdezz rá: automatikusan a gyökérmappa `transcripts` almappája.
 Az MP4, MOV, MKV, WEBM, M4V, AVI, MTS és M2TS fájlok az összes almappából is
 feldolgozásra kerülnek. Szimbolikus linkek nem részei a feldolgozásnak.
