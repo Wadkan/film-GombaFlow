@@ -30,7 +30,9 @@ az ehhez tartozó munkaváltozatok neve:
 
 Mielőtt Resolve-projektet nyitnál vagy hoznál létre, ellenőrizd, hogy a
 felhasználó a review után külön elindította ezt a lépést, a `retake_plan.json`
-`ready_for_execution` állapotú, és a benne lévő script/index hash-ek egyeznek.
+`1.1` sémájú, `ready_for_execution` állapotú, `coverage_checked` értéke `true`,
+és a benne lévő script/index hash-ek egyeznek. Korábbi vagy hiányellenőrzés
+nélküli tervet ne fogadj el; azt az aktuális tervlépésben kell újra elkészíteni.
 Ellenőrizd a scriptet, indexet, forrásokat és tartományokat is; bármely hibánál
 állj meg Resolve-művelet nélkül.
 
@@ -116,7 +118,8 @@ A gyökér mezői:
   az elem `timeline_id`, `timeline_name`, `frame_rate` és `start_frame` mezői
   a vágóprogramból visszaolvasva.
 - `clips`: minden ténylegesen elhelyezett klippéldány kapcsolata.
-- `missing_parts`: a script azon részei, amelyekhez nincs azonosított felvétel;
+- `missing_parts`: a script azon részei, amelyekhez nincs azonosított felvétel,
+  a terv `approved_omissions` listája szerinti jóváhagyott kihagyások nélkül;
   elemenként `script_id`, `chapter_id`, `timeline`, `description`.
 - `error`: végrehajtási hiba vagy `null`.
 
@@ -143,10 +146,13 @@ rögzítsd `incomplete` kimenetben; ne jelents sikert, és ne indíts automatiku
 
 ## Felhasználói eredmény
 
-Sikeres összeállítás után kizárólag a `missing_parts` tartalmát listázd
-közérthető részleírással. A behelyezett részeket és ismétléseiket ne sorold fel.
-Ha nincs hiány, röviden jelezd, hogy az összeállítás kész, nincs hiányzó rész.
-Végrehajtási akadályt hibaként jelezz, ne hiányzó felvételként.
+Váratlan, a tervben nem jóváhagyott hiánynál a közös problémánapló szerint a
+script saját `problems.md` fájljába írd az érintett részeket, és a felhasználónak
+csak a napló útvonalát és az akadályt jelezd; a hiányzó részeket ne listázd a
+chatben. Ilyenkor a kimenet `incomplete`, és a tervet újra kell ellenőrizni.
+Ha nincs ilyen hiány, röviden jelezd, hogy az összeállítás kész. A jóváhagyott
+kihagyásokat ne jelentsd újra hiányként. Végrehajtási akadályt hibaként jelezz,
+ne hiányzó felvételként.
 
 A gépi átadás a `timeline_assembly.json` útvonala; az 5. lépés ezt, az eredeti
 jegyzéket/átiratokat és a review-zott `retake_plan.json` fájlt használja. A

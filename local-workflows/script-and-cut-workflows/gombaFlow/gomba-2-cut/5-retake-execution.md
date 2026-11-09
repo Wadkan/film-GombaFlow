@@ -2,14 +2,16 @@
 
 ## Külön indítás és bemenetellenőrzés
 
-Ezt a lépést a felhasználó külön indítja a 4. lépés `ready_for_execution`
-állapotú `retake_plan.json` fájljával, a 3. timeline-összeállítás után. Ne
+Ezt a lépést a felhasználó külön indítja a 4. lépés `1.1` sémájú,
+`coverage_checked: true` és `ready_for_execution` állapotú `retake_plan.json`
+fájljával, a 3. timeline-összeállítás után. Ne
 indítsd automatikusan sem a terv, sem az összeállítás befejezése után. Olvasd
 be a tervben hivatkozott scriptet, jegyzéket és `timeline_assembly.json` fájlt,
 majd ellenőrizd a fájlok tartalomlenyomatait, valamint hogy a terv forrásútvonalai
 és forrásidői megfelelnek az összeállításban szereplő klipeknek.
 
-Ha a terv nem `ready_for_execution`, valamelyik hivatkozás hiányzik, vagy a
+Ha a terv nem `1.1` sémájú, a hiányellenőrzés nem teljes, nem
+`ready_for_execution`, valamelyik hivatkozás hiányzik, vagy a
 tervben hivatkozott forrásrész nem található a timeline-összeállításban, ne
 vágj; jelezd a konkrét eltérést. A Resolve-projektet a `timeline_assembly.json`
 `resolve_project_name` értéke alapján nyisd meg, majd ellenőrizd a visszaolvasott

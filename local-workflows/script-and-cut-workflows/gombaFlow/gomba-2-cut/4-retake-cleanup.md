@@ -107,6 +107,52 @@ törlési felhatalmazások: töltelékszót, csendet vagy félmondatot ebben a l
 csak akkor hagyhatsz ki, ha az igazolt újramondási tartomány része.
 A beszédhiány nem ismétlés; B-rollt vagy animációt ne törölj szöveghiány miatt.
 
+## Hiányzó felvételrészek ellenőrzése
+
+Az ismétlések tervezése után, a terv végrehajthatónak jelölése előtt:
+
+1. A `recording_index.json` `script_parts` listáján a script sorrendjében haladj
+   végig. Ellenőrizd, hogy minden script-ID-hoz van-e azonosított felvétel.
+   Egy felvételt nem helyettesít a scriptben szereplő leírás. Ha egy
+   azonosítatlan vagy `needs_review` tartomány hozzátartozhat, ne állítsd
+   bizonyítottnak a hiányt; jelöld azonosításra várónak. Egyértelműen hiányzó
+   felvételnél az adott csoport a döntésig `blocked`, `retained_ranges` listája
+   üres; ne találj ki forrást vagy szóidőt.
+2. A felvett `talking head` részek `<narration>` szövegét vesd össze a terv
+   szerint megtartandó szóidőbélyeges átiratrészekkel. Az átfogalmazott,
+   azonos jelentésű mondat megfelel; szó szerinti egyezést ne követelj.
+   Ha egy teljes scriptmondat hiányzik, rögzítsd a script-ID-ját és a scriptben
+   szereplő pontos szövegét. A képi, beszéd nélkül felvett részeknél csak a
+   felvétel meglétét vizsgáld; a narráció hiánya nem hiba.
+3. A teljesen hiányzó felvételeket és mondatokat a script saját `problems.md`
+   fájljának a közös problémánapló szerinti hiányzó felvételrészek címe alá
+   írd, script-ID-val kezdődő tételekben. Teljesen hiányzó talking head résznél
+   a script felolvasandó szövegét idézd szó szerint; képi résznél a kapcsolódó
+   `screen-action` szövegét. A nem megbízható átirat miatti bizonytalanságot
+   `ellenőrizendő` jelzéssel különböztesd meg a hiányzóként azonosított résztől;
+   önmagában emiatt ne blokkolj, az érintett csoport minden felvételét tartsd
+   meg és `manual_review_required: true` értékkel jelöld kézi review-ra. Az
+   érintett csoport korábbi törlési döntéseit vesd el, és a `retained_ranges`
+   listába minden felvétel teljes, jegyzék szerinti megtartandó tartományát írd.
+4. Gyűjtsd össze az összes hiányt, majd a terv legyen `needs_review`. A chatben
+   csak a hibafájl útvonalát és a döntés szükségességét jelezd; a hiányzó ID-kat
+   és szövegeket kizárólag a fájlban listázd. A felhasználó részenként dönthet
+   a kihagyásról vagy új felvételről; az átirat hibáját is jelezheti.
+5. A felhasználó döntését a problémánapló szabályai szerint rögzítsd. Kihagyás
+   esetén a terv `approved_omissions` listájában őrizd meg a script-ID-t, a
+   kihagyott scriptbeli szöveget és a döntés hivatkozását. Teljes script-rész
+   kihagyásánál a csoport `validated`, a felvételi sorrend és `retained_ranges`
+   listája üres, sorrendi bizonyítéka `null`, `manual_review_required` értéke
+   `false`. Új felvétel esetén a terv maradjon
+   `needs_review`, amíg az új átirat és frissített jegyzék alapján az érintett
+   részt újra nem ellenőrizted. A megváltozott jegyzéklenyomattal készíts
+   aktuális tervet. Átirathiba esetén ne módosítsd az eredeti átiratot, és ne
+   generálj beszédet; a nem biztosan vágható felvétel maradjon meg kézi review-ra.
+
+Az ismétlésvágás tartalmi bizonytalansága továbbra sem blokkolja a tervet, ha
+az érintett felvételek teljesen megmaradnak. A hiányzó felvételrész miatti
+felhasználói döntés külön végrehajtási feltétel.
+
 ## Mentett terv és végrehajtási kapu
 
 Mindig csak az éppen feldolgozott script-ID vágását tervezd meg. Az adott ID
@@ -116,10 +162,12 @@ egyidejűleg az elemzési kontextusban. Timeline-t ne módosíts; a teljes terve
 csak az összes csoport elkészülte után add át. A végrehajtás külön, felhasználó
 által indított [5. lépésben](5-retake-execution.md) történik.
 
-A terv sémája `1.0`, kötelező mezői:
+A terv sémája `1.1`, kötelező mezői:
 
-- `schema_version`, `script_sha256`, `recording_index_sha256`: a pontos
-  bemeneti állapot azonosítói.
+- `schema_version`: `"1.1"`; `script_sha256` és `recording_index_sha256` a
+  pontos bemeneti állapot azonosítói.
+- `coverage_checked`: csak akkor `true`, ha minden script-rész hiányellenőrzése
+  elkészült a fenti szabályok szerint; különben `false`.
 - `status`: `ready_for_execution` vagy `needs_review`; csak minden csoport
   elkészülte és ellenőrzése után legyen `ready_for_execution`.
 - `groups`: script-ID-nként `script_id`, a scriptből átvett timeline-név,
@@ -138,7 +186,11 @@ A terv sémája `1.0`, kötelező mezői:
   `retained_start`–`retained_end` tartománya szerepeljen, törlési döntés nélkül;
   ezekhez forrástartomány-hivatkozás kell, szóhivatkozás nem kötelező.
 - `unresolved`: kézi vágásra vagy tényleges bemeneti hiba miatt tisztázásra
-  váró tételek, az érintett script-ID-vel és indokkal.
+  váró tételek, valamint döntésre váró hiányzó felvételrészek, az érintett
+  script-ID-vel és indokkal.
+- `approved_omissions`: a felhasználó által jóváhagyott kihagyások listája;
+  elemenként a script-ID, a kihagyott scriptbeli szöveg és a döntés hivatkozása.
+  Ha nincs jóváhagyott kihagyás, üres lista.
 
 Az átirat szóidőit oldd fel forrásidőkre. Ellenőrizd az ID-egyezést, a
 forrástartományokat, a bizonyított újabb változatot, a törlések átfedéseit,
@@ -148,15 +200,18 @@ az érintett csoport legyen `blocked`, a teljes terv pedig
 `needs_review`.
 
 Csak visszaolvasott és ellenőrzött, minden csoportban `validated` állapotú terv
-jelölhető `ready_for_execution` állapotúnak. Az `unresolved` tartalmazhat kézi
+jelölhető `ready_for_execution` állapotúnak, ha `coverage_checked` értéke is
+`true`. Az `unresolved` tartalmazhat kézi
 vágásra jelölt csoportot, ha annak minden változata ellenőrzötten megmarad.
-Hiányzó vagy érvénytelen forrásadat viszont továbbra is blokkolja a tervet.
+Felhasználói döntésre váró hiányzó felvételrész, illetve hiányzó vagy érvénytelen
+forrásadat viszont továbbra is blokkolja a tervet.
 
 A 4. lépés gépi kimenete a teljes `retake_plan.json`; bizonytalanságnál a
 hivatkozott közös problémánapló is készül. Resolve-hoz ne nyúlj.
 Az elemzés végén jelezd a kézi vágásra váró csoportokat és a problémánapló
-útvonalát; azok tisztázására ne várj. Hiányzó vagy érvénytelen forrásadatnál
-a terv maradjon `needs_review`; ne add át végrehajthatóként.
+útvonalát; az ismétlésvágási bizonytalanság tisztázására ne várj. Döntésre
+váró hiányzó felvételrésznél, illetve hiányzó vagy érvénytelen forrásadatnál a
+terv maradjon `needs_review`; ne add át végrehajthatóként.
 Csak `ready_for_execution` tervnél add át a fájl útvonalát, és állj meg.
 Mondd ki, hogy a Resolve-projekt és timeline még nem készült el, a terv pedig
 nincs végrehajtva. Rövid review-listában emeld ki a kivágandó és megtartott

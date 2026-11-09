@@ -137,7 +137,8 @@ melyik felvétel volt az utolsó.
 
 Ellenőrizd, hogy minden eredeti felvétel és hozzárendelt tartomány
 visszakereshető a jegyzékben, beleértve a néma és csak bemondásos részeket is.
-A scriptből hiányzó felvételek listázása a timeline-összeállítás feladata.
+A scriptből hiányzó felvételeket és beszédrészeket a
+[vágási terv](4-retake-cleanup.md) ellenőrzi és naplózza.
 
 Add át a jegyzék útvonalát. Csak a pontosítást igénylő tételeket kérdezd meg;
 a sikeresen azonosított részeket ne sorold fel. Bizonytalan részeknél jelezd

@@ -19,7 +19,9 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    Resolve-projektet nem választ és nem hoz létre.
 4. [Teljes ismétlésvágási terv](4-retake-cleanup.md).
    Az index és az átiratok alapján ID-nként elkészíti és ellenőrzi a teljes
-   `retake_plan.json` tervet. Resolve-projektet és timeline-t nem nyit meg.
+   `retake_plan.json` tervet. A hiányzó felvételrészeket a script saját
+   `problems.md` fájljába írja, és a felhasználói döntésig nem adja át a tervet
+   végrehajtásra. Resolve-projektet és timeline-t nem nyit meg.
    A kész tervet a felhasználó review-zza; az agent itt megáll.
 5. A review és külön felhasználói indítás után [timeline-összeállítás](3-timeline-assembly.md):
    ekkor választ vagy hoz létre Resolve-projektet, majd a jegyzék alapján,
