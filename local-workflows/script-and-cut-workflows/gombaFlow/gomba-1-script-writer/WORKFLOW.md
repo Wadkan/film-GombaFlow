@@ -45,10 +45,8 @@ Minden útvonal ehhez a mappához képest relatív.
 `projects/registry.json` alapján osztja ki a Gomba 1 ID-t, és a kiválasztott
 Gomba 0 ötlet bejegyzéséhez is hozzáírja még a letöltés előtt. Az ID alakja
 `1-rovid-cim`: a sorszám növekvő, a rövid cím az ötlet címéből készül. A
-registry a YouTube videóazonosítót rendeli ehhez az ID-hoz, jelzi, hogy
-elkészült-e a transcript, és a `resolve_project_name` mezőben tárolja a hozzá
-tartozó, Resolve-ban látható projektnév-azonosítót. A név alapértelmezése a
-script címe. Újrafuttatáskor ugyanaz az ID használatos; ha a
+registry a YouTube videóazonosítót rendeli ehhez az ID-hoz, és jelzi, hogy
+elkészült-e a transcript. Újrafuttatáskor ugyanaz az ID használatos; ha a
 transcript már megvan, nincs új letöltés vagy felülírás.
 `<selected-topic-path>` a felhasználó által kiválasztott bejegyzés a
 `../gomba-0-idea-collector/results/YYYYMMDD-ideas.md` fájlok egyikéből.
@@ -82,7 +80,7 @@ gomba-1-script-writer/
     gomba-1-script-writer-4-script-review/SKILL.md
     gomba-1-script-writer-5-shoot-preparation/SKILL.md
   projects/
-    registry.json        # YouTube ID → Gomba 1 ID, transcript állapot és Resolve-projektnév
+    registry.json        # YouTube ID → Gomba 1 ID és transcript állapot
     <topic-id>/
       source-audio/        # yt-dlp hangfájl és takarítási rekord; .gitignore kezeli
         source.mp3

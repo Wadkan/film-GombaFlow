@@ -6,15 +6,15 @@ Ezt a lépést a felhasználó külön indítja a 4. lépés `ready_for_executio
 állapotú `retake_plan.json` fájljával, a 3. timeline-összeállítás után. Ne
 indítsd automatikusan sem a terv, sem az összeállítás befejezése után. Olvasd
 be a tervben hivatkozott scriptet, jegyzéket és `timeline_assembly.json` fájlt,
-majd ellenőrizd a fájlok tartalomlenyomatait, a Gomba 1 registry
-`resolve_project_name` értékével való egyezést, valamint hogy a terv forrás-
-útvonalai és forrásidői megfelelnek az összeállításban szereplő klipeknek.
+majd ellenőrizd a fájlok tartalomlenyomatait, valamint hogy a terv forrásútvonalai
+és forrásidői megfelelnek az összeállításban szereplő klipeknek.
 
 Ha a terv nem `ready_for_execution`, valamelyik hivatkozás hiányzik, vagy a
 tervben hivatkozott forrásrész nem található a timeline-összeállításban, ne
-vágj; jelezd a konkrét eltérést. A Resolve-projektet a registry-ben megadott `resolve_project_name`
-alapján nyisd meg, a vágás után pedig natívan mentsd a Resolve-ban; `.drp`
-exportot ne készíts.
+vágj; jelezd a konkrét eltérést. A Resolve-projektet a `timeline_assembly.json`
+`resolve_project_name` értéke alapján nyisd meg, majd ellenőrizd a visszaolvasott
+projektazonosítót az ott tárolt `resolve_project_id` értékkel. Eltérésnél ne
+vágj. A vágás után natívan mentsd a Resolve-ban; `.drp` exportot ne készíts.
 Nem dokumentált kézi vágások automatikus visszafejtése nem része ennek a lépésnek.
 
 ## Timeline-műveletek és visszaellenőrzés
@@ -47,7 +47,7 @@ automatikusan. Újrafuttatás előtt egyeztesd, melyik rögzített állapotból 
 - `schema_version`: `"1.0"`; `status`: `completed` vagy `incomplete`.
 - Bemeneti referenciák: `timeline_assembly_path`, `timeline_assembly_sha256`,
   `recording_index_path`, `recording_index_sha256`, `script_sha256`,
-  `resolve_project_name`.
+  `resolve_project_id`, `resolve_project_name`.
 - `retake_plan_path`, `retake_plan_sha256`: a ténylegesen végrehajtott,
   előzetesen ellenőrzött vágási terv hivatkozása és tartalomlenyomata.
 - `ordering`: script-ID-nként a felvételazonosítók tényleges sorrendje,

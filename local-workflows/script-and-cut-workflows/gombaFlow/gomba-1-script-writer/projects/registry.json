@@ -6,8 +6,7 @@
       "topic_id": "1-postgresql-hybrid-search-course",
       "project_dir": "1-postgresql-hybrid-search-course",
       "transcript_ready": true,
-      "transcript": "projects/1-postgresql-hybrid-search-course/source-transcript.md",
-      "resolve_project_name": null
+      "transcript": "projects/1-postgresql-hybrid-search-course/source-transcript.md"
     }
   }
 }

@@ -9,7 +9,7 @@ description: "Fájlalapú vágás előtti kapu: egy felvételi jegyzék és a ho
 
 - A beadott forrásanyag átírása és az abból készített, scriptmappánkénti
   `recording_index.json` fájlok.
-- A Gomba 1 `projects/registry.json` és az indexekben hivatkozott scriptek.
+- Az indexekben hivatkozott scriptek.
 
 ## Ellenőrzés és kiválasztás
 

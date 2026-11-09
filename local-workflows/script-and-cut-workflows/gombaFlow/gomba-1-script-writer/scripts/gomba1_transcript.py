@@ -175,11 +175,6 @@ def register_topic(url: str, idea_file: str) -> tuple[str, Path, bool, str]:
     idea_path, idea_lines, heading_index, title, idea_topic_id = selected_idea(idea_file, video_id)
     registry = load_registry()
     record = registry["videos"].get(video_id)
-    if record and ("resolve_project_name" not in record or "resolve_project_path" in record):
-        record.setdefault("resolve_project_name", None)
-        record.pop("resolve_project_path", None)
-        save_registry(registry)
-
     if record:
         topic_id = record.get("topic_id")
         if not isinstance(topic_id, str) or not TOPIC_RE.fullmatch(topic_id):
@@ -211,7 +206,6 @@ def register_topic(url: str, idea_file: str) -> tuple[str, Path, bool, str]:
                 "project_dir": project_name,
                 "transcript_ready": True,
                 "transcript": str(old_path.relative_to(WORKFLOW_DIR)),
-                "resolve_project_name": None,
             }
         else:
             topic_id = next_topic_id(registry, title)
@@ -220,7 +214,6 @@ def register_topic(url: str, idea_file: str) -> tuple[str, Path, bool, str]:
                 "topic_id": topic_id,
                 "project_dir": project_name,
                 "transcript_ready": False,
-                "resolve_project_name": None,
             }
         save_registry(registry)
 

@@ -44,13 +44,11 @@ projektlistáját, és keresd meg a kiválasztott `topic_id` nevű projektet.
   A felhasználó listából választhasson meglévőt, vagy fogadja el az új név
   javaslatát; szabad szöveges projektnevet ne kérj.
 
-A választott projekt Resolve-ban látható nevét írd a Gomba 1 registry
-kiválasztott `topic_id` rekordjának `resolve_project_name` mezőjébe, ha még
-nincs rögzítve vagy a választás megváltozott. Ezután nyisd meg vagy hozd létre
-a projektet. Natívan mentsd; `.drp` exportot ne készíts.
+Nyisd meg vagy hozd létre a választott projektet, és olvasd ki a Resolve-ból
+az egyedi projektazonosítóját és látható nevét. Natívan mentsd; `.drp`
+exportot ne készíts. Az azonosítót és nevet a lépés saját
+`timeline_assembly.json` kimenetében rögzítsd.
 
-- A Gomba 1 `projects/registry.json` kiválasztott `topic_id` rekordjának
-  `resolve_project_name` mezője egyezzen a felhasználó mostani projektválasztásával.
 - A cél-vágóprojekt egyértelmű, a médiakezeléshez és timeline-műveletekhez
   rendelkezésre áll működő kapcsolat. A használt eszköz aktuális API-leírásából
   ellenőrizd a médiaimportot, forrástartományt, klipelhelyezést, klipnevet,
@@ -100,7 +98,8 @@ A gyökér mezői:
 - `schema_version`: `"1.0"`.
 - `recording_index_path`, `recording_index_sha256`, `script_sha256`: a felhasznált
   bemenetek visszakereshető referenciái.
-- `resolve_project_name`: a registry-ből átvett, használt Resolve-projektnév.
+- `resolve_project_id`, `resolve_project_name`: a használt Resolve-projektből
+  visszaolvasott egyedi azonosító és látható név.
 - `status`: `completed` vagy `incomplete`.
 - `timelines`: elemenként `timeline_id`, `timeline_name`, `frame_rate`,
   `start_frame`; a vágóprogramból visszaolvasva.
