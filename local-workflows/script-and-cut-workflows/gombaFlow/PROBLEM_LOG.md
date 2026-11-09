@@ -12,8 +12,8 @@ meglévő tartalmat ne írjon felül és ne töröljön. A napló a repositoryn 
   Nem megállapítható időpontot vagy ID-t ne találjon ki; jelölje ismeretlennek.
 - A napló nem helyettesíti a lépés gépi kimenetének bizonytalansági jelöléseit,
   és nem old fel végrehajtási kaput.
-- Az elemzés végén jelezze, ha volt bizonytalanság, adja át a napló útvonalát,
-  és a feloldatlan tételeket tisztázza a felhasználóval. A döntéseket új
-  bejegyzésként fűzze a naplóhoz, az érintett forrásra és időtartományra hivatkozva.
-  Ezután a lépés szabályai szerint frissítse és ellenőrizze újra a gépi tervet;
-  puszta naplóbejegyzés alapján ne minősítsen bizonytalan döntést érvényesnek.
+- Az elemzés végén jelezze, ha volt bizonytalanság, és adja át a napló útvonalát.
+  Azt, hogy kell-e azonnali tisztázás, az adott lépés szabályai határozzák meg.
+  Ha a felhasználó döntést ad, azt új bejegyzésként fűzze a naplóhoz, az érintett
+  forrásra és időtartományra hivatkozva. Puszta naplóbejegyzés alapján ne
+  minősítsen bizonytalan döntést érvényesnek.

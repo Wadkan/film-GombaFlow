@@ -15,9 +15,10 @@ A bemeneti dokumentumok, eredeti videók és átiratok változatlanok maradnak.
 
 Alkalmazd a [közös problémánapló](../PROBLEM_LOG.md) szabályait.
 Tartalmi vagy felvételi sorrendi bizonytalanságnál az érintett ismétléscsoport
-minden változata maradjon vágatlanul, a csoport legyen `blocked`, a probléma
-kerüljön az `unresolved` listába. A többi csoport elemzését folytasd;
-a teljes terv végrehajtási kapuja továbbra is zárva marad.
+minden változata maradjon vágatlanul. A csoportot jelöld kézi vágásra, és a
+problémát vedd fel az `unresolved` listába. A többi csoport elemzését folytasd;
+ez a bizonytalanság ne akadályozza a terv végrehajtását, és ne kérj hozzá
+azonnali felhasználói döntést.
 
 ## Elemzési egység és költségkeret
 
@@ -43,8 +44,9 @@ jelzése egyértelművé teszi, hogy közvetlenül előtte lévő beszédrész h
 illesztéséből határozd meg a korábbi hibás tartomány vágási határát. Ne
 követelj szó szerinti egyezést a scripttel. Ha az újramondás vagy a határ nem
 azonosítható biztosan, vagy nem követi újramondás, tartsd meg a hibás részt;
-ha van újramondás, azt is. Rögzítsd a hiányzó vagy bizonytalan javítást a
-közös problémánaplóban, és hagyd a csoportot blokkolva.
+ha van újramondás, azt is. A teljes érintett ismétléscsoport maradjon vágatlanul;
+a hiányzó vagy bizonytalan javítást rögzítsd a közös problémánaplóban és
+jelöld kézi vágásra.
 
 ## Ellenőrzés és felvételi sorrend
 
@@ -66,8 +68,9 @@ Az utolsó változat meghatározásához:
    Több számsorozat, egyező sorszám vagy eltérő kamera-számozás esetén ne találgass.
 4. Másolási/módosítási dátum, a manifest listája, script-ID vagy klipnévbe tett
    technikai felvételazonosító nem helyettesíti a rögzítési sorrendet.
-   Ha egyik elfogadott forrás sem dönt, a közös problémánapló szabályai
-   szerint járj el; a pontosítást az elemzés végén kérd.
+   Ha egyik elfogadott forrás sem dönt, minden változat maradjon vágatlanul;
+   az index szerinti sorrendet használd ideiglenesen, jelöld
+   `provisional_index_order` értékkel, és rögzítsd a bizonytalanságot.
 
 ## Tartalmi összevetés és vágástervezés
 
@@ -120,15 +123,22 @@ A terv sémája `1.0`, kötelező mezői:
 - `status`: `ready_for_execution` vagy `needs_review`; csak minden csoport
   elkészülte és ellenőrzése után legyen `ready_for_execution`.
 - `groups`: script-ID-nként `script_id`, a scriptből átvett timeline-név,
-  `status` (`validated` vagy `blocked`), a felvételi sorrend és bizonyítéka,
-  valamint az adott ID tervezett döntései. Minden script-ID-hoz legyen csoport.
+  `status` (`validated` vagy `blocked`), `manual_review_required` logikai érték,
+  a felvételi sorrend és bizonyítéka, valamint az adott ID tervezett döntései.
+  Minden script-ID-hoz legyen csoport. A kézi vágásra jelölt csoport is lehet
+  `validated`, ha az összes forrástartománya ellenőrzött és megmarad.
+  A `manual_review_required` ennél `true`, egyébként `false`.
 - Minden törlési döntés: a korábbi rész `recording_id` és szóhivatkozásai,
   az eredeti kivágandó szöveg, a helyette megtartott újabb rész szóhivatkozásai
   és az ismétlési megfelelés indoka.
 - Minden csoportban `retained_ranges`: a végeredményben megmaradó forrás-
   tartományok rendezett listája, az eredeti felvétel- és szóhivatkozásokkal;
   a megőrzendő képi részeknél a jegyzék szerinti forrástartománnyal.
-- `unresolved`: még tisztázandó tételek.
+  Kézi vágásra jelölt csoportnál minden változat teljes, jegyzék szerinti
+  `retained_start`–`retained_end` tartománya szerepeljen, törlési döntés nélkül;
+  ezekhez forrástartomány-hivatkozás kell, szóhivatkozás nem kötelező.
+- `unresolved`: kézi vágásra vagy tényleges bemeneti hiba miatt tisztázásra
+  váró tételek, az érintett script-ID-vel és indokkal.
 
 Az átirat szóidőit oldd fel forrásidőkre. Ellenőrizd az ID-egyezést, a
 forrástartományokat, a bizonyított újabb változatot, a törlések átfedéseit,
@@ -137,14 +147,16 @@ keress és ne tárolj. Hiányzó vagy érvénytelen forráshivatkozásnál ne ta
 az érintett csoport legyen `blocked`, a teljes terv pedig
 `needs_review`.
 
-Csak visszaolvasott és ellenőrzött, minden csoportban `validated` állapotú,
-üres `unresolved` listájú terv jelölhető `ready_for_execution` állapotúnak.
+Csak visszaolvasott és ellenőrzött, minden csoportban `validated` állapotú terv
+jelölhető `ready_for_execution` állapotúnak. Az `unresolved` tartalmazhat kézi
+vágásra jelölt csoportot, ha annak minden változata ellenőrzötten megmarad.
+Hiányzó vagy érvénytelen forrásadat viszont továbbra is blokkolja a tervet.
 
 A 4. lépés gépi kimenete a teljes `retake_plan.json`; bizonytalanságnál a
 hivatkozott közös problémánapló is készül. Resolve-hoz ne nyúlj.
-Az elemzés végén a közös problémánapló szerinti egyeztetéssel oldd fel a
-bizonytalanságokat, majd frissítsd és ellenőrizd újra a tervet. Feloldatlan
-tételnél a terv maradjon `needs_review`; ne add át végrehajthatóként.
+Az elemzés végén jelezd a kézi vágásra váró csoportokat és a problémánapló
+útvonalát; azok tisztázására ne várj. Hiányzó vagy érvénytelen forrásadatnál
+a terv maradjon `needs_review`; ne add át végrehajthatóként.
 Csak `ready_for_execution` tervnél add át a fájl útvonalát, és állj meg.
 Mondd ki, hogy a Resolve-projekt és timeline még nem készült el, a terv pedig
 nincs végrehajtva. Rövid review-listában emeld ki a kivágandó és megtartott

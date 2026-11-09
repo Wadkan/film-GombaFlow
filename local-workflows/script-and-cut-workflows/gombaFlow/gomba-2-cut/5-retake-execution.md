@@ -29,7 +29,8 @@ a többi script-rész sorrendje maradjon változatlan. A B-roll bemondás alatti
 képe és kikapcsolt, megőrzött hangja továbbra is maradjon meg.
 
 Ha a 3. lépés ideiglenes fájlsorrendet használt, az adott script-rész megtartott
-beszédét a most igazolt rögzítési sorrendben állítsd össze. A vágóprogram
+beszédét csak igazolt rögzítési sorrend esetén rendezd át. Bizonytalan sorrendnél
+minden változat maradjon meg a tervben jelzett ideiglenes sorrendben. A vágóprogram
 aktuális API-jából ellenőrizd a szükséges műveleteket; terv vagy JSON mentése
 önmagában nem végrehajtott vágás. Ne használj markert a vágás helyettesítésére.
 
@@ -63,10 +64,13 @@ automatikusan. Újrafuttatás előtt egyeztesd, melyik rögzített állapotból 
 - `error`: végrehajtási hiba vagy `null`. Részleges eszközhibánál az addig
   létrejött állapot is legyen visszakereshető, `incomplete` státusszal.
 
-Feloldatlan `unresolved` tételnél a státusz `incomplete`; ne jelentkezz
-teljesen késznek olyan csoporttal, amelyben még döntésre váró változatok maradtak.
+A terv szerint vágatlanul megtartott, kézi vágásra jelölt `unresolved` tétel
+önmagában nem teszi a végrehajtást `incomplete` állapotúvá. Az érintett
+csoportokat jelezd a felhasználónak; tényleges végrehajtási hiba esetén
+a státusz `incomplete`.
 
 A bemenetek változatlanok; a kimenet a friss timeline-kapcsolatok hiteles
 pillanatképe. A későbbi agent ezt használja a 3. lépés elavult pozíciói helyett.
-A felhasználónak rövid készjelzést adj, vagy csak a konkrét elakadást jelezd;
-a sikeresen kivágott ismétléseket ne listázd.
+A felhasználónak rövid készjelzést adj a kézi vágásra váró csoportokkal,
+vagy a konkrét végrehajtási hibát jelezd; a sikeresen kivágott ismétléseket
+ne listázd.
