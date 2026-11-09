@@ -23,6 +23,7 @@ Rövid belépési pontok a film-GombaFlow repóhoz. A parancsokat a repó gyöke
 ## n8n
 
 - Indítás: `make start-n8n`
+- Helyi belépési adatok: `~/.config/film-gombaflow/local-n8n-login.json` (`url`, `email`, `password` mezők; fájljogosultság: `600`). Ha az agenttől kéred az indítást, sikeres indítás után írja ki neked az URL-t, a felhasználónevet és a jelszót ebben a helyi chatben. A jelszó nem kerül a repóba.
 - Leállítás: `make stop-n8n`
 - Workflow-k import/export: `make -C n8n-workflows import` vagy `make -C n8n-workflows export`
 

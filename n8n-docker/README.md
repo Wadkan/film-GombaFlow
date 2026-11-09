@@ -76,3 +76,16 @@ docker compose -f n8n-docker/compose.yaml exec n8n wget -qO- http://sandbox-api:
 Expected: `{"status":"ok"}`.
 
 Docs: [Self-host the sandbox manually](https://docs.n8n.io/deploy/host-n8n/configure-n8n/set-up-n8n-assistant#setup-2-self-host-the-sandbox-manually-advanced), [Docker Compose guide](https://docs.n8n.io/deploy/host-n8n/install-options/install-using-docker-compose/).
+
+# Helyi belépési adatok
+
+A helyi n8n webes belépésének kanonikus fájlja:
+`~/.config/film-gombaflow/local-n8n-login.json`.
+A `url`, `email` és `password` mezőket tartalmazza; a fájl jogosultsága `600`,
+a szülőkönyvtáré `700`. A jelszót ne másold a repóba vagy az `.env` fájlba.
+A böngészőben a `http://localhost:5678` címet használd, különösen a YouTube
+újracsatlakoztatásakor: a Google OAuth visszahívás is erre a hostra érkezik.
+A `127.0.0.1` címen létrejött bejelentkezési cookie nem érvényes a `localhost`
+hoston, ezért a visszahívás ott „Unauthorized” hibát adhat.
+A YouTube-upload-agent sikeres konténerindítás után a user kérésére rögzített
+szabály szerint kiírja ezeket a belépési adatokat a helyi chatben.

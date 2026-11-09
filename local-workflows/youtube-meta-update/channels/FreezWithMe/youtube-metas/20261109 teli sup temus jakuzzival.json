@@ -1,0 +1,43 @@
+{
+  "status": "updated",
+  "channelKey": "freezwithme",
+  "youtubeChannelId": "UCTmNLnPDniFPocALLVSFoDg",
+  "videoId": "Dxa-3uqiYsY",
+  "title": "❄️ Teli SUP Temus jakuzzival 🛶🛁",
+  "description": "❄️ Télen is SUP-ozni? Bemutatom a Temuról rendelt hordozható jakuzzimat, amelyet a téli SUP-túráimon szeretnék használni. Ebben a videóban kicsomagolom és közelebbről is megmutatom az új szerzeményt. Vajon jó ötlet jakuzzit vinni a hideg vízi kalandokra? 🛶🛁\n\n#freezwithme #SUP #jakuzzi",
+  "tags": [
+    "freezwithme",
+    "Temu",
+    "Temu unboxing",
+    "hordozható jakuzzi",
+    "Temus jakuzzi",
+    "jakuzzi bemutató",
+    "unboxing",
+    "SUP",
+    "téli SUP",
+    "SUP túra",
+    "téli vízi sport",
+    "téli kaland",
+    "outdoor felszerelés"
+  ],
+  "categoryId": "19",
+  "playlistId": "PLIw2OkTTi7-8BLCbWVdxTkcasQ4Wu99Gx",
+  "privacyStatus": "private",
+  "youtube_scheduled_at": "2026-11-09T16:00:00+01:00",
+  "containsSyntheticMedia": false,
+  "defaultLanguage": "hu",
+  "updateResult": {
+    "status": "updated",
+    "step": "verification",
+    "message": "A metaadatok és a playlist-tagság visszaolvasással igazoltak.",
+    "videoId": "Dxa-3uqiYsY",
+    "videoUrl": "https://youtu.be/Dxa-3uqiYsY",
+    "executionId": "571",
+    "partialSuccess": false,
+    "youtubeModified": true,
+    "completedSteps": [
+      "playlist-insert",
+      "video-update"
+    ]
+  }
+}
