@@ -119,7 +119,7 @@ hallgatással is. Minden új klippéldányt kapcsolj vissza az eredeti
 jegyzékrekordhoz. A második timeline létrehozása után csak azon dolgozz; a
 további elhelyezések és vágások alapja a Rough Cut aktuális markerállapota.
 
-## Kimenet: `retake_cleanup.json` — 1.1
+## Kimenet: `rough_cut_timeline_cleanup.json` — 1.1
 
 A jegyzék mappájában új fájlt készíts; meglévő eredményt ne írj felül
 automatikusan. Újrafuttatás előtt egyeztesd, melyik rögzített állapotból induljon.

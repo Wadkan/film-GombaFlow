@@ -35,7 +35,7 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
 7. [Rough Cut összeállítása](3e-resolve-rough-cut-timeline.md): az első timeline
    user review-ja után, külön felhasználói indításra a markerpillanatkép
    frissességét ellenőrzi, és az aktuális markerek alapján elkészíti a második
-   timeline-t és a `retake_cleanup.json` kimenetet.
+   timeline-t és a `rough_cut_timeline_cleanup.json` kimenetet.
 
 Az indexek elkészülte után a preflight kiválaszt egyetlen scriptet, majd a 2a tervlépésnek átadja annak scriptmappáját és indexét. A terv elkészülte után
 az agent átadja a fájl útvonalát, de nem indítja
