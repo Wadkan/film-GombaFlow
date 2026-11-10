@@ -61,6 +61,9 @@ Az üres markerlista érvényes kiolvasási eredmény, nem API-hiba. Ha a projek
 timeline, klip vagy markerek technikai okból nem olvashatók ki, állj meg és
 jelezd a hibát; ne add át a részleges pillanatképet kész kimenetként.
 
+A pillanatkép `unresolved` tételeit a workflow közös hibakezelése szerint
+naplózd; a bejegyzésből az érintett klip vagy marker legyen visszakereshető.
+
 ## Kimenet: `review_timeline_markers.json` — 1.0
 
 Mentsd a kiválasztott script mappájába. A meglévő fájlt csak a teljes új

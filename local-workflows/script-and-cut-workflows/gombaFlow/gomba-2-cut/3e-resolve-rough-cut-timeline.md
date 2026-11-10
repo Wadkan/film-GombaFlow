@@ -105,7 +105,8 @@ hogy a tényleges első és utolsó képkocka megfelel a markerhatároknak. Elt�
 részleges vagy
 sikertelen API-hívásnál állj meg, és ne indíts automatikus újrapróbálást.
 Ha nincs megtartandó szakasz, ne hívj üres listával `AppendToTimeline()`-t;
-az üres Rough Cutot és az összes kihagyást jelezd.
+az üres Rough Cut tényét jelezd; a kihagyások részletei a kimeneti fájlban
+maradjanak, ne sorold fel őket a chatben.
 
 Minden kézi vágáshoz teljesen megtartott egység videoklipjének elejére és végére
 helyezd el a markerindex szerinti sárga `REVIEW START` / `REVIEW END` párt a

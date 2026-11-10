@@ -80,8 +80,9 @@ kész bemenetként. Nincs automatikus újrapróbálkozás vagy részleges sikerj
 ## Beszéd nélkül maradt felvételek azonosítása
 
 Sikeres átírás után a CLI felsorolja a `no_audio` és `no_detected_speech`
-státuszú fájlokat. Az agent ezeket a manifest alapján teljes útvonallal listázza
-a felhasználónak, és kérdezze meg természetes nyelven, mire valók, például:
+státuszú fájlokat. Az agent ne ismételje meg a listát a chatben: adja meg a
+`master_transcript.json` útvonalát, és kérje meg a felhasználót, hogy a benne
+jelzett felvételek célját természetes nyelven írja le, például:
 „Ez az API-kulcs bekötéséhez B-roll.” Ne kérjen script-ID-t vagy más technikai
 azonosítót a felhasználótól. Várja meg a választ;
 ne minősítse automatikusan B-rollnak a felvételeket. A `no_detected_speech`

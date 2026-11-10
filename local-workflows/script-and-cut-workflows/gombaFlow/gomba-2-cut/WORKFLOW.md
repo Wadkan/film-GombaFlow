@@ -70,6 +70,35 @@ Minden skill indításkor olvassa el a „Feldolgozási lépések”, „Közös
 valamint a saját bejegyzését. A hívási sorrend, kapuk, fájlkapcsolatok és
 státuszfeltételek egyetlen forrása ez a workflow.
 
+### Közös hibakezelés és tájékoztatás
+
+- A biztonságosan továbbvihető tartalmi bizonytalanságot ne találd ki: az
+  érintett anyagot őrizd meg, a problémát rögzítsd a scriptmappa
+  `problems.md` fájljában, és folytasd a többi feldolgozható anyaggal.
+  A bejegyzésből derüljön ki az érintett rész, az ok, a forráshely, ha ismert,
+  a szükséges teendő és annak állapota. A részletes formátumra és a meglévő
+  fejezetekre a hivatkozott közös problémánapló szabályai érvényesek.
+- Folytatáskor olvasd vissza a meglévő naplót, az ugyanarra az esetre
+  vonatkozó bejegyzést frissítsd, a felhasználói döntéseket és stabil
+  azonosítókat őrizd meg; ne hozz létre ismétlődő tételt. Ha a scriptmappa
+  még nem azonosítható, az érintett skill workflow-bejegyzése szerinti
+  manifest melletti naplót használd; ne válassz találomra scriptmappát.
+  A módosított naplót mentés után olvasd vissza; naplózandó probléma nélkül
+  ne követeld a napló létezését.
+- Megállapított hiány esetén az összes ellenőrizhető érintett részt vizsgáld
+  végig, a hiányokat naplózd, majd az adott skill kapuja szerint várj a
+  felhasználó döntésére. A nem blokkoló bizonytalanság ne váljon automatikusan
+  megállapított hiánnyá.
+- Technikai, környezeti, olvasási vagy mentési hibánál azonnal szakítsd meg
+  a feldolgozást. Ha biztonságosan lehetséges, mentsd a részállapotot és a
+  hiba részleteit a skill kimenetébe vagy a problémanaplóba; ne indíts újabb
+  feldolgozást vagy automatikus újrapróbálást. Sikertelen kötelező
+  naplóírás vagy visszaolvasás is blokkol, és nem jelenthető kész eredmény.
+- A felhasználónak röviden az eredményt vagy akadályt, a következő szükséges
+  lépést és a ténylegesen mentett fájl útvonalát jelezd. A fájlba írt
+  tételeket ne sorold fel a chatben. Ha a hiba miatt nem sikerült fájlt
+  menteni, a konkrét akadályt és a mentés sikertelenségét jelezd.
+
 ## Közös visszatérési státuszok
 
 - `COMPLETED`: a skill ellenőrzötten befejezte a feladatát.
@@ -80,17 +109,13 @@ státuszfeltételek egyetlen forrása ez a workflow.
 
 A skill a hívónak kizárólag az alkalmazható státuszt adja vissza;
 a részletes eredményeket az alább rögzített fájlokból kell visszaolvasni.
-A státusz nem a JSON-fájlok saját `status` mezője. A részletes
-adatok a fájlokban maradnak. A felhasználó rövid tájékoztatást kap az akadályról
-vagy a következő kézi teendőről és a szükséges fájl útvonaláról; a fájlba írt
-tételeket ne listázd a chatben. Technikai hiba esetén azonnal állj meg.
+A státusz nem a JSON-fájlok saját `status` mezője.
 
 Egy szakaszon belül a kész vagy dokumentált nem blokkoló problémával kész
 lépés után a következő indulhat. `BLOCKED` esetén megáll a folyamat, és az
 érintett skill jelzi a teendőt vagy a konkrét hibát. A külön userindítási kapuk
 sikeres státusz után is érvényesek; kézi skillindításnál is ugyanazok a
-feltételek érvényesek. A user mindig kapjon rövid tájékoztatást a következő
-lépésről és a szükséges kézi műveletről.
+feltételek érvényesek.
 
 ## Skillenkénti bemenet, kimenet és státusz
 
@@ -207,6 +232,8 @@ A feladat részletei, sémái és ellenőrzései a megfelelő skillben vannak.
   `<scriptmappa>/review_timeline_resolve_media_registry.json` és a review-zott
   Resolve-timeline.
 - Kimenet: frissen kiolvasott `<scriptmappa>/review_timeline_markers.json`.
+- Tartalmi bizonytalanság esetén kimenet továbbá a scriptmappa `problems.md`
+  fájlja a közös hibakezelés szerint.
 - `COMPLETED`: a teljes pillanatkép visszaellenőrzött.
 - `COMPLETED_WITH_ISSUES`: a tartalmi bizonytalanságok rögzítettek.
 - `BLOCKED`: hibás bemenet, projektazonosítási vagy kiolvasási hiba.

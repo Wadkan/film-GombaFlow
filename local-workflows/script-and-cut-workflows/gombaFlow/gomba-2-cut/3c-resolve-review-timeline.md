@@ -96,8 +96,10 @@ duplikálj tartalmat; állj meg és jelezd. A második timeline-t ne készítsd 
 Ha bármely szükséges marker létrehozása, eltávolítása vagy visszaellenőrzése technikai okból
 meghiúsul, azonnal állj meg, és ne jelents sikert. Ha lehetséges, mentsd a
 Resolve-projekt addigi állapotát és a `review_timeline_assembly.json` kimenetet
-`incomplete` státusszal. Jelezd az érintett klipet, script-ID-t, időtartományt
-és a konkrét hibát; ne indíts automatikus újrapróbálkozást vagy duplikálást.
+`incomplete` státusszal; a konkrét hibát, érintett klipet, script-ID-t és
+időtartományt a kimenet `error` mezőjében rögzítsd. A felhasználót a
+workflow közös hibakezelése szerint tájékoztasd; ne indíts automatikus
+újrapróbálkozást vagy duplikálást.
 
 Mentsd a Resolve-projektet, és ellenőrizd a tényleges timeline-t és kliphatárokat.
 A meglévő `review_timeline_assembly.json` átadásban rögzítsd a projekt- és
