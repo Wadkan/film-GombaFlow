@@ -7,12 +7,23 @@ description: "A felülvizsgált review timeline aktuális markereinek kiolvasás
 
 ## Bemenet
 
-A felhasználó jelezte, hogy a review timeline markereinek ellenőrzésével kész.
 Olvasd be a kiválasztott script mappájából a `recording_index.json`,
 `review_timeline_assembly.json` és `review_timeline_resolve_media_registry.json`
-fájlokat. Ellenőrizd a `topic_id`-t, a script- és indexlenyomatokat, valamint a
-Resolve-projekt és a review timeline visszaolvasott egyedi azonosítóját.
-Hibás vagy hiányzó kötelező bemenetnél állj meg és jelezd az akadályt.
+fájlokat. Ellenőrizd a `topic_id`-t, a script- és indexlenyomatokat, valamint
+a projekt- és timeline-azonosítók egyezését. Hibás vagy hiányzó kötelező
+bemenetnél állj meg és jelezd az akadályt.
+
+Ellenőrizd, hogy a script mappájában létezik-e a `review_timeline_markers.json`:
+
+- Ha létezik, olvasd be, ellenőrizd a sémáját, téma-, projekt- és
+  timeline-azonosítóját a fenti bemenetekkel, és add át ezt a fájlt. Ne olvasd
+  ki újra a Resolve markereit, és ne írd felül a mentett pillanatképet.
+- Ha nem létezik, kérdezd meg: „Elindíthatom a review timeline markereinek
+  kiolvasását?” Várj a felhasználó kifejezett igen válaszára. Amíg nem egyezik
+  bele, ne olvasd ki a markereket, és ne indítsd a Rough Cut összeállítását.
+
+Csak a hiányzó fájl felhasználó által jóváhagyott kiolvasásához ellenőrizd a
+nyitott Resolve-projekt és a review timeline egyedi azonosítóját is.
 
 ## Kiolvasás
 
@@ -45,8 +56,8 @@ jelezd a hibát; ne add át a részleges pillanatképet kész kimenetként.
 
 ## Kimenet: `review_timeline_markers.json` — 1.0
 
-Mentsd a kiválasztott script mappájába. A fájl a Resolve aktuális állapotának
-pillanatképe; nem írja felül sem a tervet, sem az indexet. Mezői:
+Ha a fájl még nem létezik, mentsd a kiválasztott script mappájába. A fájl a
+kiolvasáskori Resolve-állapot pillanatképe. Mezői:
 
 - `schema_version`: `"1.0"`; `topic_id`, `resolve_project_id`,
   `review_timeline_id`, `review_timeline_name`, `timeline_start_frame` és
@@ -64,16 +75,9 @@ pillanatképe; nem írja felül sem a tervet, sem az indexet. Mezői:
 - `unresolved`: az érintett klip- vagy markerazonosítás és a konkrét bizonytalanság;
   ha nincs ilyen, üres lista.
 
-A klip- és markerlistákat stabilan, sáv és képkocka szerint rendezd, hogy az
-azonos Resolve-állapot összehasonlítható legyen. Már meglévő pillanatképet csak
-akkor frissíts, ha a `topic_id`, projekt- és timeline-azonosítók egyeznek;
-egyébként állj meg és jelezd az eltérést. Mentés után olvasd vissza a teljes
-JSON-t és ellenőrizd. A Resolve aktuális markerei maradnak az irányadók.
-
-A Rough Cut skill frissességellenőrzéséhez ugyanezeket a kiolvasási lépéseket
-fájlírás nélkül is végrehajthatod. A mentett és az aktuális állapot összevetése
-a projekt- és timeline-azonosítókat, időalapot, klipazonosítókat, sávokat,
-kliphatárokat, kapcsolatokat és az összes markeradatot vegye figyelembe.
+A klip- és markerlistákat stabilan, sáv és képkocka szerint rendezd. Mentés
+után olvasd vissza a teljes JSON-t és ellenőrizd. A 3e a mentett pillanatképet
+használja; a mentés utáni Resolve-módosítások nem kerülnek automatikusan bele.
 
 Ez a lépés nem hoz létre és nem módosít timeline-t, klipet vagy markert, és nem
 indítja el a Rough Cut összeállítását. A fájl útvonalát add át a hívónak.

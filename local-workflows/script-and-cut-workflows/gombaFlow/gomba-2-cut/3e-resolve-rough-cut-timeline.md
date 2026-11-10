@@ -10,11 +10,9 @@ description: "A felülvizsgált markerek szerinti Rough Cut timeline összeáll�
 Ezt a lépést a felhasználó a 3c review timeline markereinek átnézése után
 külön indítja. Olvasd be a 2a. lépés `retake_plan.json` tervét, a hivatkozott
 scriptet és `recording_index.json` jegyzéket, valamint a `review_timeline_assembly.json`
-és `review_timeline_resolve_media_registry.json` fájlokat. A
-`review_timeline_markers.json` pillanatképet is olvasd be, ha már létezik.
-Ellenőrizd a fájlok lenyomatait,
+és `review_timeline_resolve_media_registry.json` fájlokat. Ellenőrizd a fájlok lenyomatait,
 témaazonosságát és a forrás–Media Pool–timeline-klip kapcsolatokat. A terv az
-eredeti javaslat; a megtartásról az első timeline aktuális markerei döntenek.
+eredeti javaslat; a megtartásról a mentett markerpillanatkép dönt.
 
 Ha a terv nem `1.1` sémájú, a hiányellenőrzés nem teljes, nem
 `ready_for_execution`, valamelyik kötelező bemenet hiányzik, vagy a
@@ -30,13 +28,11 @@ Rough Cut timeline vagy eredményfájl esetén ne írj felül és ne duplikálj;
 
 ## Timeline-műveletek és visszaellenőrzés
 
-Az összeállítás előtt a [3d markerkiolvasó](3d-resolve-review-markers.md)
-fájlírás nélküli kiolvasásával vesd össze a Resolve aktuális állapotát a mentett
-`review_timeline_markers.json` teljes marker- és klipállapotával. Ha a fájl
-hiányzik, először a 3d-vel készíttesd el. Ha az állapot eltér, a 3d-vel
-frissíttesd a pillanatképet. A visszaolvasott friss fájllal dolgozz. Az
-eltérésvizsgálat és frissítés még az első timeline-on, annak módosítása nélkül
-történik.
+Az összeállításhoz kérd el a [3d markerkiolvasó](3d-resolve-review-markers.md)
+`review_timeline_markers.json` kimenetét. Ha a fájl már létezik, a 3d az
+ellenőrzött mentett fájlt adja át. Ha hiányzik, a 3d kizárólag a felhasználó
+kifejezett engedélyével olvassa ki és menti a markereket. A visszaolvasott
+fájlból dolgozz, újabb Resolve-markerkiolvasás nélkül.
 Üres markerlista tartalmi bizonytalanság; API-olvasási hiba esetén állj meg.
 A pillanatkép `unresolved` tételeinél a 3d-ben érintettként megjelölt klipeket
 tartsd meg kézi review-ra.
@@ -73,7 +69,7 @@ az első timeline-on elfoglalt sorrendben, a klipen belüli megtartási részeke
 forrásidő szerint állítsd össze. Bizonytalan sorrendnél a teljes érintett
 felvételek maradjanak meg, és kapjanak review jelölést.
 
-A friss pillanatkép klip- és markerhatárait, a forrásklip
+A mentett pillanatkép klip- és markerhatárait, a forrásklip
 regiszterbeli FPS-ét és a timeline időalapját használva számítsd ki a
 megtartandó eredeti forrásképkockákat. A félig nyílt forrástartományokat a
 telepített Resolve API által elvárt `startFrame` / `endFrame` határokra alakítsd;
@@ -84,10 +80,6 @@ video-, illetve hangsávra kerüljön; a hangot hagyd változatlanul. Korábbi
 B-roll rekord `audio_enabled: false` értéke alapján se némíts, és hang nélküli
 forráshoz ne hozz létre mesterséges hangot.
 
-Közvetlenül a Rough Cut létrehozása előtt ellenőrizd újra a 3d-vel a Resolve
-aktuális állapotát. Ha megváltozott, frissítsd a pillanatképet, az alapján
-állítsd össze újra a megtartandó tartományok listáját, majd ismét ellenőrizd a
-frissességet. Csak az ellenőrzéskor aktuális állapot alapján folytasd.
 Hozd létre a `<topic_id> - 2. Rough Cut` üres timeline-t, állítsd be aktuális
 timeline-nak, és a Resolve-ból visszaolvasott timeline-ID-val ellenőrizd a
 beállítást. A script-sorrendbe rendezett megtartandó szakaszokat egyetlen
@@ -138,7 +130,7 @@ automatikusan. Újrafuttatás előtt egyeztesd, melyik rögzített állapotból 
 - `retake_plan_path`, `retake_plan_sha256`: az ellenőrzött eredeti terv
   hivatkozása és tartalomlenyomata.
 - `review_timeline_markers_path`, `review_timeline_markers_sha256`: a
-  felhasznált friss markerpillanatkép útvonala és lenyomata.
+  felhasznált markerpillanatkép útvonala és lenyomata.
 - `review_timeline_id`, `rough_cut_timeline_id`: a Resolve-ból visszaolvasott
   timeline-azonosítók; a Rough Cut még nem létrejötténél az utóbbi `null`.
 - `ordering`: script-ID-nként a felvételazonosítók tényleges sorrendje és a
