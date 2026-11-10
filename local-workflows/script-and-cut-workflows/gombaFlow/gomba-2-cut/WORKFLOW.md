@@ -26,9 +26,12 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    A kész terv útvonalát az agent átadja, majd itt megáll; fájlalapú
    tervreview-t nem kér.
 5. A terv elkészülte és külön felhasználói indítás után [timeline-összeállítás](3-timeline-assembly.md):
-   ekkor választ vagy hoz létre Resolve-projektet, majd a
-   [review timeline](3c-resolve-review-timeline.md) lépés felvételi sorrendben
-   helyezi el a felvételeket az első timeline-on. Az ismétlések ekkor még megmaradnak.
+   ekkor választ vagy hoz létre Resolve-projektet, majd sorrendben végrehajtja
+   a [3a médiaimportot](3a-resolve-media-import.md), a
+   [3b médiaregiszter mentését](3b-resolve-media-registry.md) és a
+   [3c review timeline](3c-resolve-review-timeline.md) lépést. A 3c az elkészült
+   médiaregisztert használva felvételi sorrendben helyezi el a felvételeket és
+   markereiket az első timeline-on. Az ismétlések ekkor még megmaradnak.
 6. [Review markerek kiolvasása](3d-resolve-review-markers.md): a user review
    után a Resolve aktuális markereit a script mappájának
    `review_timeline_markers.json` pillanatképébe menti.

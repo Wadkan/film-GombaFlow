@@ -13,6 +13,10 @@ Resolve-projekt választását a [timeline-összeállítás](3-timeline-assembly
 végrehajtás előtti szabályai szerint végezd. Csak a terv elkészülte és külön
 felhasználói indítás után nyiss vagy hozz létre Resolve-projektet.
 
+Ha a 3. timeline-összeállítás már átadta a kiválasztott, megnyitott projekt
+azonosítóját, ellenőrizd és használd ugyanazt a projektet; ne ismételd meg a
+projektválasztást. A szülőlépés indítása erre az importlépésre is vonatkozik.
+
 ## Import
 
 1. A jegyzékből gyűjtsd ki az egyedi `source_id` értékeket és a hozzájuk

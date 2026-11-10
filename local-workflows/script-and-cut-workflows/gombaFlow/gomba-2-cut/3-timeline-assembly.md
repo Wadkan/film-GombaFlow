@@ -75,6 +75,27 @@ exportot ne készíts. Az azonosítót és nevet a lépés saját
 Elérhetetlen eszköznél vagy hibás bemenetnél konkrét akadályt jelezz. JSON vagy
 vágási terv elkészítése önmagában nem jelenti a timeline összeállítását.
 
+## Végrehajtási sorrend
+
+A fenti ellenőrzések és projektválasztás után, ugyanazon felhasználói indítás
+részeként, sorrendben hajtsd végre:
+
+1. [3a médiaimport](3a-resolve-media-import.md): add át a kiválasztott indexet,
+   tervet és a már megnyitott projekt azonosítóját. Vedd át az ellenőrzött
+   projekt- és forrásonkénti Media Pool-azonosítókat.
+2. [3b médiaregiszter](3b-resolve-media-registry.md): add át az indexet és a
+   3a eredményét. Mentsd és olvasd vissza a
+   `review_timeline_resolve_media_registry.json` fájlt. A 3c csak az összes
+   forrásazonosító és FPS ellenőrzése után indulhat.
+3. [3c review timeline](3c-resolve-review-timeline.md): add át az indexet,
+   tervet és az ellenőrzött médiaregisztert. Ez a lépés helyezi el a klipeket
+   és markereiket, majd menti a `review_timeline_assembly.json` kimenetet.
+
+Az alábbi elhelyezési és kimeneti szabályok a 3c végrehajtására vonatkoznak;
+ne helyezd el még egyszer a felvételeket külön menetben. Sikertelen lépés
+után ne indítsd a következőt. A lánc az első timeline átadásával ér véget;
+a markerkiolvasást és a Rough Cutot ne indítsd automatikusan.
+
 ## Elhelyezés
 
 1. Az első timeline felvételeinek elhelyezését és a markerezést a
