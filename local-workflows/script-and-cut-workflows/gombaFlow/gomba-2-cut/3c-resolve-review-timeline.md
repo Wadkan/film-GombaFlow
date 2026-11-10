@@ -36,23 +36,39 @@ duplikálj tartalmat; állj meg és jelezd. A második timeline-t ne készítsd 
    A klip forráskezdetéhez és timeline-kezdőképkockájához viszonyítva számítsd
    ki a marker klipen belüli képkockahelyét. Bizonytalan csoportnál a teljes
    `source_start`–`source_end` tartományt jelöld, az azonosítóbemondással együtt.
-3. Minden nem üres, érvényes megtartási tartományhoz a
+3. A nem kézi vágásra jelölt csoportok minden nem üres, érvényes megtartási tartományához a
    [markerindex](davinci_marker_index.md) szerinti piros megtartási markerpárt
    helyezd el a megfelelő timeline-klipen `TimelineItem.AddMarker()` hívással.
-   Üres `retained_ranges` esetén ne készíts piros markert; ellenőrizd, hogy a
-   teljes kihagyást `approved_omissions` vagy igazolt törlési döntés fedi-e.
-   Más esetben jelezd az adatellentmondást.
+   Felvételenként is vizsgáld a teljes kihagyást, akkor is, ha ugyanazon
+   script-ID más take-jeinek vannak megtartási tartományai. Ha az elhelyezett
+   klip teljes kihagyását a terv igazolt törlési döntése vagy rá vonatkozó
+   `approved_omissions` bejegyzése bizonyítja, a markerindex szerinti egyetlen
+   sárga `OMIT TAKE` tartománymarkert helyezd el rajta. A marker a klip
+   kezdetén induljon, időtartama a teljes, Resolve-ból visszaolvasott kliphossz
+   legyen. A marker megjegyzésébe írd a script-ID-t, `recording_id`-t és az
+   elhagyás rövid angol indokát. A klip a review timeline-on teljesen megmarad.
+   A megtartási tartomány hiánya önmagában nem bizonyít teljes kihagyást;
+   bizonyíték nélkül a 4. pont szerinti review jelölést használd.
    Olvasd vissza a markereket `GetMarkers()`-szel, és ellenőrizd a színt,
    nevet és helyet.
    TODO KÉSŐBB LESZ IMPLEMENTALVA: A cím- és képmarkereket ebben a lépésben ne hozd létre.
 4. Kézi vágásra jelölt vagy nem egyértelmű tartománynál ne találj ki vágási
    határt: az érintett felvétel maradjon teljesen meg. Ha azon ez a lépés már
-   elhelyezett piros megtartási markereket, a sárga jelölés előtt távolítsd el
+   elhelyezett piros megtartási vagy `OMIT TAKE` markereket, a review jelölés előtt távolítsd el
    az érintett felvételhez tartozókat. Az első review timeline-on
    a [markerindex](davinci_marker_index.md) szerinti sárga kezdő és záró markerrel
    jelöld a teljes bizonytalan rész elejét és végét. A markereket olvasd vissza.
    Tartalmi bizonytalanságnál ne hagyj félreérthető megtartási markerpárt;
    a felvételt őrizd meg, és folytasd a többi rész feldolgozását.
+   A bizonytalanságot a [közös problémánapló](../PROBLEM_LOG.md) szerint a
+   script saját `problems.md` fájljának `Kézi vágást igénylő részek` fejléce
+   alá is rögzítsd a review timeline nevével és markerhelyeivel.
+5. Olvasd vissza az összes elhelyezett klip markereit. Egyetlen klip sem
+   maradhat jelölés nélkül: ellenőrzött megtartási pár, teljes klipet lefedő
+   `OMIT TAKE` vagy teljes bizonytalan klipet jelölő review pár szükséges.
+   Hiányzó vagy ütköző tartalmi döntésnél alkalmazd a 4. pontot; az `OMIT TAKE`
+   és más vágási jelölés együtt nem érvényes. Ellenőrizd a neveket, színeket,
+   markerpárokat és az `OMIT TAKE` teljes időtartamát is.
 
 Ha bármely szükséges marker létrehozása, eltávolítása vagy visszaellenőrzése technikai okból
 meghiúsul, azonnal állj meg, és ne jelents sikert. Ha lehetséges, mentsd a

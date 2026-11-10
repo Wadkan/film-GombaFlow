@@ -9,6 +9,14 @@ A Resolve timeline-on a következő angol markerneveket használd:
 - **Pink — `IMAGE OVERLAY`:** a talking head fölé kerülő kép helye.
 - **Yellow — `REVIEW START`:** kézi átnézést igénylő rész kezdete.
 - **Yellow — `REVIEW END`:** kézi átnézést igénylő rész vége.
+- **Yellow — `OMIT TAKE`:** a teljes klippéldány kihagyására tett javaslat;
+  egyetlen tartománymarker, amely a klip teljes hosszát lefedi.
+
+Az első review timeline minden klippéldánya kapjon piros megtartási
+markerpárt, sárga review markerpárt vagy egy sárga `OMIT TAKE` tartománymarkert.
+Az `OMIT TAKE` ugyanazon klipen nem szerepelhet megtartási vagy review
+jelöléssel együtt. A marker nevét és színét együtt ellenőrizd; a sárga szín
+önmagában nem jelent bizonytalanságot. Jelöletlen klipből ne következtess törlésre.
 
 A `KEEP IN` és `KEEP OUT` pár közötti rész marad meg; több pár több megtartandó
 részt jelölhet. Ha egy megtartási tartomány vagy markerpár nem egyértelmű,

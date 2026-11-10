@@ -37,6 +37,6 @@ naplójába sem; jelezze az azonosítási akadályt.
   A tételek a script-ID-val kezdődjenek, és tartalmazzák a hiányzó rész
   scriptbeli szövegét szó szerint.
 - `Kézi vágást igénylő részek`: a bizonytalanul vágható tartományok, amelyeket
-  a Rough Cut timeline teljes egészében megtart `REVIEW START` és `REVIEW END`
+  a review vagy Rough Cut timeline teljes egészében megtart `REVIEW START` és `REVIEW END`
   markerekkel. A bejegyzés tartalmazza a script-ID-t, az okot, a forrásútvonalat
-  és forrásidő-tartományt, valamint a Rough Cut timeline nevét és markerhelyeit.
+  és forrásidő-tartományt, valamint az érintett timeline nevét és markerhelyeit.
