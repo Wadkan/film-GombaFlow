@@ -1,31 +1,45 @@
-# 5. Resolve Rough Cut összeállítása
+---
+name: 3e-resolve-rough-cut-timeline
+description: "A felülvizsgált markerek szerinti Rough Cut timeline összeállítása."
+---
+
+# 3e. Resolve Rough Cut összeállítása
 
 ## Külön indítás és bemenetellenőrzés
 
 Ezt a lépést a felhasználó a 3c review timeline markereinek átnézése után
 külön indítja. Olvasd be a 2a. lépés `retake_plan.json` tervét, a hivatkozott
 scriptet és `recording_index.json` jegyzéket, valamint a `review_timeline_assembly.json`
-és `review_timeline_resolve_media_registry.json` fájlt. Ellenőrizd a fájlok lenyomatait,
+és `review_timeline_resolve_media_registry.json` fájlokat. A
+`review_timeline_markers.json` pillanatképet is olvasd be, ha már létezik.
+Ellenőrizd a fájlok lenyomatait,
 témaazonosságát és a forrás–Media Pool–timeline-klip kapcsolatokat. A terv az
 eredeti javaslat; a megtartásról az első timeline aktuális markerei döntenek.
 
 Ha a terv nem `1.1` sémájú, a hiányellenőrzés nem teljes, nem
-`ready_for_execution`, valamelyik hivatkozás hiányzik, vagy a
+`ready_for_execution`, valamelyik kötelező bemenet hiányzik, vagy a
 tervben hivatkozott forrásrész nem található a timeline-összeállításban, ne
 építs timeline-t; jelezd a konkrét eltérést. A Resolve-projektet a `review_timeline_assembly.json`
 `resolve_project_name` értéke alapján nyisd meg, majd ellenőrizd a visszaolvasott
 projektazonosítót az ott tárolt `resolve_project_id` értékkel. Eltérésnél ne
 építs timeline-t. A `review_timeline_assembly.json` azonosítójával ellenőrizd az első
-review timeline-t; a jelenlegi klipjeit és markereit a Resolve-ból olvasd ki.
+review timeline-t.
 Az első timeline-t az összeállítás során nem módosíthatod. Meglévő nem üres
 Rough Cut timeline vagy eredményfájl esetén ne írj felül és ne duplikálj;
 állj meg és jelezd.
 
 ## Timeline-műveletek és visszaellenőrzés
 
-Olvasd be a review timeline klipjeinek aktuális markereit `GetMarkers()`-szel,
-a felhasználó módosításai, törlései és hozzáadásai utáni állapotban. Üres
-markerlista tartalmi bizonytalanság; API-olvasási hiba esetén állj meg.
+Az összeállítás előtt a [3d markerkiolvasó](3d-resolve-review-markers.md)
+fájlírás nélküli kiolvasásával vesd össze a Resolve aktuális állapotát a mentett
+`review_timeline_markers.json` teljes marker- és klipállapotával. Ha a fájl
+hiányzik, először a 3d-vel készíttesd el. Ha az állapot eltér, a 3d-vel
+frissíttesd a pillanatképet. A visszaolvasott friss fájllal dolgozz. Az
+eltérésvizsgálat és frissítés még az első timeline-on, annak módosítása nélkül
+történik.
+Üres markerlista tartalmi bizonytalanság; API-olvasási hiba esetén állj meg.
+A pillanatkép `unresolved` tételeinél a 3d-ben érintettként megjelölt klipeket
+tartsd meg kézi review-ra.
 A [markerindex](davinci_marker_index.md) szerinti név és szín együtt számít:
 
 - Piros `KEEP IN` / `KEEP OUT` pár: a pár közötti forrástartomány megmarad;
@@ -37,18 +51,23 @@ A [markerindex](davinci_marker_index.md) szerinti név és szín együtt számí
 - Hiányzó, hibás, pár nélküli vagy ütköző jelölés: az érintett klipet teljesen
   tartsd meg kézi vágáshoz. Ne következtess törlésre hiányzó markerből.
 
-Ha a felhasználó timeline-szintű vágási markert is elhelyezett, rendeld azt
+Ha a pillanatkép timeline-szintű vágási markert is tartalmaz, rendeld azt
 az érintett kliphez a visszaolvasott timeline-határok alapján. Nem egyértelmű
 hozzárendelésnél az összes érintett klip maradjon meg kézi review-ra. A kék
 `TITLE` és pink `IMAGE OVERLAY` markereket ebben a lépésben még ne használd.
 
-A `recordings` elemeket csoportosítsd `script_id` szerint, majd a `script_parts`
-listán `script_order` szerint haladj. Egy script-részen belül a felvételeket
+A pillanatkép videoklipjeit a kapcsolt hangklipjeikkel együtt, egy-egy
+felvételként kezeld; külön marker nélküli kapcsolt hangból ne következtess
+bizonytalanságra. A `recordings` elemeket csoportosítsd `script_id` szerint, majd a `script_parts`
+listán `script_order` szerint haladj. Az egyértelműen hozzá nem rendelhető
+klipet se hagyd ki: teljesen tartsd meg, az első timeline szerinti relatív
+sorrendben ideiglenesen a sor végére helyezve, review jelöléssel. Egy
+script-részen belül a felvételeket
 az első timeline-on elfoglalt sorrendben, a klipen belüli megtartási részeket
 forrásidő szerint állítsd össze. Bizonytalan sorrendnél a teljes érintett
 felvételek maradjanak meg, és kapjanak review jelölést.
 
-Az első timeline-ról visszaolvasott klip- és markerhatárokat, a forrásklip
+A friss pillanatkép klip- és markerhatárait, a forrásklip
 regiszterbeli FPS-ét és a timeline időalapját használva számítsd ki a
 megtartandó eredeti forrásképkockákat. A félig nyílt forrástartományokat a
 telepített Resolve API által elvárt `startFrame` / `endFrame` határokra alakítsd;
@@ -59,6 +78,10 @@ video-, illetve hangsávra kerüljön; a hangot hagyd változatlanul. Korábbi
 B-roll rekord `audio_enabled: false` értéke alapján se némíts, és hang nélküli
 forráshoz ne hozz létre mesterséges hangot.
 
+Közvetlenül a Rough Cut létrehozása előtt ellenőrizd újra a 3d-vel a Resolve
+aktuális állapotát. Ha megváltozott, frissítsd a pillanatképet, az alapján
+állítsd össze újra a megtartandó tartományok listáját, majd ismét ellenőrizd a
+frissességet. Csak az ellenőrzéskor aktuális állapot alapján folytasd.
 Hozd létre a `<topic_id> - 2. Rough Cut` üres timeline-t, állítsd be aktuális
 timeline-nak, és a Resolve-ból visszaolvasott timeline-ID-val ellenőrizd a
 beállítást. A script-sorrendbe rendezett megtartandó szakaszokat egyetlen
@@ -108,6 +131,8 @@ automatikusan. Újrafuttatás előtt egyeztesd, melyik rögzített állapotból 
   `resolve_project_id`, `resolve_project_name`.
 - `retake_plan_path`, `retake_plan_sha256`: az ellenőrzött eredeti terv
   hivatkozása és tartalomlenyomata.
+- `review_timeline_markers_path`, `review_timeline_markers_sha256`: a
+  felhasznált friss markerpillanatkép útvonala és lenyomata.
 - `review_timeline_id`, `rough_cut_timeline_id`: a Resolve-ból visszaolvasott
   timeline-azonosítók; a Rough Cut még nem létrejötténél az utóbbi `null`.
 - `ordering`: script-ID-nként a felvételazonosítók tényleges sorrendje és a

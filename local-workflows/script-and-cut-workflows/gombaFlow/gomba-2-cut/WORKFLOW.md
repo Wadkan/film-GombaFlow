@@ -32,14 +32,15 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
 6. [Review markerek kiolvasása](3d-resolve-review-markers.md): a user review
    után a Resolve aktuális markereit a script mappájának
    `review_timeline_markers.json` pillanatképébe menti.
-7. [Rough Cut összeállítása](5-retake-execution.md): az első timeline user
-   review-ja után, külön felhasználói indításra annak aktuális markerei alapján
-   elkészíti a második timeline-t és a `retake_cleanup.json` kimenetet.
+7. [Rough Cut összeállítása](3e-resolve-rough-cut-timeline.md): az első timeline
+   user review-ja után, külön felhasználói indításra a markerpillanatkép
+   frissességét ellenőrzi, és az aktuális markerek alapján elkészíti a második
+   timeline-t és a `retake_cleanup.json` kimenetet.
 
 Az indexek elkészülte után a preflight kiválaszt egyetlen scriptet, majd a 2a tervlépésnek átadja annak scriptmappáját és indexét. A terv elkészülte után
 az agent átadja a fájl útvonalát, de nem indítja
 el a timeline-összeállítást. A felhasználó külön indítja a 3. Resolve-lépést;
-az ott választott vagy létrehozott projektet használja az 5. vágási lépés is,
+az ott választott vagy létrehozott projektet használja a 3e vágási lépés is,
 natív Resolve-mentéssel. Az eredeti médiafájlokat egyik lépés sem mozgatja,
 másolja vagy módosítja; a jegyzékek csak hivatkoznak rájuk.
 

@@ -224,7 +224,7 @@ tervét mentsd a jegyzék mappájában lévő `retake_plan.json` fájl `groups`
 listájába, majd folytasd a következő ID elemzésével. Ne tarts több ID beszédét
 egyidejűleg az elemzési kontextusban. Timeline-t ne módosíts; a teljes tervet
 csak az összes csoport elkészülte után add át. A végrehajtás külön, felhasználó
-által indított [5. lépésben](5-retake-execution.md) történik.
+által indított [3e lépésben](3e-resolve-rough-cut-timeline.md) történik.
 
 A terv sémája `1.1`, kötelező mezői:
 

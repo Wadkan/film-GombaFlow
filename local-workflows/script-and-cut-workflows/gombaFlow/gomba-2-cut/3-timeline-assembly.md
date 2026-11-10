@@ -11,7 +11,7 @@ abban hivatkozott, elfogadott `3-script.md` alapján ténylegesen helyezd el a
 felvett részeket a script egyetlen cél-timeline-ján. Az eredeti videókat és átiratokat
 ne módosítsd. Ebben a lépésben minden azonosított felvételváltozat megmarad;
 az ismétlésekre javasolt megtartási tartományokat a terv rögzíti; a végleges
-megtartást a review timeline markerei adják, amelyekből az 5. lépés építi a
+megtartást a review timeline markerei adják, amelyekből a 3e lépés építi a
 Rough Cut timeline-t.
 
 Alkalmazd a scriptből hivatkozott
@@ -150,7 +150,7 @@ Ha nincs ilyen hiány, röviden jelezd, hogy az összeállítás kész. A jóvá
 kihagyásokat ne jelentsd újra hiányként. Végrehajtási akadályt hibaként jelezz,
 ne hiányzó felvételként.
 
-A gépi átadás a `review_timeline_assembly.json` útvonala; az 5. lépés ezt, az eredeti
+A gépi átadás a `review_timeline_assembly.json` útvonala; a 3e lépés ezt, az eredeti
 jegyzéket, az ellenőrzött `retake_plan.json` fájlt és az első timeline aktuális
 markereit használja. A
 felhasználónak nem kell vágásnaplót készítenie.

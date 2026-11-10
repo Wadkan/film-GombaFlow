@@ -21,15 +21,18 @@ Hibás vagy hiányzó kötelező bemenetnél állj meg és jelezd az akadályt.
    hangsáv klippéldányait. A timeline és minden klippéldány `GetMarkers()`
    eredményét külön őrizd meg; ne a korábbi tervből következtess a markerekre.
 2. Minden klippéldánynál olvasd ki a timeline-klip és Media Pool-klip
-   azonosítóját, sávját, timeline- és forráshatárait, valamint markereit.
+   azonosítóját, sávját, timeline- és forráshatárait, kapcsolt klipjeit és markereit.
    A `review_timeline_assembly.json` és a jegyzék alapján rendeld hozzá a
-   `recording_id`, `source_id` és `script_id` értékeket. Nem egyértelmű
+   `recording_id`, `source_id` és `script_id` értékeket. A kapcsolt hangot a
+   hozzá tartozó videokliphez rendeld. Nem egyértelmű
    hozzárendelésnél ne találgass: a tényleges klipet is rögzítsd, az ismeretlen
    mezők legyenek `null`, és az eset kerüljön az `unresolved` listába.
 3. A [markerindex](davinci_marker_index.md) alapján jelöld `unresolved` tétellel
    a hiányzó, hibás vagy ütköző vágási jelölést és a nem egyértelműen kliphez
    rendelhető timeline-markert. Az érintett klip maradjon kézi review-ra;
-   tartalmi bizonytalanság miatt ne állj meg, és ne módosíts markert.
+   tartalmi bizonytalanság miatt ne állj meg, és ne módosíts markert. Egy
+   kapcsolt hangklipet ne jelölj bizonytalannak pusztán azért, mert azon külön
+   marker nincs; a hozzá tartozó videó jelölését használd.
    A cím- és képmarkereket is olvasd ki, de vágási döntésként ne használd.
 
 Az üres markerlista érvényes kiolvasási eredmény, nem API-hiba. Ha a projekt,
@@ -48,7 +51,8 @@ pillanatképe; nem írja felül sem a tervet, sem az indexet. Mezői:
 - `clips`: minden tényleges video- és hangsávbeli klippéldány listája:
   `timeline_clip_id`, `resolve_media_pool_item_id`, `track_type`, `track_index`,
   `timeline_start_frame`, `timeline_end_frame`, `source_start_frame`,
-  `source_end_frame`, `recording_id`, `source_id`, `script_id` és `markers`.
+  `source_end_frame`, `recording_id`, `source_id`, `script_id`,
+  `linked_timeline_clip_ids` és `markers`.
 - Minden `timeline_markers` és `markers` elem: a Resolve-ból visszaolvasott
   `frame_id`, `name`, `color`, `duration`, `note` és `custom_data`. A `frame_id`
   eredeti értékét és a marker hatókörét őrizd meg; ne keverd össze a timeline-
@@ -61,6 +65,11 @@ azonos Resolve-állapot összehasonlítható legyen. Már meglévő pillanatkép
 akkor frissíts, ha a `topic_id`, projekt- és timeline-azonosítók egyeznek;
 egyébként állj meg és jelezd az eltérést. Mentés után olvasd vissza a teljes
 JSON-t és ellenőrizd. A Resolve aktuális markerei maradnak az irányadók.
+
+A Rough Cut skill frissességellenőrzéséhez ugyanezeket a kiolvasási lépéseket
+fájlírás nélkül is végrehajthatod. A mentett és az aktuális állapot összevetése
+a projekt- és timeline-azonosítókat, időalapot, klipazonosítókat, sávokat,
+kliphatárokat, kapcsolatokat és az összes markeradatot vegye figyelembe.
 
 Ez a lépés nem hoz létre és nem módosít timeline-t, klipet vagy markert, és nem
 indítja el a Rough Cut összeállítását. A fájl útvonalát add át a hívónak.
