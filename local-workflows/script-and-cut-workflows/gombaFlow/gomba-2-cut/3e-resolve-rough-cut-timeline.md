@@ -58,7 +58,13 @@ hozzárendelésnél az összes érintett klip maradjon meg kézi review-ra. A k�
 
 A pillanatkép videoklipjeit a kapcsolt hangklipjeikkel együtt, egy-egy
 felvételként kezeld; külön marker nélküli kapcsolt hangból ne következtess
-bizonytalanságra. A `recordings` elemeket csoportosítsd `script_id` szerint, majd a `script_parts`
+bizonytalanságra. A videó markerei szerinti megtartási tartományokat a
+kapcsolt hangra is azonos forrástartománnyal és szinkronban alkalmazd; érvényes
+`OMIT TAKE` a videót és minden kapcsolt hangját együtt hagyja ki. Ha a
+kapcsolt hangon lévő vágási marker eltérő vagy nem egyértelműen összevethető
+döntést jelent, az egész kép–hang egységet tartsd meg, a videón jelöld sárga
+review markerpárral, és rögzítsd a `problems.md` fájlban. A `recordings` elemeket
+csoportosítsd `script_id` szerint, majd a `script_parts`
 listán `script_order` szerint haladj. Az egyértelműen hozzá nem rendelhető
 klipet se hagyd ki: teljesen tartsd meg, az első timeline szerinti relatív
 sorrendben ideiglenesen a sor végére helyezve, review jelöléssel. Egy
@@ -97,9 +103,9 @@ sikertelen API-hívásnál állj meg, és ne indíts automatikus újrapróbálá
 Ha nincs megtartandó szakasz, ne hívj üres listával `AppendToTimeline()`-t;
 az üres Rough Cutot és az összes kihagyást jelezd.
 
-Minden kézi vágáshoz teljesen megtartott klip elejére és végére helyezd el a
-markerindex szerinti sárga `REVIEW START` / `REVIEW END` párt a Rough Cuton,
-az új klip visszaolvasott határaihoz igazítva. Az `OMIT TAKE` markerrel együtt
+Minden kézi vágáshoz teljesen megtartott egység videoklipjének elejére és végére
+helyezd el a markerindex szerinti sárga `REVIEW START` / `REVIEW END` párt a
+Rough Cuton, az új klip visszaolvasott határaihoz igazítva. Az `OMIT TAKE` markerrel együtt
 kihagyott klip és markere nem kerül a Rough Cutra. A létrehozott markereket
 olvasd vissza, és ellenőrizd a nevüket, színüket és helyüket. Technikai
 olvasási, létrehozási vagy visszaellenőrzési hiba esetén állj meg, mentsd a

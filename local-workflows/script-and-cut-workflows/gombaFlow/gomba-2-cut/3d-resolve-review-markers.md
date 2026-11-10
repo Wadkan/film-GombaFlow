@@ -32,7 +32,11 @@ Hibás vagy hiányzó kötelező bemenetnél állj meg és jelezd az akadályt.
    rendelhető timeline-markert. Az érintett klip maradjon kézi review-ra;
    tartalmi bizonytalanság miatt ne állj meg, és ne módosíts markert. Egy
    kapcsolt hangklipet ne jelölj bizonytalannak pusztán azért, mert azon külön
-   marker nincs; a hozzá tartozó videó jelölését használd.
+   marker nincs; a hozzá tartozó videó jelölését használd. Ha a kapcsolt
+   hangon is van vágási marker, az időalapokat figyelembe véve vesd össze a
+   videó döntésével. Eltérő vagy nem egyértelműen összevethető döntésnél az
+   egész kép–hang egységet jelöld `unresolved` tétellel, mindkét klip
+   azonosítójával és az indokkal.
    A cím- és képmarkereket is olvasd ki, de vágási döntésként ne használd.
 
 Az üres markerlista érvényes kiolvasási eredmény, nem API-hiba. Ha a projekt,

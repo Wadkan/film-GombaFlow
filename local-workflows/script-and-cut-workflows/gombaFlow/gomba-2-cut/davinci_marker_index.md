@@ -12,11 +12,17 @@ A Resolve timeline-on a következő angol markerneveket használd:
 - **Yellow — `OMIT TAKE`:** a teljes klippéldány kihagyására tett javaslat;
   egyetlen tartománymarker, amely a klip teljes hosszát lefedi.
 
-Az első review timeline minden klippéldánya kapjon piros megtartási
-markerpárt, sárga review markerpárt vagy egy sárga `OMIT TAKE` tartománymarkert.
+Az első review timeline minden videoklipje és kapcsolt hangja egy vágási
+egységet alkot. A vágási markerek a videoklipen legyenek; a kapcsolt hangra
+nem kell külön marker. A videoklip kapjon piros megtartási markerpárt, sárga
+review markerpárt vagy egy sárga `OMIT TAKE` tartománymarkert. A döntés
+ugyanarra a kép- és hangtartományra vonatkozik.
 Az `OMIT TAKE` ugyanazon klipen nem szerepelhet megtartási vagy review
 jelöléssel együtt. A marker nevét és színét együtt ellenőrizd; a sárga szín
 önmagában nem jelent bizonytalanságot. Jelöletlen klipből ne következtess törlésre.
+Ha a kapcsolt hangon is van vágási marker, és az a videó jelölésével eltérő
+vagy nem összevethető döntést jelent, az egész egység maradjon meg kézi
+review-ra.
 
 A `KEEP IN` és `KEEP OUT` pár közötti rész marad meg; több pár több megtartandó
 részt jelölhet. Ha egy megtartási tartomány vagy markerpár nem egyértelmű,

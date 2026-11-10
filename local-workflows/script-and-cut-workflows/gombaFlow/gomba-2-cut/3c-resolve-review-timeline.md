@@ -31,7 +31,10 @@ duplikálj tartalmat; állj meg és jelezd. A második timeline-t ne készítsd 
    A felvételek eredeti képét és hangját szinkronban őrizd meg. A B-roll képe
    és meglévő hangja a talking headtől külön video-, illetve hangsávra kerüljön;
    a hangot ne némítsd vagy módosítsd. A külön sávokon is őrizd meg a teljes
-   timeline felvételi sorrendjét, és a tényleges sávokat olvasd vissza.
+   timeline felvételi sorrendjét, és a tényleges sávokat olvasd vissza. A
+   videót és a hozzá tartozó összes meglévő hangklipet kapcsold össze a
+   Resolve-ban, majd olvasd vissza a kapcsolatot. Sikertelen kapcsolás vagy
+   technikai visszaolvasási hiba esetén állj meg és jelezd.
 2. A terv `retained_ranges` minden eleménél ellenőrizd a `recording_id`,
    `source_id`, `source_start` és `source_end` mezőket, majd rendeld a
    tartományt az első timeline megfelelő klippéldányához. A forrás saját,
@@ -41,7 +44,9 @@ duplikálj tartalmat; állj meg és jelezd. A második timeline-t ne készítsd 
    `source_start`–`source_end` tartományt jelöld, az azonosítóbemondással együtt.
 3. A nem kézi vágásra jelölt csoportok minden nem üres, érvényes megtartási tartományához a
    [markerindex](davinci_marker_index.md) szerinti piros megtartási markerpárt
-   helyezd el a megfelelő timeline-klipen `TimelineItem.AddMarker()` hívással.
+   helyezd el a megfelelő videoklipen `TimelineItem.AddMarker()` hívással. A
+   kapcsolt hangra ne készíts külön vágási markert; a videó jelölése az egész
+   kép–hang egységre vonatkozik.
    Felvételenként is vizsgáld a teljes kihagyást, akkor is, ha ugyanazon
    script-ID más take-jeinek vannak megtartási tartományai. Ha az elhelyezett
    klip teljes kihagyását a terv igazolt törlési döntése vagy rá vonatkozó
@@ -66,8 +71,9 @@ duplikálj tartalmat; állj meg és jelezd. A második timeline-t ne készítsd 
    A bizonytalanságot a [közös problémánapló](../PROBLEM_LOG.md) szerint a
    script saját `problems.md` fájljának `Kézi vágást igénylő részek` fejléce
    alá is rögzítsd a review timeline nevével és markerhelyeivel.
-5. Olvasd vissza az összes elhelyezett klip markereit. Egyetlen klip sem
-   maradhat jelölés nélkül: ellenőrzött megtartási pár, teljes klipet lefedő
+5. Olvasd vissza az összes elhelyezett videoklip markereit és kapcsolt hangjait.
+   Egyetlen kép–hang egység sem maradhat jelölés nélkül: a videoklipen
+   ellenőrzött megtartási pár, teljes klipet lefedő
    `OMIT TAKE` vagy teljes bizonytalan klipet jelölő review pár szükséges.
    Hiányzó vagy ütköző tartalmi döntésnél alkalmazd a 4. pontot; az `OMIT TAKE`
    és más vágási jelölés együtt nem érvényes. Ellenőrizd a neveket, színeket,
