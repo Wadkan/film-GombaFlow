@@ -105,8 +105,16 @@ A vágó az átadási blokkból hivatkozott jelen szerződést alkalmazza.
   hiányzó pár, ismeretlen ID vagy bizonytalan hozzárendelés esetén az érintett
   részt jelölje tisztázandónak, automatikus kivágás és elhelyezés nélkül.
   A forrásidőbélyegekből határozza meg a tartalom határait a parancsszótár szerint.
-  A jegyzékbe mentés után a cél-timeline-ra helyezett változatból a teljes
-  utasításblokkot távolítsa el, mindkét varázsszóval együtt, az alábbi képi kivétellel.
+  A teljes utasításblokk és a két varázsszó kihagyására tett javaslatot a vágási
+  terv megtartandó tartományai és az ezekből készülő markerek fejezzék ki,
+  az alábbi képi kivétellel.
+- **Review timeline:** minden felvétel teljes képe és hangja maradjon meg,
+  az azonosítóbemondásokkal, varázsszavakkal, hibajelzésekkel és ismétlésekkel
+  együtt. Itt csak jelöljön markerekkel; ne távolítson el felvételrészt vagy
+  teljes take-et, és a bemondásokat se némítsa.
+- **Rough Cut:** tényleges kihagyás kizárólag a második timeline összeállításakor,
+  a review timeline felhasználó által ellenőrzött, aktuális markerei alapján
+  történhet. Ez az azonosítóbemondások kihagyására is vonatkozik.
 - **Csak azonosítóbemondást tartalmazó képi rész:** ha a script szerinti
   `clip-type` nem `talking head`, és az adott azonosított részben az egyetlen
   beszéd az érvényes azonosítóbemondás, a rész azonosítottnak számít, nem hiánynak.
