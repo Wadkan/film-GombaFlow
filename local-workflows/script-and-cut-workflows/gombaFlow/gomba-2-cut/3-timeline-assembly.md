@@ -1,3 +1,8 @@
+---
+name: 3-timeline-assembly
+description: "Az ellenőrzött vágási terv alapján a felvételek elhelyezése a Resolve cél-timeline-ján és a review timeline összeállítása."
+---
+
 # 3. Timeline összeállítása
 
 ## Cél és bemenet

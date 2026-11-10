@@ -1,3 +1,8 @@
+---
+name: 2-recording-index
+description: "Az átiratok és azonosítóbemondások alapján a felvételek témához és scripthez rendelése, majd recording_index.json készítése."
+---
+
 # 2. Felvételek azonosítása és jegyzék
 
 ## Cél és bemenet

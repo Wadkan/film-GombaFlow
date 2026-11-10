@@ -1,3 +1,8 @@
+---
+name: 2a-retake-plan
+description: "A korábbi ismétlésekhez végrehajtható kivágási terv készítése a szóidőbélyeges átiratok és az elfogadott script alapján."
+---
+
 # 2a. Ismétlések kivágási terve
 
 ## Cél és bemenet

@@ -1,3 +1,8 @@
+---
+name: 1-transcription
+description: "A videómappában található eredeti felvételek rekurzív átírása helyi Faster-Whisperrel, szóidőbélyegekkel."
+---
+
 # 1. Felvételek átírása
 
 ## Cél és bemenet
