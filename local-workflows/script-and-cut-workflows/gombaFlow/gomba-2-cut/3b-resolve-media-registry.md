@@ -5,9 +5,10 @@ description: "A Resolve-projekt és a Media Pool forrásklipjeinek rögzítése.
 
 # Resolve médiaregiszter
 
-A `resolve-media-registry.json` a kiválasztott script meglévő projektmappájában,
+A `review_timeline_resolve_media_registry.json` a kiválasztott script meglévő projektmappájában,
 a `recording_index.json` mellett található. A felvételi jegyzék és a vágási
-terv változatlan marad; a médiaregiszter kapcsolja a forrásokat a Resolve-hoz.
+terv változatlan marad; a médiaregiszter kapcsolja a forrásokat a Resolve-hoz,
+és a Rough Cut timeline is ugyanazokat a forrásazonosítókat használja.
 
 ## Adatok
 

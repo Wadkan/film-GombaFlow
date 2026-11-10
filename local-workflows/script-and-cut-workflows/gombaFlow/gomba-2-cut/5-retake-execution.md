@@ -5,7 +5,7 @@
 Ezt a lépést a felhasználó a 3c review timeline markereinek átnézése után
 külön indítja. Olvasd be a 2a. lépés `retake_plan.json` tervét, a hivatkozott
 scriptet és `recording_index.json` jegyzéket, valamint a `timeline_assembly.json`
-és `resolve-media-registry.json` fájlt. Ellenőrizd a fájlok lenyomatait,
+és `review_timeline_resolve_media_registry.json` fájlt. Ellenőrizd a fájlok lenyomatait,
 témaazonosságát és a forrás–Media Pool–timeline-klip kapcsolatokat. A terv az
 eredeti javaslat; a megtartásról az első timeline aktuális markerei döntenek.
 

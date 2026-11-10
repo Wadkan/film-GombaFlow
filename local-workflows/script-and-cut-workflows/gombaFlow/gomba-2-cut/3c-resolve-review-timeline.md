@@ -9,7 +9,7 @@ description: "A teljes felvételi timeline összeállítása és a megtartandó 
 
 A kiválasztott `recording_index.json`, az `1.1` sémájú, `coverage_checked: true`
 és `ready_for_execution` állapotú `retake_plan.json`, valamint a [médiaregiszter](3b-resolve-media-registry.md)
-`resolve-media-registry.json` kimenete. A projektet és a forrásokat a
+`review_timeline_resolve_media_registry.json` kimenete. A projektet és a forrásokat a
 regiszter Resolve-azonosítóival használd; ne importálj újra médiát.
 Ellenőrizd a terv script- és jegyzéklenyomatát, a `topic_id` és a nyitott
 Resolve-projekt egyezését, a forráskapcsolatokat és az időtartományokat.
