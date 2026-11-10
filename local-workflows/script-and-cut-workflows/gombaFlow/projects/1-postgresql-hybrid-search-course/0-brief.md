@@ -30,7 +30,7 @@
 
 ## Forrásjegyzék
 
-- **F1** — `local-workflows/gomba-1-script-writer/projects/1-postgresql-hybrid-search-course/source-transcript.md`; helyi átirat, 00:00–01:00:18. A kimondott koncepciókat, eszközöket, részleges adatszámokat, demóleírásokat és korlátokat támasztja alá. Nem bizonyít képernyőn látható technikai részleteket.
+- **F1** — `local-workflows/script-and-cut-workflows/gombaFlow/projects/1-postgresql-hybrid-search-course/source-transcript.md`; helyi átirat, 00:00–01:00:18. A kimondott koncepciókat, eszközöket, részleges adatszámokat, demóleírásokat és korlátokat támasztja alá. Nem bizonyít képernyőn látható technikai részleteket.
 - **F2** — https://www.youtube.com/watch?v=kT7nXO32L-Q; forrásvideó, az átirattal elérhető. A videó képi részleteinek ellenőrzése ebben a briefkörben nem történt meg.
 - **F3** — https://www.freecodecamp.org/news/build-a-hybrid-search-engine-in-postgresql-bm25-vector-retrieval/; freeCodeCamp cikk a videó projektről. A leírás szerint a rendszer `pg_textsearch`, `pgvector`, `pgvectorscale`, Python/FastAPI/Psycopg és RRF elemeket használ; 240 000 Simple English Wikipedia-cikket és 384 dimenziós embeddingeket említ. A cikk nem helyettesíti az eredeti projektkód és az aktuális költségek ellenőrzését.
 - **F4** — https://github.com/timescale/docs/blob/latest/use-timescale/extensions/pg-textsearch.md; hivatalos Tiger Data dokumentáció a `pg_textsearch` és hibrid keresési mintákról. A briefben nem használjuk az aktuális telepítési vagy verzióállítások végleges forrásaként; ezek a későbbi script előkészítésekor ellenőrzendők.

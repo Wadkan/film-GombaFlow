@@ -16,7 +16,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 WORKFLOW_DIR = Path(__file__).resolve().parents[1]
-PROJECTS_DIR = WORKFLOW_DIR / "projects"
+PROJECTS_DIR = WORKFLOW_DIR.parent / "projects"
 REGISTRY_PATH = PROJECTS_DIR / "registry.json"
 TOPIC_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$")
 
@@ -205,7 +205,7 @@ def register_topic(url: str, idea_file: str) -> tuple[str, Path, bool, str]:
                 "topic_id": topic_id,
                 "project_dir": project_name,
                 "transcript_ready": True,
-                "transcript": str(old_path.relative_to(WORKFLOW_DIR)),
+                "transcript": str(old_path.relative_to(WORKFLOW_DIR.parent)),
             }
         else:
             topic_id = next_topic_id(registry, title)
@@ -223,7 +223,7 @@ def register_topic(url: str, idea_file: str) -> tuple[str, Path, bool, str]:
     if transcript_path.is_file():
         record = registry["videos"].setdefault(video_id, {"topic_id": topic_id})
         record["transcript_ready"] = True
-        record["transcript"] = str(transcript_path.relative_to(WORKFLOW_DIR))
+        record["transcript"] = str(transcript_path.relative_to(WORKFLOW_DIR.parent))
         save_registry(registry)
         return topic_id, transcript_path, True, project_name
     return topic_id, transcript_path, False, project_name
@@ -364,7 +364,7 @@ def run_create(url: str, idea_file: str) -> Path:
     registry = load_registry()
     record = registry["videos"][youtube_video_id(url)]
     record["transcript_ready"] = True
-    record["transcript"] = str(transcript_path.relative_to(WORKFLOW_DIR))
+    record["transcript"] = str(transcript_path.relative_to(WORKFLOW_DIR.parent))
     save_registry(registry)
     return transcript_path
 

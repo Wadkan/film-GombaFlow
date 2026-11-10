@@ -13,10 +13,9 @@ from urllib.parse import parse_qs, urlparse
 
 WORKFLOW_DIR = Path(__file__).resolve().parents[1]
 REPO_ROOT = WORKFLOW_DIR.parents[3]
-PROJECTS_DIR = WORKFLOW_DIR / "projects"
+PROJECTS_DIR = WORKFLOW_DIR.parent / "projects"
 RESULTS_DIR = (
-    REPO_ROOT
-    / "local-workflows/script-and-cut-workflows/gombaFlow/gomba-0-idea-collector/results"
+    REPO_ROOT / "local-workflows/script-and-cut-workflows/gombaFlow/gomba-0-idea-collector/results"
 )
 TRANSCRIPT_CLI = WORKFLOW_DIR / "scripts" / "gomba1_transcript.py"
 
@@ -53,7 +52,7 @@ def transcript_exists(video_id: str) -> bool:
         registry = json.loads(registry_path.read_text(encoding="utf-8"))
         record = registry.get("videos", {}).get(video_id, {})
         if record.get("transcript"):
-            return (WORKFLOW_DIR / record["transcript"]).is_file()
+            return (WORKFLOW_DIR.parent / record["transcript"]).is_file()
         project_dir = PROJECTS_DIR / record.get("project_dir", record.get("topic_id", ""))
         return (project_dir / "source-transcript.md").is_file()
     except (OSError, json.JSONDecodeError, AttributeError, TypeError):

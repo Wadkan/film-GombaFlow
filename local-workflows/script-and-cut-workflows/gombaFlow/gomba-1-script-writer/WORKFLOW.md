@@ -40,9 +40,9 @@ a témaspecifikus hangvételt.
 
 ## Útvonalak és fájllista
 
-Minden útvonal ehhez a mappához képest relatív.
-`<project>` = `projects/<topic-id>`. A transcript script a
-`projects/registry.json` alapján osztja ki a Gomba 1 ID-t, és a kiválasztott
+Az itt leírt projektútvonalak a közös `../projects/` könyvtárhoz képest
+értelmezendők. `<project>` = `../projects/<topic-id>`. A transcript script a
+`../projects/registry.json` alapján osztja ki a Gomba 1 ID-t, és a kiválasztott
 Gomba 0 ötlet bejegyzéséhez is hozzáírja még a letöltés előtt. Az ID alakja
 `1-rovid-cim`: a sorszám növekvő, a rövid cím az ötlet címéből készül. A
 registry a YouTube videóazonosítót rendeli ehhez az ID-hoz, és jelzi, hogy
@@ -79,20 +79,20 @@ gomba-1-script-writer/
     gomba-1-script-writer-3a-script-writing/SKILL.md
     gomba-1-script-writer-4-script-review/SKILL.md
     gomba-1-script-writer-5-shoot-preparation/SKILL.md
-  projects/
-    registry.json        # YouTube ID → Gomba 1 ID és transcript állapot
-    <topic-id>/
-      source-audio/        # yt-dlp hangfájl és takarítási rekord; .gitignore kezeli
-        source.mp3
-      0-brief.md
-      source-transcript.md
-      1-story.md
-      1-thumbnail-prompt.md
-      1-outline-hyperframes-brief.md
-      2-chapters.md
-      3-script.md
-      4-review.md
-      5-preparation.md
+../projects/
+  registry.json        # YouTube ID → Gomba 1 ID és transcript állapot
+  <topic-id>/
+    source-audio/        # yt-dlp hangfájl és takarítási rekord; .gitignore kezeli
+      source.mp3
+    0-brief.md
+    source-transcript.md
+    1-story.md
+    1-thumbnail-prompt.md
+    1-outline-hyperframes-brief.md
+    2-chapters.md
+    3-script.md
+    4-review.md
+    5-preparation.md
 ```
 
 ## Helyi forrásátirat

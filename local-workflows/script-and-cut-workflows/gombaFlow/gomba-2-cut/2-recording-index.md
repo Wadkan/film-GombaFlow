@@ -10,7 +10,7 @@ Olvasd be:
 
 - Az [átírási lépés](1-transcription.md) `master_transcript.json` fájlját és
   minden benne hivatkozott videónkénti átiratot.
-- A Gomba 1 `projects/registry.json` fájlját és az átírt felvételek
+- A GombaFlow közös `projects/registry.json` fájlját és az átírt felvételek
   bemondásaiban szereplő témaazonosítóknak megfelelő `3-script.md` fájlokat.
   A registry `topic_id` és `project_dir` mezői adják meg a script helyét.
 - A scriptből hivatkozott
@@ -22,7 +22,7 @@ Olvasd be:
 Egy bemeneti forrás több témaazonosítóhoz tartozó felvételt is tartalmazhat.
 Az átiratok rekordjait témaazonosító és a hozzá tartozó script szerint külön
 csoportosítsd. Minden csoporthoz külön jegyzék készül a már létező
-`projects/<project_dir>/` scriptmappában; új mappát ne hozz létre. A jegyzék
+`../projects/<project_dir>/` scriptmappában; új mappát ne hozz létre. A jegyzék
 az eredeti média- és átiratfájlok helyére hivatkozik, azokat ne mozgasd,
 ne másold és ne módosítsd.
 
