@@ -10,22 +10,22 @@ description: "Forgatási script tartalmi és technikai review-ja, ismétlések �
 - **Goal:** indokolt döntés a script tervezési szintű megfelelőségéről.
 - **Prerequisite:** teljes script, aktuális előzmények és azonosítható bemeneti
   változatok; a review nem helyettesíti az emberi scriptjóváhagyást.
-- **Input:** [workflow](../../WORKFLOW.md), [videóstruktúra](../../VIDEO_STRUCTURE.md),
-  [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
-  [hang- és stílusszabályok](../../../style.md),
+- **Input:** [workflow](WORKFLOW.md), [videóstruktúra](VIDEO_STRUCTURE.md),
+  [közös szabályok](CONTENT_RULES.md), saját `4-script-review.md`,
+  [hang- és stílusszabályok](../style.md),
   `<project>/0-brief.md`, `<project>/1-story.md`, `<project>/2-chapters.md`,
   `<project>/1-thumbnail-prompt.md`, `<project>/1-outline-hyperframes-brief.md`,
   `<project>/3-script.md`,
   a brief releváns ellenőrzési forrásai;
   `<project>/source-transcript.md`;
-  [brief-template](../../templates/0-brief-template.md),
-  [story-template](../../templates/1-story-template.md),
-  [thumbnail-prompt-template](../../templates/1-thumbnail-prompt-template.md),
-  [outline-Hyperframes-brief-template](../../templates/1-outline-hyperframes-brief-template.md),
-  [fejezet-template](../../templates/2-chapters-template.md),
-  [script-template](../../templates/3-script-template.md),
-  [review-template](../../templates/4-review-template.md),
-  [összehasonlítás-template](../../templates/comparison-template.md).
+  [brief-template](templates/0-brief-template.md),
+  [story-template](templates/1-story-template.md),
+  [thumbnail-prompt-template](templates/1-thumbnail-prompt-template.md),
+  [outline-Hyperframes-brief-template](templates/1-outline-hyperframes-brief-template.md),
+  [fejezet-template](templates/2-chapters-template.md),
+  [script-template](templates/3-script-template.md),
+  [review-template](templates/4-review-template.md),
+  [összehasonlítás-template](templates/comparison-template.md).
 - **Output:** kizárólag `<project>/4-review.md`, a review-template szerint.
   A változó útvonalak a workflow mappájához képest értendők.
 

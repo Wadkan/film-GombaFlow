@@ -10,13 +10,13 @@ description: "Teljes magyar forgatási script kidolgozása vagy review alapján 
 - **Goal:** követhető műveletek és elmondható saját narráció egy scriptben.
 - **Prerequisite:** aktuális brief, történet és fejezetterv, érvényes
   briefjóváhagyás és azonosítható bemeneti változatok.
-- **Input:** [workflow](../../WORKFLOW.md), [videóstruktúra](../../VIDEO_STRUCTURE.md),
-  [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
-  [hang- és stílusszabályok](../../../style.md),
-  [script-template](../../templates/3-script-template.md),
-  [felvételi beállítás](../../../../../recording-config.json),
-  [parancsszótár](../../RECORDING_COMMANDS.md),
-  [összehasonlítás-template](../../templates/comparison-template.md),
+- **Input:** [workflow](WORKFLOW.md), [videóstruktúra](VIDEO_STRUCTURE.md),
+  [közös szabályok](CONTENT_RULES.md), saját `3a-script-writing.md`,
+  [hang- és stílusszabályok](../style.md),
+  [script-template](templates/3-script-template.md),
+  [felvételi beállítás](../../../recording-config.json),
+  [parancsszótár](RECORDING_COMMANDS.md),
+  [összehasonlítás-template](templates/comparison-template.md),
   `<project>/0-brief.md`, `<project>/1-story.md`,
   `<project>/1-thumbnail-prompt.md`,
   `<project>/1-outline-hyperframes-brief.md`, `<project>/2-chapters.md`,

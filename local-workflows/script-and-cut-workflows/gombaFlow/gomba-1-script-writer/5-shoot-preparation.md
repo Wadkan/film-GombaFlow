@@ -10,9 +10,9 @@ description: "Külön forgatás előtti felkészülési lista készítése a tel
 - **Goal:** a készítő pontosan tudja, mivel készüljön elő a forgatásra.
 - **Prerequisite:** aktuális, megfelelt review, a futtató által igazolt emberi
   scriptjóváhagyás és azonosítható bemeneti változatok.
-- **Input:** [workflow](../../WORKFLOW.md), [videóstruktúra](../../VIDEO_STRUCTURE.md),
-  [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
-  [felkészülés-template](../../templates/5-preparation-template.md),
+- **Input:** [workflow](WORKFLOW.md), [videóstruktúra](VIDEO_STRUCTURE.md),
+  [közös szabályok](CONTENT_RULES.md), saját `5-shoot-preparation.md`,
+  [felkészülés-template](templates/5-preparation-template.md),
   `<project>/0-brief.md`, `<project>/3-script.md`, `<project>/4-review.md`,
   a brief technikai forrásai, szükség esetén hivatalos eszközdokumentáció.
 - **Output:** kizárólag `<project>/5-preparation.md`, a felkészülés-template szerint.

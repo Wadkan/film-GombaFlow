@@ -12,13 +12,13 @@ Rövid belépési pontok a film-GombaFlow repóhoz. A parancsokat a repó gyöke
 ## GombaFlow videóötletek és script
 
 - Ötletgyűjtéshez: indítsd a `local-workflows/script-and-cut-workflows/gombaFlow/gomba-0-idea-collector/WORKFLOW.md` workflow-t az agentben.
-- Kiválasztott ötlet átiratához és briefjéhez: az agentben indítsd a `gomba-1-script-writer-0-idea-intake` skillt. A helyi átirat bekéréséhez futtasd: `make gomba1-transcript`.
+- Kiválasztott ötlet átiratához és briefjéhez: az agentben indítsd a [0-idea-intake.md](../local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/0-idea-intake.md) skillt. A helyi átirat bekéréséhez futtasd: `make gomba1-transcript`.
 - További scriptlépések, mindig az előző kimenet jóváhagyása után:
-    - Történet: `gomba-1-script-writer-1-story-hook`
-    - Fejezetterv: `gomba-1-script-writer-2-chapter-planning`
-    - Script: `gomba-1-script-writer-3a-script-writing`
-    - Script review: `gomba-1-script-writer-4-script-review`
-    - Forgatási felkészülés: `gomba-1-script-writer-5-shoot-preparation`
+    - Történet: [1-story-hook.md](../local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/1-story-hook.md)
+    - Fejezetterv: [2-chapter-planning.md](../local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/2-chapter-planning.md)
+    - Script: [3a-script-writing.md](../local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/3a-script-writing.md)
+    - Script review: [4-script-review.md](../local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/4-script-review.md)
+    - Forgatási felkészülés: [5-shoot-preparation.md](../local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/5-shoot-preparation.md)
 
 ## n8n
 

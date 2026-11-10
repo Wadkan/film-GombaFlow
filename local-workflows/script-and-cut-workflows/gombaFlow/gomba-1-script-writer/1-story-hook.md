@@ -10,11 +10,11 @@ description: "Kiválasztott videó saját történetté és hookká átdolgozás
 - **Goal:** a meglévő megoldásra épülő önálló történet és nyitás.
 - **Prerequisite:** a futtató által igazolt, aktuális briefjóváhagyás és
   azonosítható bemeneti változatok.
-- **Input:** [workflow](../../WORKFLOW.md), [videóstruktúra](../../VIDEO_STRUCTURE.md),
-  [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
-  [story-template](../../templates/1-story-template.md),
-  [thumbnail-prompt-template](../../templates/1-thumbnail-prompt-template.md),
-  [outline-Hyperframes-brief-template](../../templates/1-outline-hyperframes-brief-template.md),
+- **Input:** [workflow](WORKFLOW.md), [videóstruktúra](VIDEO_STRUCTURE.md),
+  [közös szabályok](CONTENT_RULES.md), saját `1-story-hook.md`,
+  [story-template](templates/1-story-template.md),
+  [thumbnail-prompt-template](templates/1-thumbnail-prompt-template.md),
+  [outline-Hyperframes-brief-template](templates/1-outline-hyperframes-brief-template.md),
   `<project>/0-brief.md`, `<project>/source-transcript.md`, a briefben
   azonosított forrásvideó és releváns források. Az átirat a beszéd és
   időbélyegek forrása, a csak képen látható technikai részleteké nem.

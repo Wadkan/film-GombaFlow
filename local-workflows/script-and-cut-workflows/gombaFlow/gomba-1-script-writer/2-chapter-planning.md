@@ -10,10 +10,10 @@ description: "Fix videóstruktúra kitöltése fejezetekkel, kártyaszövegekkel
 - **Goal:** a saját történet teljes, forgatókönyvvé bontható fejezetterve.
 - **Prerequisite:** aktuális brief és történet, érvényes briefjóváhagyás,
   azonosítható bemeneti változatok.
-- **Input:** [workflow](../../WORKFLOW.md), [videóstruktúra](../../VIDEO_STRUCTURE.md),
-  [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
-  [fejezet-template](../../templates/2-chapters-template.md),
-  [összehasonlítás-template](../../templates/comparison-template.md),
+- **Input:** [workflow](WORKFLOW.md), [videóstruktúra](VIDEO_STRUCTURE.md),
+  [közös szabályok](CONTENT_RULES.md), saját `2-chapter-planning.md`,
+  [fejezet-template](templates/2-chapters-template.md),
+  [összehasonlítás-template](templates/comparison-template.md),
   `<project>/0-brief.md`, `<project>/1-story.md`,
   `<project>/1-thumbnail-prompt.md`,
   `<project>/1-outline-hyperframes-brief.md`.

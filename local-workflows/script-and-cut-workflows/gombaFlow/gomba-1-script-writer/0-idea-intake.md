@@ -10,9 +10,9 @@ description: "Felhasználó által kiválasztott, megvalósított automatizálá
 - **Goal:** a kiválasztott megoldás saját változatához jóváhagyható brief.
 - **Prerequisite:** a futtató megadja a kiválasztott videóbejegyzést, projektet és bemeneti
   változatokat; az alapanyag a workflow szerint hozzáférhető.
-- **Input:** [workflow](../../WORKFLOW.md), [videóstruktúra](../../VIDEO_STRUCTURE.md),
-  [közös szabályok](../../CONTENT_RULES.md), saját `SKILL.md`,
-  [brief-template](../../templates/0-brief-template.md),
+- **Input:** [workflow](WORKFLOW.md), [videóstruktúra](VIDEO_STRUCTURE.md),
+  [közös szabályok](CONTENT_RULES.md), saját `0-idea-intake.md`,
+  [brief-template](templates/0-brief-template.md),
   `<selected-topic-path>` a Gomba 0 dátumozott `results/YYYYMMDD-ideas.md`
   fájljának kiválasztott videóbejegyzésével, `<project>/source-transcript.md`
   fájllal és a videó releváns forrásaival. A transcript a workflow „Helyi

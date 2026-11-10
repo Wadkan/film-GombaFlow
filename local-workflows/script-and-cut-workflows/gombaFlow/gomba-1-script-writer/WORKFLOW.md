@@ -72,13 +72,12 @@ gomba-1-script-writer/
     3-script-template.md
     4-review-template.md
     5-preparation-template.md
-  skills/
-    gomba-1-script-writer-0-idea-intake/SKILL.md
-    gomba-1-script-writer-1-story-hook/SKILL.md
-    gomba-1-script-writer-2-chapter-planning/SKILL.md
-    gomba-1-script-writer-3a-script-writing/SKILL.md
-    gomba-1-script-writer-4-script-review/SKILL.md
-    gomba-1-script-writer-5-shoot-preparation/SKILL.md
+  0-idea-intake.md
+  1-story-hook.md
+  2-chapter-planning.md
+  3a-script-writing.md
+  4-script-review.md
+  5-shoot-preparation.md
 ../projects/
   registry.json        # YouTube ID → Gomba 1 ID és transcript állapot
   <topic-id>/
@@ -131,7 +130,7 @@ A közös olvasmányokon felüli **Olvas** és az engedélyezett **Ír**
 kimenetek lépésenként alább szerepelnek. Minden lépés előfeltétele az összes felsorolt
 kötelező bemenet, saját skill és template létezése.
 
-### 0. Ötletátvétel — `gomba-1-script-writer-0-idea-intake`
+### 0. Ötletátvétel — [0-idea-intake.md](0-idea-intake.md)
 
 - **Goal:** jóváhagyható brief a már kiválasztott videó átdolgozásához.
 - **Prerequisite:** egy felhasználó által kiválasztott videóbejegyzés és az
@@ -145,7 +144,7 @@ kötelező bemenet, saját skill és template létezése.
   hangvétel és saját fordulatok; mit tartunk meg és mit alakítunk át.
 - **Kapu:** kritikus kérdések tisztázva, brief felhasználó által elfogadva.
 
-### 1. Átdolgozott történet — `gomba-1-script-writer-1-story-hook`
+### 1. Átdolgozott történet — [1-story-hook.md](1-story-hook.md)
 
 - **Goal:** a forrás megoldásának saját történetbe illesztett, nem másolt változata.
 - **Prerequisite:** elfogadott, aktuális brief.
@@ -168,7 +167,7 @@ kötelező bemenet, saját skill és template létezése.
   a pain point megoldását vagy annak vizsgálatát, hogy megoldható-e egyáltalán.
   A title, thumbnail, hook és outline összhangban van, túlzó állítás nélkül.
 
-### 2. Fejezetterv — `gomba-1-script-writer-2-chapter-planning`
+### 2. Fejezetterv — [2-chapter-planning.md](2-chapter-planning.md)
 
 - **Goal:** az állandó videóstruktúra kitöltése az adott átdolgozással.
 - **Prerequisite:** aktuális brief és történet.
@@ -182,7 +181,7 @@ kötelező bemenet, saját skill és template létezése.
   előtte–utána összehasonlítás, induló és elvárt demóállapotok.
 - **Kapu:** a közös szerkezet teljes, a megvalósítás a megoldás adatútját követi.
 
-### 3. Teljes script — `gomba-1-script-writer-3a-script-writing`
+### 3. Teljes script — [3a-script-writing.md](3a-script-writing.md)
 
 - **Goal:** a forrás saját változatának végrehajtás és bemutatás közben követhető scriptje.
 - **Prerequisite:** aktuális brief, történet és fejezetterv.
@@ -205,7 +204,7 @@ kötelező bemenet, saját skill és template létezése.
 - **Kapu:** teljes szöveg, nincs hiányzó kritikus lépés; a tervezett és ténylegesen
   igazolt eredmény megkülönböztethető. Nem tartalmazza a külön készítői checklistet.
 
-### 4. Review — `gomba-1-script-writer-4-script-review`
+### 4. Review — [4-script-review.md](4-script-review.md)
 
 - **Goal:** forráshű megoldás, önálló szöveg, követhető és nem unalmas bemutató.
 - **Prerequisite:** teljes script és aktuális előzményei.
@@ -231,7 +230,7 @@ kötelező bemenet, saját skill és template létezése.
   visszairányít a legkorábbi érintett lépéshez. Nem ír át más kimenetet.
   Megfelelt review után a felhasználó elfogadja a scriptet.
 
-### 5. Felkészülési lista — `gomba-1-script-writer-5-shoot-preparation`
+### 5. Felkészülési lista — [5-shoot-preparation.md](5-shoot-preparation.md)
 
 - **Goal:** külön készítői lista a teljes script szerinti forgatás előkészítéséhez.
 - **Prerequisite:** aktuális, megfelelt review és elfogadott script.
@@ -250,7 +249,7 @@ kötelező bemenet, saját skill és template létezése.
 
 - A CLI-agentet helyi n8n vagy CLI-koordinátor indíthatja. Explicit megadja
   a skill nevét/útvonalát, workflow-t, projektet, input/template/output útvonalakat
-  és aktuális jóváhagyásokat. A `skills/` automatikus felismerését nem feltételezzük.
+  és aktuális jóváhagyásokat. A lépésfájlok automatikus felismerését nem feltételezzük.
 - A futtató azonosítható bemeneti változatokat is ad; a kimenet ezeket rögzíti.
   A skill egy lépést végez el, a következőt nem indítja és nem ad emberi
   jóváhagyást. Válaszában a kimenet útvonalát, a teljesült/nem teljesült kaput
