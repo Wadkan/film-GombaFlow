@@ -1,16 +1,17 @@
 ---
 name: 2a-retake-plan
-description: "A korábbi ismétlésekhez végrehajtható kivágási terv készítése a szóidőbélyeges átiratok és az elfogadott script alapján."
+description: "Az ismétlések és felvételi parancsok közös kivágási terve a szóidőbélyeges átiratok és az elfogadott script alapján."
 ---
 
-# 2a. Ismétlések kivágási terve
+# 2a. Ismétlések és felvételi parancsok kivágási terve
 
 ## Cél és bemenet
 
-Készíts teljes vágási tervet az újramondott beszéd korábbi változatairól.
+Készíts közös vágási tervet az újramondott beszéd korábbi változatairól és a
+varázsszóval keretezett felvételi parancsokról.
 Ebben a lépésben a timeline-t ne módosítsd. A terv az utolsó megfogalmazást
-tartsa meg; a korábbi részekből csak azt jelölje kivágásra, amit később
-újramondtak. Törlési varázsszó nem szükséges.
+tartsa meg; az ismételt beszédből csak azt jelölje kivágásra, amit később
+újramondtak. Az ismétlés felismeréséhez törlési varázsszó nem szükséges.
 
 Bemenet az eredeti `recording_index.json`, a hivatkozott szóidőbélyeges
 átiratok és az elfogadott script. Ezt a tervet Resolve-művelet nélkül készítsd
@@ -112,6 +113,38 @@ Az elemzéshez használhatod a `normal`, `restart`, `partial_sentence`, `duplica
 törlési felhatalmazások: töltelékszót, csendet vagy félmondatot ebben a lépésben
 csak akkor hagyhatsz ki, ha az igazolt újramondási tartomány része.
 A beszédhiány nem ismétlés; B-rollt vagy animációt ne törölj szöveghiány miatt.
+
+## Felvételi parancsok és közös megtartási tartományok
+
+Az adott script-ID felvételein keresd meg a scriptben rögzített varázsszóval
+keretezett, a parancsszótárnak megfelelő utasításokat. Az azonosítóbemondás
+határaihoz használd és ellenőrizd a jegyzék `cue` mezőjét; a felvételen belüli
+`HIBA újra` parancs teljes blokkját a szóidőbélyeges átiratból azonosítsd.
+A jegyzékben rögzített, ellenőrzött felhasználói azonosítójavítást vedd
+figyelembe; a `cue` eredeti szövegét és időhatárait őrizd meg.
+A parancsokat az ismétléskeresésnél ne tekintsd narrációnak.
+
+Az érvényes parancs teljes blokkját, mindkét varázsszóval együtt, jelöld
+kihagyásra. Rögzítsd a parancs típusát, eredeti szövegét, `recording_id` és
+`source_id` értékét, forrásidő-határait és a felismerés alapját. A `HIBA újra`
+blokk kihagyása külön döntés a hibás beszéd kivágásától: utóbbihoz továbbra is
+biztosan azonosítható újramondás és illesztés szükséges.
+
+Alkalmazd a vágói szerződés képi kivételét: ha egy nem `talking head` részben
+csak az érvényes azonosítóbemondás hallható, a bemondás alatti képet és meglévő
+hangot is tartsd meg a jegyzék szerinti teljes megtartandó tartományban.
+Hiányzó varázsszópár, ismeretlen parancs vagy bizonytalan határ esetén ne
+találgass és ne tervezz automatikus kivágást: az érintett csoport teljes
+felvételei maradjanak meg, `manual_review_required: true` jelzéssel és az
+`unresolved` listában rögzített indokkal, a közös problémánapló szerint.
+
+Az ismétlésekre és parancsokra vonatkozó igazolt döntéseket forrásonként
+egyesítsd, az átfedéseket kezeld, és ezek alapján képezd a közös, rendezett
+`retained_ranges` listát. Az egyedi beszéd és a megőrzendő képi anyag maradjon
+meg. A kézi review-ra jelölt csoport teljes forrástartományait őrizd meg,
+parancsokkal együtt. A 3c ezekből a tartományokból készíti a review timeline
+markereit; a 3e a felhasználói review után mentett markerpillanatkép alapján
+állítja össze a Rough Cutot.
 
 ## Hiányzó felvételrészek ellenőrzése
 
@@ -245,11 +278,14 @@ A terv sémája `1.1`, kötelező mezői:
   Minden script-ID-hoz legyen csoport. A kézi vágásra jelölt csoport is lehet
   `validated`, ha az összes forrástartománya ellenőrzött és megmarad.
   A `manual_review_required` ennél `true`, egyébként `false`.
-- Minden törlési döntés: a korábbi rész `recording_id` és szóhivatkozásai,
+- Minden ismétlés miatti törlési döntés: a korábbi rész `recording_id` és szóhivatkozásai,
   az eredeti kivágandó szöveg, a helyette megtartott újabb rész szóhivatkozásai
   és az ismétlési megfelelés indoka.
+- Minden felvételi parancs miatti kihagyási döntés: a parancs típusa, eredeti
+  szövege, `recording_id`, `source_id`, a teljes blokk forrásidő-határai és a
+  felismerés alapja. Ehhez nem szükséges helyettesítő újramondás.
 - Minden csoportban `retained_ranges`: a végeredményben megmaradó forrás-
-  tartományok rendezett listája. Minden elem tartalmazza a `recording_id`,
+  tartományok rendezett listája, mindkét döntéstípust együtt alkalmazva. Minden elem tartalmazza a `recording_id`,
   `source_id`, `source_start` és `source_end` mezőket; a beszédnél az eredeti
   szóhivatkozásokat is. Az időhatárok forrásmásodpercben, félig nyílt
   `[source_start, source_end)` tartományok. Megőrzendő képi anyagnál a jegyzék

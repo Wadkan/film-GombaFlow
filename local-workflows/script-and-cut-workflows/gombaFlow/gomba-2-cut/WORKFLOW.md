@@ -33,9 +33,8 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    médiaregisztert használva felvételi sorrendben helyezi el a felvételeket és
    markereiket az első timeline-on. Az ismétlések ekkor még megmaradnak.
 6. Az első timeline user review-ja után a
-   [3d markerkiolvasás](3d-resolve-review-markers.md) a script mappájában
-   meglévő `review_timeline_markers.json` fájlt használja. Ha nincs ilyen fájl,
-   engedélyt kér, majd igen válasz esetén kiolvassa és menti a markereket.
+   [3d markerkiolvasás](3d-resolve-review-markers.md) kiolvassa és a script
+   mappájába menti az aktuális markereket, korábbi pillanatkép esetén is.
 7. A [3e Rough Cut összeállítás](3e-resolve-rough-cut-timeline.md) a mentett
    pillanatképből elkészíti a második timeline-t és a
    `rough_cut_timeline_cleanup.json` kimenetet. A mentés utáni Resolve-beli

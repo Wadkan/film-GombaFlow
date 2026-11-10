@@ -29,9 +29,9 @@ Rough Cut timeline vagy eredményfájl esetén ne írj felül és ne duplikálj;
 ## Timeline-műveletek és visszaellenőrzés
 
 Az összeállításhoz kérd el a [3d markerkiolvasó](3d-resolve-review-markers.md)
-`review_timeline_markers.json` kimenetét. Ha a fájl már létezik, a 3d az
-ellenőrzött mentett fájlt adja át. Ha hiányzik, a 3d kizárólag a felhasználó
-kifejezett engedélyével olvassa ki és menti a markereket. A visszaolvasott
+`review_timeline_markers.json` kimenetét. A 3d minden összeállítás előtt a
+review timeline aktuális markereit olvassa ki és menti, akkor is, ha korábbi
+pillanatkép létezik. A visszaolvasott
 fájlból dolgozz, újabb Resolve-markerkiolvasás nélkül.
 Üres markerlista tartalmi bizonytalanság; API-olvasási hiba esetén állj meg.
 A pillanatkép `unresolved` tételeinél a 3d-ben érintettként megjelölt klipeket

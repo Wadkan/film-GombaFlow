@@ -1,5 +1,7 @@
 # Közös problémánapló
 
+Ez a fájl szabályokat tartalmaz; konkrét problémabejegyzéseket ne írj bele.
+
 Az erre hivatkozó GombaFlow-lépés minden érintett scripthez külön
 `problems.md` fájlt használjon a script meglévő projektmappájában, a
 `3-script.md`, `recording_index.json` és `retake_plan.json` mellett.
@@ -10,14 +12,16 @@ töröljön.
 Probléma észlelésekor azonnal fűzzön hozzá egy rövid bejegyzést az érintett
 script naplójának megfelelő felsorolásához. Egy forrás több scripthez tartozó
 problémáinál mindegyik kizárólag a saját scriptjének naplójába kerüljön. Ha az
-érintett script nem állapítható meg, ne írja a problémát egyetlen script
-naplójába sem; jelezze az azonosítási akadályt.
+érintett script nem állapítható meg, a hibás azonosítót a jegyzékkészítés
+szerinti, manifest melletti naplóban rögzítse; más problémánál jelezze az
+azonosítási akadályt, és ne válasszon találomra scriptnaplót.
 
 - Minden problématípus külön második szintű Markdown-címet kapjon; a cím alatt
   felsorolásban szerepeljenek az ahhoz tartozó tételek. Új tételt a meglévő
   típuscím alá illesszen; az ismert címeket a `Használható címkék` rész adja.
   Új típusnál hozzon létre új címet.
-- Bejegyzésenként szerepeljen a script-ID és röviden a probléma oka. Ha van
+- Bejegyzésenként szerepeljen a script-ID és röviden a probléma oka. A hibás
+  azonosítónál az ismeretlen script-ID helyett a felismert értéket írd. Ha van
   érintett forrásfelvétel, szerepeljen annak teljes útvonala és a forrás
   elejétől számított `perc:másodperc–perc:másodperc` tartomány is. Hiányzó
   felvételnél jelezze, hogy nincs hozzá forrás; ne találjon ki útvonalat.
@@ -36,6 +40,8 @@ naplójába sem; jelezze az azonosítási akadályt.
 - `Hiányzó felvételrészek`: a scriptből hiányzó felvételek és beszédrészek.
   A tételek a script-ID-val kezdődjenek, és tartalmazzák a hiányzó rész
   scriptbeli szövegét szó szerint.
+- `Hibás azonosítók`: varázsszópárban felismert, de nem értelmezhető vagy a
+  scripthez nem illő azonosítók; a felhasználó a tétel `Javított` mezőjét tölti ki.
 - `Kézi vágást igénylő részek`: a bizonytalanul vágható tartományok, amelyeket
   a review vagy Rough Cut timeline teljes egészében megtart `REVIEW START` és `REVIEW END`
   markerekkel. A bejegyzés tartalmazza a script-ID-t, az okot, a forrásútvonalat

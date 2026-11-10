@@ -13,17 +13,10 @@ fájlokat. Ellenőrizd a `topic_id`-t, a script- és indexlenyomatokat, valamint
 a projekt- és timeline-azonosítók egyezését. Hibás vagy hiányzó kötelező
 bemenetnél állj meg és jelezd az akadályt.
 
-Ellenőrizd, hogy a script mappájában létezik-e a `review_timeline_markers.json`:
-
-- Ha létezik, olvasd be, ellenőrizd a sémáját, téma-, projekt- és
-  timeline-azonosítóját a fenti bemenetekkel, és add át ezt a fájlt. Ne olvasd
-  ki újra a Resolve markereit, és ne írd felül a mentett pillanatképet.
-- Ha nem létezik, kérdezd meg: „Elindíthatom a review timeline markereinek
-  kiolvasását?” Várj a felhasználó kifejezett igen válaszára. Amíg nem egyezik
-  bele, ne olvasd ki a markereket, és ne indítsd a Rough Cut összeállítását.
-
-Csak a hiányzó fájl felhasználó által jóváhagyott kiolvasásához ellenőrizd a
-nyitott Resolve-projekt és a review timeline egyedi azonosítóját is.
+A felhasználói review után minden Rough Cut-összeállításhoz olvasd ki újra a
+Resolve aktuális markereit, meglévő pillanatkép esetén is. Ellenőrizd a nyitott
+Resolve-projekt és a review timeline egyedi azonosítóját. A korábbi fájlt ne
+tekintsd az aktuális markerállapot bizonyítékának.
 
 ## Kiolvasás
 
@@ -60,7 +53,9 @@ jelezd a hibát; ne add át a részleges pillanatképet kész kimenetként.
 
 ## Kimenet: `review_timeline_markers.json` — 1.0
 
-Ha a fájl még nem létezik, mentsd a kiválasztott script mappájába. A fájl a
+Mentsd a kiválasztott script mappájába. A meglévő fájlt csak a teljes új
+kiolvasás és ellenőrzés sikerénél cseréld le; hiba esetén ne add át a régi
+pillanatképet friss eredményként. A fájl a
 kiolvasáskori Resolve-állapot pillanatképe. Mezői:
 
 - `schema_version`: `"1.0"`; `topic_id`, `resolve_project_id`,

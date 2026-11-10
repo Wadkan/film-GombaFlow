@@ -88,6 +88,42 @@ Hiányzó varázsszópár, ismeretlen parancs vagy bizonytalan határ esetén az
 utasítás nélkül. Kézi hozzárendelés és bemondás ütközését ne döntsd el önállóan.
 Egymást átfedő hozzárendeléseknél kérj pontosítást.
 
+## Hibás azonosítók javítása
+
+Ha a varázsszópárban felismert azonosító nem értelmezhető vagy nem illik a
+scripten szereplő azonosítóhoz, az érintett script mappájában lévő
+`problems.md` fájl `Hibás azonosítók` szakaszában rögzíts egy kitölthető
+tételt, a [közös naplószabályok](../PROBLEM_LOG.md) szerint. Példa:
+
+```markdown
+- Jelenlegi: asdf; Javított:
+    - Fájl: /teljes/útvonal/felvétel.mp4
+    - Időpont a fájlon belül: 01:23–01:27
+    - Felismert bemondás: [a teljes eredeti átiratrész]
+```
+
+A `Jelenlegi` mezőbe a ténylegesen felismert értéket, a fájlhoz az eredeti
+felvétel teljes útvonalát, az időponthoz a bemondás forráson belüli kezdetét
+és végét írd; hiányzó adatot ne találj ki. Ha a script nem állapítható meg,
+a tételt a `master_transcript.json` melletti `problems.md` fájl ugyanilyen
+szakaszába írd, a meglévő tartalom megőrzésével. A `Javított` mezőben kérd a
+témaazonosítót és a script-ID-t is; a registry alapján ellenőrizd mindkettőt.
+Ne válassz találomra scriptet vagy scriptnaplót. A felhasználónak add meg a napló útvonalát, és
+kérd, hogy a `Javított` mezőt töltse ki. Az érintett rekord maradjon
+`needs_review`, és a feldolgozást ne add tovább végrehajthatóként.
+
+Folytatáskor olvasd vissza az érintett script és a manifest melletti napló
+kitöltött mezőit. A manifest melletti javításból azonosítsd a scriptet a
+registry alapján, és őrizd meg a javítás forrására mutató hivatkozást. A javított azonosítót ellenőrizd
+az érintett scriptben; üres, érvénytelen vagy nem egyértelmű javításnál kérj
+pontosítást, és ne találgass. Az érvényes választ, a forrást és a felhasználói
+eredetet őrizd meg a jegyzékben, a felismert eredeti bemondással és annak
+ellenőrzött időhatáraival együtt. A javítás kizárólag az azonosítót oldja fel;
+bizonytalan varázsszópárt vagy időhatárt nem igazol. A feloldott rekordot
+frissítsd, majd a jegyzéket olvasd vissza, és az ellenőrzött jegyzékkel folytasd
+a 2a lépést. Ha már létezik jegyzék, kizárólag az érintett rekordok javításához
+frissítsd; a többi rekordot és azonosítót őrizd meg. Az átiratot ne módosítsd.
+
 ## Kimenet: `recording_index.json` — 1.0
 
 A fenti kimeneti szabály szerinti scriptmappában készíts új
@@ -136,6 +172,9 @@ Minden `recordings` rekord mezői:
   hiányában ne hozz létre mesterséges hangsávot. Korábbi jegyzékben a B-rollhoz
   írt `false` érték nem utasítás a hang némítására; a jegyzéket emiatt ne írd át.
 - `assignment_origin`: `spoken_cue`, `user_description` vagy `unresolved`.
+- `identifier_correction`: felhasználó által javított azonosítónál a felismert
+  és javított érték, a `problems.md` útvonala és a javítás felhasználói eredete;
+  egyébként `null`. A javított bemondás `assignment_origin` értéke `spoken_cue`.
 - `user_description`: a felhasználó eredeti leírása, egyébként `null`.
 - `status`: `identified` vagy `needs_review`; `issue`: pontos probléma vagy `null`.
 
