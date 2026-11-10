@@ -2,7 +2,7 @@
 
 ## Külön indítás és bemenetellenőrzés
 
-Ezt a lépést a felhasználó külön indítja a 4. lépés `1.1` sémájú,
+Ezt a lépést a felhasználó külön indítja a 2a. lépés `1.1` sémájú,
 `coverage_checked: true` és `ready_for_execution` állapotú `retake_plan.json`
 fájljával, a 3. timeline-összeállítás után. Ne
 indítsd automatikusan sem a terv, sem az összeállítás befejezése után. Olvasd

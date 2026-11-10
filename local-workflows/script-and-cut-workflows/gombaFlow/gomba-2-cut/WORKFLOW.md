@@ -17,9 +17,10 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
 3. [Vágás előtti preflight](0-preflight.md): egy indexnél azzal folytat;
    többnél megkérdezi, melyikkel dolgozzon. Ez csak fájlalapú scriptválasztás;
    Resolve-projektet nem választ és nem hoz létre.
-4. [Teljes ismétlésvágási terv](4-retake-cleanup.md).
+4. [Ismétlések kivágási terve](2a-retake-plan.md).
    Az index és az átiratok alapján ID-nként elkészíti és ellenőrzi a teljes
-   `retake_plan.json` tervet. A hiányzó felvételrészeket a script saját
+   `retake_plan.json` tervet. A `retained_ranges` adatokat a 3c a review
+   timeline piros markerpárjainak előkészítéséhez használja. A hiányzó felvételrészeket a script saját
    `problems.md` fájljába írja, és a felhasználói döntésig nem adja át a tervet
    végrehajtásra. Resolve-projektet és timeline-t nem nyit meg.
    A kész tervet a felhasználó review-zza; az agent itt megáll.
@@ -27,11 +28,11 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    ekkor választ vagy hoz létre Resolve-projektet, majd a
    [review timeline](3c-resolve-review-timeline.md) lépés felvételi sorrendben
    helyezi el a felvételeket az első timeline-on. Az ismétlések ekkor még megmaradnak.
-6. [Vágási terv végrehajtása](5-retake-execution.md): a timeline-összeállítás
-   után, külön felhasználói indításra végrehajtja a tervben rögzített vágásokat,
-   és elkészíti a `retake_cleanup.json` eredményt.
+6. [Rough Cut összeállítása](5-retake-execution.md): az első timeline user
+   review-ja után, külön felhasználói indításra annak aktuális markerei alapján
+   elkészíti a második timeline-t és a `retake_cleanup.json` kimenetet.
 
-Az indexek elkészülte után a preflight kiválaszt egyetlen scriptet, majd a 4. tervlépésnek átadja annak scriptmappáját és indexét. A terv elkészülte után
+Az indexek elkészülte után a preflight kiválaszt egyetlen scriptet, majd a 2a tervlépésnek átadja annak scriptmappáját és indexét. A terv elkészülte után
 az agent átadja a fájl útvonalát és rövid review-ellenőrzést ad, de nem indítja
 el a timeline-összeállítást. A felhasználó külön indítja a 3. Resolve-lépést;
 az ott választott vagy létrehozott projektet használja az 5. vágási lépés is,

@@ -1,4 +1,4 @@
-# 4. Ismétlések kivágása — teljes terv
+# 2a. Ismétlések kivágási terve
 
 ## Cél és bemenet
 
@@ -136,7 +136,9 @@ Az ismétlések tervezése után, a terv végrehajthatónak jelölése előtt:
    önmagában emiatt ne blokkolj, az érintett csoport minden felvételét tartsd
    meg és `manual_review_required: true` értékkel jelöld kézi review-ra. Az
    érintett csoport korábbi törlési döntéseit vesd el, és a `retained_ranges`
-   listába minden felvétel teljes, jegyzék szerinti megtartandó tartományát írd.
+   listába minden felvétel teljes `source_start`–`source_end` tartományát írd,
+   az azonosítóbemondással együtt. Így a review timeline megőrizheti a teljes
+   bizonytalan felvételt.
 4. Gyűjtsd össze az összes hiányt a terv `missing_items` listájába ugyanazzal
    a hiányazonosítóval, `awaiting_decision` állapottal, majd a terv legyen
    `needs_review`. A chatben
@@ -242,11 +244,15 @@ A terv sémája `1.1`, kötelező mezői:
   az eredeti kivágandó szöveg, a helyette megtartott újabb rész szóhivatkozásai
   és az ismétlési megfelelés indoka.
 - Minden csoportban `retained_ranges`: a végeredményben megmaradó forrás-
-  tartományok rendezett listája, az eredeti felvétel- és szóhivatkozásokkal;
-  a megőrzendő képi részeknél a jegyzék szerinti forrástartománnyal.
-  Kézi vágásra jelölt csoportnál minden változat teljes, jegyzék szerinti
-  `retained_start`–`retained_end` tartománya szerepeljen, törlési döntés nélkül;
-  ezekhez forrástartomány-hivatkozás kell, szóhivatkozás nem kötelező.
+  tartományok rendezett listája. Minden elem tartalmazza a `recording_id`,
+  `source_id`, `source_start` és `source_end` mezőket; a beszédnél az eredeti
+  szóhivatkozásokat is. Az időhatárok forrásmásodpercben, félig nyílt
+  `[source_start, source_end)` tartományok. Megőrzendő képi anyagnál a jegyzék
+  szerinti forrástartományt használd. Kézi vágásra jelölt csoportnál minden
+  érintett felvétel teljes `source_start`–`source_end` tartománya szerepeljen,
+  törlési döntés nélkül. Üres lista csak ellenőrzött, teljesen kihagyott résznél
+  érvényes; ezt a csoport döntése és az `approved_omissions` bejegyzése
+  igazolja. Üres listát ne használj bizonytalanság jelölésére.
 - `unresolved`: kézi vágásra vagy tényleges bemeneti hiba miatt tisztázásra
   váró tételek, valamint döntésre váró hiányzó felvételrészek, az érintett
   script-ID-vel és indokkal.
@@ -276,7 +282,7 @@ vágásra jelölt csoportot, ha annak minden változata ellenőrzötten megmarad
 Felhasználói döntésre váró hiányzó felvételrész, illetve hiányzó vagy érvénytelen
 forrásadat viszont továbbra is blokkolja a tervet.
 
-A 4. lépés gépi kimenete a teljes `retake_plan.json`; bizonytalanságnál a
+A 2a. lépés gépi kimenete a teljes `retake_plan.json`; bizonytalanságnál a
 hivatkozott közös problémánapló is készül. Resolve-hoz ne nyúlj.
 Az elemzés végén jelezd a kézi vágásra váró csoportokat és a problémánapló
 útvonalát; az ismétlésvágási bizonytalanság tisztázására ne várj. Döntésre
@@ -284,8 +290,10 @@ váró hiányzó felvételrésznél, illetve hiányzó vagy érvénytelen forrá
 terv maradjon `needs_review`; ne add át végrehajthatóként.
 Csak `ready_for_execution` tervnél add át a fájl útvonalát, és állj meg.
 Mondd ki, hogy a Resolve-projekt és timeline még nem készült el, a terv pedig
-nincs végrehajtva. Rövid review-listában emeld ki a kivágandó és megtartott
-beszédrészeket, a take-sorrendet és a feloldatlan bizonytalanságokat. A
-felhasználói review és külön indítás után indulhat a
-[3. timeline-összeállítás](3-timeline-assembly.md); a vágási tervet azután,
-újabb külön indításra hajtsa végre az [5. lépés](5-retake-execution.md).
+nincs végrehajtva. Rövid review-listában emeld ki a kivágásra javasolt és
+megtartott beszédrészeket, a take-sorrendet és a feloldatlan bizonytalanságokat.
+A felhasználói review és külön indítás után a
+[3. timeline-összeállítás](3-timeline-assembly.md) és a
+[3c review timeline](3c-resolve-review-timeline.md) következik; a 3c a
+`retained_ranges` alapján helyezi el a piros markerpárokat. A felhasználó a
+markereket ezután Resolve-ban review-zhatja.

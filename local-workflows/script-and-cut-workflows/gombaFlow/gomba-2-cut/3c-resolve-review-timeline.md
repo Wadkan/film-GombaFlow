@@ -29,14 +29,19 @@ duplikálj tartalmat; állj meg és jelezd. A második timeline-t ne készítsd 
    használd, az azonosítóbemondásokkal együtt. Ha egy forrás több témát
    tartalmaz, csak a kiválasztott témához tartozó részeit helyezd el.
    A felvételek eredeti képét és hangját szinkronban őrizd meg.
-2. A terv ellenőrzött `retained_ranges` tartományait rendeld a megfelelő
-   `recording_id`-hoz és elhelyezett klippéldányhoz. A forrás saját, a
-   médiaregiszterben tárolt FPS-ével alakítsd a forrásmásodperceket forrás-
-   képkockákra, majd a Resolve-ból visszaolvasott klip- és timeline-határokkal
-   a marker API által használt képkockákra.
-3. A nem kézi vágásra jelölt csoportoknál a [markerindex](davinci_marker_index.md)
-   szerinti piros megtartási markerpárt helyezd el a megfelelő timeline-klipen
-   `TimelineItem.AddMarker()` hívással.
+2. A terv `retained_ranges` minden eleménél ellenőrizd a `recording_id`,
+   `source_id`, `source_start` és `source_end` mezőket, majd rendeld a
+   tartományt az első timeline megfelelő klippéldányához. A forrás saját,
+   médiaregiszterbeli FPS-ével alakítsd a forrásmásodperceket forrásképkockákra.
+   A klip forráskezdetéhez és timeline-kezdőképkockájához viszonyítva számítsd
+   ki a marker klipen belüli képkockahelyét. Bizonytalan csoportnál a teljes
+   `source_start`–`source_end` tartományt jelöld, az azonosítóbemondással együtt.
+3. Minden nem üres, érvényes megtartási tartományhoz a
+   [markerindex](davinci_marker_index.md) szerinti piros megtartási markerpárt
+   helyezd el a megfelelő timeline-klipen `TimelineItem.AddMarker()` hívással.
+   Üres `retained_ranges` esetén ne készíts piros markert; ellenőrizd, hogy a
+   teljes kihagyást `approved_omissions` vagy igazolt törlési döntés fedi-e.
+   Más esetben jelezd az adatellentmondást.
    Olvasd vissza a markereket `GetMarkers()`-szel, és ellenőrizd a színt,
    nevet és helyet.
    TODO KÉSŐBB LESZ IMPLEMENTALVA: A cím- és képmarkereket ebben a lépésben ne hozd létre.

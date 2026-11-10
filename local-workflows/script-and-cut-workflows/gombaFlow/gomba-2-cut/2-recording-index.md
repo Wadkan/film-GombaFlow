@@ -139,7 +139,7 @@ melyik felvétel volt az utolsó.
 
 ## Pótfelvétel hozzáadása
 
-Csak a [vágási terv](4-retake-cleanup.md) mentett, felhasználó által jelzett
+Csak a [vágási terv](2a-retake-plan.md) mentett, felhasználó által jelzett
 pótfelvételénél bővíts meglévő jegyzéket. A külön mappában átírt új manifestet
 és esetleges hozzárendeléseit a fenti bemenetellenőrzés és azonosítás szerint
 dolgozd fel, a kiválasztott scriptre és annak `topic_id` értékére szűrve. Az új
@@ -164,7 +164,7 @@ forrásazonosság vagy a tervezett hash eltérésénél állj meg konkrét hibá
 Ellenőrizd, hogy minden eredeti felvétel és hozzárendelt tartomány
 visszakereshető a jegyzékben, beleértve a néma és csak bemondásos részeket is.
 A scriptből hiányzó felvételeket és beszédrészeket a
-[vágási terv](4-retake-cleanup.md) ellenőrzi és naplózza.
+[vágási terv](2a-retake-plan.md) ellenőrzi és naplózza.
 
 Add át a jegyzék útvonalát. Csak a pontosítást igénylő tételeket kérdezd meg;
 a sikeresen azonosított részeket ne sorold fel. Bizonytalan részeknél jelezd

@@ -10,7 +10,9 @@ A [jegyzékkészítés](2-recording-index.md) `recording_index.json` kimenete é
 abban hivatkozott, elfogadott `3-script.md` alapján ténylegesen helyezd el a
 felvett részeket a script egyetlen cél-timeline-ján. Az eredeti videókat és átiratokat
 ne módosítsd. Ebben a lépésben minden azonosított felvételváltozat megmarad;
-az ismétlések kivágását az elkészült terv szerint az 5. lépés végzi.
+az ismétlésekre javasolt megtartási tartományokat a terv rögzíti; a végleges
+megtartást a review timeline markerei adják, amelyekből az 5. lépés építi a
+Rough Cut timeline-t.
 
 Alkalmazd a scriptből hivatkozott
 [vágói szerződést](../gomba-1-script-writer/templates/3-script-template.md) és
@@ -147,7 +149,8 @@ kihagyásokat ne jelentsd újra hiányként. Végrehajtási akadályt hibaként 
 ne hiányzó felvételként.
 
 A gépi átadás a `timeline_assembly.json` útvonala; az 5. lépés ezt, az eredeti
-jegyzéket/átiratokat és a review-zott `retake_plan.json` fájlt használja. A
+jegyzéket, a review-zott `retake_plan.json` fájlt és az első timeline aktuális
+markereit használja. A
 felhasználónak nem kell vágásnaplót készítenie.
 A későbbi, nem dokumentált kézi vágások automatikus egyeztetése nem része
 ennek a lépésnek.
