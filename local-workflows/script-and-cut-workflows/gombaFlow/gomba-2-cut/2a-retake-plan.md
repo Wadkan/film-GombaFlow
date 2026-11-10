@@ -8,7 +8,7 @@ description: "Az ismétlések és felvételi parancsok közös kivágási terve 
 ## Saját végrehajtási sorrend
 
 Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
-„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+„Közös szerződés”, „Közös visszatérési státuszok” és „Fájlos
 állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
 A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
@@ -25,7 +25,8 @@ tartsa meg; az ismételt beszédből csak azt jelölje kivágásra, amit későb
 újramondtak. Az ismétlés felismeréséhez törlési varázsszó nem szükséges.
 
 Bemenet az eredeti `recording_index.json`, a hivatkozott szóidőbélyeges
-átiratok és az elfogadott script. Ezt a tervet Resolve-művelet nélkül készítsd
+átiratok, az elfogadott script és a `cut_workflow_state.json` ellenőrzött
+scriptválasztása. Ezt a tervet Resolve-művelet nélkül készítsd
 el. Alkalmazd a scriptből hivatkozott
 [vágói szerződést](../gomba-1-script-writer/templates/3-script-template.md).
 Az eredeti videók és átiratok változatlanok maradnak. A felvételi jegyzéket
@@ -210,6 +211,9 @@ felhasználói döntés külön végrehajtási feltétel.
 ## Folytatás hiányzó felvétel után
 
 A skill újraindításakor először olvasd be a meglévő `retake_plan.json` fájlt.
+Az állapot `index_correction` bejegyzését a workflow szerinti módon kezeld még
+a szokásos hash-ellenőrzés és a kész csoportok átugrása előtt; a jóváhagyott
+javítás érintett csoportjait újra kell elemezni.
 Ha annak állapota `needs_review`, a `missing_items` alapján folytasd; ne kezdd
 újra a kész csoportokat, és ne kérdezd újra a már rögzített döntéseket.
 Először oldd fel az esetleges `pending_index_update` állapotot az alábbi
@@ -243,14 +247,10 @@ egyértelműen, jelezd az akadályt, ne találgass. Hiány nélkül a lista üre
 - A kiválasztott script jegyzékéhez csak az új pótfelvételi rekordok kerüljenek.
   Ha a manifest és az
   ellenőrzött forrásai már szerepelnek a jegyzékben, ne fűzd hozzá újra; folytasd
-  az érintett hiányok újraellenőrzésével. A jegyzék mentése előtt
-  ments `pending_index_update` állapotot a tervbe a régi és a tervezett új
-  jegyzék-SHA-256-tal és a manifest útvonalával; a terv legyen `needs_review`,
-  a `coverage_checked` pedig `false`. Mentés után ellenőrizd az új
-  hash-t, vezesd át a `recording_index_sha256` mezőbe, majd töröld a függő
-  állapotot. Megszakítás után a régi hash esetén a mentés még hátravan; az
-  újra előállított jegyzék hash-e egyezzen a tervezettel. A tervezett új hash
-  esetén csak az átvezetés maradt hátra. Más hash-nél állj meg.
+  az érintett hiányok újraellenőrzésével. A jegyzékmentés és a függő állapot
+  helyreállításának szabályforrása a workflow „Pótfelvétel mentése adatátadás
+  nélkül” része. A lezárt tranzakció után a jegyzéket, a tervet és az
+  állapotfájlt olvasd vissza; ne kérj hash-értéket másik skill válaszából.
 - Az érintett csoportokat és hiányokat ellenőrizd újra. A hiány csak a tényleges
   lefedettség igazolása után legyen `resolved`; ha továbbra is hiányzik, maradjon
   `awaiting_recording`. A korábbi kihagyási döntéseket őrizd meg. A problémalista

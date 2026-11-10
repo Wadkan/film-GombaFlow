@@ -8,7 +8,7 @@ description: "Az átiratok és azonosítóbemondások alapján a felvételek té
 ## Saját végrehajtási sorrend
 
 Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
-„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+„Közös szerződés”, „Közös visszatérési státuszok” és „Fájlos
 állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
 A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
@@ -129,9 +129,10 @@ az érintett scriptben; üres, érvénytelen vagy nem egyértelmű javításnál
 pontosítást, és ne találgass. Az érvényes választ, a forrást és a felhasználói
 eredetet őrizd meg a jegyzékben, a felismert eredeti bemondással és annak
 ellenőrzött időhatáraival együtt. A javítás kizárólag az azonosítót oldja fel;
-bizonytalan varázsszópárt vagy időhatárt nem igazol. A feloldott rekordot
-frissítsd, majd a jegyzéket olvasd vissza. Ha már létezik jegyzék, kizárólag az érintett rekordok javításához
-frissítsd; a többi rekordot és azonosítót őrizd meg. Az átiratot ne módosítsd.
+bizonytalan varázsszópárt vagy időhatárt nem igazol. A jegyzékben csak az érintett
+rekordokat javítsd; a többi rekordot és azonosítót őrizd meg. Meglévő állapotnál
+már a mentés előtt alkalmazd a workflow „Engedélyezett azonosítójavítás
+hash-frissítése” részét. A mentett jegyzéket olvasd vissza. Az átiratot ne módosítsd.
 
 ## Kimenet: `recording_index.json` — 1.0
 
@@ -208,8 +209,9 @@ listában. Az eredeti manifestet, átiratokat és forrásokat ne módosítsd.
 A hozzáfűzést és a mentett JSON bájtjait azonos bemenetnél azonosan állítsd elő,
 hogy megszakítás után a tervezett hash újra ellenőrizhető legyen.
 
-A jegyzékmentés egyeztetésénél a workflow „TODO — Fájlos állapotátvétel”
-részében megjelölt pótfelvételi kivétel szerint járj el. Az érintett script- és
+A jegyzékmentést a workflow „Pótfelvétel mentése adatátadás nélkül” része
+szerint végezd, a meglévő `retake_plan.json` és `cut_workflow_state.json`
+ellenőrzésével és a mentési mezők frissítésével. Az érintett script- és
 forrásazonosság vagy a tervezett hash eltérésénél állj meg konkrét hibával.
 
 ## Végső ellenőrzés

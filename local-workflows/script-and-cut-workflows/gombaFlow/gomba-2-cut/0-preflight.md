@@ -8,12 +8,13 @@ description: "Fájlalapú vágás előtti kapu: egy felvételi jegyzék és a ho
 ## Saját végrehajtási sorrend
 
 Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
-„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+„Közös szerződés”, „Közös visszatérési státuszok” és „Fájlos
 állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
 A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
 1. Ellenőrizd az indexeket és a scriptlenyomatokat.
 2. Válaszd ki az egyetlen feldolgozandó scriptet.
+3. Mentsd és olvasd vissza a workflow szerinti `cut_workflow_state.json` fájlt.
 
 ## Bemenet
 
@@ -29,7 +30,9 @@ A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
    a témaazonosítót és scriptcímet, majd kérdezd meg, melyik scripttel
    folytassa most. Egyszerre csak egyet válassz.
 
-Ez a preflight csak fájlokat olvas. Resolve-projektet ne listázz, válassz ki,
+Az ellenőrzött választást a kiválasztott scriptmappában lévő
+`cut_workflow_state.json` fájlba mentsd a workflow sémája szerint. Csak ezt a
+saját állapotot írhatod; a bemeneti fájlok változatlanok. Resolve-projektet ne listázz, válassz ki,
 hozz létre vagy módosíts. A projektválasztás a terv elkészülte utáni
 timeline-összeállításkor történik.
 

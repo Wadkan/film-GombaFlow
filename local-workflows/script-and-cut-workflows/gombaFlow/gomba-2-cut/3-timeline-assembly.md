@@ -8,7 +8,7 @@ description: "Az ellenőrzött vágási terv alapján a felvételek elhelyezése
 ## Saját végrehajtási sorrend
 
 Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
-„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+„Közös szerződés”, „Közös visszatérési státuszok” és „Fájlos
 állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
 A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
@@ -18,6 +18,8 @@ A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 ## Cél és bemenet
 
 Ellenőrzött, végrehajtható vágási tervből dolgozz.
+Olvasd be a scriptmappa `cut_workflow_state.json` fájlját, és ellenőrizd
+a scriptválasztást a workflow szerint.
 
 A [jegyzékkészítés](2-recording-index.md) `recording_index.json` kimenete és az
 abban hivatkozott, elfogadott `3-script.md` alapján ténylegesen helyezd el a
@@ -63,6 +65,9 @@ Ellenőrizd a scriptet, indexet, forrásokat és tartományokat is; bármely hib
 
 Miután az összes fájl- és tervellenőrzés sikeres, olvasd ki a Resolve
 projektlistáját, és keresd meg a kiválasztott `topic_id` nevű projektet.
+Ha a `cut_workflow_state.json` már tartalmaz projektválasztást, annak nevét és
+azonosítóját ellenőrizd a Resolve-ban, és ugyanazt használd; ne kérj új választást.
+Az alábbi választás csak még nem rögzített projektnél szükséges.
 
 - Ha létezik pontos névegyezés, csak ezt az egy projektet ajánld fel
   alapértelmezett választásként; a többi projektet ne listázd.
@@ -73,8 +78,9 @@ projektlistáját, és keresd meg a kiválasztott `topic_id` nevű projektet.
 
 Nyisd meg vagy hozd létre a választott projektet, és olvasd ki a Resolve-ból
 az egyedi projektazonosítóját és látható nevét. Natívan mentsd; `.drp`
-exportot ne készíts. Az azonosítót és nevet a lépés saját
-`review_timeline_assembly.json` kimenetében rögzítsd.
+exportot ne készíts. Az azonosítót és nevet még médiaimport előtt mentsd a
+`cut_workflow_state.json` fájl `resolve_project` mezőjébe, és olvasd vissza.
+A végső `review_timeline_assembly.json` ugyanezt a projektet azonosítsa.
 
 - A cél-vágóprojekt egyértelmű, a médiakezeléshez és timeline-műveletekhez
   rendelkezésre áll működő kapcsolat. A használt eszköz aktuális API-leírásából

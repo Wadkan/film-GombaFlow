@@ -8,7 +8,7 @@ description: "A Resolve-projekt és a Media Pool forrásklipjeinek rögzítése.
 ## Saját végrehajtási sorrend
 
 Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
-„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+„Közös szerződés”, „Közös visszatérési státuszok” és „Fájlos
 állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
 A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
@@ -41,13 +41,14 @@ Resolve-projektben érvényes Media Pool-azonosítókat tárolja.
 
 ## Ellenőrzés és mentés
 
-1. Olvasd be a `recording_index.json` fájlt és a kiválasztott nyitott Resolve-projektet.
-   Ellenőrizd a projekt ID-ját és nevét a kiválasztás hiteles állapotához;
-   ha az nem áll rendelkezésre, állj meg. Ellenőrizd, hogy minden egyedi
+1. Olvasd be a `recording_index.json` és `cut_workflow_state.json` fájlokat.
+   A workflow szerint ellenőrizd a mentett projektválasztást, a teljes importot
+   és a nyitott Resolve-projekt egyezését. Ellenőrizd, hogy minden egyedi
    jegyzékbeli forrás egyszer szerepel a Media Poolban.
 2. Forrásonként ellenőrizd az útvonalat és a SHA-256 azonosítót a felvételi
    jegyzékkel. A Media Poolban keresd meg az eredeti forrásklipet, ellenőrizd,
-   hogy a fájlja ugyanahhoz a forráshashhez tartozik, és olvasd ki a `GetUniqueId()` értékét.
+   hogy a fájlja ugyanahhoz a forráshashhez tartozik, és a `GetUniqueId()` értéke
+   egyezik a mentett `media_import.sources` megfelelő elemével.
 3. A forrás FPS-ét `ffprobe` segítségével, a videósáv `avg_frame_rate`
    mezőjéből olvasd ki pontos tört alakban. Hiányzó, nulla vagy érvénytelen
    értéknél jelezz akadályt; ne becsülj FPS-t, és ne végezz VFR-vizsgálatot.

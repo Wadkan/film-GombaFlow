@@ -8,7 +8,7 @@ description: "A felvételi jegyzék forrásainak egyszeri importja a Resolve Med
 ## Saját végrehajtási sorrend
 
 Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
-„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+„Közös szerződés”, „Közös visszatérési státuszok” és „Fájlos
 állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
 A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
@@ -19,13 +19,17 @@ A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
 Bemenet a kiválasztott `recording_index.json`, az abban hivatkozott script és az
 ellenőrzött, végrehajtható `retake_plan.json`. A fájl- és tervellenőrzést, valamint a
-Resolve-projekt választását a [timeline-összeállítás](3-timeline-assembly.md)
-végrehajtás előtti technikai szabályai szerint végezd.
+Resolve-projekt azonosságát a `cut_workflow_state.json` mentett választásával
+és a workflow szabályaival ellenőrizd. Hiányzó projektválasztást ne pótolj.
 
 Ha a kiválasztott projekt már nyitva van, ellenőrizd és használd ugyanazt a
 projektet; ne ismételd meg a projektválasztást.
 
 ## Import
+
+Az ellenőrzött állapotban a `media_import` mezőt előbb `incomplete`
+állapottal, üres forráslistával és `error: null` értékkel mentsd és olvasd vissza.
+Importot csak ezután indíts; korábbi siker ne maradjon friss eredményként.
 
 1. A jegyzékből gyűjtsd ki az egyedi `source_id` értékeket és a hozzájuk
    tartozó abszolút forrásútvonalakat. Egy fájlt akkor is csak egyszer kezelj,
@@ -43,8 +47,13 @@ projektet; ne ismételd meg a projektválasztást.
    a visszakapott Media Pool-klip útvonalát, forráshashét és `GetUniqueId()`
    azonosítóját. A projektet natívan mentsd (`SaveProject`).
 
-Hiba vagy részleges import esetén jelezd, mely források kerültek be, és mentsd
-az addigi Resolve-állapotot. Újraindításkor ismét a Media Pool ellenőrzésével
+A workflow szerint mentsd és olvasd vissza az ellenőrzött importeredményt a
+`cut_workflow_state.json` `media_import` mezőjében. Nem adsz át memóriaobjektumot.
+
+Hiba vagy részleges import esetén a ténylegesen ellenőrzött forrásokat és a
+hibát `incomplete` importeredményként mentsd ugyanebbe az állapotfájlba, és ha
+lehetséges, mentsd az addigi Resolve-állapotot. Csak az állapotfájl útvonalát
+és a konkrét akadályt jelezd. Újraindításkor ismét a Media Pool ellenőrzésével
 kezdj, így a már importált források nem kerülnek be újra. Ne módosítsd az
 eredeti médiafájlokat, és ne készíts vagy módosíts timeline-t.
 
