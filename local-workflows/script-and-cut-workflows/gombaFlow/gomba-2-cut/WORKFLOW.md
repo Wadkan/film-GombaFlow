@@ -29,7 +29,10 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    ekkor választ vagy hoz létre Resolve-projektet, majd a
    [review timeline](3c-resolve-review-timeline.md) lépés felvételi sorrendben
    helyezi el a felvételeket az első timeline-on. Az ismétlések ekkor még megmaradnak.
-6. [Rough Cut összeállítása](5-retake-execution.md): az első timeline user
+6. [Review markerek kiolvasása](3d-resolve-review-markers.md): a user review
+   után a Resolve aktuális markereit a script mappájának
+   `review_timeline_markers.json` pillanatképébe menti.
+7. [Rough Cut összeállítása](5-retake-execution.md): az első timeline user
    review-ja után, külön felhasználói indításra annak aktuális markerei alapján
    elkészíti a második timeline-t és a `retake_cleanup.json` kimenetet.
 
