@@ -5,6 +5,16 @@ description: "A videómappában található eredeti felvételek rekurzív átír
 
 # 1. Felvételek átírása
 
+## Saját végrehajtási sorrend
+
+Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
+„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
+A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
+
+1. Ellenőrizd a bemenetet és futtasd az átírást.
+2. Azonosítsd a beszéd nélkül maradt anyagokat, és ellenőrizd az eredményt.
+
 ## Cél és bemenet
 
 A felhasználó saját, eredeti videófájljainak átírása a helyi Faster-Whisperrel.
@@ -99,6 +109,5 @@ A jegyzékkészítő lépés ezt a fájlt kötelezően vegye át, ellenőrizze a
 tartalmazó felvétel `transcribed`, és a következő lépésben azonosítható; nem
 hiányos pusztán azért, mert nincs utána narráció.
 
-Siker esetén a manifest és az esetleges hozzárendelési fájl útvonalát add át.
 Felhasználói válaszra várva jelezd, hogy az átírás elkészült, de az azonosítás
 még függőben van. Hiba esetén csak a konkrét akadályt jelezd.

@@ -5,10 +5,19 @@ description: "A felülvizsgált markerek szerinti Rough Cut timeline összeáll�
 
 # 3e. Resolve Rough Cut összeállítása
 
+## Saját végrehajtási sorrend
+
+Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
+„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
+A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
+
+1. Ellenőrizd a bemeneteket és a review timeline-t.
+2. A markerpillanatkép alapján készítsd el, ellenőrizd és mentsd a Rough Cutot.
+
 ## Külön indítás és bemenetellenőrzés
 
-Ezt a lépést a felhasználó a 3c review timeline markereinek átnézése után
-külön indítja. Olvasd be a 2a. lépés `retake_plan.json` tervét, a hivatkozott
+Olvasd be a `retake_plan.json` tervet, a hivatkozott
 scriptet és `recording_index.json` jegyzéket, valamint a `review_timeline_assembly.json`
 és `review_timeline_resolve_media_registry.json` fájlokat. Ellenőrizd a fájlok lenyomatait,
 témaazonosságát és a forrás–Media Pool–timeline-klip kapcsolatokat. A terv az
@@ -28,10 +37,8 @@ Rough Cut timeline vagy eredményfájl esetén ne írj felül és ne duplikálj;
 
 ## Timeline-műveletek és visszaellenőrzés
 
-Az összeállításhoz kérd el a [3d markerkiolvasó](3d-resolve-review-markers.md)
-`review_timeline_markers.json` kimenetét. A 3d minden összeállítás előtt a
-review timeline aktuális markereit olvassa ki és menti, akkor is, ha korábbi
-pillanatkép létezik. A visszaolvasott
+A `review_timeline_markers.json` a review timeline aktuális, minden összeállítás
+előtt újra kiolvasott markerpillanatképe. A visszaolvasott
 fájlból dolgozz, újabb Resolve-markerkiolvasás nélkül.
 Üres markerlista tartalmi bizonytalanság; API-olvasási hiba esetén állj meg.
 A pillanatkép `unresolved` tételeinél a 3d-ben érintettként megjelölt klipeket
@@ -151,12 +158,11 @@ automatikusan. Újrafuttatás előtt egyeztesd, melyik rögzített állapotból 
   létrejött állapot is legyen visszakereshető, `incomplete` státusszal.
 
 A markerbizonytalanság miatt vágatlanul megtartott `unresolved` tétel
-önmagában nem teszi a végrehajtást `incomplete` állapotúvá. Az érintett
-csoportokat jelezd a felhasználónak; tényleges végrehajtási hiba esetén
+önmagában nem teszi a végrehajtást `incomplete` állapotúvá. A kézi vágás
+szükségességét és a problémalista útvonalát jelezd; tényleges végrehajtási hiba esetén
 a státusz `incomplete`.
 
 A bemenetek változatlanok; a kimenet a friss timeline-kapcsolatok hiteles
 pillanatképe. A későbbi agent ezt használja a 3. lépés elavult pozíciói helyett.
-A felhasználónak rövid készjelzést adj a kézi vágásra váró csoportokkal,
-vagy a konkrét végrehajtási hibát jelezd; a sikeresen kivágott ismétléseket
-ne listázd.
+A felhasználónak rövid készjelzést adj a szükséges kézi vágás és a problémalista
+útvonalának jelzésével, vagy a konkrét végrehajtási hibát jelezd.

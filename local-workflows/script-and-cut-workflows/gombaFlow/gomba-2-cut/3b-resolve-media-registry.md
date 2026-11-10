@@ -5,6 +5,16 @@ description: "A Resolve-projekt és a Media Pool forrásklipjeinek rögzítése.
 
 # Resolve médiaregiszter
 
+## Saját végrehajtási sorrend
+
+Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
+„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
+A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
+
+1. Ellenőrizd a projektet és az importált forrásokat.
+2. Készítsd el vagy bővítsd a médiaregisztert, majd olvasd vissza.
+
 A `review_timeline_resolve_media_registry.json` a kiválasztott script meglévő projektmappájában,
 a `recording_index.json` mellett található. A felvételi jegyzék és a vágási
 terv változatlan marad; a médiaregiszter kapcsolja a forrásokat a Resolve-hoz,
@@ -31,12 +41,13 @@ Resolve-projektben érvényes Media Pool-azonosítókat tárolja.
 
 ## Ellenőrzés és mentés
 
-1. Olvasd be a `recording_index.json` fájlt és a [3a médiaimport](3a-resolve-media-import.md)
-   átadását. Ellenőrizd, hogy az átadott projekt ID-ja és neve egyezik a nyitott
-   Resolve-projekttel, és minden egyedi jegyzékbeli forrás egyszer szerepel.
+1. Olvasd be a `recording_index.json` fájlt és a kiválasztott nyitott Resolve-projektet.
+   Ellenőrizd a projekt ID-ját és nevét a kiválasztás hiteles állapotához;
+   ha az nem áll rendelkezésre, állj meg. Ellenőrizd, hogy minden egyedi
+   jegyzékbeli forrás egyszer szerepel a Media Poolban.
 2. Forrásonként ellenőrizd az útvonalat és a SHA-256 azonosítót a felvételi
-   jegyzékkel. A Media Poolban keresd meg az átadott `GetUniqueId()` értékű
-   klipet, és ellenőrizd, hogy a fájlja ugyanahhoz a forráshashhez tartozik.
+   jegyzékkel. A Media Poolban keresd meg az eredeti forrásklipet, ellenőrizd,
+   hogy a fájlja ugyanahhoz a forráshashhez tartozik, és olvasd ki a `GetUniqueId()` értékét.
 3. A forrás FPS-ét `ffprobe` segítségével, a videósáv `avg_frame_rate`
    mezőjéből olvasd ki pontos tört alakban. Hiányzó, nulla vagy érvénytelen
    értéknél jelezz akadályt; ne becsülj FPS-t, és ne végezz VFR-vizsgálatot.
@@ -45,8 +56,7 @@ Resolve-projektben érvényes Media Pool-azonosítókat tárolja.
    szereplő forrásadatok egyezését. Csak az új forrásokat add hozzá; az eddigi
    rekordokat őrizd meg. Eltérésnél ne írd át a regisztert, hanem jelezd.
 5. Az összes ellenőrzés után mentsd el és olvasd vissza a teljes regisztert.
-   Ellenőrizd, hogy minden átadott forrás szerepel a megfelelő adatokkal, majd
-   add át a fájl útvonalát a következő lépésnek.
+   Ellenőrizd, hogy minden forrás szerepel a megfelelő adatokkal.
 
 Ez a lépés nem importál médiát és nem módosít timeline-t, forrásfájlt,
 `recording_index.json`-t vagy Gomba 1 registryt.

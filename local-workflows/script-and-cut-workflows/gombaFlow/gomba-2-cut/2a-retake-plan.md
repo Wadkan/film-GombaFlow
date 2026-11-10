@@ -5,6 +5,17 @@ description: "Az ismétlések és felvételi parancsok közös kivágási terve 
 
 # 2a. Ismétlések és felvételi parancsok kivágási terve
 
+## Saját végrehajtási sorrend
+
+Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
+„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
+A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
+
+1. Ellenőrizd a bemeneteket és az esetleges mentett folytatási állapotot.
+2. Script-ID-nként tervezd az ismétlések és parancsok vágását.
+3. Ellenőrizd a hiányokat, kezeld a döntéseket, és ellenőrizd a teljes tervet.
+
 ## Cél és bemenet
 
 Készíts közös vágási tervet az újramondott beszéd korábbi változatairól és a
@@ -142,9 +153,7 @@ Az ismétlésekre és parancsokra vonatkozó igazolt döntéseket forrásonként
 egyesítsd, az átfedéseket kezeld, és ezek alapján képezd a közös, rendezett
 `retained_ranges` listát. Az egyedi beszéd és a megőrzendő képi anyag maradjon
 meg. A kézi review-ra jelölt csoport teljes forrástartományait őrizd meg,
-parancsokkal együtt. A 3c ezekből a tartományokból készíti a review timeline
-markereit; a 3e a felhasználói review után mentett markerpillanatkép alapján
-állítja össze a Rough Cutot.
+parancsokkal együtt.
 
 ## Hiányzó felvételrészek ellenőrzése
 
@@ -226,13 +235,13 @@ egyértelműen, jelezd az akadályt, ne találgass. Hiány nélkül a lista üre
   Ha ezután egy hiány még döntésre vagy felvételre vár, mentsd a tervet
   `needs_review` állapottal, a chatben csak a problémalista útvonalát és a
   szükséges következő lépést jelezd, majd várj.
-- A megadott külön mappát a meglévő [átírással](1-transcription.md) dolgozd fel,
-  majd mentsd a létrejött manifest útvonalát és a `transcribed` állapotot. Ha
+- A pótfelvétel elkészült átírásának manifestútvonalát és a `transcribed`
+  állapotot mentsd el. Ha
   a feldolgozás megszakadt, a már létező manifestet csak akkor használd újra,
   ha a mappa, forrásútvonalak és forráshashek alapján igazolhatóan ehhez a
   pótfelvételhez tartozik. Meglévő átiratot ne írj felül.
-- A [jegyzékkészítés](2-recording-index.md) pótfelvételi lépésével csak az új
-  rekordokat add a kiválasztott script jegyzékéhez. Ha a manifest és az
+- A kiválasztott script jegyzékéhez csak az új pótfelvételi rekordok kerüljenek.
+  Ha a manifest és az
   ellenőrzött forrásai már szerepelnek a jegyzékben, ne fűzd hozzá újra; folytasd
   az érintett hiányok újraellenőrzésével. A jegyzék mentése előtt
   ments `pending_index_update` állapotot a tervbe a régi és a tervezett új
@@ -261,8 +270,7 @@ Mindig csak az éppen feldolgozott script-ID vágását tervezd meg. Az adott ID
 tervét mentsd a jegyzék mappájában lévő `retake_plan.json` fájl `groups`
 listájába, majd folytasd a következő ID elemzésével. Ne tarts több ID beszédét
 egyidejűleg az elemzési kontextusban. Timeline-t ne módosíts; a teljes tervet
-csak az összes csoport elkészülte után add át. A végrehajtás külön, felhasználó
-által indított [3e lépésben](3e-resolve-rough-cut-timeline.md) történik.
+csak az összes csoport elkészülte után tekintsd késznek.
 
 A terv sémája `1.1`, kötelező mezői:
 
@@ -325,16 +333,11 @@ forrásadat viszont továbbra is blokkolja a tervet.
 
 A 2a. lépés gépi kimenete a teljes `retake_plan.json`; bizonytalanságnál a
 hivatkozott közös problémánapló is készül. Resolve-hoz ne nyúlj.
-Az elemzés végén jelezd a kézi vágásra váró csoportokat és a problémánapló
+Az elemzés végén jelezd a kézi vágás szükségességét és a problémánapló
 útvonalát; az ismétlésvágási bizonytalanság tisztázására ne várj. Döntésre
 váró hiányzó felvételrésznél, illetve hiányzó vagy érvénytelen forrásadatnál a
 terv maradjon `needs_review`; ne add át végrehajthatóként.
-Csak `ready_for_execution` tervnél add át a fájl útvonalát, és állj meg.
+Csak `ready_for_execution` tervet tekints végrehajthatónak.
 Mondd ki, hogy a Resolve-projekt és timeline még nem készült el, a terv pedig
-nincs végrehajtva. A vágási döntések felhasználói review-ja a Resolve-ban,
-az első timeline markerein történik; külön fájlalapú tervreview-t ne kérj.
-A felhasználó külön indítása után a
-[3. timeline-összeállítás](3-timeline-assembly.md) és a
-[3c review timeline](3c-resolve-review-timeline.md) következik; a 3c a
-`retained_ranges` alapján helyezi el a piros markerpárokat. A felhasználó a
-markereket ezután Resolve-ban review-zhatja.
+nincs végrehajtva. A részletes vágási döntések review-ja az első timeline
+markerein történik.

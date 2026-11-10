@@ -5,6 +5,16 @@ description: "Az átiratok és azonosítóbemondások alapján a felvételek té
 
 # 2. Felvételek azonosítása és jegyzék
 
+## Saját végrehajtási sorrend
+
+Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
+„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
+A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
+
+1. Ellenőrizd a bemeneteket, és azonosítsd a felvételeket.
+2. Kezeld a szükséges javításokat és pótfelvételeket, majd ellenőrizd a jegyzéket.
+
 ## Cél és bemenet
 
 Agentként értelmezd a felvett azonosítóbemondásokat, és készíts visszakereshető
@@ -120,8 +130,7 @@ pontosítást, és ne találgass. Az érvényes választ, a forrást és a felha
 eredetet őrizd meg a jegyzékben, a felismert eredeti bemondással és annak
 ellenőrzött időhatáraival együtt. A javítás kizárólag az azonosítót oldja fel;
 bizonytalan varázsszópárt vagy időhatárt nem igazol. A feloldott rekordot
-frissítsd, majd a jegyzéket olvasd vissza, és az ellenőrzött jegyzékkel folytasd
-a 2a lépést. Ha már létezik jegyzék, kizárólag az érintett rekordok javításához
+frissítsd, majd a jegyzéket olvasd vissza. Ha már létezik jegyzék, kizárólag az érintett rekordok javításához
 frissítsd; a többi rekordot és azonosítót őrizd meg. Az átiratot ne módosítsd.
 
 ## Kimenet: `recording_index.json` — 1.0
@@ -199,19 +208,17 @@ listában. Az eredeti manifestet, átiratokat és forrásokat ne módosítsd.
 A hozzáfűzést és a mentett JSON bájtjait azonos bemenetnél azonosan állítsd elő,
 hogy megszakítás után a tervezett hash újra ellenőrizhető legyen.
 
-Mentés előtt a bővített jegyzék tervezett pontos tartalmának SHA-256 értékét
-add át a tervlépésnek a folytatási állapot rögzítéséhez. Csak a tervlépés
-mentett `pending_index_update` állapota után írd le ugyanazt a jegyzéktartalmat.
-Olvasd vissza, és az új hash-t add át a tervlépésnek. Az érintett script- és
+A jegyzékmentés egyeztetésénél a workflow „TODO — Fájlos állapotátvétel”
+részében megjelölt pótfelvételi kivétel szerint járj el. Az érintett script- és
 forrásazonosság vagy a tervezett hash eltérésénél állj meg konkrét hibával.
 
-## Átadás
+## Végső ellenőrzés
 
 Ellenőrizd, hogy minden eredeti felvétel és hozzárendelt tartomány
 visszakereshető a jegyzékben, beleértve a néma és csak bemondásos részeket is.
 A scriptből hiányzó felvételeket és beszédrészeket a
 [vágási terv](2a-retake-plan.md) ellenőrzi és naplózza.
 
-Add át a jegyzék útvonalát. Csak a pontosítást igénylő tételeket kérdezd meg;
+Csak a pontosítást igénylő tételeket kérdezd meg;
 a sikeresen azonosított részeket ne sorold fel. Bizonytalan részeknél jelezd
 a függőben lévő azonosítást, ne állítsd, hogy minden rész feldolgozható.

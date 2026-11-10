@@ -5,6 +5,16 @@ description: "A teljes felvételi timeline összeállítása és a megtartandó 
 
 # Resolve review timeline és markerek
 
+## Saját végrehajtási sorrend
+
+Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
+„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
+A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
+
+1. Ellenőrizd a tervet, a projektet és a forrásokat.
+2. Helyezd el a felvételeket és markereket, majd ellenőrizd és mentsd az eredményt.
+
 ## Bemenet
 
 A kiválasztott `recording_index.json`, az `1.1` sémájú, `coverage_checked: true`
@@ -92,6 +102,5 @@ Resolve-projekt addigi állapotát és a `review_timeline_assembly.json` kimenet
 Mentsd a Resolve-projektet, és ellenőrizd a tényleges timeline-t és kliphatárokat.
 A meglévő `review_timeline_assembly.json` átadásban rögzítsd a projekt- és
 timeline-azonosítót, valamint a behelyezett felvételek forrás- és
-timeline-kapcsolatait. A felhasználónak add át a review timeline nevét és a
-bizonytalan részeket. A felhasználó ezután a Resolve-ban módosíthat, törölhet
-vagy hozzáadhat markereket; a második timeline vágását ez a lépés nem indítja.
+timeline-kapcsolatait. A felhasználónak jelezd a review timeline nevét és,
+ha probléma merült fel, a problémalista útvonalát.

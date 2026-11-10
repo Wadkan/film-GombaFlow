@@ -5,17 +5,25 @@ description: "A felvételi jegyzék forrásainak egyszeri importja a Resolve Med
 
 # Resolve médiaimport
 
+## Saját végrehajtási sorrend
+
+Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
+„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
+A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
+
+1. Ellenőrizd a projektet és a forrásokat.
+2. Importáld vagy azonosítsd újra a forrásokat, majd ellenőrizd és mentsd a projektet.
+
 ## Bemenet és kapu
 
 Bemenet a kiválasztott `recording_index.json`, az abban hivatkozott script és az
 ellenőrzött, végrehajtható `retake_plan.json`. A fájl- és tervellenőrzést, valamint a
 Resolve-projekt választását a [timeline-összeállítás](3-timeline-assembly.md)
-végrehajtás előtti szabályai szerint végezd. Csak a terv elkészülte és külön
-felhasználói indítás után nyiss vagy hozz létre Resolve-projektet.
+végrehajtás előtti technikai szabályai szerint végezd.
 
-Ha a 3. timeline-összeállítás már átadta a kiválasztott, megnyitott projekt
-azonosítóját, ellenőrizd és használd ugyanazt a projektet; ne ismételd meg a
-projektválasztást. A szülőlépés indítása erre az importlépésre is vonatkozik.
+Ha a kiválasztott projekt már nyitva van, ellenőrizd és használd ugyanazt a
+projektet; ne ismételd meg a projektválasztást.
 
 ## Import
 
@@ -40,11 +48,4 @@ az addigi Resolve-állapotot. Újraindításkor ismét a Media Pool ellenőrzés
 kezdj, így a már importált források nem kerülnek be újra. Ne módosítsd az
 eredeti médiafájlokat, és ne készíts vagy módosíts timeline-t.
 
-## Átadás
-
-A hívónak add át a Resolve-ból visszaolvasott `resolve_project_id` és
-`resolve_project_name` értékét, valamint forrásonként a `source_id`,
-`source_path` és `resolve_media_pool_item_id` adatokat. Az utóbbi a Media Pool
-klipjének `GetUniqueId()` értéke. A [médiaregiszter](3b-resolve-media-registry.md)
-külön lépése tölti ki és menti a teljes regisztert, beleértve a forrás FPS-ét.
 Ne írj a Gomba 1 registrybe vagy a `recording_index.json` fájlba.

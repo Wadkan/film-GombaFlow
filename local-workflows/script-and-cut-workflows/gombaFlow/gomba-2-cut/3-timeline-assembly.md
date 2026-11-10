@@ -5,11 +5,19 @@ description: "Az ellenőrzött vágási terv alapján a felvételek elhelyezése
 
 # 3. Timeline összeállítása
 
+## Saját végrehajtási sorrend
+
+Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
+„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
+A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
+
+1. Ellenőrizd a tervet és a bemeneteket.
+2. Válaszd ki a Resolve-projektet, majd ellenőrizd az elkészült review timeline-t.
+
 ## Cél és bemenet
 
-Ezt a lépést csak az ellenőrzött, végrehajtható vágási terv elkészülte és külön
-felhasználói indítás után hajtsd végre. A terv előtti preflight nem csatlakozik
-a Resolve-hoz.
+Ellenőrzött, végrehajtható vágási tervből dolgozz.
 
 A [jegyzékkészítés](2-recording-index.md) `recording_index.json` kimenete és az
 abban hivatkozott, elfogadott `3-script.md` alapján ténylegesen helyezd el a
@@ -35,8 +43,7 @@ az ehhez tartozó munkaváltozatok neve:
 
 ## Végrehajtás előtti ellenőrzések
 
-Mielőtt Resolve-projektet nyitnál vagy hoznál létre, ellenőrizd, hogy a
-felhasználó a terv elkészülte után külön elindította ezt a lépést, a `retake_plan.json`
+Mielőtt Resolve-projektet nyitnál vagy hoznál létre, ellenőrizd, hogy a `retake_plan.json`
 `1.1` sémájú, `ready_for_execution` állapotú, `coverage_checked` értéke `true`,
 és a benne lévő script/index hash-ek egyeznek. Korábbi vagy hiányellenőrzés
 nélküli tervet ne fogadj el; azt az aktuális tervlépésben kell újra elkészíteni.
@@ -80,26 +87,8 @@ exportot ne készíts. Az azonosítót és nevet a lépés saját
 Elérhetetlen eszköznél vagy hibás bemenetnél konkrét akadályt jelezz. JSON vagy
 vágási terv elkészítése önmagában nem jelenti a timeline összeállítását.
 
-## Végrehajtási sorrend
-
-A fenti ellenőrzések és projektválasztás után, ugyanazon felhasználói indítás
-részeként, sorrendben hajtsd végre:
-
-1. [3a médiaimport](3a-resolve-media-import.md): add át a kiválasztott indexet,
-   tervet és a már megnyitott projekt azonosítóját. Vedd át az ellenőrzött
-   projekt- és forrásonkénti Media Pool-azonosítókat.
-2. [3b médiaregiszter](3b-resolve-media-registry.md): add át az indexet és a
-   3a eredményét. Mentsd és olvasd vissza a
-   `review_timeline_resolve_media_registry.json` fájlt. A 3c csak az összes
-   forrásazonosító és FPS ellenőrzése után indulhat.
-3. [3c review timeline](3c-resolve-review-timeline.md): add át az indexet,
-   tervet és az ellenőrzött médiaregisztert. Ez a lépés helyezi el a klipeket
-   és markereiket, majd menti a `review_timeline_assembly.json` kimenetet.
-
-Az alábbi elhelyezési és kimeneti szabályok a 3c végrehajtására vonatkoznak;
-ne helyezd el még egyszer a felvételeket külön menetben. Sikertelen lépés
-után ne indítsd a következőt. A lánc az első timeline átadásával ér véget;
-a markerkiolvasást és a Rough Cutot ne indítsd automatikusan.
+Az alábbi elhelyezési és kimeneti szabályok a review timeline-ra vonatkoznak;
+a felvételeket ne helyezd el még egyszer külön menetben.
 
 ## Elhelyezés
 
@@ -176,9 +165,7 @@ Ha nincs ilyen hiány, röviden jelezd, hogy az összeállítás kész. A jóvá
 kihagyásokat ne jelentsd újra hiányként. Végrehajtási akadályt hibaként jelezz,
 ne hiányzó felvételként.
 
-A gépi átadás a `review_timeline_assembly.json` útvonala; a 3e lépés ezt, az eredeti
-jegyzéket, az ellenőrzött `retake_plan.json` fájlt és az első timeline aktuális
-markereit használja. A
-felhasználónak nem kell vágásnaplót készítenie.
+A `review_timeline_assembly.json` a visszaellenőrzött timeline-kapcsolatokat
+tartalmazza. A felhasználónak nem kell vágásnaplót készítenie.
 A későbbi, nem dokumentált kézi vágások automatikus egyeztetése nem része
 ennek a lépésnek.

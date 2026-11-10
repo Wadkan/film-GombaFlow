@@ -5,6 +5,16 @@ description: "A felülvizsgált review timeline aktuális markereinek kiolvasás
 
 # Resolve review markerek kiolvasása
 
+## Saját végrehajtási sorrend
+
+Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
+„Közös szerződés”, „Közös visszatérési státuszok” és „TODO — Fájlos
+állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
+A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
+
+1. Ellenőrizd a bemeneteket és a Resolve-azonosítókat.
+2. Olvasd ki az aktuális markereket, és ellenőrzés után mentsd a pillanatképet.
+
 ## Bemenet
 
 Olvasd be a kiválasztott script mappájából a `recording_index.json`,
@@ -78,5 +88,4 @@ A klip- és markerlistákat stabilan, sáv és képkocka szerint rendezd. Menté
 után olvasd vissza a teljes JSON-t és ellenőrizd. A 3e a mentett pillanatképet
 használja; a mentés utáni Resolve-módosítások nem kerülnek automatikusan bele.
 
-Ez a lépés nem hoz létre és nem módosít timeline-t, klipet vagy markert, és nem
-indítja el a Rough Cut összeállítását. A fájl útvonalát add át a hívónak.
+Ez a lépés nem hoz létre és nem módosít timeline-t, klipet vagy markert.
