@@ -38,8 +38,8 @@ A pillanatkép `unresolved` tételeinél a 3d-ben érintettként megjelölt klip
 tartsd meg kézi review-ra.
 A [markerindex](davinci_marker_index.md) szerinti név és szín együtt számít:
 
-- Piros `KEEP IN` / `KEEP OUT` pár: a pár közötti forrástartomány megmarad;
-  több érvényes pár több megtartandó részt jelent.
+- Piros `KEEP IN` / `KEEP OUT` pár: mindkét marker alatti képkocka és a köztük
+  lévő rész megmarad; több érvényes pár több megtartandó részt jelent.
 - Sárga `OMIT TAKE`: csak akkor hagyd ki a teljes klipet, ha egyetlen ilyen
   marker a teljes kliphosszt lefedi, és nincs vele ütköző vágási jelölés.
 - Sárga `REVIEW START` / `REVIEW END` pár: a bizonytalan klipet teljesen
@@ -69,11 +69,14 @@ az első timeline-on elfoglalt sorrendben, a klipen belüli megtartási részeke
 forrásidő szerint állítsd össze. Bizonytalan sorrendnél a teljes érintett
 felvételek maradjanak meg, és kapjanak review jelölést.
 
-A mentett pillanatkép klip- és markerhatárait, a forrásklip
-regiszterbeli FPS-ét és a timeline időalapját használva számítsd ki a
-megtartandó eredeti forrásképkockákat. A félig nyílt forrástartományokat a
-telepített Resolve API által elvárt `startFrame` / `endFrame` határokra alakítsd;
-ne vágj le megtartandó képkockát. Az eredeti, regiszterbeli Media Pool-klipeket
+A mentett pillanatkép markerét először a saját klip- vagy timeline-időalapjában
+értelmezd. A zárómarker az utolsó megtartott képkockán áll; ehhez egyet adva
+képezd a félig nyílt `[start, end)` tartományt. Csak ezután válts a visszaolvasott
+kliphatárok, a forrásklip regiszterbeli FPS-e és a timeline időalapja között.
+Eltérő FPS-nél a forráskezdést lefelé, a kizáró véghatárt felfelé kerekítsd,
+hogy megtartandó képkocka ne vesszen el. A félig nyílt forrástartományt a
+telepített Resolve API által elvárt `startFrame` / `endFrame` formára alakítsd;
+az API záróhatárának értelmezését ne feltételezd. Az eredeti, regiszterbeli Media Pool-klipeket
 használd újra, ne importáld a fájlokat újra. A kép és hozzá tartozó hang
 maradjon szinkronban. A B-roll képe és meglévő hangja a talking headtől külön
 video-, illetve hangsávra kerüljön; a hangot hagyd változatlanul. Korábbi
@@ -90,14 +93,16 @@ script-sorrendjét. Egy tartomány képéhez és meglévő hangjához azonos
 hangbejegyzést használj ugyanabban a hívásban. Ha az API külön klippéldányként
 helyezte el őket, a Rough Cut `SetClipsLinked()` műveletével kapcsold össze,
 és olvasd vissza a kapcsolatot. A visszakapott klipek számát, sorrendjét,
-tényleges sávjait, forrás- és timeline-határait olvasd vissza. Részleges vagy
+tényleges sávjait, forrás- és timeline-határait olvasd vissza; ellenőrizd,
+hogy a tényleges első és utolsó képkocka megfelel a markerhatároknak. Eltérés,
+részleges vagy
 sikertelen API-hívásnál állj meg, és ne indíts automatikus újrapróbálást.
 Ha nincs megtartandó szakasz, ne hívj üres listával `AppendToTimeline()`-t;
 az üres Rough Cutot és az összes kihagyást jelezd.
 
 Minden kézi vágáshoz teljesen megtartott egység videoklipjének elejére és végére
 helyezd el a markerindex szerinti sárga `REVIEW START` / `REVIEW END` párt a
-Rough Cuton, az új klip visszaolvasott határaihoz igazítva. Az `OMIT TAKE` markerrel együtt
+Rough Cuton, az első és utolsó megtartott képkockára. Az `OMIT TAKE` markerrel együtt
 kihagyott klip és markere nem kerül a Rough Cutra. A létrehozott markereket
 olvasd vissza, és ellenőrizd a nevüket, színüket és helyüket. Technikai
 olvasási, létrehozási vagy visszaellenőrzési hiba esetén állj meg, mentsd a

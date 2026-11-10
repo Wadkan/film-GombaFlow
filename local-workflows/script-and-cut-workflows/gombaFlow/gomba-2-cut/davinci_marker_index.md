@@ -3,12 +3,12 @@
 Ez a fájl a Gomba 2 workflow markerneveinek és színeinek közös forrása.
 A Resolve timeline-on a következő angol markerneveket használd:
 
-- **Red — `KEEP IN`:** a megtartandó rész kezdete.
-- **Red — `KEEP OUT`:** a megtartandó rész vége.
+- **Red — `KEEP IN`:** a megtartandó rész első képkockája.
+- **Red — `KEEP OUT`:** a megtartandó rész utolsó képkockája; ez a kép még megmarad.
 - **Blue — `TITLE`:** cím vagy felirat helye.
 - **Pink — `IMAGE OVERLAY`:** a talking head fölé kerülő kép helye.
-- **Yellow — `REVIEW START`:** kézi átnézést igénylő rész kezdete.
-- **Yellow — `REVIEW END`:** kézi átnézést igénylő rész vége.
+- **Yellow — `REVIEW START`:** a kézi átnézést igénylő rész első képkockája.
+- **Yellow — `REVIEW END`:** a kézi átnézést igénylő rész utolsó képkockája; ez is megmarad.
 - **Yellow — `OMIT TAKE`:** a teljes klippéldány kihagyására tett javaslat;
   egyetlen tartománymarker, amely a klip teljes hosszát lefedi.
 
@@ -24,8 +24,15 @@ Ha a kapcsolt hangon is van vágási marker, és az a videó jelölésével elt�
 vagy nem összevethető döntést jelent, az egész egység maradjon meg kézi
 review-ra.
 
-A `KEEP IN` és `KEEP OUT` pár közötti rész marad meg; több pár több megtartandó
+A `KEEP IN` és `KEEP OUT` közötti rész mindkét jelölt képkockával együtt marad
+meg; több pár több megtartandó
 részt jelölhet. Ha egy megtartási tartomány vagy markerpár nem egyértelmű,
 az érintett anyag maradjon bent kézi vágáshoz. A teljes bizonytalan rész elejét
 és végét az első review timeline-on, majd a második timeline-on is
 `REVIEW START` és `REVIEW END` marker jelölje.
+
+A fájlokban és belső számításban a képkockatartomány félig nyílt `[start, end)`:
+az `end` az utolsó megtartott képkockát követő határ. Például `[10, 100)`
+esetén a kezdő marker a 10., a záró marker a 99. képkockán van. A marker
+időalapjában visszaolvasott zárómarkerhez egyet adva kapod meg az `end` határt;
+a forrás- és timeline-képkockákat csak ezután, saját FPS-ükkel váltsd át.

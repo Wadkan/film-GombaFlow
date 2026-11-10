@@ -49,6 +49,10 @@ nyitott Resolve-projekt és a review timeline egyedi azonosítóját is.
    egész kép–hang egységet jelöld `unresolved` tétellel, mindkét klip
    azonosítójával és az indokkal.
    A cím- és képmarkereket is olvasd ki, de vágási döntésként ne használd.
+   Az összevetésben a `KEEP OUT` és `REVIEW END` a marker alatti utolsó
+   megtartott képkockát jelöli. A záróhatárt a saját marker-időalapjában a
+   marker képkockájához egyet adva képezd, mielőtt másik időalapra váltasz.
+   A JSON-ban továbbra is az eredeti Resolve `frame_id` szerepeljen.
 
 Az üres markerlista érvényes kiolvasási eredmény, nem API-hiba. Ha a projekt,
 timeline, klip vagy markerek technikai okból nem olvashatók ki, állj meg és

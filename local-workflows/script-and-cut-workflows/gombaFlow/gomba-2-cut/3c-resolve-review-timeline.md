@@ -38,9 +38,13 @@ duplikálj tartalmat; állj meg és jelezd. A második timeline-t ne készítsd 
 2. A terv `retained_ranges` minden eleménél ellenőrizd a `recording_id`,
    `source_id`, `source_start` és `source_end` mezőket, majd rendeld a
    tartományt az első timeline megfelelő klippéldányához. A forrás saját,
-   médiaregiszterbeli FPS-ével alakítsd a forrásmásodperceket forrásképkockákra.
-   A klip forráskezdetéhez és timeline-kezdőképkockájához viszonyítva számítsd
-   ki a marker klipen belüli képkockahelyét. Bizonytalan csoportnál a teljes
+   médiaregiszterbeli FPS-ével alakítsd a forrásmásodperceket félig nyílt
+   forrásképkocka-tartománnyá: a kezdetet lefelé, a véghatárt felfelé kerekítsd.
+   A Resolve-ból visszaolvasott forrás- és timeline-kliphatárokkal, valamint
+   a két időalappal rendeld a tartományt a megfelelő timeline-képkockákhoz.
+   A [markerindex](davinci_marker_index.md) szerint a kezdő marker az első,
+   a záró marker az utolsó megtartott képkockára kerüljön, ne a kizáró
+   véghatárra. Bizonytalan csoportnál a teljes
    `source_start`–`source_end` tartományt jelöld, az azonosítóbemondással együtt.
 3. A nem kézi vágásra jelölt csoportok minden nem üres, érvényes megtartási tartományához a
    [markerindex](davinci_marker_index.md) szerinti piros megtartási markerpárt
