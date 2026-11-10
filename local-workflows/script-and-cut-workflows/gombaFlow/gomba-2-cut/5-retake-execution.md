@@ -4,7 +4,7 @@
 
 Ezt a lépést a felhasználó a 3c review timeline markereinek átnézése után
 külön indítja. Olvasd be a 2a. lépés `retake_plan.json` tervét, a hivatkozott
-scriptet és `recording_index.json` jegyzéket, valamint a `timeline_assembly.json`
+scriptet és `recording_index.json` jegyzéket, valamint a `review_timeline_assembly.json`
 és `review_timeline_resolve_media_registry.json` fájlt. Ellenőrizd a fájlok lenyomatait,
 témaazonosságát és a forrás–Media Pool–timeline-klip kapcsolatokat. A terv az
 eredeti javaslat; a megtartásról az első timeline aktuális markerei döntenek.
@@ -12,10 +12,10 @@ eredeti javaslat; a megtartásról az első timeline aktuális markerei döntene
 Ha a terv nem `1.1` sémájú, a hiányellenőrzés nem teljes, nem
 `ready_for_execution`, valamelyik hivatkozás hiányzik, vagy a
 tervben hivatkozott forrásrész nem található a timeline-összeállításban, ne
-építs timeline-t; jelezd a konkrét eltérést. A Resolve-projektet a `timeline_assembly.json`
+építs timeline-t; jelezd a konkrét eltérést. A Resolve-projektet a `review_timeline_assembly.json`
 `resolve_project_name` értéke alapján nyisd meg, majd ellenőrizd a visszaolvasott
 projektazonosítót az ott tárolt `resolve_project_id` értékkel. Eltérésnél ne
-építs timeline-t. A `timeline_assembly.json` azonosítójával ellenőrizd az első
+építs timeline-t. A `review_timeline_assembly.json` azonosítójával ellenőrizd az első
 review timeline-t; a jelenlegi klipjeit és markereit a Resolve-ból olvasd ki.
 Az első timeline-t az összeállítás során nem módosíthatod. Meglévő nem üres
 Rough Cut timeline vagy eredményfájl esetén ne írj felül és ne duplikálj;
@@ -102,7 +102,8 @@ A jegyzék mappájában új fájlt készíts; meglévő eredményt ne írj felü
 automatikusan. Újrafuttatás előtt egyeztesd, melyik rögzített állapotból induljon.
 
 - `schema_version`: `"1.1"`; `status`: `completed` vagy `incomplete`.
-- Bemeneti referenciák: `timeline_assembly_path`, `timeline_assembly_sha256`,
+- Bemeneti referenciák: `timeline_assembly_path`, `timeline_assembly_sha256`
+  a `review_timeline_assembly.json` útvonala és lenyomata, valamint
   `recording_index_path`, `recording_index_sha256`, `script_sha256`,
   `resolve_project_id`, `resolve_project_name`.
 - `retake_plan_path`, `retake_plan_sha256`: az ellenőrzött eredeti terv

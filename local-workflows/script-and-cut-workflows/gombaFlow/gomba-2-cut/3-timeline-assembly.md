@@ -62,14 +62,14 @@ projektlistáját, és keresd meg a kiválasztott `topic_id` nevű projektet.
 Nyisd meg vagy hozd létre a választott projektet, és olvasd ki a Resolve-ból
 az egyedi projektazonosítóját és látható nevét. Natívan mentsd; `.drp`
 exportot ne készíts. Az azonosítót és nevet a lépés saját
-`timeline_assembly.json` kimenetében rögzítsd.
+`review_timeline_assembly.json` kimenetében rögzítsd.
 
 - A cél-vágóprojekt egyértelmű, a médiakezeléshez és timeline-műveletekhez
   rendelkezésre áll működő kapcsolat. A használt eszköz aktuális API-leírásából
   ellenőrizd a médiaimportot, forrástartományt, klipelhelyezést, klipnevet,
   hang engedélyezését és a visszaolvasható klippéldány-azonosítót.
 - Az első timeline fenti neve használható. Meglévő, nem üres cél-timeline
-  vagy korábbi `timeline_assembly.json` esetén állj meg újrafuttatási döntésre;
+  vagy korábbi `review_timeline_assembly.json` esetén állj meg újrafuttatási döntésre;
   ne törölj felhasználói vágást és ne duplikáld automatikusan a tartalmat.
 
 Elérhetetlen eszköznél vagy hibás bemenetnél konkrét akadályt jelezz. JSON vagy
@@ -97,7 +97,7 @@ vágási terv elkészítése önmagában nem jelenti a timeline összeállítás
    timeline-határokat olvasd vissza és mentsd el. Ellenőrizd, hogy a képkockás
    határillesztés nem vág le megtartandó beszédet vagy B-roll-képet.
 
-## Kimenet: `timeline_assembly.json` — 1.0
+## Kimenet: `review_timeline_assembly.json` — 1.0
 
 A jegyzék mappájába mentsd a létrejött elhelyezéseket. A bemeneti jegyzék
 változatlan marad; ez a kimenet adja hozzá a tényleges timeline-kapcsolatokat.
@@ -150,7 +150,7 @@ Ha nincs ilyen hiány, röviden jelezd, hogy az összeállítás kész. A jóvá
 kihagyásokat ne jelentsd újra hiányként. Végrehajtási akadályt hibaként jelezz,
 ne hiányzó felvételként.
 
-A gépi átadás a `timeline_assembly.json` útvonala; az 5. lépés ezt, az eredeti
+A gépi átadás a `review_timeline_assembly.json` útvonala; az 5. lépés ezt, az eredeti
 jegyzéket, az ellenőrzött `retake_plan.json` fájlt és az első timeline aktuális
 markereit használja. A
 felhasználónak nem kell vágásnaplót készítenie.
