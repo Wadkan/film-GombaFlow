@@ -50,7 +50,8 @@ A varázsszó tényleges értékét a feldolgozott projekt scriptjéből kell ol
 Az eredeti videók és átiratok változatlanok maradnak. A jegyzék tartja fenn a
 forrásrész–script-rész–timeline-klip kapcsolatot. A B-roll és más néma képi
 anyag megmarad; a csak azonosítóbemondást tartalmazó képi részre a szerződés
-kivétele vonatkozik. A B-roll hangja kikapcsolva, megőrizve marad.
+kivétele vonatkozik. A B-roll képe és meglévő hangja a talking headtől külön
+sávokra kerül, az eredeti hang módosítása nélkül.
 
 Egy lépés csak saját kimenetét készíti el; a bemeneti sémát és a szükséges
 adatokat a végrehajtás előtt ellenőrzi. Hiányzó vagy bizonytalan hozzárendelést

@@ -28,7 +28,10 @@ duplikálj tartalmat; állj meg és jelezd. A második timeline-t ne készítsd 
    forrásidő szerint. A jegyzék `source_start`–`source_end` tartományait
    használd, az azonosítóbemondásokkal együtt. Ha egy forrás több témát
    tartalmaz, csak a kiválasztott témához tartozó részeit helyezd el.
-   A felvételek eredeti képét és hangját szinkronban őrizd meg.
+   A felvételek eredeti képét és hangját szinkronban őrizd meg. A B-roll képe
+   és meglévő hangja a talking headtől külön video-, illetve hangsávra kerüljön;
+   a hangot ne némítsd vagy módosítsd. A külön sávokon is őrizd meg a teljes
+   timeline felvételi sorrendjét, és a tényleges sávokat olvasd vissza.
 2. A terv `retained_ranges` minden eleménél ellenőrizd a `recording_id`,
    `source_id`, `source_start` és `source_end` mezőket, majd rendeld a
    tartományt az első timeline megfelelő klippéldányához. A forrás saját,

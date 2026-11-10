@@ -67,7 +67,7 @@ A néma felvétel nem hibás vagy törlendő bemenet.
 4. A képi kivételt részenként, a közös szerződés szerint alkalmazd. Ha a rész
    nem `talking head`, és csak azonosítóbemondást tartalmaz, azonosított marad:
    a megtartandó tartomány a bemondás alatti képet is tartalmazza.
-   B-rollnál rögzítsd a kikapcsolandó, de megőrzendő hangot.
+   B-rollnál a meglévő hangot őrizd meg; ne írj elő némítást.
 5. Egy fájl több azonosítója külön rekordokat eredményez. Azonos script-ID
    ismételt felvételei külön felvételazonosítót kapjanak, mind maradjon meg.
    A tartalmilag azonos videófájl-másolatokat azonos forrásként kezeld;
@@ -126,8 +126,10 @@ Minden `recordings` rekord mezői:
 - `script_id`, `chapter_id`, `script_order`, `timeline`, `clip_type`, `description`:
   a scriptből átvett adatok; még fel nem oldott mezőknél `null`.
 - `cue_only`: csak azonosítóbemondás hallható-e az adott részben.
-- `audio_enabled`: B-rollnál `false`, más azonosított típusnál `true`;
-  ismeretlen típusnál `null`. Ez a későbbi timeline hangkapcsolója, nem forrástörlés.
+- `audio_enabled`: azonosított típusoknál, így B-rollnál is `true`;
+  ismeretlen típusnál `null`. A meglévő forráshangot meg kell őrizni; hang
+  hiányában ne hozz létre mesterséges hangsávot. Korábbi jegyzékben a B-rollhoz
+  írt `false` érték nem utasítás a hang némítására; a jegyzéket emiatt ne írd át.
 - `assignment_origin`: `spoken_cue`, `user_description` vagy `unresolved`.
 - `user_description`: a felhasználó eredeti leírása, egyébként `null`.
 - `status`: `identified` vagy `needs_review`; `issue`: pontos probléma vagy `null`.

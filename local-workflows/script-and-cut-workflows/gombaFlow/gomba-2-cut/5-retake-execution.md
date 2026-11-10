@@ -54,14 +54,23 @@ megtartandó eredeti forrásképkockákat. A félig nyílt forrástartományokat
 telepített Resolve API által elvárt `startFrame` / `endFrame` határokra alakítsd;
 ne vágj le megtartandó képkockát. Az eredeti, regiszterbeli Media Pool-klipeket
 használd újra, ne importáld a fájlokat újra. A kép és hozzá tartozó hang
-maradjon szinkronban; a B-roll eredeti hangját is hagyd bekapcsolva.
+maradjon szinkronban. A B-roll képe és meglévő hangja a talking headtől külön
+video-, illetve hangsávra kerüljön; a hangot hagyd változatlanul. Korábbi
+B-roll rekord `audio_enabled: false` értéke alapján se némíts, és hang nélküli
+forráshoz ne hozz létre mesterséges hangot.
 
 Hozd létre a `<topic_id> - 2. Rough Cut` üres timeline-t, állítsd be aktuális
 timeline-nak, és a Resolve-ból visszaolvasott timeline-ID-val ellenőrizd a
 beállítást. A script-sorrendbe rendezett megtartandó szakaszokat egyetlen
-`MediaPool.AppendToTimeline()` hívással add hozzá. A visszakapott klipek számát,
-sorrendjét és tényleges forrás- és timeline-határait olvasd vissza. Részleges
-vagy sikertelen API-hívásnál állj meg, és ne indíts automatikus újrapróbálást.
+`MediaPool.AppendToTimeline()` hívással add hozzá. A klipadatok `trackIndex`
+és `recordFrame` mezőivel biztosítsd a külön sávokat és a teljes timeline
+script-sorrendjét. Egy tartomány képéhez és meglévő hangjához azonos
+`recordFrame` tartozzon; szükség esetén külön `mediaType` videó- és
+hangbejegyzést használj ugyanabban a hívásban. Ha az API külön klippéldányként
+helyezte el őket, a Rough Cut `SetClipsLinked()` műveletével kapcsold össze,
+és olvasd vissza a kapcsolatot. A visszakapott klipek számát, sorrendjét,
+tényleges sávjait, forrás- és timeline-határait olvasd vissza. Részleges vagy
+sikertelen API-hívásnál állj meg, és ne indíts automatikus újrapróbálást.
 Ha nincs megtartandó szakasz, ne hívj üres listával `AppendToTimeline()`-t;
 az üres Rough Cutot és az összes kihagyást jelezd.
 

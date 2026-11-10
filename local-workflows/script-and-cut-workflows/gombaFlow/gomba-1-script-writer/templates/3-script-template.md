@@ -115,10 +115,10 @@ A vágó az átadási blokkból hivatkozott jelen szerződést alkalmazza.
   feltételt részenként vizsgálja, ne a teljes felvételfájlra egyszerre.
   Több B-roll-ID egy felvételben külön klipeket eredményezzen, a hozzájuk tartozó
   bemondás alatti képpel együtt.
-- **B-roll hang:** a `b-roll` klipek eredeti hangját tartsa meg, de a timeline-on
-  kapcsolja ki (`audio_enabled: false`). Ne törölje a hangsávot és ne módosítsa
-  a forrás hangját. A jegyzék rögzítse a megtartott bemondási tartományt és a
-  kikapcsolt hang állapotát, hogy a későbbi vágás is megőrizze ezt a kivételt.
+- **B-roll sáv és hang:** a `b-roll` képét és meglévő hangját a talking head
+  képétől és hangjától külön sávokra helyezze, egymással szinkronban. Az eredeti
+  hangot őrizze meg, ne némítsa vagy módosítsa. Hang nélküli forráshoz ne
+  hozzon létre mesterséges hangot.
 - **Timeline-kapcsolat:** minden behelyezett klippéldányhoz őrizze meg a
   jegyzékrekord kapcsolatát, a vágó által visszakereshető klippéldány-azonosítót,
   a timeline-t, a sávot, a timeline-beli tartományt és a megtartott forrástartományt.

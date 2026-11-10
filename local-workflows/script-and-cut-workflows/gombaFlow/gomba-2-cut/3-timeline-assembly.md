@@ -85,9 +85,11 @@ vágási terv elkészítése önmagában nem jelenti a timeline összeállítás
    egymás után kerülnek; átfedést, áttűnést vagy önálló új narrációt ne találj ki.
 3. A teljes felvételek forrástartományát a review timeline lépése határozza meg,
    az azonosítóbemondásokkal együtt. Több B-roll-ID egy fájlban külön klip legyen.
-4. B-rollnál a meglévő hangot kapcsold ki, ne töröld. Az `audio_enabled`
-   állapotot a jegyzékből alkalmazd, és a vágóprogramból olvasd vissza.
-   Hang nélküli forráshoz ne hozz létre mesterséges hangot.
+4. A B-roll képét és meglévő hangját a talking headtől külön video-, illetve
+   hangsávon, egymással szinkronban helyezd el. Az eredeti hangot hagyd
+   változatlanul; korábbi B-roll rekord `audio_enabled: false` értéke alapján
+   se némíts. Hang nélküli forráshoz ne hozz létre mesterséges hangot. A
+   tényleges sávokat és hangállapotot olvasd vissza.
 5. A megjelenített klipnév: `S{script_id} · {recording_id} · {clip_type} · {description}`.
    Az értékek a jegyzékből származnak. A markereket a review timeline lépése szerint kezeld.
 6. A forrásmásodperceket a vágóprogram által megkövetelt időalapra alakítsd;
