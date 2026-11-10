@@ -20,7 +20,7 @@ description: "Fájlalapú vágás előtti kapu: egy felvételi jegyzék és a ho
    folytassa most. Egyszerre csak egyet válassz.
 
 Ez a preflight csak fájlokat olvas. Resolve-projektet ne listázz, válassz ki,
-hozz létre vagy módosíts. A projektválasztás a terv review-ja utáni
+hozz létre vagy módosíts. A projektválasztás a terv elkészülte utáni
 timeline-összeállításkor történik.
 
 A forrás videó-, hang- és képfájlokat ne mozgasd, ne másold és ne módosítsd.
@@ -30,5 +30,5 @@ A forrás videó-, hang- és képfájlokat ne mozgasd, ne másold és ne módos�
 - Egyetlen kiválasztott `topic_id` és `recording_index.json` útvonala.
 - A hozzá tartozó scriptútvonal.
 
-Az átadás a vágási terv lépéséhez vezet. A timeline-összeállítás csak a terv
-elkészülte és felhasználói review-ja után, külön indításra kezdődhet.
+Az átadás a vágási terv lépéséhez vezet. A timeline-összeállítás az ellenőrzött,
+végrehajtható terv elkészülte után, külön indításra kezdődhet.

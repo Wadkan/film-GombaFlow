@@ -2,7 +2,7 @@
 
 ## Cél és bemenet
 
-Ezt a lépést csak az elfogadott vágási terv felhasználói review-ja és külön
+Ezt a lépést csak az ellenőrzött, végrehajtható vágási terv elkészülte és külön
 felhasználói indítás után hajtsd végre. A terv előtti preflight nem csatlakozik
 a Resolve-hoz.
 
@@ -31,7 +31,7 @@ az ehhez tartozó munkaváltozatok neve:
 ## Végrehajtás előtti ellenőrzések
 
 Mielőtt Resolve-projektet nyitnál vagy hoznál létre, ellenőrizd, hogy a
-felhasználó a review után külön elindította ezt a lépést, a `retake_plan.json`
+felhasználó a terv elkészülte után külön elindította ezt a lépést, a `retake_plan.json`
 `1.1` sémájú, `ready_for_execution` állapotú, `coverage_checked` értéke `true`,
 és a benne lévő script/index hash-ek egyeznek. Korábbi vagy hiányellenőrzés
 nélküli tervet ne fogadj el; azt az aktuális tervlépésben kell újra elkészíteni.
@@ -151,7 +151,7 @@ kihagyásokat ne jelentsd újra hiányként. Végrehajtási akadályt hibaként 
 ne hiányzó felvételként.
 
 A gépi átadás a `timeline_assembly.json` útvonala; az 5. lépés ezt, az eredeti
-jegyzéket, a review-zott `retake_plan.json` fájlt és az első timeline aktuális
+jegyzéket, az ellenőrzött `retake_plan.json` fájlt és az első timeline aktuális
 markereit használja. A
 felhasználónak nem kell vágásnaplót készítenie.
 A későbbi, nem dokumentált kézi vágások automatikus egyeztetése nem része

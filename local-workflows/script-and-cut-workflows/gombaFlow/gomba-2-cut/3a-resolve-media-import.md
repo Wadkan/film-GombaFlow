@@ -7,10 +7,10 @@ description: "A felvételi jegyzék forrásainak egyszeri importja a Resolve Med
 
 ## Bemenet és kapu
 
-Bemenet a kiválasztott `recording_index.json`, az abban hivatkozott script és a
-review-zott `retake_plan.json`. A fájl- és tervellenőrzést, valamint a
+Bemenet a kiválasztott `recording_index.json`, az abban hivatkozott script és az
+ellenőrzött, végrehajtható `retake_plan.json`. A fájl- és tervellenőrzést, valamint a
 Resolve-projekt választását a [timeline-összeállítás](3-timeline-assembly.md)
-végrehajtás előtti szabályai szerint végezd. Csak a terv review-ja és külön
+végrehajtás előtti szabályai szerint végezd. Csak a terv elkészülte és külön
 felhasználói indítás után nyiss vagy hozz létre Resolve-projektet.
 
 ## Import

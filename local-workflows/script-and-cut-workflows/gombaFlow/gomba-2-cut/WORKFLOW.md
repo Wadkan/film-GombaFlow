@@ -23,8 +23,9 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    timeline piros markerpárjainak előkészítéséhez használja. A hiányzó felvételrészeket a script saját
    `problems.md` fájljába írja, és a felhasználói döntésig nem adja át a tervet
    végrehajtásra. Resolve-projektet és timeline-t nem nyit meg.
-   A kész tervet a felhasználó review-zza; az agent itt megáll.
-5. A review és külön felhasználói indítás után [timeline-összeállítás](3-timeline-assembly.md):
+   A kész terv útvonalát az agent átadja, majd itt megáll; fájlalapú
+   tervreview-t nem kér.
+5. A terv elkészülte és külön felhasználói indítás után [timeline-összeállítás](3-timeline-assembly.md):
    ekkor választ vagy hoz létre Resolve-projektet, majd a
    [review timeline](3c-resolve-review-timeline.md) lépés felvételi sorrendben
    helyezi el a felvételeket az első timeline-on. Az ismétlések ekkor még megmaradnak.
@@ -33,7 +34,7 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    elkészíti a második timeline-t és a `retake_cleanup.json` kimenetet.
 
 Az indexek elkészülte után a preflight kiválaszt egyetlen scriptet, majd a 2a tervlépésnek átadja annak scriptmappáját és indexét. A terv elkészülte után
-az agent átadja a fájl útvonalát és rövid review-ellenőrzést ad, de nem indítja
+az agent átadja a fájl útvonalát, de nem indítja
 el a timeline-összeállítást. A felhasználó külön indítja a 3. Resolve-lépést;
 az ott választott vagy létrehozott projektet használja az 5. vágási lépés is,
 natív Resolve-mentéssel. Az eredeti médiafájlokat egyik lépés sem mozgatja,

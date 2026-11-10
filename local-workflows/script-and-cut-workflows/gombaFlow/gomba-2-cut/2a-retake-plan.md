@@ -290,9 +290,9 @@ váró hiányzó felvételrésznél, illetve hiányzó vagy érvénytelen forrá
 terv maradjon `needs_review`; ne add át végrehajthatóként.
 Csak `ready_for_execution` tervnél add át a fájl útvonalát, és állj meg.
 Mondd ki, hogy a Resolve-projekt és timeline még nem készült el, a terv pedig
-nincs végrehajtva. Rövid review-listában emeld ki a kivágásra javasolt és
-megtartott beszédrészeket, a take-sorrendet és a feloldatlan bizonytalanságokat.
-A felhasználói review és külön indítás után a
+nincs végrehajtva. A vágási döntések felhasználói review-ja a Resolve-ban,
+az első timeline markerein történik; külön fájlalapú tervreview-t ne kérj.
+A felhasználó külön indítása után a
 [3. timeline-összeállítás](3-timeline-assembly.md) és a
 [3c review timeline](3c-resolve-review-timeline.md) következik; a 3c a
 `retained_ranges` alapján helyezi el a piros markerpárokat. A felhasználó a
