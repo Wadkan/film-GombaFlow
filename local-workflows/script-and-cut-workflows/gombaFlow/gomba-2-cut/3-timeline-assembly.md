@@ -88,7 +88,8 @@ A végső `review_timeline_assembly.json` ugyanezt a projektet azonosítsa.
   hang engedélyezését és a visszaolvasható klippéldány-azonosítót.
 - Az első timeline fenti neve használható. Meglévő, nem üres cél-timeline
   vagy korábbi `review_timeline_assembly.json` esetén állj meg újrafuttatási döntésre;
-  ne törölj felhasználói vágást és ne duplikáld automatikusan a tartalmat.
+  kivétel a workflow szerint engedélyezett pótfelvételi hozzáfűzés.
+  Ne törölj felhasználói vágást és ne duplikáld automatikusan a tartalmat.
 
 Elérhetetlen eszköznél vagy hibás bemenetnél konkrét akadályt jelezz. JSON vagy
 vágási terv elkészítése önmagában nem jelenti a timeline összeállítását.
@@ -157,7 +158,8 @@ Minden `clips` bejegyzés:
 
 Minden jegyzékbeli azonosított felvételhez legyen elhelyezés. Az elhelyezett
 részek sorrendjét, forrástartományait, nevét és hangállapotát a timeline
-visszaolvasásával ellenőrizd. Eszközhiba esetén az addig létrejött klipeket is
+visszaolvasásával ellenőrizd; pótfelvételi hozzáfűzéskor a 3c erre vonatkozó
+szabálya szerinti új elhelyezéseket ellenőrizd. Eszközhiba esetén az addig létrejött klipeket is
 rögzítsd `incomplete` kimenetben; ne jelents sikert, és ne indíts automatikus
 újrapróbálkozást, amely megduplázhatná őket.
 

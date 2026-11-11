@@ -195,8 +195,8 @@ melyik felvétel volt az utolsó.
 
 ## Pótfelvétel hozzáadása
 
-Csak a [vágási terv](2a-retake-plan.md) mentett, felhasználó által jelzett
-pótfelvételénél bővíts meglévő jegyzéket. A külön mappában átírt új manifestet
+Csak a workflow szerint mentett, felhasználó által jelzett
+pótfelvételnél bővíts meglévő jegyzéket. A külön mappában átírt új manifestet
 és esetleges hozzárendeléseit a fenti bemenetellenőrzés és azonosítás szerint
 dolgozd fel, a kiválasztott scriptre és annak `topic_id` értékére szűrve. Az új
 manifest átiratútvonalait az új manifest mappájához képest oldd fel.

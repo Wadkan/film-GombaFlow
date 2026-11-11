@@ -28,7 +28,40 @@ Hibás vagy hiányzó bemenetnél jelezd a konkrét akadályt.
 A timeline-neveket a [timeline-összeállítás](3-timeline-assembly.md)
 `Timeline-nevek` része adja. A script egyetlen logikai céljához tartozó első,
 review timeline-t hozd létre. Meglévő, nem üres timeline-nál ne írj felül vagy
-duplikálj tartalmat; állj meg és jelezd. A második timeline-t ne készítsd el.
+duplikálj tartalmat; a workflow szerinti pótfelvételi hozzáfűzés kivételével
+állj meg és jelezd. A második timeline-t ne készítsd el.
+
+## Pótfelvételi hozzáfűzés
+
+A mentett assembly és az aktuális jegyzék összevetésével válaszd ki a még
+nem elhelyezett új `recording_id` értékeket. Ellenőrizd a korábbi assembly
+`completed` állapotát, változatlan scriptlenyomatát és ugyanannak a projektnek
+és review timeline-nak az egyedi azonosítóját. A korábbi assembly-rekordokhoz
+tartozó jegyzékadatok nem változhattak meg; az új rekordok a jóváhagyott
+pótfelvételi manifestből származzanak. Eltérés vagy részleges korábbi művelet
+nem kezelhető automatikus hozzáfűzésként.
+
+Ha van új rekord, az első timeline-módosítás előtt mentsd és olvasd vissza
+az assemblyt `incomplete` státusszal, a korábbi bejegyzések megőrzésével.
+Csak a sikeres visszaolvasás után kezdj hozzáfűzni. Megszakítás után ez az
+állapot kézi egyeztetést igényel; ne állítsd automatikusan `completed` értékre,
+és ne ismételd meg a hozzáfűzést.
+
+Csak az új rekordokat helyezd el, az aktuális timeline összes sávjának
+legutolsó klipvége után, egymás közt a lenti felvételi sorrendben. Ugyanazt a
+timeline-t és annak beállításait használd. A lenti elhelyezési, markerezési és
+visszaellenőrzési szabályokat ebben a módban csak az új klipekre alkalmazd.
+A korábbi klipekhez, kapcsolt hangokhoz és usermarkerekhez ne nyúlj; a user
+által törölt régi klipet az assembly alapján ne helyezd vissza.
+
+A visszaellenőrzött új elhelyezéseket fűzd a meglévő
+`review_timeline_assembly.json` `clips` listájához. Őrizd meg a korábbi
+bejegyzéseket mint az eredeti elhelyezések kapcsolatait; ezek nem írják felül
+a user azóta végzett timeline-módosításait. Frissítsd a jegyzéklenyomatot és
+a hiányösszesítést; csak a sikeres Resolve-mentés és minden új elhelyezés és
+marker visszaellenőrzése után mentsd és olvasd vissza `completed` státusszal
+az assemblyt. Ha nincs új
+rekord, ne helyezz el és ne markerezz újra semmit.
 
 ## Teljes felvételek és markerek
 

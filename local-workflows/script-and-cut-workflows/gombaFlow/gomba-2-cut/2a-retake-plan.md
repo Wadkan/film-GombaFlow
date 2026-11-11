@@ -215,10 +215,22 @@ Az állapot `index_correction` bejegyzését a workflow szerinti módon kezeld m
 a szokásos hash-ellenőrzés és a kész csoportok átugrása előtt; a jóváhagyott
 javítás érintett csoportjait újra kell elemezni.
 Ha annak állapota `needs_review`, a `missing_items` alapján folytasd; ne kezdd
-újra a kész csoportokat, és ne kérdezd újra a már rögzített döntéseket.
+újra a változatlan kész csoportokat, és ne kérdezd újra a már rögzített döntéseket.
 Először oldd fel az esetleges `pending_index_update` állapotot az alábbi
 szabály szerint, majd ellenőrizd a script és a jegyzék lenyomatát; váratlan
 eltérésnél állj meg és jelezz.
+
+Lezárt pótfelvételi jegyzékbővítés után a hiánylista állapotától függetlenül
+vesd össze az aktuális jegyzék felvételazonosítóit a csoportokban mentett teljes
+felvételi sorrenddel; az új rekord pótfelvételi manifestből származását is
+ellenőrizd. Jóváhagyott teljes kihagyás miatt üres sorrend önmagában nem
+bizonyít új rekordot. Az új rekorddal érintett script-ID csoportját minden
+felvételváltozatával együtt elemezd újra, akkor is, ha korábban `validated`
+volt; a változatlan csoportok eredményét és a korábbi userdöntéseket őrizd meg.
+Az újraelemzés előtt ments `needs_review`, `coverage_checked: false` tervet,
+majd csoportonként mentsd az új döntéseket és a teljes felvételi sorrendet.
+Megszakítás után a még hiányzó új rekordok alapján folytasd; az újraelemzés
+nem maradhat el attól, hogy a jegyzék új hash-e már átvezetésre került.
 
 Korábbi `1.1` tervnél, ha még nincs `missing_items`, a `problems.md` és a terv
 hiánytételeiből egyértelműen azonosítható hiányokhoz készíts állapotot, a már

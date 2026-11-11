@@ -147,6 +147,8 @@ A feladat részletei, sémái és ellenőrzései a megfelelő skillben vannak.
   ha létezik, a `<scriptmappa>/cut_workflow_state.json` is.
   Pótfelvételnél a meglévő `<scriptmappa>/retake_plan.json` és
   `<scriptmappa>/cut_workflow_state.json` is kötelező bemenet.
+  Review utáni pótfelvételnél a `review_timeline_markers.json` mentett
+  újrafelvételi döntése is bemenet.
 - Kimenet: scriptmappánként `<scriptmappa>/recording_index.json`;
   azonosítójavításnál a meglévő `cut_workflow_state.json` javítási mezői;
   pótfelvételnél a `retake_plan.json` jegyzékmentési mezői és a meglévő
@@ -185,6 +187,8 @@ A feladat részletei, sémái és ellenőrzései a megfelelő skillben vannak.
 - Bemenet: `<scriptmappa>/retake_plan.json`, `<scriptmappa>/recording_index.json`,
   `<scriptmappa>/3-script.md`, a jegyzékben hivatkozott eredeti forrásfájlok,
   `<scriptmappa>/cut_workflow_state.json` és a külön userindítás.
+  Pótfelvételi hozzáfűzésnél a korábbi `review_timeline_assembly.json` és
+  a mentett újrafelvételi userdöntés is kötelező.
 - Kimenet: a `cut_workflow_state.json` projektválasztási mezői,
   Resolve-projekt és review timeline; a scriptmappában
   `review_timeline_assembly.json`, szükség esetén `problems.md`.
@@ -219,11 +223,22 @@ A feladat részletei, sémái és ellenőrzései a megfelelő skillben vannak.
 - Bemenet: `<scriptmappa>/recording_index.json`, `<scriptmappa>/retake_plan.json`,
   `<scriptmappa>/review_timeline_resolve_media_registry.json` és a kiválasztott
   Resolve-projekt.
+  Pótfelvételi hozzáfűzésnél a korábbi `review_timeline_assembly.json` és
+  a mentett újrafelvételi userdöntés is bemenet.
 - Kimenet: review timeline, `<scriptmappa>/review_timeline_assembly.json`,
   szükség esetén `<scriptmappa>/problems.md`.
 - `COMPLETED`: az elhelyezés és a jelölések ellenőrzöttek.
 - `COMPLETED_WITH_ISSUES`: a bizonytalan anyag megőrzött, jelölt és naplózott.
-- `BLOCKED`: hibás bemenet, meglévő timeline vagy technikai végrehajtási hiba.
+- `BLOCKED`: hibás bemenet, nem engedélyezett meglévő timeline vagy technikai
+  végrehajtási hiba.
+
+A user külön indított pótfelvételi folytatása engedélyezi a meglévő review
+timeline hozzáfűzését, ha a pótfelvételi döntés a tervben vagy a
+markerpillanatképben mentett, a bővített jegyzék és újraellenőrzött terv kész,
+és a korábbi teljes assembly rendelkezésre áll. Ebben az esetben a
+timeline-összeállítás meglévő eredmény miatti újrafuttatási kapuja nem kér újabb
+döntést; a 3a és 3b után a 3c csak az új rekordokat fűzi hozzá.
+A timeline-ID megmarad, a folytatáshoz továbbra is user review szükséges.
 
 ### 3d-resolve-review-markers
 
@@ -245,11 +260,28 @@ A feladat részletei, sémái és ellenőrzései a megfelelő skillben vannak.
   `<scriptmappa>/review_timeline_resolve_media_registry.json` és az aktuálisan
   létrehozott `<scriptmappa>/review_timeline_markers.json`.
 - Kimenet: Rough Cut timeline, `<scriptmappa>/rough_cut_timeline_cleanup.json`
-  és szükség esetén `<scriptmappa>/problems.md`.
+  és szükség esetén `<scriptmappa>/problems.md`; a
+  `review_timeline_markers.json` `missing_parts` mezője is frissül.
+  A `retake_plan.json` ebben a lépésben csak olvasható.
 - `COMPLETED`: a timeline elkészült és visszaellenőrzött.
 - `COMPLETED_WITH_ISSUES`: a bizonytalan anyag megőrzött, jelölt és dokumentált.
 - `BLOCKED`: szükséges adat hiányzik, döntés vagy újrafuttatás vár, illetve
   technikai hiba akadályozza az összeállítást.
+
+A review utáni kliphiányok teljes összegyűjtése és mentése után a 3e
+addig nem hozhat létre Rough Cutot, amíg a markerpillanatkép `missing_parts`
+listájában `awaiting_decision` vagy `awaiting_recording` tétel van.
+A user a problémalistában szereplő hiányokról kihagyással vagy újrafelvétellel
+dönthet; a tájékoztatás a közös hibakezelés szerint történik.
+Review utáni pótfelvételnél a markerpillanatkép `awaiting_recording`
+tételének userdöntése engedélyezi a jegyzékbővítést; emiatt a vágási tervbe
+ne másolj hiányt vagy kihagyási döntést. A pótfelvétel normál feldolgozásánál
+a terv indexlenyomata és vágási tartományai a meglévő szabályok szerint frissülnek.
+A meglévő átírási, jegyzékbővítési és tervellenőrzési folyamat,
+majd a külön indítási és újrafuttatási kapuk betartásával a review timeline
+frissítése és user review-ja szükséges. Csak ezután indítható újra a 3e
+a friss 3d-pillanatképből. A korábbi hiánydöntéseket a 3d megőrzi,
+a lefedettséget és a döntéseket a 3e ellenőrzi újra.
 
 ## Fájlos állapotátvétel
 

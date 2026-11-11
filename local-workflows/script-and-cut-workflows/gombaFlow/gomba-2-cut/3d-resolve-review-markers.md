@@ -28,6 +28,12 @@ Resolve aktuális markereit, meglévő pillanatkép esetén is. Ellenőrizd a ny
 Resolve-projekt és a review timeline egyedi azonosítóját. A korábbi fájlt ne
 tekintsd az aktuális markerállapot bizonyítékának.
 
+Meglévő pillanatképnél ellenőrizd annak sémáját, téma-, projekt- és
+timeline-azonosságát is. A `missing_parts` listáját és a benne mentett
+döntéseket őrizd meg az új kiolvasás mentésekor; a klipeket és markereket
+mindig az aktuális Resolve-állapotból olvasd. Sérült vagy eltérő kontextusú
+korábbi fájlt ne írj felül.
+
 ## Kiolvasás
 
 1. A Resolve-ból olvasd ki az első review timeline aktuális kezdőképkockáját,
@@ -86,6 +92,14 @@ kiolvasáskori Resolve-állapot pillanatképe. Mezői:
   és klipmarkerek időalapját.
 - `unresolved`: az érintett klip- vagy markerazonosítás és a konkrét bizonytalanság;
   ha nincs ilyen, üres lista.
+- `missing_parts`: a review utáni lefedettség-ellenőrzés hiányai és döntései;
+  korábbi fájlban a hiányzó mező üres listának számít. Elemenként stabil,
+  újra nem kiosztható `issue_id` (`R1`, `R2`, …), `script_id`, a script
+  érintett részének pontos `script_text` szövege, `status`
+  (`awaiting_decision`, `omitted`, `awaiting_recording` vagy `resolved`),
+  valamint `decision` (a user döntése és a `problems.md` tételére
+  hivatkozás, döntés hiányában `null`). Ez nem a kiolvasott markerállapot
+  része; frissítésének szabálya a workflow-ban kijelölt lefedettségi ellenőrzés.
 
 A klip- és markerlistákat stabilan, sáv és képkocka szerint rendezd. Mentés
 után olvasd vissza a teljes JSON-t és ellenőrizd. A 3e a mentett pillanatképet

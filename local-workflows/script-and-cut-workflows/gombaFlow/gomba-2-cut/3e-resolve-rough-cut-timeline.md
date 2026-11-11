@@ -13,7 +13,9 @@ Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
 A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
 1. Ellenőrizd a bemeneteket és a review timeline-t.
-2. A markerpillanatkép alapján készítsd el, ellenőrizd és mentsd a Rough Cutot.
+2. A friss markerpillanatképen ellenőrizd a script-részek lefedettségét,
+   és rögzítsd az esetleges hiányokat és döntéseket.
+3. A markerpillanatkép alapján készítsd el, ellenőrizd és mentsd a Rough Cutot.
 
 ## Külön indítás és bemenetellenőrzés
 
@@ -41,6 +43,39 @@ A `review_timeline_markers.json` a review timeline aktuális, minden összeáll�
 előtt újra kiolvasott markerpillanatképe. A visszaolvasott
 fájlból dolgozz, újabb Resolve-markerkiolvasás nélkül.
 Üres markerlista tartalmi bizonytalanság; API-olvasási hiba esetén állj meg.
+
+### Review utáni lefedettség
+
+A Rough Cut létrehozása előtt a jegyzék `script_parts` listáján végighaladva
+ellenőrizd, hogy a friss pillanatkép tartalmaz-e minden szükséges script-részhez
+egyértelműen hozzárendelt videoklipet. A tervben már jóváhagyott teljes
+script-rész-kihagyást ne jelentsd új hiánynak; részleges kihagyás nem mentesíti
+a teljes részt. Egy jelen lévő klip érvényes `OMIT TAKE` markere vágási
+döntés, nem hiányzó klip. Hiányzó vagy hibás markerből se következtess
+kliphiányra. Ha egy azonosítatlan klip hozzátartozhat a részhez, kezeld
+bizonytalanságként a meglévő megőrzési szabályok szerint.
+
+Az összes igazolt kliphiányt a pillanatkép `missing_parts` listájában
+rögzítsd a markerpillanatkép sémája szerint, és a közös hibakezelés alapján
+naplózd. Új, döntés nélküli hiánynál a státusz `awaiting_decision`.
+A pontos szöveg talking headnél a script narrációja, képi résznél a
+`screen-action`; a naplóban a review timeline neve is szerepeljen.
+Azonos esethez a korábbi azonosítót és döntést használd. Más script-részre
+vagy megváltozott scriptbeli szövegre korábbi döntést ne alkalmazz.
+
+A user kihagyási döntése `omitted`, az újrafelvételi döntés
+`awaiting_recording` állapotot jelent; a döntést a pillanatképben és a
+problémanaplóban rögzítsd. Az eredeti vágási tervet ne módosítsd.
+Az ellenőrzés és a döntések mentése után olvasd vissza a pillanatképet.
+Újraindításkor az aktuális klipek alapján értékeld újra a listát: a ténylegesen
+pótolt rész legyen `resolved`, a továbbra is hiányzó rész korábbi döntése
+maradjon meg. Újra eltűnt résznél érvényes kihagyási döntés nélkül ismét
+`awaiting_decision` vagy a korábbi újrafelvételi döntés alapján
+`awaiting_recording` legyen az állapot. Pusztán az eredeti forrásfájl megléte
+nem igazolja a pótlást.
+
+### Markerek értelmezése
+
 A pillanatkép `unresolved` tételeinél a 3d-ben érintettként megjelölt klipeket
 tartsd meg kézi review-ra.
 A [markerindex](davinci_marker_index.md) szerinti név és szín együtt számít:
@@ -163,7 +198,9 @@ A markerbizonytalanság miatt vágatlanul megtartott `unresolved` tétel
 szükségességét és a problémalista útvonalát jelezd; tényleges végrehajtási hiba esetén
 a státusz `incomplete`.
 
-A bemenetek változatlanok; a kimenet a friss timeline-kapcsolatok hiteles
+A bemenetek közül csak a markerpillanatkép `missing_parts` mezője frissülhet;
+a kimeneti `review_timeline_markers_sha256` a visszaolvasott, végleges fájl
+lenyomata legyen. A kimenet a friss timeline-kapcsolatok hiteles
 pillanatképe. A későbbi agent ezt használja a 3. lépés elavult pozíciói helyett.
 A felhasználónak rövid készjelzést adj a szükséges kézi vágás és a problémalista
 útvonalának jelzésével, vagy a konkrét végrehajtási hibát jelezd.
