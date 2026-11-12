@@ -12,8 +12,16 @@ Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
 állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
 A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
-1. Ellenőrizd a tervet és a bemeneteket.
-2. Válaszd ki a Resolve-projektet, majd ellenőrizd az elkészült review timeline-t.
+1. A `prepare` fázisban ellenőrizd a tervet és a bemeneteket, majd válaszd ki
+   és mentsd a Resolve-projektet.
+2. A `verify` fázisban olvasd vissza és ellenőrizd az elkészült eredményt.
+
+A fázisok közé illesztett belső hívásokat és a teljes hívás készfeltételét a
+workflow saját bejegyzése és receptje határozza meg. Fázis megadása nélkül
+a teljes receptet alkalmazd, közvetlen indításnál is. Egy `prepare` fázis
+sikere még nem jelenti a review timeline elkészültét.
+
+## `prepare` fázis
 
 ## Cél és bemenet
 
@@ -21,10 +29,10 @@ Ellenőrzött, végrehajtható vágási tervből dolgozz.
 Olvasd be a scriptmappa `cut_workflow_state.json` fájlját, és ellenőrizd
 a scriptválasztást a workflow szerint.
 
-A [jegyzékkészítés](2-recording-index.md) `recording_index.json` kimenete és az
-abban hivatkozott, elfogadott `3-script.md` alapján ténylegesen helyezd el a
-felvett részeket a script egyetlen cél-timeline-ján. Az eredeti videókat és átiratokat
-ne módosítsd. Ebben a lépésben minden azonosított felvételváltozat megmarad;
+A `recording_index.json` és az abban hivatkozott, elfogadott `3-script.md`
+alapján készülő teljes recept eredménye a script egyetlen céljához tartozó
+review timeline. Az eredeti videókat és átiratokat ne módosítsd.
+Ezen a timeline-on minden azonosított felvételváltozat megmarad;
 az ismétlésekre javasolt megtartási tartományokat a terv rögzíti; a végleges
 megtartást a review timeline markerei adják, amelyekből a 3e lépés építi a
 Rough Cut timeline-t.
@@ -97,31 +105,48 @@ vágási terv elkészítése önmagában nem jelenti a timeline összeállítás
 Az alábbi elhelyezési és kimeneti szabályok a review timeline-ra vonatkoznak;
 a felvételeket ne helyezd el még egyszer külön menetben.
 
-## Elhelyezés
+## `verify` fázis
 
-1. Az első timeline felvételeinek elhelyezését és a markerezést a
-   [Resolve review timeline](3c-resolve-review-timeline.md) szerint végezd.
-   A felvételek rögzítési sorrendet követnek, nem script-sorrendet.
-2. A média eredeti video- és hangsávját őrizd meg. A képet és a hozzá tartozó
-   hangot szinkronban helyezd el, egymáshoz kapcsolva. A részek ebben a menetben
-   egymás után kerülnek; átfedést, áttűnést vagy önálló új narrációt ne találj ki.
-3. A teljes felvételek forrástartományát a review timeline lépése határozza meg,
-   az azonosítóbemondásokkal együtt. Több B-roll-ID egy fájlban külön klip legyen.
-4. A B-roll képét és meglévő hangját a talking headtől külön video-, illetve
-   hangsávon, egymással szinkronban helyezd el. Az eredeti hangot hagyd
-   változatlanul; korábbi B-roll rekord `audio_enabled: false` értéke alapján
-   se némíts. Hang nélküli forráshoz ne hozz létre mesterséges hangot. A
-   tényleges sávokat és hangállapotot olvasd vissza.
+A mentett `review_timeline_assembly.json` és a tényleges Resolve-timeline
+visszaolvasásával ellenőrizd az alábbi szabályokat. Ehhez már teljes,
+`completed` állapotú assembly szükséges, az aktuális script- és
+jegyzéklenyomatokkal, valamint a mentett projektválasztással egyező projektben.
+Ne importálj médiát, ne helyezz el klipet vagy markert, és ne írj át korábbi
+elhelyezési adatot. Eltérésnél jelezd és naplózd a konkrét akadályt; ne javítsd
+automatikusan a timeline-t, és ne jelentsd késznek a teljes hívást.
+
+Pótfelvételi hozzáfűzés után a `last_append_recording_ids` listában mentett
+új rekordok tényleges elhelyezését, sávjait, hangkapcsolatait és markereit
+ellenőrizd. A régi assembly-bejegyzések történeti kapcsolatok: a user által
+azóta törölt, áthelyezett vagy átmarkerezett régi klip nem hozzáfűzési hiba.
+A teljes jegyzék és az assembly közötti rekordkapcsolatot továbbra is
+ellenőrizd, de a korábbi klip visszaállítását vagy újramarkerezését ne követeld.
+Új timeline-nál az összes elhelyezést ellenőrizd. A listát kizárólag a kész
+assemblyből olvasd, ne az orchestrator memóriájából vedd át.
+
+### Ellenőrzendő elhelyezés
+
+1. A felvételek és markerek feleljenek meg a review timeline elhelyezési
+   szerződésének. A felvételek rögzítési sorrendet kövessenek, ne script-sorrendet.
+2. A média eredeti képe és meglévő hangja szinkronban, egymáshoz kapcsolva
+   legyen elhelyezve. A részek egymás után következzenek, kitalált átfedés,
+   áttűnés vagy önálló új narráció nélkül.
+3. A teljes felvételek forrástartományai az azonosítóbemondásokat is
+   tartalmazzák. Több B-roll-ID egy fájlban külön klipként szerepeljen.
+4. A B-roll képe és meglévő hangja a talking headtől külön video-, illetve
+   hangsávon, egymással szinkronban legyen. Az eredeti hang maradjon
+   változatlan, korábbi `audio_enabled: false` érték esetén is. Hang nélküli
+   forráshoz ne tartozzon mesterséges hang. Olvasd vissza a sávokat és hangállapotot.
 5. A megjelenített klipnév: `S{script_id} · {recording_id} · {clip_type} · {description}`.
-   Az értékek a jegyzékből származnak. A markereket a review timeline lépése szerint kezeld.
-6. A forrásmásodperceket a vágóprogram által megkövetelt időalapra alakítsd;
-   ne kezeld a másodpercértéket képkockaszámként. A tényleges forrás- és
-   timeline-határokat olvasd vissza és mentsd el. Ellenőrizd, hogy a képkockás
+   Az értékek a jegyzékből származzanak; a vágási markerek legyenek visszaellenőrzöttek.
+6. A forrásmásodpercek megfelelő időalapú képkockahatárokra legyenek átszámítva.
+   A tényleges forrás- és timeline-határokat olvasd vissza, és vesd össze
+   a mentett elhelyezésekkel. Ellenőrizd, hogy a képkockás
    határillesztés nem vág le megtartandó beszédet vagy B-roll-képet.
 
-## Kimenet: `review_timeline_assembly.json` — 1.0
+### Kimeneti szerződés: `review_timeline_assembly.json` — 1.0
 
-A jegyzék mappájába mentsd a létrejött elhelyezéseket. A bemeneti jegyzék
+A jegyzék mappájába mentett elhelyezéseket ellenőrizd. A bemeneti jegyzék
 változatlan marad; ez a kimenet adja hozzá a tényleges timeline-kapcsolatokat.
 
 A gyökér mezői:
@@ -140,6 +165,10 @@ A gyökér mezői:
   a terv `approved_omissions` listája szerinti jóváhagyott kihagyások nélkül;
   elemenként `script_id`, `chapter_id`, `timeline`, `description`.
 - `error`: végrehajtási hiba vagy `null`.
+- `last_append_recording_ids`: opcionális; az utolsó pótfelvételi menetben
+  hozzáfűzött új rekordok egyedi ID-listája. Hozzáfűzésnél kötelező, új rekord
+  nélküli menetnél üres lista. Új timeline-nál `null`; korábbi fájlban a hiányzó
+  mezőt `null` értékként kezeld. Ez az ellenőrzés hatóköre, nem újrafuttatási engedély.
 
 Minden `clips` bejegyzés:
 
@@ -156,14 +185,14 @@ Minden `clips` bejegyzés:
   `file_creation_date`. A sorrendet alátámasztó adatot a `take_order_evidence`
   mezőben rögzítsd.
 
-Minden jegyzékbeli azonosított felvételhez legyen elhelyezés. Az elhelyezett
+Minden jegyzékbeli azonosított felvételhez legyen mentett elhelyezési kapcsolat. Az elhelyezett
 részek sorrendjét, forrástartományait, nevét és hangállapotát a timeline
 visszaolvasásával ellenőrizd; pótfelvételi hozzáfűzéskor a 3c erre vonatkozó
 szabálya szerinti új elhelyezéseket ellenőrizd. Eszközhiba esetén az addig létrejött klipeket is
 rögzítsd `incomplete` kimenetben; ne jelents sikert, és ne indíts automatikus
 újrapróbálkozást, amely megduplázhatná őket.
 
-## Felhasználói eredmény
+### Felhasználói eredmény
 
 Váratlan, a tervben nem jóváhagyott hiánynál a közös problémánapló szerint a
 script saját `problems.md` fájljába írd az érintett részeket, és a felhasználónak

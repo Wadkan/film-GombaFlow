@@ -44,6 +44,35 @@ Hibás azonosító javítása után is mindig a preflight következik. Pótfelv�
 az átírás és a jegyzékbővítés a mentett terv folytatásához tartozik.
 Az eredeti médiafájlokat a lépések nem mozgatják, másolják vagy módosítják.
 
+### Összetett és közvetlen skillhívások
+
+Az összetett skillek belső hívási sorrendje:
+
+- Az 5. számozott lépésben a szülő `prepare` fázisa, az ott felsorolt belső
+  lépések sorrendben, majd a szülő `verify` fázisa következik.
+- A 6–7. számozott lépésben a szülő `prepare` fázisa, a belső markerkiolvasás,
+  majd a szülő `build` fázisa következik. A kiolvasás az aktuális hívásban
+  történik, korábbi pillanatkép nem helyettesíti.
+- A tervlépés mentett pótfelvételi folytatásában: átírás az új mappából →
+  jegyzékkészítő hozzáfűzés → preflight → tervellenőrzés, ugyanahhoz a
+  kiválasztott scripthez.
+
+Ez a sorrend az orchestrált és a közvetlen skillhívásokra egyaránt kötelező.
+A közvetlenül indított összetett skill hívója ugyanennek az indexnek
+a receptjét hajtja végre. A belső lépés nem külön felhasználói feladat, és
+egy receptben csak egyszer fut. A fázis megadása nélküli szülőhívás a teljes
+receptet jelenti; fázishívás kizárólag az adott fázist végezheti el. A hívó
+vagy a teljes receptet bízza egy végrehajtóra, vagy fázisonként vezérli;
+a két módszert ugyanabban a hívásban ne keverje.
+
+Fázishívásnál a három közös státusz csak az adott fázisra vonatkozik, nem a
+szülő teljes készültségére. A szülő összesített eredménye csak az összes
+kötelező fázis és belső lépés sikere után kész. Bármely `BLOCKED` vagy hibás
+visszatérés megszakítja a teljes receptet. Dokumentált probléma esetén az
+összesített eredmény is `COMPLETED_WITH_ISSUES` marad, akkor is, ha az utolsó
+fázis önmagában hibamentes. A végrehajtó a userkapunál vagy blokkolásnál adja
+vissza a vezérlést, nem vár háttérben és nem figyeli automatikusan a fájlokat.
+
 ## Közös szerződés
 
 A felvételi jelölések és a vágói átadás szabályforrása a
@@ -69,6 +98,11 @@ Minden skill indításkor olvassa el a „Feldolgozási lépések”, „Közös
 „Közös visszatérési státuszok” és „Fájlos állapotátvétel” részeket,
 valamint a saját bejegyzését. A hívási sorrend, kapuk, fájlkapcsolatok és
 státuszfeltételek egyetlen forrása ez a workflow.
+
+A közös belépő az [orchestrator](orchestrator.md); saját vezérlési és
+folytatási szabályai ott találhatók.
+Közvetlen skillhívás sem indít automatikusan teljes előkészítést vagy másik
+szakaszt. Az index által előírt belső hívások a meghívott feladathoz tartoznak.
 
 ### Közös hibakezelés és tájékoztatás
 
@@ -111,6 +145,12 @@ A skill a hívónak kizárólag az alkalmazható státuszt adja vissza;
 a részletes eredményeket az alább rögzített fájlokból kell visszaolvasni.
 A státusz nem a JSON-fájlok saját `status` mezője.
 
+A usernek szóló rövid tájékoztatás ettől külön történik: a végrehajtó a
+felhasználói csatornán jelzi a következő lépést vagy szükséges választ,
+a hívó válaszába nem másol naplót, eredményt vagy kérdésszöveget.
+Hiányzó, ismeretlen vagy többértelmű visszatérésnél a hívó blokkol; kész
+JSON jelenlétéből nem következtethet sikeres státuszra.
+
 Egy szakaszon belül a kész vagy dokumentált nem blokkoló problémával kész
 lépés után a következő indulhat. `BLOCKED` esetén megáll a folyamat, és az
 érintett skill jelzi a teendőt vagy a konkrét hibát. A külön userindítási kapuk
@@ -124,10 +164,25 @@ kiválasztott script projektmappája. A forrásfájlok neve és útvonala a jegy
 szerepel. A Resolve-projekt és timeline a Resolve-ban tárolt állapot, nem JSON-fájl.
 A feladat részletei, sémái és ellenőrzései a megfelelő skillben vannak.
 
+### gomba-2-cut-orchestrator
+
+- Bemenet: a user által indított szakasz, annak célútvonalai és folytatáskor
+  a meglévő `cut_workflow_state.json`; a szakaszválasztás és a vezérlés
+  szabályai az [orchestratorban](orchestrator.md#indítható-szakaszok) vannak.
+- Kimenet: a meglévő `cut_workflow_state.json` `orchestration` mezője,
+  amint a scriptválasztás megtörtént. A tartalmi kimeneteket a végrehajtók írják.
+- `COMPLETED`: a kért szakasz minden lépése kész, a szakaszvégi megállás mentett.
+- `COMPLETED_WITH_ISSUES`: a szakasz kész, valamelyik lépés dokumentált
+  nem blokkoló problémával zárult.
+- `BLOCKED`: választás vagy szükséges userválasz hiányzik, egy lépés blokkolt,
+  érvénytelenül tért vissza, vagy a végrehajtási/mentési környezet nem működik.
+
 ### 1-transcription
 
 - Bemenet: `<felvételmappa>` videófájljai; szükség esetén
   `<scriptmappa>/3-script.md` és a felhasználó leírása.
+  Azonosítási folytatásnál a kész `master_transcript.json`, hivatkozott
+  átiratai és a meglévő `recording_assignments.json` is bemenet.
 - Kimenet: `<felvételmappa>/transcripts/master_transcript.json`,
   `<felvételmappa>/transcripts/recording_*.json`; szükség esetén
   `<felvételmappa>/transcripts/recording_assignments.json`.
@@ -136,6 +191,8 @@ A feladat részletei, sémái és ellenőrzései a megfelelő skillben vannak.
   továbbvihető probléma maradt.
 - `BLOCKED`: szükséges bemenet vagy userválasz hiányzik, meglévő kimenet,
   átírási hiba vagy hibás eredmény akadályozza a munkát.
+  Az igazolt, teljes manifestből végzett azonosítási folytatás nem tiltott
+  újrafuttatás; meglévő mappa önmagában ebben a módban nem akadály.
 
 ### 2-recording-index
 
@@ -159,10 +216,15 @@ A feladat részletei, sémái és ellenőrzései a megfelelő skillben vannak.
 - `COMPLETED_WITH_ISSUES`: a továbbvihető bizonytalanság dokumentált.
 - `BLOCKED`: sérült bemenet, szükséges pontosítás vagy azonosítójavítás vár.
 
+Továbbvihető probléma csak a szükséges téma- és script-hozzárendelések
+egyértelműsége mellett engedélyezett. A további végrehajtáshoz szükséges
+azonosítatlan vagy `needs_review` rekord nem jelent kész hozzárendelést.
+
 ### 0-preflight
 
 - Bemenet: az érintett `<scriptmappa>/recording_index.json` és a benne
-  hivatkozott `<scriptmappa>/3-script.md` fájlok.
+  hivatkozott `<scriptmappa>/3-script.md` fájlok. Orchestrált hívásnál a lent
+  leírt scriptválasztási kapu után egy konkrét indexútvonal érkezik.
 - Kimenet: `<scriptmappa>/cut_workflow_state.json` scriptválasztási mezői.
 - `COMPLETED`: egy érvényes scriptet kiválasztott, állapotát mentette és visszaolvasta.
 - `COMPLETED_WITH_ISSUES`: csak dokumentált, továbbvihető probléma mellett.
@@ -195,6 +257,12 @@ A feladat részletei, sémái és ellenőrzései a megfelelő skillben vannak.
 - `COMPLETED`: a review timeline teljes és ellenőrzött.
 - `COMPLETED_WITH_ISSUES`: az eredmény kész, a megőrzött problémák dokumentáltak.
 - `BLOCKED`: projektválasztás, újrafuttatási döntés, hibás bemenet vagy hiba vár.
+
+Fázishívásnál a `prepare` készfeltétele az összes indulási ellenőrzés és a
+mentett, visszaellenőrzött projektválasztás. Review timeline-t még nem követel.
+A `verify` a teljes assemblyt és Resolve-eredményt ellenőrzi a skill kimeneti
+szabályai szerint; nem importál és nem helyez el újra semmit. A teljes hívás
+készfeltétele a fenti, teljes review timeline-ra vonatkozó feltétel.
 
 ### 3a-resolve-media-import
 
@@ -232,6 +300,10 @@ A feladat részletei, sémái és ellenőrzései a megfelelő skillben vannak.
 - `BLOCKED`: hibás bemenet, nem engedélyezett meglévő timeline vagy technikai
   végrehajtási hiba.
 
+Közvetlen hívásának lezárásakor is a 6. számozott pont kézi review-kapuját
+kell jeleznie. Összetett hívásban ezt megelőzheti a szülő végső, csak
+visszaellenőrzést végző fázisa; további timeline-művelet nem indulhat.
+
 A user külön indított pótfelvételi folytatása engedélyezi a meglévő review
 timeline hozzáfűzését, ha a pótfelvételi döntés a tervben vagy a
 markerpillanatképben mentett, a bővített jegyzék és újraellenőrzött terv kész,
@@ -257,8 +329,9 @@ A timeline-ID megmarad, a folytatáshoz továbbra is user review szükséges.
 
 - Bemenet: `<scriptmappa>/retake_plan.json`, `<scriptmappa>/recording_index.json`,
   `<scriptmappa>/3-script.md`, `<scriptmappa>/review_timeline_assembly.json`,
-  `<scriptmappa>/review_timeline_resolve_media_registry.json` és az aktuálisan
-  létrehozott `<scriptmappa>/review_timeline_markers.json`.
+  `<scriptmappa>/review_timeline_resolve_media_registry.json`; a `build` fázisnak
+  ezenfelül az aktuális hívásban létrehozott
+  `<scriptmappa>/review_timeline_markers.json` is kötelező.
 - Kimenet: Rough Cut timeline, `<scriptmappa>/rough_cut_timeline_cleanup.json`
   és szükség esetén `<scriptmappa>/problems.md`; a
   `review_timeline_markers.json` `missing_parts` mezője is frissül.
@@ -267,6 +340,11 @@ A timeline-ID megmarad, a folytatáshoz továbbra is user review szükséges.
 - `COMPLETED_WITH_ISSUES`: a bizonytalan anyag megőrzött, jelölt és dokumentált.
 - `BLOCKED`: szükséges adat hiányzik, döntés vagy újrafuttatás vár, illetve
   technikai hiba akadályozza az összeállítást.
+
+Fázishívásnál a `prepare` készfeltétele a pillanatkép előtti bemenetek,
+a projekt, review timeline és a meglévő eredmény miatti kapu ellenőrzése.
+A `build` készfeltétele a lefedettségi kapu teljesülése és az ellenőrzött
+Rough Cut. A teljes hívásnak az összes fázis és a friss kiolvasás sikere szükséges.
 
 A review utáni kliphiányok teljes összegyűjtése és mentése után a 3e
 addig nem hozhat létre Rough Cutot, amíg a markerpillanatkép `missing_parts`
@@ -288,13 +366,8 @@ a lefedettséget és a döntéseket a 3e ellenőrzi újra.
 A meglévő kimeneti JSON-fájlokat használd. Egyetlen további állapotfájl van:
 `<scriptmappa>/cut_workflow_state.json`. Nem tartalmaz átiratot, vágási tervet
 vagy eseménytörténetet. A futás célja a scriptmappa vagy ennek az állapotfájlnak
-az útvonala; ezt a hívás bemeneteként kell megadni. Ha csak több jelölt scriptmappa
-ismert, ne válassz korábbi állapotfájl vagy módosítási dátum alapján; kérj
-célpontosítást. A preflight során történt választást mindig mentsd.
-
-TODO: az orchestrator bevezetésekor rögzíteni kell, hogyan azonosítja a futás
-az aktuális preflight-választást több scriptmappa mellett, kizárólag státuszos
-visszatéréssel. Addig az egyértelmű célmappa vagy állapotfájl a hívás bemenete.
+az útvonala; a scriptválasztás utáni hívások bemeneteként ezt kell megadni.
+A választás előtti célfeloldás szabálya az alábbi scriptválasztási kapu.
 
 Az állapot sémája `1.0`, mezői:
 
@@ -312,9 +385,14 @@ Az állapot sémája `1.0`, mezői:
   `before_sha256`, `after_sha256`, `affected_script_ids`, `problem_log_paths`
   és `status` (`pending` vagy `committed`). Csak a legutóbbi, még fel nem dolgozott
   javítást tárolja; új javítást ennek lezárása után lehet indítani.
+- `orchestration`: az orchestrator opcionális saját mezője; hiánya `null`.
+  Sémája és kezelése az [orchestratorban](orchestrator.md#futásállapot-és-folytatás)
+  található. A többi skill változatlanul őrzi meg, nem értelmezi és nem írja.
+  A fájl sémája `1.0` marad; közvetlen skillhíváshoz ez a mező nem kötelező.
 
 A preflight a választási mezőket, a projektválasztás a `resolve_project`, az
-import a `media_import` mezőt írja; más mezőt őrizzen meg. Meglévő állapotnál
+import a `media_import`, az orchestrator az `orchestration` mezőt írja;
+más mezőt őrizzen meg. Meglévő állapotnál
 ellenőrizd a sémát, a scriptmappát, témát, útvonalakat és lenyomatokat. Váratlan
 eltérésnél állj meg, ne nullázd vagy írd felül a korábbi állapotot. Projektváltás
 vagy meglévő eredmény újrafuttatása továbbra is userdöntéshez kötött.
@@ -330,6 +408,33 @@ A fájlalapú script- és jegyzékellenőrzést a tervkészítés előtt is vég
 Pótfelvételi vagy azonosítójavítási jegyzékfrissítés közben előbb a lent leírt függő tranzakciót
 rendezd, utána ellenőrizd a végleges lenyomatokat. Az állapotfájl sem review-
 jóváhagyást, sem automatikus továbblépési engedélyt nem jelent.
+
+### Scriptválasztási kapu
+
+Konkrét index, scriptmappa vagy állapotfájl bemenetén a cél már ismert;
+a hozzá tartozó index és manifest kapcsolatát kell ellenőrizni. Ha még nincs
+ilyen cél, a hívó a konkrét manifestből indul. A jegyzékkészítés
+után a közös `../projects/registry.json` által megadott projektmappákban keresse
+az ehhez a manifesthez tartozó indexeket; csak a téma-, script- és
+manifestreferenciákat olvassa be, ne az átiratok vagy a felvételek tartalmát.
+Az abszolút manifestútvonal egyezzen az index `manifest_path` értékével vagy
+pótfelvételnél az `additional_manifests` megfelelő elemével. Más manifesthez
+tartozó index nem jelölt. Egyetlen jelölt hiánya vagy a célhoz tartozó
+téma/script/manifest kapcsolat ellentmondása blokkol.
+
+- Megadott cél-scriptnél annak az indexét ellenőrizze, másikra ne váltson.
+- Egyetlen jelöltnél automatikusan azt válassza. Többnél a témaazonosító és
+  scriptcím alapján kérdezze meg, melyikkel dolgozzon, majd várjon a válaszra.
+- A választás után egyetlen abszolút indexútvonalat adjon a preflightnak.
+  Ezzel a kimeneti állapotfájl helye már a hívás előtt egyértelmű; a skill
+  státuszválaszában nem kell útvonalat vagy választási adatot visszaadni.
+- Közvetlen preflight-hívásnál ugyanezt a kaput a skill saját felhasználói
+  kontextusában kell alkalmazni. Konkrét, már kiválasztott indexnél ne
+  kérdezzen újra. Az index és a script ellenőrzése minden esetben kötelező.
+
+Korábbi állapotfájl jelenléte vagy módosítási ideje nem választási bizonyíték.
+A preflight kizárólag a kiválasztott scriptmappában menti az állapotot;
+a hívó sikeres státusz után onnan olvassa vissza a választást.
 
 ### Pótfelvétel mentése adatátadás nélkül
 

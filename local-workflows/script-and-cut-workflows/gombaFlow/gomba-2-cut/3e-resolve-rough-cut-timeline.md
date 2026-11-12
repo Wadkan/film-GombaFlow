@@ -12,10 +12,17 @@ Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
 állapotátvétel” részeit, valamint a saját skillre vonatkozó bejegyzését.
 A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
-1. Ellenőrizd a bemeneteket és a review timeline-t.
-2. A friss markerpillanatképen ellenőrizd a script-részek lefedettségét,
+1. A `prepare` fázisban ellenőrizd a pillanatkép előtti bemeneteket és a review timeline-t.
+2. A `build` fázisban a friss markerpillanatképen ellenőrizd a script-részek lefedettségét,
    és rögzítsd az esetleges hiányokat és döntéseket.
 3. A markerpillanatkép alapján készítsd el, ellenőrizd és mentsd a Rough Cutot.
+
+A fázisok közötti előkészítő hívást a workflow saját bejegyzése és receptje
+határozza meg. Fázis megadása nélkül a teljes receptet alkalmazd, közvetlen
+indításnál is. A `prepare` még nem követel markerpillanatképet és nem épít;
+a `build` csak a recept aktuális, sikeres kiolvasása után kezdődhet.
+
+## `prepare` fázis
 
 ## Külön indítás és bemenetellenőrzés
 
@@ -37,7 +44,12 @@ Az első timeline-t az összeállítás során nem módosíthatod. Meglévő nem
 Rough Cut timeline vagy eredményfájl esetén ne írj felül és ne duplikálj;
 állj meg és jelezd.
 
-## Timeline-műveletek és visszaellenőrzés
+## `build` fázis — timeline-műveletek és visszaellenőrzés
+
+Friss végrehajtási kontextusban is olvasd be a kötelező bemeneteket, és
+ismét ellenőrizd a `prepare` fázis fájl-, projekt-, timeline- és újrafuttatási
+feltételeit. A korábbi fázis sikere nem helyettesíti az aktuális ellenőrzést.
+Ez nem indít újabb markerkiolvasást és nem változtat projektválasztást.
 
 A `review_timeline_markers.json` a review timeline aktuális, minden összeállítás
 előtt újra kiolvasott markerpillanatképe. A visszaolvasott

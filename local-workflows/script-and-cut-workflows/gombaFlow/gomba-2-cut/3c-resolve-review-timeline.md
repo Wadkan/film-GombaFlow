@@ -43,6 +43,8 @@ nem kezelhető automatikus hozzáfűzésként.
 
 Ha van új rekord, az első timeline-módosítás előtt mentsd és olvasd vissza
 az assemblyt `incomplete` státusszal, a korábbi bejegyzések megőrzésével.
+Az új rekordok pontos listáját ugyanebben a mentésben rögzítsd a
+`last_append_recording_ids` mezőben a kimeneti szerződés szerint.
 Csak a sikeres visszaolvasás után kezdj hozzáfűzni. Megszakítás után ez az
 állapot kézi egyeztetést igényel; ne állítsd automatikusan `completed` értékre,
 és ne ismételd meg a hozzáfűzést.
@@ -61,7 +63,8 @@ a user azóta végzett timeline-módosításait. Frissítsd a jegyzéklenyomatot
 a hiányösszesítést; csak a sikeres Resolve-mentés és minden új elhelyezés és
 marker visszaellenőrzése után mentsd és olvasd vissza `completed` státusszal
 az assemblyt. Ha nincs új
-rekord, ne helyezz el és ne markerezz újra semmit.
+rekord, a `last_append_recording_ids` legyen üres lista; ne helyezz el és
+ne markerezz újra semmit. Új timeline teljes összeállításánál e mező `null`.
 
 ## Teljes felvételek és markerek
 
@@ -139,3 +142,5 @@ A meglévő `review_timeline_assembly.json` átadásban rögzítsd a projekt- é
 timeline-azonosítót, valamint a behelyezett felvételek forrás- és
 timeline-kapcsolatait. A felhasználónak jelezd a review timeline nevét és,
 ha probléma merült fel, a problémalista útvonalát.
+A következő kézi teendőt és a folytatás feltételét a workflow review-kapuja
+szerint mondd ki; a szükséges userjelzést ne helyettesítse a kész státusz.

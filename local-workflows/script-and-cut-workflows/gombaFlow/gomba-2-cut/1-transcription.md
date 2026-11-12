@@ -33,6 +33,15 @@ letöltést igényelhet; a `--model` letöltött modell útvonala is lehet.
 
 ## Futtatás
 
+Folytatási kérésnél, ha már van teljes `master_transcript.json`, először
+ellenőrizd annak `1.0` sémáját, minden hivatkozott átiratot, a forrásútvonalakat,
+időtartományokat és a források SHA-256 egyezését. A manifest minden rekordjához
+legyen megfelelő átirat, és a megadott mappa minden feldolgozandó videója
+legyen benne. Ha ez igazolható, ne indítsd újra a CLI-t: csak a még függő
+felhasználói azonosítást folytasd a lentiek szerint. A meglévő, ellenőrzött
+hozzárendeléseket őrizd meg; a válaszokat ne kérdezd újra. A kész átiratok
+újrafelhasználása nem igazolja a még hiányzó hozzárendeléseket.
+
 A repo gyökeréből, a felhasználó által megadott mappával:
 
 ```bash
@@ -69,7 +78,8 @@ A CLI `--input-dir` nélkül is indítható: ilyenkor maga kéri be a videók ú
 ## Megőrzés és kapu
 
 A forrásvideók változatlanok maradnak. Meglévő kimeneti mappát a script nem ír
-felül. Meglévő `transcripts` mappánál állj meg és jelezd az akadályt; ne kérj
+felül. Meglévő `transcripts` mappánál a fent leírt, igazolt folytatás kivételével
+állj meg és jelezd az akadályt; ne kérj
 másik kimeneti útvonalat és ne töröld a korábbi eredményt. Feldolgozás közben a forrásokat
 ne módosítsd; észlelt változásnál a script hibát jelez.
 

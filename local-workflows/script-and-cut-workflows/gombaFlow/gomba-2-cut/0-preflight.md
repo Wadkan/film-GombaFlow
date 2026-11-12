@@ -13,7 +13,7 @@ Először olvasd el a [workflow](WORKFLOW.md) „Feldolgozási lépések”,
 A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
 1. Ellenőrizd az indexeket és a scriptlenyomatokat.
-2. Válaszd ki az egyetlen feldolgozandó scriptet.
+2. Alkalmazd a workflow scriptválasztási kapuját az egyetlen feldolgozandó scriptre.
 3. Mentsd és olvasd vissza a workflow szerinti `cut_workflow_state.json` fájlt.
 
 ## Bemenet
@@ -26,9 +26,10 @@ A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
 1. Ellenőrizd, hogy minden index a hozzá tartozó meglévő scriptmappában van,
    és az index `script_sha256` értéke egyezik az aktuális scripttel.
-2. Egyetlen index esetén automatikusan azt válaszd. Több indexnél sorold fel
-   a témaazonosítót és scriptcímet, majd kérdezd meg, melyik scripttel
-   folytassa most. Egyszerre csak egyet válassz.
+2. A workflow „Scriptválasztási kapu” részét alkalmazd. Már megadott konkrét
+   indexnél ellenőrizd ugyanazt a választást; ne kérdezd meg újra, és másik
+   scriptmappára ne válts. Közvetlen hívásnál a még szükséges választást
+   ugyanennek a kapunak megfelelően kérd be.
 
 Az ellenőrzött választást a kiválasztott scriptmappában lévő
 `cut_workflow_state.json` fájlba mentsd a workflow sémája szerint. Csak ezt a
