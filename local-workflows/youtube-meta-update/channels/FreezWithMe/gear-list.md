@@ -35,6 +35,7 @@ Gear list:
 
 🍲 Cooking & Water
 
+- Wacaco Picopresso Manual Barista-Grade Espresso Maker
 - Firemaple Petrel Fast Cooking System 0.6L
 - Trek’n Eat Freeze-Dried Meal
 - Ginger Tea Granules

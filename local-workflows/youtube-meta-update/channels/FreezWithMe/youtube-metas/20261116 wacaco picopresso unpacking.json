@@ -1,0 +1,47 @@
+{
+  "status": "updated",
+  "channelKey": "freezwithme",
+  "youtubeChannelId": "UCTmNLnPDniFPocALLVSFoDg",
+  "videoId": "zBAw6yNLE20",
+  "title": "Wacaco Picopresso unboxing: manuális espresso bárhol ☕🎒 #freezwithme",
+  "description": "☕🎒 Végre megérkezett! Tarts velem, ahogy kicsomagolom a Wacaco Picopresso manuális eszpresszógépemet! Ebben az unboxing videóban megmutatom a hordozható kávéfőzőt és a doboz tartalmát. 📦\n\n🧰 A videóban bemutatott felszerelésem:\n• Wacaco Picopresso Manual Barista-Grade Espresso Maker\n\n☕🎒 It's finally here! Join me as I unbox my Wacaco Picopresso manual espresso maker. In this video, I show you the portable coffee maker and what's inside the box. 📦\n\n#freezwithme #Picopresso #unboxing",
+  "tags": [
+    "freezwithme",
+    "Wacaco Picopresso Manual Barista-Grade Espresso Maker",
+    "Wacaco",
+    "Picopresso",
+    "Wacaco Picopresso",
+    "Wacaco Picopresso unboxing",
+    "Picopresso unpacking",
+    "unboxing",
+    "kicsomagolás",
+    "termékbemutató",
+    "manuális eszpresszógép",
+    "manuális espresso",
+    "hordozható kávéfőző",
+    "hordozható eszpresszógép",
+    "portable espresso maker",
+    "manual espresso maker",
+    "utazós kávéfőző"
+  ],
+  "categoryId": "19",
+  "playlistId": "PLIw2OkTTi7-8BLCbWVdxTkcasQ4Wu99Gx",
+  "privacyStatus": "private",
+  "youtube_scheduled_at": "2026-11-16T16:00:00+01:00",
+  "containsSyntheticMedia": false,
+  "defaultLanguage": "hu",
+  "updateResult": {
+    "status": "updated",
+    "step": "verification",
+    "message": "A metaadatok és a playlist-tagság visszaolvasással igazoltak.",
+    "videoId": "zBAw6yNLE20",
+    "videoUrl": "https://youtu.be/zBAw6yNLE20",
+    "executionId": "573",
+    "partialSuccess": false,
+    "youtubeModified": true,
+    "completedSteps": [
+      "playlist-insert",
+      "video-update"
+    ]
+  }
+}
