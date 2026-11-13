@@ -31,6 +31,11 @@ def read_meta(path):
         raise StudioError("INVALID_INPUT", "Nem olvasható metaadat-JSON.") from exc
     if not isinstance(meta, dict) or meta.get("status") != "updated":
         raise StudioError("INVALID_INPUT", "A Studio kizárólag updated státuszt fogad el.")
+    if not isinstance(meta.get("thumbnailPrompt"), str) or not meta["thumbnailPrompt"].strip():
+        raise StudioError(
+            "INVALID_INPUT",
+            "Hiányzó vagy üres thumbnailPrompt; a jóváhagyott MD-ből szükséges átvenni.",
+        )
     patterns = {
         "videoId": r"[A-Za-z0-9_-]{11}",
         "youtubeChannelId": r"UC[A-Za-z0-9_-]{22}",
@@ -53,6 +58,24 @@ def read_meta(path):
             "INVALID_UPDATE_RESULT", "Sikeres, egyező videoId-jú n8n verification szükséges."
         )
     return meta
+
+
+def thumbnail_message(meta):
+    return (
+        "Készíts ehhez a kiválasztott videóhoz YouTube-thumbnailt az alábbi "
+        "képgenerálási prompt alapján:\n\n" + meta["thumbnailPrompt"]
+    )
+
+
+def manual_handoff(context):
+    # Register before announcing readiness, keeping the driver and profile lock alive.
+    with context.expect_event("close", timeout=0):
+        print(
+            "Az Ask Studio promptja kitöltve, nincs elküldve. Innen te veszed át; "
+            "a futás a böngésző bezárásáig vár.",
+            file=sys.stderr,
+            flush=True,
+        )
 
 
 def profile_path(value):
@@ -124,10 +147,19 @@ class Studio:
         page.set_default_navigation_timeout(timeout)
 
     def button(self, scope, name):
-        # Custom Studio buttons do not consistently expose role=button.
-        return scope.get_by_role("button", name=name, exact=True).or_(
-            scope.locator("ytcp-button, tp-yt-paper-button").filter(
-                has_text=re.compile(f"^{re.escape(name)}$")
+        # Use the innermost matching control, not both a wrapper and its button.
+        # Separate same-named controls deliberately remain a strict-mode error.
+        pattern = re.compile(f"^{re.escape(name)}$") if isinstance(name, str) else name
+        native = self.page.get_by_role("button", name=name, exact=isinstance(name, str))
+        custom = self.page.locator("ytcp-button, tp-yt-paper-button").filter(has_text=pattern)
+        return (
+            scope.get_by_role("button", name=name, exact=isinstance(name, str))
+            .filter(has_not=native)
+            .or_(
+                scope.locator("ytcp-button, tp-yt-paper-button")
+                .filter(has_text=pattern)
+                .filter(has_not=native)
+                .filter(has_not=custom)
             )
         )
 
@@ -163,7 +195,7 @@ class Studio:
         self.check_membership()
 
     def check_membership(self):
-        self.button(self.page, "Playlists").click()
+        self.button(self.page, re.compile(r"^(?:Select playlists|Playlists)$")).click()
         dialog = self.page.locator("ytcp-playlist-dialog")
         dialog.wait_for(state="visible")
         selected = dialog.locator(
@@ -181,9 +213,12 @@ class Studio:
         dialog.wait_for(state="hidden")
 
     def language_control(self):
-        control = self.page.get_by_role("combobox", name="Video language", exact=True).or_(
-            self.page.locator("#video-language")
+        control = (
+            self.page.get_by_role("combobox", name="Video language", exact=True)
+            .or_(self.page.locator("#video-language"))
+            .or_(self.button(self.page, re.compile(r"^Video language(?:\s|$)")))
         )
+        control = control.filter(has_not=control)
         if not control.is_visible():
             self.button(self.page, "Show more").click()
         control.wait_for(state="visible")
@@ -200,7 +235,22 @@ class Studio:
         control = self.language_control()
         if control.evaluate("el => el.tagName === 'SELECT'"):
             return control.input_value() == self.meta["defaultLanguage"]
-        return control.inner_text().strip() == self.language_name()
+        # The closed control may also contain a label and help text. Inspect the
+        # option's selection state instead of parsing those presentation strings.
+        control.click()
+        option = self.page.get_by_role("option", name=self.language_name(), exact=True)
+        option.wait_for(state="visible")
+        try:
+            selected = option.get_attribute("aria-selected")
+            if selected not in ("true", "false"):
+                raise StudioError(
+                    "LANGUAGE_SELECTION_UNVERIFIED",
+                    "A nyelvválasztó kijelölt értéke nem igazolható.",
+                )
+            return selected == "true"
+        finally:
+            option.press("Escape")
+            option.wait_for(state="hidden")
 
     def set_language(self):
         if self.language_matches():
@@ -329,6 +379,72 @@ class Studio:
         self.result["steps"]["endscreen"] = "verified"
         self.result.update(status="success", step="verification")
 
+    def prepare_thumbnail(self):
+        """Prepare a draft only; the user sends it and owns generation."""
+        from playwright.sync_api import expect
+
+        self.result.update(status="error", step="thumbnail")
+        self.result["steps"]["thumbnail"] = "pending"
+        self.check_session()
+        self.button(self.page, "Ask Studio").click()
+        heading = self.page.get_by_role("heading", name="Ask Studio", exact=True)
+        heading.wait_for(state="visible")
+        self.page.get_by_role("textbox", name="Ask something", exact=True).wait_for(state="visible")
+        panel = heading.locator("xpath=..")
+        for _ in range(8):
+            if panel.get_by_role("textbox", name="Ask something", exact=True).count():
+                break
+            panel = panel.locator("xpath=..")
+        prompt = panel.get_by_role("textbox", name="Ask something", exact=True)
+        prompt.wait_for(state="visible")
+        existing = (
+            prompt.input_value()
+            if prompt.evaluate("el => el.matches('input, textarea')")
+            else prompt.inner_text()
+        )
+        message = thumbnail_message(self.meta)
+        if existing.strip() and existing != message:
+            raise StudioError(
+                "ASK_STUDIO_DRAFT_EXISTS", "Az Ask Studio meglévő piszkozatát nem írtam felül."
+            )
+        self.attach_thumbnail_video(panel)
+        prompt.fill(message)
+        if prompt.evaluate("el => el.matches('input, textarea')"):
+            expect(prompt).to_have_value(message, timeout=self.timeout)
+        else:
+            expect(prompt).to_have_text(message, use_inner_text=True, timeout=self.timeout)
+        self.page.bring_to_front()
+        self.result["steps"]["thumbnail"] = "prepared"
+        self.result.update(status="success", step="handoff", generationStarted=False)
+
+    def attach_thumbnail_video(self, panel):
+        if panel.get_by_role("button", name="Remove", exact=True).count():
+            # Existing context must have independent ID evidence; never replace it silently.
+            self.require_identity(panel, "video", self.meta["videoId"])
+            return
+        self.button(panel, "Add files, reference videos, and more").click()
+        self.page.get_by_role("menuitem", name="Select your video", exact=True).click()
+        self.page.get_by_role("combobox", name="Search your video", exact=True).fill(
+            self.meta["videoId"]
+        )
+        videos = self.page.get_by_role("listbox", name="Retrieved videos", exact=True)
+        videos.wait_for(state="visible")
+        # Thumbnail URLs identify videos even when a picker row has no video link.
+        image = videos.locator(
+            f'img[src*="/vi/{self.meta["videoId"]}/"], img[src*="/vi_webp/{self.meta["videoId"]}/"]'
+        )
+        image.wait_for(state="visible")
+        label = image.get_attribute("alt") or ""
+        title = label.removeprefix("Video thumbnail: ").strip()
+        if not title:
+            raise StudioError(
+                "ASK_STUDIO_VIDEO_UNVERIFIED", "A kiválasztott videó címkéje nem igazolható."
+            )
+        image.click()
+        videos.wait_for(state="hidden")
+        self.button(panel, title).wait_for(state="visible")
+        self.button(panel, "Remove").wait_for(state="visible")
+
 
 def execute(args, result):
     meta = read_meta(args.meta.expanduser().resolve()) if args.command == "studio" else None
@@ -371,7 +487,10 @@ def execute(args, result):
                 context.wait_for_event("close", timeout=600000)
                 result.update(status="success", step="login-window-closed", sessionVerified=False)
             else:
-                Studio(page, meta, result).run()
+                adapter = Studio(page, meta, result)
+                adapter.run()
+                adapter.prepare_thumbnail()
+                manual_handoff(context)
         except (Error, AssertionError) as exc:
             # A login redirect can occur while an expected Studio component is awaited.
             if args.command == "studio" and urlparse(page.url).netloc != urlparse(ORIGIN).netloc:
@@ -408,6 +527,7 @@ def main(argv=None):
             str(exc) if known else "Váratlan böngészőhiba; ellenőrizd kézzel a jelzett lépést."
         )
         result.update(
+            status="error",
             code=getattr(exc, "code", "LOCAL_ERROR" if known else "AUTOMATION_FAILED"),
             message=message,
         )

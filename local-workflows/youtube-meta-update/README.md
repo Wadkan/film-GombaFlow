@@ -168,3 +168,12 @@ Kézi éles próba jóváhagyott JSON-nal:
 a videó maradjon privát a jövőbeli időzítéssel, a playlistben pontosan a kért tagsággal.
 Az ismételt `update` helyben tiltott, nem küld újabb kérést. Nyilvános/időzített
 videó elutasítása `preflight` hívással ellenőrizhető.
+
+## Thumbnailprompt
+
+Az agent a metaadat-MD végén, ugyanabban a generálási és jóváhagyási körben
+készít thumbnailpromptot. Jóváhagyás után a teljes prompt a JSON
+`thumbnailPrompt` mezőjébe kerül. Ez a mező nem YouTube-leírás és az n8n nem
+alkalmazza az API-n. A Studio-script a folyamat végén kitölti vele az Ask Studio
+mezőjét, elküldés nélkül; a böngészőben a user folytatja a munkát.
+Részletek: [Studio README](../../n8n-workflows/youtube-upload/README.md#ask-studio-és-kézi-átvétel).

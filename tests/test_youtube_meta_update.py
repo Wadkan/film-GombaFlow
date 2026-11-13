@@ -16,6 +16,7 @@ READY_META = {
     "videoId": "video-123",
     "title": "Test title",
     "description": "Test description",
+    "thumbnailPrompt": "Téli SUP, kék háttér.\nFelirat: FAGYOS KALAND",
     "tags": ["test"],
     "categoryId": "19",
     "playlistId": "playlist-123",
@@ -126,6 +127,17 @@ class YoutubeMetaUpdateIntegrationTests(unittest.TestCase):
 
     def read_meta(self):
         return json.loads(self.meta_path.read_text(encoding="utf-8"))
+
+    def test_invalid_thumbnail_prompt_is_rejected_before_webhook(self):
+        for prompt in (None, " ", 42):
+            with self.subTest(prompt=prompt):
+                original = json.dumps(READY_META | {"thumbnailPrompt": prompt})
+                self.meta_path.write_text(original)
+                outcome = self.invoke()
+                self.assertEqual(outcome.returncode, 2)
+                self.assertIn("thumbnailPrompt", outcome.stderr)
+                self.assertEqual(WebhookHandler.received, [])
+                self.assertEqual(self.meta_path.read_text(), original)
 
     def test_posts_ready_meta_and_persists_success_without_changing_metadata(self):
         WebhookHandler.metadata_path = self.meta_path

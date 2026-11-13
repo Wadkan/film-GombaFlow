@@ -1,6 +1,27 @@
 <!doctype html>
 <meta charset="utf-8" />
 <title>Local Studio UI test double — no Google connection</title>
+<button onclick="document.querySelector('#ask-panel').hidden=false">Ask Studio</button>
+<section id="ask-panel" hidden>
+    <h2>Ask Studio</h2>
+    <div id="ask-attachment" hidden>
+        <a id="ask-video" href="/video/abcdefghijk/edit">Selected video</a>
+        <button>Téli SUP</button><button>Remove</button>
+    </div>
+    <textarea id="ask-prompt" aria-label="Ask something"></textarea>
+    <button onclick="document.querySelector('#ask-menu').hidden=false">Add files, reference videos, and more</button>
+    <button onclick="window.sent=(window.sent||0)+1">Send</button>
+</section>
+<div id="ask-menu" role="menu" hidden>
+    <button role="menuitem" onclick="this.parentElement.hidden=true; document.querySelector('#ask-picker').hidden=false">Select your video</button>
+</div>
+<div id="ask-picker" hidden>
+    <input role="combobox" aria-label="Search your video">
+    <div role="listbox" aria-label="Retrieved videos">
+        <img src="/vi/abcdefghijk/default.jpg" alt="Video thumbnail: Téli SUP"
+             onclick="document.querySelector('#ask-picker').hidden=true; document.querySelector('#ask-attachment').hidden=false">
+    </div>
+</div>
 <style>
     ytcp-navigation-drawer,
     ytcp-video-metadata-editor,
@@ -23,7 +44,7 @@
     <button
         onclick="document.querySelector('ytcp-playlist-dialog').hidden = false"
     >
-        Playlists
+        Select playlists
     </button>
     <label
         >Video language
@@ -112,26 +133,33 @@
             (fault === "membership" ? "PLwrongplaylist" : playlist);
         document.querySelector("select").value =
             localStorage.getItem("language") || "en";
-        if (fault === "custom-language") {
+        if (["custom-language", "composite-language"].includes(fault)) {
             const select = document.querySelector("select");
             const control = document.createElement("button");
-            control.id = "video-language";
-            control.setAttribute("role", "combobox");
-            control.setAttribute("aria-label", "Video language");
+            const composite = fault === "composite-language";
+            if (!composite) {
+                control.id = "video-language";
+                control.setAttribute("role", "combobox");
+                control.setAttribute("aria-label", "Video language");
+            }
+            const label = code => (composite ? "Video language Select the primary language spoken in the video. " : "") + (code === "hu" ? "Hungarian" : "English");
             control.dataset.code = select.value;
-            control.textContent =
-                select.value === "hu" ? "Hungarian" : "English";
+            control.textContent = label(select.value);
             control.onclick = () => {
                 const option = document.createElement("button");
                 option.setAttribute("role", "option");
+                option.setAttribute("aria-selected", String(control.dataset.code === "hu"));
                 option.textContent = "Hungarian";
                 option.onclick = () => {
                     control.dataset.code = "hu";
-                    control.textContent = "Hungarian";
+                    control.textContent = label("hu");
                     document.querySelector("#save-language").disabled = false;
                     option.remove();
                 };
                 document.body.append(option);
+                option.addEventListener("keydown", event => {
+                    if (event.key === "Escape") option.remove();
+                });
             };
             select.replaceWith(control);
         }
@@ -141,7 +169,7 @@
             localStorage.setItem(
                 "language",
                 document.querySelector("select")?.value ||
-                    document.querySelector("#video-language").dataset.code,
+                    document.querySelector("[data-code]").dataset.code,
             );
         localStorage.setItem("saves", ++window.saves);
         if (fault !== "language-timeout") button.disabled = true;

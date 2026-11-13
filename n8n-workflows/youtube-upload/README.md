@@ -62,7 +62,7 @@ n8n-eredmény után:
 make -C n8n-workflows/youtube-upload studio META="/teljes/út/meta.json"
 ```
 
-A futás a JSON `videoId`, `youtubeChannelId`, `playlistId`, `defaultLanguage`
+A futás a JSON `videoId`, `youtubeChannelId`, `playlistId`, `defaultLanguage`, `thumbnailPrompt`
 mezőiből dolgozik, angol Studio-felületet kér (`hl=en`, `en-US`). Az aktuális
 csatorna és a megnyitott videó azonosítóját, valamint a videó kijelölt
 playlistjei között a JSON-playlist jelenlétét ellenőrzi. A megjelenített név
@@ -71,7 +71,12 @@ komponensek linkjeit és a Studio-komponensek olvasható adatmodelljét vizsgál
 ha az ID nem állapítható meg egyértelműen, megáll.
 
 A beszélt videó „Video language” mezőjét állítja, menti, majd teljes
-újratöltés után ellenőrzi. Ezután a záróképernyőn pontosan egy videót
+újratöltés után ellenőrzi. Az összetett nyelvválasztónál a lenyitott opció
+`aria-selected` állapotát olvassa; a feliratot és súgót nem tekinti értéknek.
+Az egymásba ágyazott gomboknál a legbelső megfelelő vezérlőt használja;
+különálló, azonos nevű gomboknál nem választ önkényesen. A playlistválasztót
+„Select playlists” és „Playlists” felirattal is kezeli.
+Ezután a záróképernyőn pontosan egy videót
 („Best for viewer”), egy playlistet (JSON `playlistId`) és egy feliratkozást
 (JSON `youtubeChannelId`, az előzőleg ellenőrzött aktuális csatorna) állít be.
 A megfelelő elemeket változatlanul hagyja; eltérésnél a meglévő legfeljebb négy
@@ -85,7 +90,39 @@ made-for-kids videóknál); lásd a
 [YouTube feltételeit](https://support.google.com/youtube/answer/6388789?hl=en).
 Nem támogatott UI, hiányzó vezérlő, eltérő ID vagy lejárt várakozás hibát eredményez.
 A vezérlőnkénti timeout 20 másodperc, az indításé 30 másodperc;
-nincs automatikus mentési retry, korlátlan várakozás vagy koordinátás kattintás.
+nincs automatikus mentési retry vagy koordinátás kattintás. Az automatizált UI-műveletek várakozása korlátos; a kézi átvétel az ablak bezárásáig tart.
+
+## Ask Studio és kézi átvétel
+
+A jóváhagyott MD végén, a metaadatokkal együtt készül a
+`## YouTube thumbnail prompt` szakasz. Az MD jóváhagyásakor az agent a teljes
+promptot változtatás nélkül a JSON `thumbnailPrompt` mezőjébe másolja.
+Nincs külön jóváhagyási kör. A mező nem üres szöveg; nem része a YouTube
+leírásának. A régi JSON-okból hiányzó promptot előbb egyeztesd a userrel.
+Az API CLI a régi JSON-okat továbbra is elfogadja; a Studio-lépéshez a prompt
+kötelező. Az n8n nem alkalmazza ezt a mezőt a YouTube Data API-n.
+
+A sikeres nyelv- és záróképernyő-ellenőrzés után a script megnyitja az Ask Studio
+panelt. Az „Add files, reference videos, and more” → „Select your video”
+választóban videoId alapján keres, a találatot a thumbnail URL-jének ID-jával
+azonosítja, majd ellenőrzi a kiválasztott címke megjelenését. Meglévő csatolást
+csak igazolható, egyező videoId mellett használ; meglévő eltérő piszkozatot
+nem ír felül. Az „Ask something” mezőbe thumbnail készítésére kérő bevezetőt
+és a JSON teljes promptját illeszti, majd ellenőrzi a mezőt. Nem nyom Entert,
+nem küldi el a promptot, és nem indít generálást vagy képfeltöltést.
+
+A böngésző előtérbe kerül. A script stderrre azonnal jelzi a kézi átvételt;
+a folyamat és a profilzár az ablak bezárásáig életben marad. Ekkor a stdout
+végső JSON-ja visszaadja az automatizált előkészítés eredményét. A hívó agent
+ne várjon a kézi munkára a chatválasszal: az átadás jelzésekor tájékoztassa a
+usert, és hagyja futni a terminálfolyamatot. A kézi generálás eredményét a script
+nem ellenőrzi. Hiányzó Ask Studio vagy nem igazolható kontextus külön
+`thumbnail` hibát ad; a korábbi `verified` beállítások megmaradnak. Ez nem ok
+az n8n-frissítés megismétlésére.
+
+Az Ask Studio angol feliratát, mezőjét és videóválasztóját a natív Chrome
+felületén ellenőriztük. Az ID-t adó DOM-adatok és a teljes Playwright-futás
+éles igazolása továbbra is külön próba tárgya; a helyi fixture ezt nem bizonyítja.
 
 ## Eredmény és hiba
 
@@ -93,11 +130,12 @@ A script stdoutja egyetlen JSON-sor; a napló stderrre megy. Gépi hívónál a
 Make saját könyvtárüzenetei a `make --no-print-directory -C ...` kapcsolóval
 elnyomhatók. A bemeneti fájl változatlan marad minden kimenet mellett.
 
-- `status: success`: a két Studio-beállítás visszaellenőrzött.
+- `status: success`: a két Studio-beállítás visszaellenőrzött és az Ask Studio promptja előkészített.
 - `status: error`: az aktuális lépés sikertelen.
 - `status: unknown`: legalább egy megkísérelt mentés nem igazolható.
 - `steps.identity`, `steps.language`, `steps.endscreen`: `pending`,
   `save-unverified` vagy `verified`.
+- `steps.thumbnail: prepared`, `step: handoff`, `generationStarted: false`: a prompt kitöltött, a generálás kézi feladat.
 - Hiba esetén `code`, `message`, `step`, `partialSuccess`, `uncertainSteps`
   jelzi a hibát, a korábbi visszaellenőrzött sikert és a bizonytalan mentést.
 - Script-kilépés: `0` siker; `2` bemeneti/környezeti hiba indítás előtt;

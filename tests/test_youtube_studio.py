@@ -10,7 +10,7 @@ import sys
 import tempfile
 import threading
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "n8n-workflows/youtube-upload/youtube_studio.py"
@@ -23,6 +23,7 @@ META = {
     "youtubeChannelId": "UCabcdefghijklmnopqrstuv",
     "playlistId": "PLabcdefghijklmnopqrstuv",
     "defaultLanguage": "hu",
+    "thumbnailPrompt": "Téli SUP-túra, kék háttér.\nFelirat: FAGYOS KALAND",
     "updateResult": {
         "status": "updated",
         "step": "verification",
@@ -49,6 +50,9 @@ class InputTests(unittest.TestCase):
             path.write_bytes(original)
             self.assertEqual(studio.read_meta(path), META)
             self.assertEqual(path.read_bytes(), original)
+            path.write_text(json.dumps({k: v for k, v in META.items() if k != "thumbnailPrompt"}))
+            with self.assertRaises(studio.StudioError):
+                studio.read_meta(path)
             changes = [
                 {"status": "ready"},
                 {"status": "updating"},
@@ -57,6 +61,8 @@ class InputTests(unittest.TestCase):
                 {"youtubeChannelId": "display name"},
                 {"playlistId": "name"},
                 {"defaultLanguage": ""},
+                {"thumbnailPrompt": " "},
+                {"thumbnailPrompt": None},
                 {"updateResult": None},
             ]
             for change in changes:
@@ -131,6 +137,16 @@ class InputTests(unittest.TestCase):
         self.assertEqual(output["uncertainSteps"], ["endscreen"])
         self.assertEqual(output["step"], "endscreen")
 
+    def test_manual_handoff_listens_before_announcing_and_waits_for_close(self):
+        context = MagicMock()
+        with patch("builtins.print") as announce:
+            studio.manual_handoff(context)
+        context.expect_event.assert_called_once_with("close", timeout=0)
+        context.expect_event.return_value.__enter__.assert_called_once()
+        context.expect_event.return_value.__exit__.assert_called_once()
+        self.assertTrue(announce.call_args.kwargs["flush"])
+        context.close.assert_not_called()
+
 
 class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
@@ -196,11 +212,111 @@ class BrowserTests(unittest.TestCase):
         self.assertEqual(len(json.loads(before)), 3)
         self.assertEqual(self.page.locator("select").input_value(), "hu")
 
+    def test_thumbnail_handoff_fills_without_sending(self):
+        self.adapter.run()
+        self.adapter.prepare_thumbnail()
+        panel = self.page.locator("#ask-panel")
+        self.assertEqual(panel.get_by_role("textbox").input_value(), studio.thumbnail_message(META))
+        self.assertEqual(self.page.evaluate("window.sent || 0"), 0)
+        self.assertEqual(self.output["steps"]["thumbnail"], "prepared")
+        self.assertFalse(self.page.is_closed())
+
+    def test_thumbnail_wrong_context_preserves_verified_settings(self):
+        self.adapter.run()
+        self.page.locator("#ask-attachment").evaluate("el => el.hidden=false")
+        self.page.locator("#ask-video").evaluate("el => el.href='/video/xxxxxxxxxxx/edit'")
+        with self.assertRaises(studio.StudioError):
+            self.adapter.prepare_thumbnail()
+        self.assertEqual(self.output["steps"]["language"], "verified")
+        self.assertEqual(self.output["steps"]["endscreen"], "verified")
+        self.assertEqual(self.page.locator("#ask-panel").get_by_role("textbox").input_value(), "")
+
+    def test_thumbnail_does_not_overwrite_existing_draft(self):
+        self.adapter.run()
+        self.page.locator("#ask-prompt").evaluate("el => el.value='Kézi piszkozat'")
+        with self.assertRaises(studio.StudioError):
+            self.adapter.prepare_thumbnail()
+        self.assertEqual(self.page.locator("#ask-prompt").input_value(), "Kézi piszkozat")
+
+    def test_thumbnail_supports_contenteditable_prompt(self):
+        self.adapter.run()
+        self.page.locator("#ask-prompt").evaluate("""el => {
+            const box = document.createElement('div');
+            box.id = 'ask-prompt'; box.contentEditable = 'true';
+            box.setAttribute('role', 'textbox');
+            box.setAttribute('aria-label', 'Ask something');
+            el.replaceWith(box);
+        }""")
+        self.adapter.prepare_thumbnail()
+        # Chromium renders blank paragraphs in contenteditable with extra separators.
+        # The complete original thumbnail prompt must still survive unchanged.
+        self.assertTrue(
+            self.page.locator("#ask-prompt").inner_text().endswith(META["thumbnailPrompt"])
+        )
+        self.assertEqual(self.page.evaluate("window.sent || 0"), 0)
+
+    def test_thumbnail_missing_target_video_never_fills_or_sends(self):
+        from playwright.sync_api import TimeoutError as PlaywrightTimeout
+
+        self.adapter.run()
+        self.page.locator("#ask-picker img").evaluate("el => el.src='/vi/xxxxxxxxxxx/default.jpg'")
+        with self.assertRaises(PlaywrightTimeout):
+            self.adapter.prepare_thumbnail()
+        self.assertEqual(self.page.locator("#ask-prompt").input_value(), "")
+        self.assertEqual(self.page.evaluate("window.sent || 0"), 0)
+
     def test_custom_studio_language_dropdown(self):
         self.fault("custom-language")
         self.adapter.run()
         self.assertEqual(self.output["status"], "success")
         self.assertEqual(self.page.locator("#video-language").inner_text(), "Hungarian")
+
+    def test_nested_buttons_resolve_to_one_click_target(self):
+        self.page.set_content("""
+            <ytcp-button role="button" aria-label="End screen">
+                <button onclick="window.clicked=(window.clicked||0)+1">End screen</button>
+            </ytcp-button>""")
+        target = self.adapter.button(self.page, "End screen")
+        self.assertEqual(target.count(), 1)
+        target.click()
+        self.assertEqual(self.page.evaluate("window.clicked"), 1)
+
+    def test_custom_button_without_native_role_remains_supported(self):
+        self.page.set_content("""<ytcp-button onclick="window.clicked=true">Save</ytcp-button>""")
+        self.adapter.button(self.page, "Save").click()
+        self.assertTrue(self.page.evaluate("window.clicked"))
+
+    def test_separate_same_named_buttons_remain_ambiguous(self):
+        self.page.set_content("<button>Save</button><button>Save</button>")
+        self.assertEqual(self.adapter.button(self.page, "Save").count(), 2)
+
+    def test_composite_language_button_updates_and_verifies_selected_option(self):
+        self.fault("composite-language")
+        self.adapter.run()
+        self.assertEqual(self.output["status"], "success")
+        self.assertEqual(self.page.evaluate("localStorage.getItem('language')"), "hu")
+        saves = self.page.evaluate("localStorage.getItem('saves')")
+        self.adapter.run()
+        self.assertEqual(self.page.evaluate("localStorage.getItem('saves')"), saves)
+
+    def test_composite_language_does_not_treat_help_text_as_selected_value(self):
+        self.fault("composite-language")
+        self.adapter.open_details()
+        self.page.get_by_role("button", name="Video language", exact=False).evaluate(
+            "el => el.textContent='Video language Hungarian is available. English'"
+        )
+        self.assertFalse(self.adapter.language_matches())
+
+    def test_language_id_wrapper_does_not_duplicate_inner_button(self):
+        self.fault("composite-language")
+        self.adapter.open_details()
+        self.page.get_by_role("button", name="Video language", exact=False).evaluate("""el => {
+            const wrapper = document.createElement('div');
+            wrapper.id = 'video-language';
+            el.replaceWith(wrapper); wrapper.append(el);
+        }""")
+        self.assertEqual(self.adapter.language_control().count(), 1)
+        self.assertFalse(self.adapter.language_matches())
 
     def test_identity_can_be_read_from_scoped_component_data(self):
         self.page.locator("ytcp-video-metadata-editor").evaluate(

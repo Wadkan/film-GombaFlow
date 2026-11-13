@@ -113,15 +113,17 @@ A választ a csak megadott formátumokban add. Ha file-ba kell írni az outputot
 
 - Az egyeztetés alatt csak a három számozott címjavaslatot és a szükséges tisztázó kérdéseket mutasd a chatben. Az MD előtt ne adj metaadat-összesítőt vagy teljes tervezetet.
 - Amikor minden döntés egyértelmű, az első fájlművelet a metaadatmappába mentett, videómappa nevét viselő `.md` fájl. Ne kérj újabb általános jóváhagyást a fájl elkészítéséhez, és ne állj meg egy chatbeli összesítőnél.
-- Az MD-ben csak a metaadat-mezőnevek és végleges értékeik lehetnek: `videoId`, egy kiválasztott cím, leírás, címkék, playlistnév, időzítés, `containsSyntheticMedia` és `defaultLanguage`. Ajánlás, alternatív cím, sorszám, indoklás és chatbeli megjegyzés nem kerülhet bele.
+- Az MD-ben csak a metaadat-mezőnevek és végleges értékeik lehetnek: `videoId`, egy kiválasztott cím, leírás, címkék, playlistnév, időzítés, `containsSyntheticMedia` és `defaultLanguage`, majd a fájl végén a `## YouTube thumbnail prompt` szakasz. Ajánlás, alternatív cím, sorszám, indoklás és chatbeli megjegyzés nem kerülhet bele.
 - A helyi agent mentse el és olvassa vissza a fájlt. MD mentése után kizárólag a fájlútvonalat jelezze, és kérje meg a usert, hogy ellenőrizze és hagyja jóvá az MD-t; összesítőt ne írjon.
+- A thumbnailprompt az MD-vel egy lépésben készüljön, az elfogadott cím és a videó tényleges tartalma alapján. Adja meg a fő témát, kompozíciót, hangulatot, színeket és a pontos képfeliratot; ne találjon ki nem igazolt jelenetet vagy szereplőt. A user az MD részeként ellenőrzi és hagyja jóvá; nincs külön jóváhagyási kör.
 - Az MD és a JSON két külön forduló. MD mentésekor JSON nem készülhet. Várd meg, hogy a user az elkészült MD-t átnézze és egy későbbi üzenetben jóváhagyja.
 - A jóváhagyást a beszélgetés értelme alapján ismerd fel. Ne követelj meghatározott szót, kifejezést vagy formátumot. A címválasztás, egy részlet tisztázása vagy egy korábbi változat elfogadása nem a jelenlegi MD végső jóváhagyása. Ha a szándék bizonytalan, kérdezz vissza röviden.
 - Az aktuális, videómappa nevével egyező `.md` és `.json` fájl tartalmát minden válasz előtt közvetlenül olvasd be, ha léteznek. A beolvasott fájl az elsődleges forrás, nem a korábbi chatbeli állítás.
 - Szerkesztéskor őrizd meg az aktuális MD kézi javításait, és csak a kért részeket módosítsd. Írd újra az MD-t, majd várj az új változat jóváhagyására.
 - A jóváhagyott, videómappa nevével egyező `.md` fájlból készítsd el az ugyanilyen nevű `.json` fájlt, a playlistnév helyett a csatorna playlist-forrásában szereplő `playlistId` értékkel. Ne találj ki ID-t.
+- A jóváhagyott MD `YouTube thumbnail prompt` szakaszának teljes szövege változtatás nélkül kerüljön a JSON nem üres `thumbnailPrompt` mezőjébe. Ez külön mező: nem része a title, description vagy tags értékének.
 - A JSON-t mentsd el és olvasd vissza. Ezután a chatben röviden jelezd a JSON fájl útvonalát, és kérd meg a usert, hogy ellenőrizze és hagyja jóvá. A JSON létrehozása önmagában nem jelent jóváhagyást vagy engedélyt a YouTube-frissítésre; várd meg a JSON-ra vonatkozó, későbbi egyértelmű jóváhagyást.
-- A JSON kötelező mezői: `status`, `channelKey`, `youtubeChannelId`, `videoId`, `title`, `description`, `tags`, `categoryId`, `playlistId`, `privacyStatus`, `youtube_scheduled_at`, `containsSyntheticMedia`, `defaultLanguage`. A `containsSyntheticMedia` logikai érték legyen. A `categoryId` értékét a kiválasztott csatorna `youtubeCategory.categoryId` mezőjéből vedd át; ne találd ki. A `privacyStatus` értéke `private`. A státusz csak teljes, egyértelműen jóváhagyott adatokkal lehet `ready`.
+- A JSON kötelező mezői: `status`, `channelKey`, `youtubeChannelId`, `videoId`, `title`, `description`, `tags`, `categoryId`, `playlistId`, `privacyStatus`, `youtube_scheduled_at`, `containsSyntheticMedia`, `defaultLanguage`, `thumbnailPrompt`. A `containsSyntheticMedia` logikai érték legyen. A `categoryId` értékét a kiválasztott csatorna `youtubeCategory.categoryId` mezőjéből vedd át; ne találd ki. A `privacyStatus` értéke `private`. A státusz csak teljes, egyértelműen jóváhagyott adatokkal lehet `ready`.
 - A két fájl kizárólag a metaadatmappába kerülhet. A JSON nem forrása az MD felülírásának.
 
 ## Playlist-egyeztetés
@@ -161,6 +163,7 @@ A script a meglévő `updated` JSON-t csak olvassa: külön ellenőrzi a sikeres
 `defaultLanguage` szerinti „Video language” mezőt és az „1 video, 1 playlist,
 1 subscribe” záróképernyőt („Best for viewer”, JSON `playlistId`, aktuális
 csatorna), majd újratöltés/újranyitás után igazolja az értékeket.
+Ezután az Ask Studio panelen igazolja az aktuális videó kontextusát, és beilleszti a JSON `thumbnailPrompt` mezőjét egy thumbnail készítésére kérő bevezetővel. Nem küldi el a promptot. A böngészőt előtérbe hozza, jelzi a kézi átvételt, majd az ablak bezárásáig vár; a generálást és a kép alkalmazását a user végzi. Hiányzó vagy nem igazolható Ask Studio-kontextus esetén külön hibát jelez; az igazolt Studio-beállítások megmaradnak, az n8n update-et nem szabad újraindítani.
 A scripthez ne adj új interaktív jóváhagyást: az előzőleg megszerzett JSON-
 és alkalmazási engedély vonatkozik erre a lépésre is.
 
@@ -170,7 +173,7 @@ Első vagy lejárt bejelentkezésnél a user kézzel használja a
 Ne használd a user mindennapi Chrome-profilját, és ne olvass jelszót.
 
 Az agent a script külön stdout JSON-eredményét értékelje. Csak `success` és
-mindkét Studio-lépés `verified` eredménye jelenti a Studio-rész sikerét;
+mindkét Studio-lépés `verified`, valamint a thumbnail-lépés `prepared` eredménye jelenti az automatizált Studio-rész sikerét;
 az n8n `updated` válasza önmagában nem igazolja ezt. Hibánál nevezze meg a
 `step`, `steps`, `uncertainSteps` szerinti befejezett, hibás vagy nem igazolható
 lépést. Az eredeti metaadatokat és az `updateResult` mezőt ne írja felül.

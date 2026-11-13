@@ -153,6 +153,10 @@ def read_ready_meta(path: pathlib.Path) -> dict:
         not isinstance(value["defaultLanguage"], str) or not value["defaultLanguage"].strip()
     ):
         raise ClientError("érvénytelen metaadatmező: defaultLanguage")
+    if "thumbnailPrompt" in value and (
+        not isinstance(value["thumbnailPrompt"], str) or not value["thumbnailPrompt"].strip()
+    ):
+        raise ClientError("érvénytelen metaadatmező: thumbnailPrompt")
     if len(value["title"]) > 100 or value["privacyStatus"] != "private":
         raise ClientError("legfeljebb 100 karakteres cím és private láthatóság szükséges")
     try:
