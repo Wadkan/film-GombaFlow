@@ -40,8 +40,13 @@ Ez valódi módosítás: playlist-tagságot, címet, leírást, kategóriát,
 privát láthatóságot, a jóváhagyott jövőbeli publikálási időt, a cím és leírás
 nyelvét, valamint a valósághű módosított/szintetikus tartalom jelölését állítja be.
 Az n8n nem alkalmazza a JSON `tags` értékét a YouTube-on; a meglévő YouTube-tageket
-átviszi a videófrissítéskor. A beszélt videó nyelvét az agent a YouTube Studio-ban
-állítja be a JSON `defaultLanguage` értéke alapján, majd mentés után ellenőrzi.
+átviszi a videófrissítéskor. A beszélt videó nyelvét az agent a külön Studio-targettel állítja be a JSON
+`defaultLanguage` értéke alapján, majd mentés után ellenőrzi:
+`make -C n8n-workflows/youtube-upload studio META="/teljes/út/meta.json"`.
+Ez csak a sikeres n8n-frissítés utáni `updated` JSON-t fogadja el, és nem írja azt.
+Első kézi belépés: `make -C n8n-workflows/youtube-upload login`.
+Telepítés, profil, külön gépi eredmény és a helyi tesztelés határa:
+[Studio README](../../n8n-workflows/youtube-upload/README.md).
 Ugyanebben a Studio-lépésben a záróképernyőt „1 video, 1 playlist, 1 subscribe”
 elrendezésre állítja: a videó „Best for viewer”, a playlist pedig a videó
 adatlapján beállított playlist. Mindkét Studio-módosítást mentés után ellenőrizni

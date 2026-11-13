@@ -1,0 +1,209 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>Local Studio UI test double — no Google connection</title>
+<style>
+    ytcp-navigation-drawer,
+    ytcp-video-metadata-editor,
+    ytcp-playlist-dialog,
+    ytcp-playlist-row,
+    ytcp-endscreen-editor,
+    ytcp-playlist-picker,
+    ytcp-endscreen-element {
+        display: block;
+    }
+    [hidden] {
+        display: none !important;
+    }
+</style>
+<ytcp-navigation-drawer
+    ><a id="channel">Your channel</a></ytcp-navigation-drawer
+>
+<ytcp-video-metadata-editor>
+    <a id="video">Video link</a>
+    <button
+        onclick="document.querySelector('ytcp-playlist-dialog').hidden = false"
+    >
+        Playlists
+    </button>
+    <label
+        >Video language
+        <select
+            aria-label="Video language"
+            onchange="document.querySelector('#save-language').disabled = false"
+        >
+            <option value="en">English</option>
+            <option value="hu">Hungarian</option>
+        </select></label
+    >
+    <button id="save-language" disabled onclick="saveLanguage(this)">
+        Save
+    </button>
+    <button onclick="openEditor()">End screen</button>
+</ytcp-video-metadata-editor>
+<ytcp-playlist-dialog hidden
+    ><ytcp-playlist-row
+        ><input type="checkbox" aria-checked="true" checked /><a id="membership"
+            >Same playlist name</a
+        ></ytcp-playlist-row
+    ><button onclick="this.parentElement.hidden = true">
+        Done
+    </button></ytcp-playlist-dialog
+>
+<ytcp-endscreen-editor hidden>
+    <p>End screens aren't visible on private videos</p>
+    <div id="elements"></div>
+    <button
+        onclick="
+            draft.splice(draft.indexOf(selected), 1);
+            render();
+        "
+    >
+        Delete element
+    </button>
+    <button
+        onclick="
+            draft = [
+                { type: 'Video', best: false },
+                { type: 'Playlist', id: '' },
+                { type: 'Subscribe', id: channel },
+            ];
+            render();
+        "
+    >
+        1 video, 1 playlist, 1 subscribe
+    </button>
+    <section id="options"></section>
+    <button
+        onclick="
+            if (fault !== 'end-save') {
+                localStorage.setItem('elements', JSON.stringify(draft));
+                window.saves++;
+            }
+            this.parentElement.hidden = true;
+        "
+    >
+        Save
+    </button>
+    <button onclick="this.parentElement.hidden = true">Cancel</button>
+</ytcp-endscreen-editor>
+<ytcp-playlist-picker hidden>
+    <label
+        >Search <input aria-label="Search" oninput="search(this.value)"
+    /></label>
+    <div id="results"></div>
+</ytcp-playlist-picker>
+<script>
+    const video = "abcdefghijk",
+        channel = "UCabcdefghijklmnopqrstuv",
+        playlist = "PLabcdefghijklmnopqrstuv";
+    const fault = localStorage.getItem("fault") || "";
+    window.saves = Number(localStorage.getItem("saves") || 0);
+    if (fault === "login") {
+        document.body.innerHTML = '<a href="/login">Sign in</a>';
+    } else {
+        document.querySelector("#channel").href =
+            "/channel/" +
+            (fault === "channel" ? "UCxxxxxxxxxxxxxxxxxxxxxx" : channel);
+        document.querySelector("#video").href =
+            "https://www.youtube.com/watch?v=" +
+            (fault === "video" ? "xxxxxxxxxxx" : video);
+        document.querySelector("#membership").href =
+            "https://www.youtube.com/playlist?list=" +
+            (fault === "membership" ? "PLwrongplaylist" : playlist);
+        document.querySelector("select").value =
+            localStorage.getItem("language") || "en";
+        if (fault === "custom-language") {
+            const select = document.querySelector("select");
+            const control = document.createElement("button");
+            control.id = "video-language";
+            control.setAttribute("role", "combobox");
+            control.setAttribute("aria-label", "Video language");
+            control.dataset.code = select.value;
+            control.textContent =
+                select.value === "hu" ? "Hungarian" : "English";
+            control.onclick = () => {
+                const option = document.createElement("button");
+                option.setAttribute("role", "option");
+                option.textContent = "Hungarian";
+                option.onclick = () => {
+                    control.dataset.code = "hu";
+                    control.textContent = "Hungarian";
+                    document.querySelector("#save-language").disabled = false;
+                    option.remove();
+                };
+                document.body.append(option);
+            };
+            select.replaceWith(control);
+        }
+    }
+    function saveLanguage(button) {
+        if (fault !== "language-save")
+            localStorage.setItem(
+                "language",
+                document.querySelector("select")?.value ||
+                    document.querySelector("#video-language").dataset.code,
+            );
+        localStorage.setItem("saves", ++window.saves);
+        if (fault !== "language-timeout") button.disabled = true;
+    }
+    let draft = [],
+        selected;
+    function openEditor() {
+        draft = JSON.parse(localStorage.getItem("elements") || "[]");
+        document.querySelector("ytcp-endscreen-editor").hidden = false;
+        render();
+    }
+    function render() {
+        const holder = document.querySelector("#elements");
+        holder.innerHTML = "";
+        document.querySelector("#options").innerHTML = "";
+        for (const el of draft) {
+            const row = document.createElement("ytcp-endscreen-element");
+            row.innerHTML = "<span>" + el.type + "</span>";
+            row.onclick = () => {
+                selected = el;
+                showOptions(el);
+            };
+            holder.append(row);
+        }
+    }
+    function showOptions(el) {
+        const panel = document.querySelector("#options");
+        panel.innerHTML = "";
+        if (el.type === "Video") {
+            const radio = document.createElement("input");
+            radio.type = "radio";
+            radio.setAttribute("aria-label", "Best for viewer");
+            radio.checked = el.best;
+            radio.onchange = () => (el.best = true);
+            panel.append(radio);
+        } else if (el.type === "Playlist") {
+            panel.innerHTML =
+                '<div id="playlist"><a href="https://www.youtube.com/playlist?list=' +
+                el.id +
+                '">Same playlist name</a></div><button onclick="document.querySelector(\'ytcp-playlist-picker\').hidden=false">Choose playlist</button>';
+        } else {
+            panel.innerHTML =
+                '<div id="subscribe"><a href="/channel/' +
+                (fault === "subscribe" ? "UCxxxxxxxxxxxxxxxxxxxxxx" : el.id) +
+                '">Same channel name</a></div>';
+        }
+    }
+    function search(value) {
+        const holder = document.querySelector("#results");
+        holder.innerHTML = "";
+        for (const id of ["PLwrongplaylist", playlist]) {
+            const row = document.createElement("ytcp-playlist-row");
+            row.innerHTML =
+                '<a href="https://www.youtube.com/playlist?list=' +
+                id +
+                '">Same playlist name</a>';
+            row.onclick = () => {
+                selected.id = id;
+                document.querySelector("ytcp-playlist-picker").hidden = true;
+                showOptions(selected);
+            };
+            holder.append(row);
+        }
+    }
+</script>

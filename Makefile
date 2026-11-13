@@ -17,7 +17,7 @@ stop-n8n:
 gomba1-transcript:
 	@python3 local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/scripts/run_transcript_flow.py
 
-test: test-n8n test-localworkflows
+test: test-n8n test-localworkflows test-youtube-studio
 
 test-n8n:
 	@python3 -m unittest -v \
@@ -57,3 +57,8 @@ docs-format:
 		-not -path '*/.pytest_cache/*' \
 		-not -path '*/.venv/*' \
 		-exec npx --yes prettier@3.8.3 --write {} +
+
+.PHONY: test-youtube-studio
+STUDIO_PYTHON ?= $(CURDIR)/n8n-workflows/youtube-upload/.venv/bin/python
+test-youtube-studio:
+	@$(MAKE) --no-print-directory -C n8n-workflows/youtube-upload test PYTHON="$(STUDIO_PYTHON)"

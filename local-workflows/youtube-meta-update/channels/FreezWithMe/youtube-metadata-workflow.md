@@ -149,24 +149,34 @@ terminált vagy n8n felületet használnia. A JSON jóváhagyása önmagában ne
 alkalmazási engedély; a puszta MD-jóváhagyás pedig továbbra is csak a JSON
 elkészítését engedi.
 
-Sikeres `update` után az agent nyissa meg ugyanazt a videót a YouTube Studio-ban,
-és a JSON `defaultLanguage` értékéből állítsa be a „Video language” mezőt
-(például `hu` → Hungarian, `en` → English). Mentés után újratöltéssel ellenőrizze
-a beállítást. A cím és leírás nyelvét is ellenőrizze. Ha a Studio nem érhető el,
-jelezze, hogy a videó nyelvének beállítása még hátravan; az n8n `updated`
-válasza önmagában nem igazolja ezt a Studio-beállítást.
+Sikeres n8n `update` után az agent a repo gyökeréből futtassa:
 
-Ezután a Studio „End screen” szerkesztőjében állítsa be az „1 video, 1 playlist,
-1 subscribe” elrendezést. A videóelem ajánlása legyen „Best for viewer”. A
-playlist elemhez azt a playlistet válassza ki, amelyet a videó adatlapja mutat;
-ennek egyeznie kell a JSON `playlistId` mezője alapján beállított playlisttel.
-Mentse a módosításokat, majd ellenőrizze, hogy a szerkesztő mentett állapotot
-jelez, vagy újbóli megnyitás után is pontosan egy video, egy playlist és egy
-subscribe elem szerepel a kívánt értékekkel. Ha a Studio nem érhető el vagy a
-mentés nem igazolható, jelezze, hogy a záróképernyő beállítása hátravan; az n8n
-`updated` válasza ezt sem igazolja. Privát/időzített videón a Studio jelezheti,
-hogy a záróképernyő nem látható a watch oldalon; ez nem akadálya a mentett
-beállítás publikáláskori használatának.
+```sh
+make -C n8n-workflows/youtube-upload studio META="<jóváhagyott-json-teljes-útvonala>"
+```
+
+A script a meglévő `updated` JSON-t csak olvassa: külön ellenőrzi a sikeres
+`updateResult` eredményt és a `videoId` egyezését. Az aktív csatornát, a videót
+és a videó kijelölt playlistjét ID alapján ellenőrzi. Beállítja a JSON
+`defaultLanguage` szerinti „Video language” mezőt és az „1 video, 1 playlist,
+1 subscribe” záróképernyőt („Best for viewer”, JSON `playlistId`, aktuális
+csatorna), majd újratöltés/újranyitás után igazolja az értékeket.
+A scripthez ne adj új interaktív jóváhagyást: az előzőleg megszerzett JSON-
+és alkalmazási engedély vonatkozik erre a lépésre is.
+
+Első vagy lejárt bejelentkezésnél a user kézzel használja a
+`make -C n8n-workflows/youtube-upload login` parancsot. A külön tartós profil
+és a telepítés leírása: [Studio README](../../../../n8n-workflows/youtube-upload/README.md).
+Ne használd a user mindennapi Chrome-profilját, és ne olvass jelszót.
+
+Az agent a script külön stdout JSON-eredményét értékelje. Csak `success` és
+mindkét Studio-lépés `verified` eredménye jelenti a Studio-rész sikerét;
+az n8n `updated` válasza önmagában nem igazolja ezt. Hibánál nevezze meg a
+`step`, `steps`, `uncertainSteps` szerinti befejezett, hibás vagy nem igazolható
+lépést. Az eredeti metaadatokat és az `updateResult` mezőt ne írja felül.
+Privát/időzített videó záróképernyő-láthatósági tájékoztatása önmagában nem hiba.
+A helyi böngészős tesztek nem igazolják az éles Studio UI-t; éles igazolást
+csak külön engedélyezett, ténylegesen elvégzett próba után állíts.
 
 Az `update` a fájl státuszát és eredményét maga menti; `updated` csak igazolt
 visszaolvasás után siker. `error`, `unknown` vagy megmaradt `updating` esetén
