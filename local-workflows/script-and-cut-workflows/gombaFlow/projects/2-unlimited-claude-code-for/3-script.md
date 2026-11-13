@@ -2,11 +2,12 @@
 
 - Témaazonosító: `2-unlimited-claude-code-for`
 - Bemeneti változatok és briefjóváhagyás: `0-brief.md` jóváhagyva; `1-story.md`, `1-thumbnail-prompt.md`, `1-outline-hyperframes-brief.md` jóváhagyva; `2-chapters.md` jóváhagyva; transcript `source-transcript.md`.
-- Javítási kör review-referenciája: első változat.
+- Javítási kör review-referenciája: első változat; R1–R4 javítása.
+- Jóváhagyás előtt igazolandó: az Ollama-verzió, a 32K kontextus tényleges betöltése 16 GB memórián, valamint a Claude Code eszközhívás és kalkulátorteszt. Ezek még nem kerülnek kész tényként a narrációba.
 - Felvételi varázsszó: `serpenyő`
 - Alapértelmezett timeline: `Claude Code limitbe futott? Próbáld helyi modellel`
 - Demógép: Apple M2 Pro, 16 GB memória (a rendelkezésre álló Mac gépadatokból; azonosítók nélkül).
-- Tervezett modell: `gemma4:e4b` — az Ollama modelloldala 6,6–9,5 GB körüli méretet jelez; a tényleges betöltést és Claude Code-eszközhasználatot a felvétel előtt igazolni kell.
+- Tervezett alapmodell: `gemma4:e4b`, `gomba-gemma` néven, `num_ctx 32768` Modelfile-paraméterrel. A tényleges betöltést és Claude Code-eszközhasználatot a felvétel előtt igazolni kell.
 - Fontos státusz: a script és a kalkulátor demója nincs kipróbálva. Minden képernyőn látható eredmény csak a saját felvétel előtti ellenőrzés után mondható igazoltnak.
 
 ## Script nézői sorrendben
@@ -95,7 +96,7 @@ Az outline szövege megegyezik az 1-story.md és az 1-outline-hyperframes-brief.
 </agent-cue>
 
 <narration>
-Ez az eredmény; mindjárt megnézzük, mi változik, amikor a keret elfogyása után helyi modellre váltunk. Ez a Gomba Limited egyszerű ajánlati kalkulátora. Megadom az önköltséget és az ajánlati árat, az alkalmazás pedig kiszámolja a különbséget és az árrést. Ezt most egy helyi modellel készítjük el. A példa azt mutatja meg, hogy ez a modell mire volt képes ezen a feladaton; nem általános minőségi garancia.
+Ez az eredmény; mindjárt megnézzük, mi változik, amikor a keret elfogyása után helyi modellre váltunk. Ez a Gomba Limited egyszerű ajánlati kalkulátora. Megadom az önköltséget és az ajánlati árat, az alkalmazás pedig kiszámolja a profitot és az árrést. A Gomba Limited pénzügyi szinergiája végre nem egy újabb státuszmeeting: a számológép dolgozik. A példa azt mutatja meg, mire volt képes ez a modell ezen az egy feladaton; ez nem általános minőségi garancia.
 </narration>
 
 <screen-action>
@@ -159,7 +160,7 @@ Az „előtte és utána” a választott felhőszolgáltatói út és a helyi m
 </agent-cue>
 
 <narration>
-Most, hogy különválasztottuk az agentet a modelltől, nézzük meg, mire lesz szükség a Macen. Claude Code az eszköz, amely a kódot kezeli. Ollama futtatja a modellt a gépeden. A modell pedig a kódolási feladatokra válaszol. A Claude Code-ot az Anthropic eredetileg saját szolgáltatásával kínálja, de az Ollama dokumentálja, hogyan irányítható kompatibilis helyi modellre. A helyi út nem Anthropic Claude, és nem jár automatikusan ugyanazzal a minőséggel.
+Claude Code az eszköz, amely kezeli a kódot; Ollama futtatja a modellt a gépeden. A helyi végpont használatakor nincs modellprovideri tokendíj, de a gép, az áram és a modellletöltés költsége megmarad. A Claude Code hozzáférési feltételei a használt belépési módtól és verziótól függenek: ezt a saját konfiguráción ellenőrizzük, és nem ígérünk ingyenes Anthropic-hozzáférést. A helyi modell nem Anthropic Claude, és nem garantál azonos minőséget.
 </narration>
 
 <screen-action>
@@ -229,17 +230,24 @@ Ne futtass vakon shellből másolt install scriptet, ha az app telepítője elé
 
 ##### Felvehető rész — 8
 
-```xml
+````xml
 <agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="8" clip-type="b-roll">
 <spoken-cue>serpenyő timeline 2 script 8 serpenyő</spoken-cue>
 </agent-cue>
 
 <narration>
-A megfelelő modell a géped erőforrásain múlik, ezért először ezeket ellenőrzöm. A 16 gigabájtos gépre nem a 12 milliárd paraméteres változattal kezdek: annak a fájlmérete is közel nyolc gigabájt, és ezen felül hely kell a kontextusnak meg a rendszernek. A Gemma 4 E4B kisebb változatát választom ki próbaalapnak. A modellsúly még nem jelenti azt, hogy a teljes munkamenet biztosan kényelmesen belefér.
+A megfelelő modell a géped erőforrásain múlik, ezért először ezeket ellenőrzöm. A 16 gigabájtos gépen próbaalapnak a `gemma4:e4b` modellt választom. A modellfájl mérete nem mondja meg önmagában, hogy a futás közbeni memóriaigény belefér-e; ezt a kiválasztott kontextusbeállítással együtt kell kipróbálnom. Ha a modell nem töltődik be stabilan, kisebb modellt választok, és a változást a scriptben is átvezetem.
 </narration>
 
 <screen-action>
-Nyisd meg az Ollama hivatalos Gemma 4 oldalát; mutasd a `gemma4:e4b` változatot és a feltüntetett letöltési mérettartományt. Az Ollama termináljában futtasd: `ollama run gemma4:e4b`. Várd meg a modell letöltését és első válaszát, majd állíts be a kódolási feladathoz elegendő kontextust, amely a gépen is elfér. Ha verziófüggően eltér a modellcímke vagy a beállítás, a felvétel előtt frissítsd ezt a részt.
+Nyisd meg az Ollama hivatalos Gemma 4 oldalát; mutasd a `gemma4:e4b` változatot és a feltüntetett letöltési mérettartományt. Hozz létre egy `Modelfile`-t a következő tartalommal, így a kontextusérték rögzített és újraellenőrizhető:
+
+```text
+FROM gemma4:e4b
+PARAMETER num_ctx 32768
+````
+
+Futtasd: `ollama create gomba-gemma -f Modelfile`, majd `ollama run gomba-gemma`. A 32 768-as kontextus célbeállítás, nem igazolt eredmény: csak akkor folytasd a felvételt ezzel a modellel, ha a Macen a modell betöltődik, válaszol és a Claude Code-feladat közben sem fut memóriahibába. Ha nem, csökkentsd a kontextust vagy válassz kisebb modellt, rögzítsd a tényleges értéket, majd próbáld újra.
 </screen-action>
 
 <production-note>
@@ -259,7 +267,7 @@ A modell letöltése előtt összevetem a modelloldalon szereplő méretet a gé
 </narration>
 
 <screen-action>
-Az Ollama modellnézetben indíts egy rövid, ártalmatlan promptot, például: „Írj egy JavaScript függvényt, amely kiszámolja az árrést.” Mutasd a tényleges választ és azt, hogy az Ollama modell fut. Rögzítsd a tényleges válaszidőt csak akkor, ha a felvételen számmal is állítod.
+Ellenőrizd a verziót az `ollama --version` paranccsal, majd a `ollama show gomba-gemma --modelfile` kimenetében igazold a `PARAMETER num_ctx 32768` beállítást. Indítsd a létrehozott modellt az `ollama run gomba-gemma` paranccsal, és adj neki egy rövid, ártalmatlan promptot, például: „Írj egy JavaScript függvényt, amely kiszámolja az árrést.” Mutasd a tényleges választ. Rögzítsd a verziót és azt, hogy a modell válaszolt-e; válaszidőt csak akkor mondj, ha ténylegesen megméred.
 </screen-action>
 
 <production-note>
@@ -277,7 +285,7 @@ Ez a lépés a betöltést és egyszerű szöveges választ ellenőrzi, nem bizo
 </agent-cue>
 
 <narration>
-A modell már helyben fut; most a Claude Code-ot is erre az útvonalra állítom. Ha még nincs telepítve, az Anthropic hivatalos útmutatója szerint telepítem, majd az Ollama által dokumentált helyi API-címre irányítom. A Claude Code marad az eszköz; a válaszokat a Gemma adja.
+A modell már helyben fut; most a Claude Code-ot is erre az útvonalra állítom. Ha még nincs telepítve, az Anthropic hivatalos útmutatója szerint telepítem, majd az Ollama által dokumentált helyi API-címre irányítom. A Claude Code marad az eszköz; a válaszokat a Gemma adja. A Gomba Limitednél ezt úgy hívjuk: modellcsere, ugyanazzal a meetingmentes végrehajtási lánccal.
 </narration>
 
 <screen-action>
@@ -286,14 +294,14 @@ Ha Claude Code még nincs telepítve, ellenőrizd a Node.js verziót (`node --ve
 ```sh
 export ANTHROPIC_AUTH_TOKEN=ollama
 export ANTHROPIC_BASE_URL=http://localhost:11434
-claude --model gemma4:e4b
+claude --model gomba-gemma
 ```
 
 Az `ollama` itt nem valódi kulcs, és csak a helyi Ollama-végponthoz tartozik. Claude Code-ban ellenőrizd, hogy elindult; valódi kulcs ne kerüljön felvételre.
 </screen-action>
 
 <production-note>
-Forrás: [F2] https://registry.ollama.com/blog/claude dokumentálja az `ANTHROPIC_AUTH_TOKEN=ollama`, `ANTHROPIC_BASE_URL=http://localhost:11434` és `claude --model` helyi útvonalat; [F6] https://docs.anthropic.com/en/docs/claude-code/getting-started a Node.js és Claude Code telepítését. A `gemma4:e4b` címkét add át a `--model` paraméternek. Ha a futás Anthropic felhőbejelentkezést vagy külső API-t kér, állj meg, és ne állítsd, hogy helyi a modellút.
+Forrás: [F2] https://registry.ollama.com/blog/claude dokumentálja az `ANTHROPIC_AUTH_TOKEN=ollama`, `ANTHROPIC_BASE_URL=http://localhost:11434` és `claude --model` helyi útvonalat; [F6] https://docs.anthropic.com/en/docs/claude-code/getting-started a Node.js és Claude Code telepítését. A `gomba-gemma` címkét add át a `--model` paraméternek. Ha a futás Anthropic felhőbejelentkezést vagy külső API-t kér, állj meg, és ne állítsd, hogy helyi a modellút.
 </production-note>
 ````
 
@@ -309,11 +317,11 @@ Egy rövid kérdéssel ellenőrzöm, hogy az agent válaszol-e. Ez még nem bizo
 </narration>
 
 <screen-action>
-Claude Code-ban adj egy rövid, ártalmatlan promptot. Amíg válaszol, egy másik terminálablakban futtasd az `ollama ps` parancsot, és mutasd meg, hogy a `gemma4:e4b` helyben fut. Ne kérdezd magát a modellt arról, hogy melyik modell: a választ a helyi folyamatlistával ellenőrizd.
+Claude Code-ban adj egy rövid, ártalmatlan promptot. Amíg válaszol, egy másik terminálablakban futtasd az `ollama ps` parancsot, és mutasd meg, hogy a `gomba-gemma` helyben fut. Ne kérdezd magát a modellt arról, hogy melyik modell: a választ a helyi folyamatlistával ellenőrizd.
 </screen-action>
 
 <production-note>
-Az `ollama ps` a futó Ollama-modellt ellenőrzi. Ha nem látszik a `gemma4:e4b`, ne állítsd, hogy a Claude Code-kérés biztosan helyi modellen futott.
+Az `ollama ps` a futó Ollama-modellt ellenőrzi. A Claude Code parancsában is a `gomba-gemma` modellt használd. Ha az `ollama ps` nem mutatja a `gomba-gemma` modellt a kódolási kérés alatt, ne állítsd, hogy a kérés a beállított helyi modellen futott.
 </production-note>
 ```
 
@@ -327,11 +335,11 @@ Az `ollama ps` a futó Ollama-modellt ellenőrzi. Ha nem látszik a `gemma4:e4b`
 </agent-cue>
 
 <narration>
-Most kap a helyi modell egy pontos, szűk feladatot; a generált kódot ezután mi futtatjuk és ellenőrizzük. Most jön a Gomba Limited kis feladata. Egy egyszerű, egyoldalas kalkulátort kérek: önköltség és ajánlati ár alapján számolja ki a profitot és az árrést. A profit az árbevétel mínusz az önköltség; az árrés a profit osztva az ajánlati árral. A nulla árat kezelje hibás bemenetként.
+Most kap a helyi modell egy pontos, szűk feladatot; a generált kódot mi futtatjuk és ellenőrizzük. A Gomba Limitednél a scope egy `index.html`: önköltség és ajánlati ár alapján számolja a profitot és az árrést. A profit az ajánlati ár mínusz az önköltség; az árrés a profit osztva az ajánlati árral. Nulla vagy negatív érték esetén ne számoljon, hanem jelezzen érthető hibát. A projektmenedzsment-szinergia kedvéért ez most egyetlen fájlban fér el.
 </narration>
 
 <screen-action>
-A Claude Code munkamappájában kérd: „Készíts egyszerű, helyben futó egyoldalas ajánlati kalkulátort. Két pénzmező legyen: önköltség és ajánlati ár. Számítsd ki a profitot = ajánlati ár − önköltség, és az árrést = profit / ajánlati ár × 100%. Nulla vagy negatív érték esetén mutass érthető validációs hibát, és ne számolj százalékot. Adj rövid indítást.” Figyeld meg a fájlmódosításokat, olvasd át a generált kódot, és csak utána indítsd el a javasolt parancsot.
+A Claude Code munkamappájában kérd: „Kizárólag egy önálló `index.html` fájlt készíts beágyazott HTML/CSS/JavaScript-tel, külső csomag és hálózati függőség nélkül. Legyen két mező: önköltség és ajánlati ár. Számítsd ki a profitot = ajánlati ár − önköltség, az árrést = profit / ajánlati ár × 100%. Nulla vagy negatív bemenetnél mutass érthető hibát, és ne számolj százalékot. Ne hozz létre más fájlt.” Ellenőrizd, hogy csak az `index.html` változott, olvasd át, majd nyisd meg macOS-en a Finderből dupla kattintással vagy futtasd: `open index.html`. Ne használj fejlesztői szervert vagy telepítést.
 </screen-action>
 
 <production-note>
@@ -367,7 +375,7 @@ A kalkulátorban add meg a 80 000 és 100 000 értéket; ellenőrizd a 20 000 Ft
 </screen-action>
 
 <production-note>
-Ha valamelyik eredmény hibás, előbb javítsd és teszteld újra a demót; hibás állapotot ne állíts be működőnek. Ne állíts megtakarított időt, tokenszámot vagy dollárösszeget mérés nélkül.
+Ha valamelyik eredmény hibás, előbb javítsd az `index.html`-t és futtasd újra az összes próbát; hibás állapotot ne mutass működőként. Ne állíts megtakarított időt, tokenszámot vagy pénzt mérés nélkül. A Gomba Limited KPI-ja ma csak annyi: a matek stimmel-e, nem az, hány dashboard készült róla.
 </production-note>
 ```
 
@@ -419,7 +427,7 @@ Kamerába mondd az összefoglalót; röviden mutasd a kalkulátor tényleges, te
 </screen-action>
 
 <production-note>
-Az eredményről szóló mondat csak a mérések és tesztek után véglegesíthető. A többi útvonalat ne nevezd egyenértékűnek vagy korlátlannak.
+Az eredményről szóló mondat csak a mérések és tesztek után véglegesíthető. A forgatás előtt töltsd ki a tényleges teszteredményt; a helyőrzővel felvételt ne készíts. A többi útvonalat ne nevezd egyenértékűnek vagy korlátlannak.
 </production-note>
 ```
 
@@ -492,7 +500,7 @@ A szöveg a VIDEO_STRUCTURE.md rögzített CTA-ja, változtatás nélkül.
 ```xml
 <production-note>
 Átadási szerződés: ../../gomba-1-script-writer/templates/3-script-template.md — „Vágói átadási szerződés” szakasz
-Scriptváltozat: 3-script.md első változat
+Scriptváltozat: 3-script.md R1–R4 javítási változat
 Részek:
 - Script-ID: 1
   Fejezet-ID: H
@@ -579,10 +587,15 @@ Részek:
 
 ## Átadás review-ra
 
+- R1: egyetlen `index.html`, külső függőség nélkül; macOS Finder/`open index.html` futtatás és azonos fájlon végzett teszt rögzítve.
+- R2: a `gomba-gemma` Modelfile-ben rögzített `num_ctx 32768` érték, verzióellenőrzés és egységes modellindítás szerepel. A 16 GB-os gépen történő tényleges betöltés és Claude Code próba még nincs elvégezve; ez forgatás előtt igazolandó.
+- R3: C3 narrációba került a helyi inference díjának, hardver/áram költségének és Claude Code-hozzáférés feltételes jellegének magyarázata.
+- R4: rövid, érthető Gomba Limited üzleti zsargonpoénok kerültek C1, C3 és C4.4 narrációjába.
+
 - Ellenőrzendő állítások és saját technikai próbák:
     - **S1 / C4.1:** Ollama települ és indul Apple M2 Pro 16 GB gépen; képernyőn ne látszódjon gépazonosító.
-    - **S2 / C4.2:** `gemma4:e4b` betölt, elegendő memóriával és dokumentált kontextusbeállítással fut.
-    - **S3 / C4.3:** az aktuális `ollama launch claude --model gemma4:e4b` út tényleg a helyi modellt használja; fiók-, hozzáférési és API-feltételek tisztázva.
+    - **S2 / C4.2:** az Ollama verzió feljegyezve; `gomba-gemma` betölt a `num_ctx 32768` beállítással, a Modelfile és a válasz ténylegesen ellenőrizve.
+    - **S3 / C4.3:** az aktuális `claude --model gomba-gemma` út tényleg a helyi modellt használja; fiók-, hozzáférési és API-feltételek tisztázva.
     - **S4 / C4.4–C5:** kalkulátor létrejön; 80 000 Ft és 100 000 Ft inputra 20 000 Ft profitot és 20% árrést ad; nulla és negatív input érthető hibát jelez.
     - **S5 / C1, C6:** bemutatott demó és összegző mondatok csak a ténylegesen rögzített teszteredményt állítják.
 - Nyitott tervezési akadályok: a helyi modell és agent integráció nincs ténylegesen kipróbálva; felvétel előtt ellenőrizni kell a pontos Ollama/Claude Code verziót, context-window beállítást, hozzáférési módot és a kalkulátor összes tesztjét. Ha az integráció nem helyi vagy a 16 GB memória kevés, a modell-/telepítési részt frissíteni kell.
