@@ -4,7 +4,7 @@ Cél: egy egyszerű témát végigvinni az ötletgyűjtéstől a Resolve Rough C
 A fő ellenőrzés a tényleges Resolve-timeline, lejátszással és képkockánkénti
 átnézéssel; a JSON-fájlok megléte önmagában nem siker.
 
-Állapot: **TODO — még nem futtatott terv.** Csak sikeresen ellenőrzött pontot pipálj ki.
+Állapot: **RÉSZLEGES — a staging Gomba 1 kimeneteinek dokumentumellenőrzése megtörtént; a teljesfolyamat-próba még nem futott le.** Csak sikeresen ellenőrzött pontot pipálj ki.
 Hibánál a pont maradjon nyitva; az eredményt és a következő teendőt lent rögzítsd.
 
 ## 1. Előkészítés és egyetlen teszteset
@@ -23,9 +23,9 @@ Hibánál a pont maradjon nyitva; az eredményt és a következő teendőt lent 
 A hivatkozott lépésfájlok szerint haladj; a Gomba 1 jóváhagyási kapuit tartsd meg.
 
 - [ ] **[gomba-0-idea-collector](gomba-0-idea-collector/WORKFLOW.md):** külön eredményfájl készül; a kiválasztott videó YouTube-forrása, dátuma, nézettsége, hossza és reprodukálhatósága ellenőrizhető, megfelel a workflow szűrőinek.
-- [ ] **[0-idea-intake](gomba-1-script-writer/0-idea-intake.md):** a `make gomba1-transcript` után a kiválasztott videóhoz tartozó `source-transcript.md` és `0-brief.md` készül; a registry és az ötletbe írt topic-ID egyezik. A briefet fogadd el.
-- [ ] **[1-story-hook](gomba-1-script-writer/1-story-hook.md):** elkészül az `1-story.md`, `1-thumbnail-prompt.md` és `1-outline-hyperframes-brief.md`; a cím, hook és outline ugyanazt az egyszerű demót ígéri.
-- [ ] **[2-chapter-planning](gomba-1-script-writer/2-chapter-planning.md):** a `2-chapters.md` tartalmazza a kötelező szerkezetet és a demó elvárt eredményét.
+- [x] **[0-idea-intake](gomba-1-script-writer/0-idea-intake.md):** a `make gomba1-transcript` után a kiválasztott videóhoz tartozó `source-transcript.md` és `0-brief.md` készül; a registry és az ötletbe írt topic-ID egyezik. A briefet fogadd el.
+- [x] **[1-story-hook](gomba-1-script-writer/1-story-hook.md):** elkészül az `1-story.md`, `1-thumbnail-prompt.md` és `1-outline-hyperframes-brief.md`; a cím, hook és outline ugyanazt az egyszerű demót ígéri.
+- [x] **[2-chapter-planning](gomba-1-script-writer/2-chapter-planning.md):** a `2-chapters.md` tartalmazza a kötelező szerkezetet és a demó elvárt eredményét.
 - [ ] **[3a-script-writing](gomba-1-script-writer/3a-script-writing.md):** a `3-script.md` követhető; a script-ID-k egyediek, a bemondások és kliptípusok helyesek, a vágói átadás teljes.
 - [ ] **[4-script-review](gomba-1-script-writer/4-script-review.md):** a `4-review.md` megfelelt döntést ad; javítás esetén az érintett lépést és review-t újra elvégzed. A végleges scriptet fogadd el.
 - [ ] **[5-shoot-preparation](gomba-1-script-writer/5-shoot-preparation.md):** az `5-preparation.md` alapján a demó és a felvétel előkészíthető; a tényleges demópróba sikerül. Ezután készítsd el az 1. pont felvételeit.
@@ -75,13 +75,18 @@ A terv átnézése után külön indítsd a `review` szakaszt.
 MVP-határ: egyetlen projekt és egy végigfutás. Több témás batch, pótfelvételi
 folytatás, eltérő FPS-ek mátrixa, export, címgrafika és képelhelyezés külön kör.
 
-## Futási jegyzet — TODO
+## Futási jegyzet — részleges staging-ellenőrzés
 
-- Dátum / tesztelő: TODO
-- Scriptmappa / felvételmappa / topic-ID: TODO
+- Dátum / tesztelő: 2026-11-13 / Codex — Git staging dokumentumellenőrzése; CLI-, demó- és Resolve-futtatás nélkül.
+- Scriptmappa: `projects/2-unlimited-claude-code-for/`; topic-ID: `2-unlimited-claude-code-for`; felvételmappa: még nincs igazolva.
 - Resolve-verzió / projektnév / projekt-ID: TODO
 - Felvételi sorrend → elvárt script-sorrend: TODO
 - Módosított marker: klip, eredeti hely → új hely: TODO
 - Jelöletlen tesztklip: TODO
-- Eredmény: TODO — PASS / FAIL
-- Hiba vagy következő teendő: TODO — skill, forrás/klip, elvárt és tényleges működés, bizonyíték útvonala.
+- Eredmény: RÉSZLEGES — 3 Gomba 1 dokumentumellenőrzési pont kész; teljesfolyamat-PASS még nem adható.
+- Ellenőrzési alap: a jelenlegi staging 11 fájlja megegyezett a munkafával. A meglévő Gomba 0 eredménylista csak topic-ID hivatkozással bővült; a collector szűrőinek és a külső videóadatoknak az ellenőrzése ebben a körben nem történt meg.
+- Intake bizonyíték: `projects/registry.json` — `K8lVHiFnN2A` → `2-unlimited-claude-code-for`, `transcript_ready: true`, `next_id: 3`; ugyanez az ID az ötletbejegyzésben és a briefben. A `source-transcript.md` ugyanahhoz a videóhoz tartozik. A `0-brief.md` végén a brief elfogadása és 2026-11-12-i felhasználói jóváhagyási referencia szerepel. A pipa a mentett kimenetek egyezésére és a dokumentált jóváhagyásra vonatkozik; a `make gomba1-transcript` parancsot nem futtattuk újra.
+- Történet és fejezetterv bizonyíték: `projects/2-unlimited-claude-code-for/1-story.md`, `1-thumbnail-prompt.md`, `1-outline-hyperframes-brief.md` és `2-chapters.md` ugyanazt a helyi modellel készítendő árrés-kalkulátort ígérik. Az outline négy pontjának szövege és sorrendje egyezik; a fejezetterv tartalmazza a H, O, C1–C6, CTA szerkezetet, a demóállapotokat és az elvárt ellenőrzéseket.
+- Nyitott script/review: `projects/2-unlimited-claude-code-for/4-review.md` döntése **nem felelt meg**. R1: konkrét kalkulátorfájlok és indítás hiányoznak; R2: pontos kontextusbeállítás és saját gépes próba hiányzik; R3: költség-/hozzáférés-magyarázat hiányzik a narrációból; R4: kötelező humoros vállalkozói hangvétel hiányzik. A teljes `3a-script-writing` és `4-script-review` pont ezért nyitva maradt.
+- Felkészülés bizonyítéka és korlátja: `projects/2-unlimited-claude-code-for/5-preparation.md` elkészült, de saját átadása szerint az R1–R4 javításait kihagyva, nyitott akadályokkal; telepítés és tényleges demópróba nem történt. Az `5-shoot-preparation` pont teljes feltétele nem igazolt.
+- Következő teendő: R1–R4 rendezése, ismételt scriptreview és külön végleges scriptjóváhagyás; utána demópróba, felvételek és a 3–6. szakasz tényleges Resolve-ellenőrzése. A későbbi fázisokhoz a stagingben nincs futási bizonyíték.

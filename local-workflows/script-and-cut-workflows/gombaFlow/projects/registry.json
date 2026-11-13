@@ -1,12 +1,18 @@
 {
   "version": 1,
-  "next_id": 2,
+  "next_id": 3,
   "videos": {
     "kT7nXO32L-Q": {
       "topic_id": "1-postgresql-hybrid-search-course",
       "project_dir": "1-postgresql-hybrid-search-course",
       "transcript_ready": true,
       "transcript": "projects/1-postgresql-hybrid-search-course/source-transcript.md"
+    },
+    "K8lVHiFnN2A": {
+      "topic_id": "2-unlimited-claude-code-for",
+      "project_dir": "2-unlimited-claude-code-for",
+      "transcript_ready": true,
+      "transcript": "projects/2-unlimited-claude-code-for/source-transcript.md"
     }
   }
 }
