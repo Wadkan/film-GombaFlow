@@ -425,6 +425,121 @@ class BrowserTests(unittest.TestCase):
         self.assertEqual([el["type"] for el in saved], ["Video", "Playlist", "Subscribe"])
         self.assertEqual(saved[1]["id"], META["playlistId"])
 
+    def test_language_waits_for_delayed_save_confirmation(self):
+        self.fault("delayed-save")
+        self.adapter.run()
+        self.assertEqual(self.output["steps"]["language"], "verified")
+        self.assertEqual(self.page.evaluate("localStorage.getItem('language')"), "hu")
+
+    def test_all_four_declarations_persist_and_retry_without_saving(self):
+        self.page.evaluate("""() => {
+            for (const key of ['kids','age','paid','ai']) localStorage.setItem('declaration-' + key, 'yes');
+            localStorage.setItem('fault', 'delayed-save');
+        }""")
+        self.adapter.run()
+        for key, _, _ in self.adapter.DECLARATIONS:
+            self.assertEqual(self.output["steps"][key], "verified")
+        for key in ("kids", "age", "paid", "ai"):
+            self.assertEqual(
+                self.page.evaluate("key => localStorage.getItem('declaration-' + key)", key), "no"
+            )
+        saves = self.page.evaluate("localStorage.getItem('saves')")
+        self.adapter.run()
+        self.assertEqual(self.page.evaluate("localStorage.getItem('saves')"), saves)
+
+    def test_declarations_lost_save_stops_before_language(self):
+        self.page.evaluate("localStorage.setItem('declaration-kids', 'yes')")
+        self.fault("declaration-save")
+        with self.assertRaises(AssertionError):
+            self.adapter.run()
+        self.assertEqual(self.output["steps"]["madeForKids"], "save-unverified")
+        self.assertEqual(self.output["steps"]["language"], "pending")
+
+    def test_language_without_confirmation_remains_unverified(self):
+        from playwright.sync_api import TimeoutError as PlaywrightTimeout
+
+        self.fault("save-no-confirmation")
+        with self.assertRaises(PlaywrightTimeout):
+            self.adapter.run()
+        self.assertEqual(self.output["steps"]["language"], "save-unverified")
+        self.assertEqual(self.output["steps"]["endscreen"], "pending")
+
+    def modern_replacement_fixture(self, labels, delayed_playlist):
+        self.page.set_content("""<div id="modern">
+            <ytve-endscreen-editor-options-panel></ytve-endscreen-editor-options-panel>
+            <div id="markers"></div>
+            <button onclick="window.labels.shift();renderMarkers()">Delete element</button>
+            <div role="gridcell" tabindex="0" aria-label="1 video, 1 playlist, 1 subscribe" onclick="applyTemplate()">Template</div>
+            <div id="playlist-select"><div role="button" tabindex="0" onclick="document.querySelector('ytcp-playlist-pick-dialog').hidden=false">Choose</div></div>
+            <ytve-endscreen-editor-playlist-element-options></ytve-endscreen-editor-playlist-element-options>
+            <button onclick="window.modernSaved=structuredClone(model);document.querySelector('#modern').hidden=true">Save</button>
+        </div>
+        <ytcp-playlist-pick-dialog hidden>
+            <input id="search-any" onkeydown="if(event.key==='Enter'){window.searches++;setTimeout(()=>renderCards(true),100)}">
+            <div id="cards"></div>
+        </ytcp-playlist-pick-dialog>
+        <script>
+            window.searches=0;
+            function renderMarkers(){document.querySelector('#markers').replaceChildren(...labels.map(label=>{
+                const e=document.createElement('ytve-endscreen-marker');e.setAttribute('aria-label',label);e.textContent=label;return e;
+            }))}
+            function applyTemplate(){
+                model={encryptedVideoId:videoId,elements:[
+                    {channelEndscreenElement:{isSubscribe:true,channelId:''}},
+                    {videoEndscreenElement:{videoType:'VIDEO_TYPE_BEST_FOR_VIEWER'}},
+                    {playlistEndscreenElement:{}}
+                ]};
+                labels=['Subscribe: Current','Video: Best for viewer','Playlist: ...'];renderMarkers();
+            }
+            function renderCards(includeTarget){
+                const ids=includeTarget?['PLwrong',playlistId]:['PLwrong'];
+                document.querySelector('#cards').replaceChildren(...ids.map(id=>{
+                    const c=document.createElement('ytcp-entity-card');c.textContent='Same playlist name';
+                    c.playlist={playlistId:id};c.onclick=()=>{
+                        model.elements[2].playlistEndscreenElement.playlistId=id;
+                        labels[2]='Playlist: Selected';renderMarkers();document.querySelector('ytcp-playlist-pick-dialog').hidden=true;
+                    };return c;
+                }));
+            }
+        </script>""")
+        self.page.evaluate(
+            """({initial, id, playlist, delayed}) => {
+            window.labels=initial;window.videoId=id;window.playlistId=playlist;
+            window.model={encryptedVideoId:id,elements:[]};
+            document.querySelector('ytve-endscreen-editor-playlist-element-options').polymerController={__store:{store:{getState:()=>({videoEditorState:{timelineHistory:{present:{editors:{ENDSCREEN:{endscreen:model}}}}}})}}};
+            renderMarkers();renderCards(!delayed);
+        }""",
+            {
+                "initial": labels,
+                "id": META["videoId"],
+                "playlist": META["playlistId"],
+                "delayed": delayed_playlist,
+            },
+        )
+        self.adapter.editor = self.page.locator("#modern")
+
+    def test_modern_layout_without_playlist_is_replaced_and_searches_by_id(self):
+        self.modern_replacement_fixture(["Video: Old", "Subscribe: Current"], True)
+        with patch.object(self.adapter, "open_endscreen"):
+            self.adapter.set_endscreen()
+        saved = self.page.evaluate("window.modernSaved")
+        self.assertEqual(len(saved["elements"]), 3)
+        self.assertEqual(
+            saved["elements"][2]["playlistEndscreenElement"]["playlistId"], META["playlistId"]
+        )
+        self.assertEqual(self.page.evaluate("window.searches"), 1)
+        self.assertEqual(
+            self.page.locator("#search-any").input_value(),
+            "https://www.youtube.com/playlist?list=" + META["playlistId"],
+        )
+
+    def test_modern_layout_with_duplicate_playlists_uses_loaded_card_without_search(self):
+        self.modern_replacement_fixture(["Playlist: Old A", "Playlist: Old B"], False)
+        with patch.object(self.adapter, "open_endscreen"):
+            self.adapter.set_endscreen()
+        self.assertEqual(self.page.evaluate("window.searches"), 0)
+        self.assertEqual(len(self.page.evaluate("window.modernSaved.elements")), 3)
+
     def test_modern_endscreen_verifies_saved_cache_and_prefers_edited_model(self):
         self.page.set_content("""<div id="modern">
             <ytve-endscreen-editor-options-panel></ytve-endscreen-editor-options-panel>

@@ -39,6 +39,23 @@
 <ytcp-navigation-drawer
     ><a id="channel">Your channel</a></ytcp-navigation-drawer
 >
+<div id="save-toast" hidden>Changes saved</div>
+<ytkc-made-for-kids-select>
+    <label><input type="radio" name="kids" value="yes">Yes, it's made for kids</label>
+    <label><input type="radio" name="kids" value="no" checked>No, it's not made for kids</label>
+</ytkc-made-for-kids-select>
+<ytcp-age-restriction-select>
+    <label><input type="radio" name="age" value="yes">Yes, restrict my video to viewers over 18</label>
+    <label><input type="radio" name="age" value="no" checked>No, don't restrict my video to viewers over 18 only</label>
+</ytcp-age-restriction-select>
+<ytcp-paid-product-placement-select>
+    <label><input type="radio" name="paid" value="yes">Yes, my video includes paid promotion</label>
+    <label><input type="radio" name="paid" value="no" checked>No, my video doesn’t include paid promotion</label>
+</ytcp-paid-product-placement-select>
+<ytkp-altered-content-select>
+    <label><input type="radio" name="ai" value="yes" aria-label="Yes, AI was used">Yes</label>
+    <label><input type="radio" name="ai" value="no" checked aria-label="No, AI wasn’t used">No</label>
+</ytkp-altered-content-select>
 <ytcp-video-metadata-editor>
     <a id="video">Video link</a>
     <button
@@ -164,15 +181,30 @@
             select.replaceWith(control);
         }
     }
+    for (const key of ['kids', 'age', 'paid', 'ai']) {
+        const saved = localStorage.getItem('declaration-' + key) || 'no';
+        document.querySelector(`input[name="${key}"][value="${saved}"]`).checked = true;
+        for (const radio of document.querySelectorAll(`input[name="${key}"]`)) {
+            radio.onchange = () => document.querySelector('#save-language').disabled = false;
+        }
+    }
     function saveLanguage(button) {
-        if (fault !== "language-save")
-            localStorage.setItem(
-                "language",
-                document.querySelector("select")?.value ||
-                    document.querySelector("[data-code]").dataset.code,
-            );
-        localStorage.setItem("saves", ++window.saves);
-        if (fault !== "language-timeout") button.disabled = true;
+        const language = document.querySelector('select')?.value || document.querySelector('[data-code]').dataset.code;
+        const declarations = Object.fromEntries(['kids','age','paid','ai'].map(key => [key, document.querySelector(`input[name="${key}"]:checked`).value]));
+        localStorage.setItem('saves', ++window.saves);
+        if (fault !== 'language-timeout') button.disabled = true;
+        const persist = () => {
+            if (fault !== 'language-save') localStorage.setItem('language', language);
+            if (fault !== 'declaration-save') {
+                for (const [key, value] of Object.entries(declarations)) localStorage.setItem('declaration-' + key, value);
+            }
+            if (fault !== 'save-no-confirmation') {
+                document.querySelector('#save-toast').hidden = false;
+                setTimeout(() => document.querySelector('#save-toast').hidden = true, 100);
+            }
+        };
+        if (fault === 'delayed-save') setTimeout(persist, 350);
+        else persist();
     }
     let draft = [],
         selected;

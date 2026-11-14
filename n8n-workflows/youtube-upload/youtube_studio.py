@@ -319,12 +319,15 @@ class Studio:
         else:
             control.click()
             self.page.get_by_role("option", name=self.language_name(), exact=True).click()
+        saved = self.page.get_by_text("Changes saved", exact=True)
+        saved.wait_for(state="hidden", timeout=self.timeout)
         self.result["steps"]["language"] = "save-unverified"
         self.button(self.page, "Save").click()
         # A disabled Save proves completion of the UI request, not persistence.
         from playwright.sync_api import expect
 
         expect(self.button(self.page, "Save")).to_be_disabled(timeout=self.timeout)
+        saved.wait_for(state="visible", timeout=self.timeout)
 
     def open_endscreen(self):
         self.button(self.page, "End screen").click()
@@ -396,6 +399,34 @@ class Studio:
             for c in cards.all()
             if c.evaluate(IDENTITY_JS, "playlist") == [self.meta["playlistId"]]
         ]
+        if not matches:
+            # Preserve the already-loaded match path. Search only when the requested
+            # ID is absent from the initially rendered owned-playlist cards.
+            search = chooser.locator("#search-any")
+            search.fill("https://www.youtube.com/playlist?list=" + self.meta["playlistId"])
+            search.press("Enter")
+            self.page.wait_for_function(
+                """({root, id, identity}) => {
+                    const identify = eval(identity);
+                    const contains = node => {
+                        if (node.matches?.('ytcp-entity-card') && identify(node, 'playlist').includes(id)) return true;
+                        if (node.shadowRoot && contains(node.shadowRoot)) return true;
+                        return [...(node.children || [])].some(contains);
+                    };
+                    return contains(root);
+                }""",
+                arg={
+                    "root": chooser.element_handle(),
+                    "id": self.meta["playlistId"],
+                    "identity": IDENTITY_JS,
+                },
+                timeout=self.timeout,
+            )
+            matches = [
+                c
+                for c in cards.all()
+                if c.evaluate(IDENTITY_JS, "playlist") == [self.meta["playlistId"]]
+            ]
         if len(matches) != 1:
             raise StudioError(
                 "PLAYLIST_MISMATCH", "A playlist nem választható ki ID alapján egyértelműen."
@@ -417,6 +448,11 @@ class Studio:
         return self.elements().filter(has=self.page.get_by_text(name, exact=True))
 
     def endscreen_matches(self):
+        if self.editor.locator("ytve-endscreen-editor-options-panel").count():
+            # A layout without exactly one playlist cannot match the requested template,
+            # but is still replaceable through the existing delete/template UI path.
+            if self.editor.locator('ytve-endscreen-marker[aria-label^="Playlist:"]').count() != 1:
+                return False
         model = self.modern_endscreen()
         if model is not None:
             elements = model.get("elements", [])
@@ -454,7 +490,7 @@ class Studio:
 
     def set_endscreen(self):
         self.open_endscreen()
-        if self.modern_endscreen() is not None:
+        if self.editor.locator("ytve-endscreen-editor-options-panel").count():
             return self.set_modern_endscreen()
         if self.endscreen_matches():
             self.close_endscreen()
