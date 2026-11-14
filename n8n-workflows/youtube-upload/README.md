@@ -26,31 +26,39 @@ A Playwright és tranzitív Python-függőségei rögzített verziójúak;
 a böngészőverziót a Playwright telepítője választja hozzájuk.
 Telepítési referencia: [Playwright Python](https://playwright.dev/python/docs/library).
 
-## Első kézi bejelentkezés
+## Kapcsolódás a bejelentkezett Chrome-hoz
 
-```sh
-make -C n8n-workflows/youtube-upload login
-```
+A `studio` target Playwright scripttel, CDP-n kapcsolódik a már futó Chrome-hoz.
+Nem indít külön böngészőt, nem másol profilt vagy munkamenetsütiket.
+A Chrome 144+ `chrome://inspect/#remote-debugging` oldalán engedélyezd a távoli
+hibakeresést, és fogadd el a Chrome kapcsolódási kérését, ha megjelenik.
+A megfelelő Google-fiók és YouTube-csatorna ebben a Chrome-ban legyen bejelentkezve.
+Forrás: [Chrome beállítások](https://developer.chrome.com/docs/devtools/agents/get-started/configuration/),
+[Playwright CDP](https://playwright.dev/python/docs/api/class-browsertype#browser-type-connect-over-cdp).
 
-A megnyitott Chromiumban jelentkezz be kézzel a Google-fiókba, válaszd ki
-a megfelelő csatornát, majd zárd be a böngészőablakot. Erre 10 perc van.
-A script nem olvas jelszót, nem kezeli automatikusan a belépést és nem készít
-bejelentkezési képernyőképet. A Google által kért ellenőrzések kézi feladatok;
-a bejelentkezési korlátozásokat nem kerüli meg.
-A `login-window-closed` eredmény csak az ablak lezárását jelenti;
-a munkamenetet és a csatornát a következő `studio` futás ellenőrzi.
+A `CDP_ENDPOINT=auto` alapérték a Playwright 1.65 beépített `chrome`
+felderítését használja, amely a Chrome helyi hibakeresési portját olvassa és
+az új `/devtools/browser` végponthoz kapcsolódik. A rögzített 1.65 verzió az új Chrome-kapcsolódást és a kapcsolódást
+blokkoló alvó lapok javítását is tartalmazza.
+Forrás: [Playwright #41714](https://github.com/microsoft/playwright/issues/41714).
+A Chrome minden új kapcsolódásnál ismételt engedélyt kérhet; erre a script
+legfeljebb 120 másodpercet vár. A `no_defaults=True` megőrzi a csatlakoztatott
+böngésző beállításait. Más Chrome-kiadás vagy egyedi
+adatkönyvtár esetén add meg a címet a `CDP_ENDPOINT` Make-változóban vagy a
+script `--cdp-endpoint` paraméterével. A közvetlen CLI alapértéke a
+`YOUTUBE_STUDIO_CDP_ENDPOINT` környezeti változóval is megadható.
+Csak helyi, porttal megadott HTTP/WS cím fogadható el.
+Sikertelen kapcsolódáskor `CDP_CONNECTION_FAILED` hibával megáll; nincs új böngészős fallback.
 
-A külön tartós profil helye:
-`~/.config/film-gombaflow/youtube-studio/` (könyvtárjogosultság: `700`).
-Ez helyi munkamenettitkokat tartalmaz: ne másold a repóba, ne oszd meg.
-A mindennapi Chrome-profilt a script nem használja. Egy profilhoz egyszerre
-csak egy `login` vagy `studio` folyamat tartozhat.
+A script saját új Studio-lapon dolgozik, és a Chrome-környezetben ellenőrzi
+az aktív csatornát. Más laphoz nem nyúl. Siker és hiba után is nyitva hagyja
+a lapot és a böngészőt. Az Ask Studio előkészítése után azonnal visszaadja
+az eredményt és lekapcsolódik; a kézi munkához nem kell a teljes böngészőt bezárni.
+Egy CDP-címhez egyszerre egy helyi Studio-futás kapcsolódhat.
 
-Mindkét target felülírható `PYTHON=/teljes/út/python` és
-`PROFILE=/repón/kívül/youtube-studio` paraméterrel. A profil utolsó
-útvonaleleme kötelezően `youtube-studio`; repón belüli vagy symlinkkel oda
-mutató útvonal elutasított. Lejárt/hiányzó munkamenetnél a `studio`
-`LOGIN_REQUIRED` hibát és a `login` parancsot adja, nem vár belépésre.
+A régi `login` parancs kizárólag külön kérésre használható, külön profilos
+munkamenet létrehozására; a `studio` target nem használja ezt a profilt.
+A napi Chrome-profil indítását vagy másolását ez a parancs továbbra sem végzi.
 
 ## Futtatás
 
@@ -69,6 +77,25 @@ playlistjei között a JSON-playlist jelenlétét ellenőrzi. A megjelenített n
 nem azonosítási bizonyíték. A böngészőben renderelt, megfelelően szűkített
 komponensek linkjeit és a Studio-komponensek olvasható adatmodelljét vizsgálja;
 ha az ID nem állapítható meg egyértelműen, megáll.
+
+A script az azonosítás után négy kötelező alapbeállítást is alkalmaz:
+
+- Paid promotion: „No, my video doesn’t include paid promotion”.
+- AI use: „No, AI wasn’t used”.
+- Age restriction: „No, don't restrict my video to viewers over 18 only”.
+- Audience: „No, it's not made for kids”.
+
+Előbb a not-made-for-kids választást állítja, majd megnyitja az Age restriction
+és Show more részeket, amikor szükséges. A rádiógombokat a saját Studio-
+komponensükre szűkíti, így az azonos „No” feliratok nem keveredhetnek össze.
+Csak eltérés esetén ment; megvárja a „Changes saved” visszajelzést, mert a Save
+gomb a még folyamatban lévő kérés alatt is letiltott. Csak ezután tölti újra
+az oldalt, és igazolja mind a négy kijelölést.
+A `steps.madeForKids`, `steps.ageRestriction`, `steps.paidPromotion` és
+`steps.aiUse` külön jelzi a pending / save-unverified / verified állapotot.
+Sikertelen mentési ellenőrzéskor nem folytatja a következő Studio-lépést.
+Ezek a user által kért, rögzített alapértékek; más tartalmú videónál a futtatás
+előtt a workflow követelményeit és a script beállításait egyeztetni kell.
 
 A beszélt videó „Video language” mezőjét állítja, menti, majd teljes
 újratöltés után ellenőrzi. Az összetett nyelvválasztónál a lenyitott opció
@@ -90,7 +117,7 @@ made-for-kids videóknál); lásd a
 [YouTube feltételeit](https://support.google.com/youtube/answer/6388789?hl=en).
 Nem támogatott UI, hiányzó vezérlő, eltérő ID vagy lejárt várakozás hibát eredményez.
 A vezérlőnkénti timeout 20 másodperc, az indításé 30 másodperc;
-nincs automatikus mentési retry vagy koordinátás kattintás. Az automatizált UI-műveletek várakozása korlátos; a kézi átvétel az ablak bezárásáig tart.
+nincs automatikus mentési retry vagy koordinátás kattintás. Az automatizált UI-műveletek várakozása korlátos; a kézi átvételkor a script lekapcsolódik.
 
 ## Ask Studio és kézi átvétel
 
@@ -111,14 +138,11 @@ nem ír felül. Az „Ask something” mezőbe thumbnail készítésére kérő 
 és a JSON teljes promptját illeszti, majd ellenőrzi a mezőt. Nem nyom Entert,
 nem küldi el a promptot, és nem indít generálást vagy képfeltöltést.
 
-A böngésző előtérbe kerül. A script stderrre azonnal jelzi a kézi átvételt;
-a folyamat és a profilzár az ablak bezárásáig életben marad. Ekkor a stdout
-végső JSON-ja visszaadja az automatizált előkészítés eredményét. A hívó agent
-ne várjon a kézi munkára a chatválasszal: az átadás jelzésekor tájékoztassa a
-usert, és hagyja futni a terminálfolyamatot. A kézi generálás eredményét a script
-nem ellenőrzi. Hiányzó Ask Studio vagy nem igazolható kontextus külön
-`thumbnail` hibát ad; a korábbi `verified` beállítások megmaradnak. Ez nem ok
-az n8n-frissítés megismétlésére.
+A Studio-lap előtérbe kerül. A script stderrre jelzi a kézi átvételt,
+stdouton visszaadja a végső JSON-eredményt, majd lekapcsolódik a Chrome-ról.
+A lap és a böngésző nyitva marad. A kézi generálás eredményét nem ellenőrzi.
+Hiányzó Ask Studio vagy nem igazolható kontextus külön `thumbnail` hibát ad;
+a korábbi `verified` beállítások megmaradnak. Ez nem ok az n8n-frissítés megismétlésére.
 
 Az Ask Studio angol feliratát, mezőjét és videóválasztóját a natív Chrome
 felületén ellenőriztük. Az ID-t adó DOM-adatok és a teljes Playwright-futás

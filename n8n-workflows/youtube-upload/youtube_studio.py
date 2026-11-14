@@ -15,7 +15,7 @@ from urllib.parse import urlparse
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 PROFILE = pathlib.Path.home() / ".config/film-gombaflow/youtube-studio"
 ORIGIN = "https://studio.youtube.com"
-LOGIN_HELP = "Futtasd: make -C n8n-workflows/youtube-upload login; jelentkezz be kézzel."
+LOGIN_HELP = "A csatlakoztatott Chrome-ban jelentkezz be a megfelelő YouTube-csatornába."
 
 
 class StudioError(Exception):
@@ -65,17 +65,6 @@ def thumbnail_message(meta):
         "Készíts ehhez a kiválasztott videóhoz YouTube-thumbnailt az alábbi "
         "képgenerálási prompt alapján:\n\n" + meta["thumbnailPrompt"]
     )
-
-
-def manual_handoff(context):
-    # Register before announcing readiness, keeping the driver and profile lock alive.
-    with context.expect_event("close", timeout=0):
-        print(
-            "Az Ask Studio promptja kitöltve, nincs elküldve. Innen te veszed át; "
-            "a futás a böngésző bezárásáig vár.",
-            file=sys.stderr,
-            flush=True,
-        )
 
 
 def profile_path(value):
@@ -161,7 +150,7 @@ class Studio:
                 .filter(has_not=native)
                 .filter(has_not=custom)
             )
-        )
+        ).filter(visible=True)
 
     def require_identity(self, scope, kind, expected):
         scope.wait_for(state="visible")
@@ -178,7 +167,7 @@ class Studio:
         if self.page.get_by_role("link", name="Sign in", exact=True).is_visible():
             raise StudioError("LOGIN_REQUIRED", LOGIN_HELP)
 
-    def open_details(self):
+    def open_details(self, check_playlist=True):
         self.page.goto(
             f"{ORIGIN}/video/{self.meta['videoId']}/edit?hl=en", wait_until="domcontentloaded"
         )
@@ -192,18 +181,28 @@ class Studio:
         self.require_identity(
             self.page.locator("ytcp-video-metadata-editor"), "video", self.meta["videoId"]
         )
-        self.check_membership()
+        if check_playlist:
+            self.check_membership()
 
     def check_membership(self):
         self.button(self.page, re.compile(r"^(?:Select playlists|Playlists)$")).click()
-        dialog = self.page.locator("ytcp-playlist-dialog")
+        dialog = self.page.locator(
+            "ytcp-playlist-dialog, ytcp-playlist-dialog tp-yt-paper-dialog"
+        ).filter(visible=True)
         dialog.wait_for(state="visible")
         selected = dialog.locator(
-            'ytcp-playlist-row:has([aria-checked="true"]), ytcp-playlist-row[selected]'
+            'ytcp-playlist-row:has([aria-checked="true"]), ytcp-playlist-row[selected], '
+            'ytcp-checkbox-lit[test-id]:has([aria-checked="true"])'
         )
+        from playwright.sync_api import expect
+
+        expect(selected).not_to_have_count(0, timeout=self.timeout)
         ids = []
         for row in selected.all():
             ids.extend(row.evaluate(IDENTITY_JS, "playlist"))
+            test_id = row.get_attribute("test-id")
+            if test_id:
+                ids.append(test_id)
         if self.meta["playlistId"] not in ids:
             raise StudioError(
                 "PLAYLIST_MISMATCH",
@@ -211,6 +210,65 @@ class Studio:
             )
         self.button(dialog, "Done").click()
         dialog.wait_for(state="hidden")
+
+    # Scope identical Yes/No labels to their actual Studio components.
+    DECLARATIONS = (
+        ("madeForKids", "ytkc-made-for-kids-select", r"^No, it.s not made for kids$"),
+        (
+            "ageRestriction",
+            "ytcp-age-restriction-select",
+            r"^No, don.t restrict my video to viewers over 18 only$",
+        ),
+        (
+            "paidPromotion",
+            "ytcp-paid-product-placement-select",
+            r"^No, my video doesn.t include paid promotion$",
+        ),
+        ("aiUse", "ytkp-altered-content-select", r"^No(?:, AI wasn.t used)?$"),
+    )
+
+    def declaration_control(self, key, component, label):
+        control = self.page.locator(component).get_by_role("radio", name=re.compile(label))
+        if not control.is_visible():
+            if key == "ageRestriction":
+                expand = self.button(self.page, re.compile(r"^Age restriction"))
+            else:
+                expand = self.button(self.page, "Show more")
+            if expand.is_visible():
+                expand.click()
+        control.wait_for(state="visible")
+        return control
+
+    def set_declarations(self):
+        from playwright.sync_api import expect
+
+        changed = []
+        # Selecting not-made-for-kids first makes the age restriction control available.
+        for key, component, label in self.DECLARATIONS:
+            self.result["steps"].setdefault(key, "pending")
+            control = self.declaration_control(key, component, label)
+            if not control.is_checked():
+                control.click()
+                expect(control).to_be_checked(timeout=self.timeout)
+                changed.append(key)
+        if changed:
+            saved = self.page.get_by_text("Changes saved", exact=True)
+            saved.wait_for(state="hidden", timeout=self.timeout)
+            for key in changed:
+                self.result["steps"][key] = "save-unverified"
+            self.button(self.page, "Save").click()
+            expect(self.button(self.page, "Save")).to_be_disabled(timeout=self.timeout)
+            # Save is disabled while the request is still in flight. Wait for the
+            # completion toast before navigation, otherwise the request can be cancelled.
+            saved.wait_for(state="visible", timeout=self.timeout)
+
+    def verify_declarations(self):
+        from playwright.sync_api import expect
+
+        for key, component, label in self.DECLARATIONS:
+            control = self.declaration_control(key, component, label)
+            expect(control).to_be_checked(timeout=self.timeout)
+            self.result["steps"][key] = "verified"
 
     def language_control(self):
         control = (
@@ -270,8 +328,87 @@ class Studio:
 
     def open_endscreen(self):
         self.button(self.page, "End screen").click()
-        self.editor = self.page.locator("ytcp-endscreen-editor, ytve-endscreen-editor")
+        self.editor = self.page.locator(
+            "ytcp-endscreen-editor, ytve-endscreen-editor, ytve-modal-host tp-yt-paper-dialog"
+        ).filter(visible=True)
         self.editor.wait_for(state="visible")
+
+    def modern_endscreen(self):
+        if not self.editor.locator("ytve-endscreen-editor-options-panel").count():
+            return None
+        markers = self.editor.locator("ytve-endscreen-marker[aria-label]")
+        if not markers.count():
+            return {"encryptedVideoId": self.meta["videoId"], "elements": []}
+        playlist = self.editor.locator('ytve-endscreen-marker[aria-label^="Playlist:"]')
+        if playlist.count() != 1:
+            raise StudioError(
+                "UNSUPPORTED_LAYOUT", "A meglévő elrendezés playlist-eleme nem egyértelmű."
+            )
+        playlist.click()
+        self.editor.locator("ytve-endscreen-editor-playlist-element-options").wait_for(
+            state="attached"
+        )
+        model = self.editor.locator("ytve-endscreen-editor-playlist-element-options").evaluate(
+            """(e, id) => {
+                const state = e.polymerController?.__store?.store?.getState?.();
+                return state?.videoEditorState?.timelineHistory?.present?.editors?.ENDSCREEN?.endscreen
+                    ?? state?.entityCache?.entitiesWithoutMask?.['#CreatorEndscreenData']?.[id]?.data;
+            }""",
+            self.meta["videoId"],
+        )
+        models = [model] if model else []
+        if len(models) != 1 or models[0].get("encryptedVideoId") != self.meta["videoId"]:
+            raise StudioError(
+                "ENDSCREEN_MODEL_UNVERIFIED", "A videó záróképernyő-modellje nem igazolható."
+            )
+        return models[0]
+
+    def close_endscreen(self):
+        self.button(self.editor, re.compile(r"^(?:Cancel|Discard changes)$")).click()
+
+    def set_modern_endscreen(self):
+        from playwright.sync_api import expect
+
+        if self.endscreen_matches():
+            self.close_endscreen()
+            return
+        markers = self.editor.locator("ytve-endscreen-marker[aria-label]")
+        for _ in range(4):
+            if not markers.count():
+                break
+            before = markers.count()
+            markers.first.click()
+            self.button(self.editor, "Delete element").click()
+            expect(markers).to_have_count(before - 1, timeout=self.timeout)
+        if markers.count():
+            raise StudioError("UNSUPPORTED_LAYOUT", "A záróképernyő nem üríthető biztonságosan.")
+        self.editor.get_by_role(
+            "gridcell", name="1 video, 1 playlist, 1 subscribe", exact=True
+        ).click()
+        expect(markers).to_have_count(3, timeout=self.timeout)
+        self.editor.locator('ytve-endscreen-marker[aria-label^="Playlist:"]').click()
+        self.editor.locator('#playlist-select div[role="button"]').click()
+        chooser = self.page.locator("ytcp-playlist-pick-dialog")
+        cards = chooser.locator("ytcp-entity-card")
+        chooser.locator("#search-any").wait_for(state="visible")
+        matches = [
+            c
+            for c in cards.all()
+            if c.evaluate(IDENTITY_JS, "playlist") == [self.meta["playlistId"]]
+        ]
+        if len(matches) != 1:
+            raise StudioError(
+                "PLAYLIST_MISMATCH", "A playlist nem választható ki ID alapján egyértelműen."
+            )
+        matches[0].click()
+        expect(
+            self.editor.locator('ytve-endscreen-marker[aria-label="Playlist: ..."]')
+        ).to_have_count(0, timeout=self.timeout)
+        if not self.endscreen_matches():
+            raise StudioError("ENDSCREEN_VALUES", "A három elem nem igazolható mentés előtt.")
+        self.result["steps"]["endscreen"] = "save-unverified"
+        self.button(self.editor, "Save").click()
+        self.editor.wait_for(state="hidden")
 
     def elements(self):
         return self.editor.locator("ytcp-endscreen-element, ytve-endscreen-element")
@@ -280,6 +417,26 @@ class Studio:
         return self.elements().filter(has=self.page.get_by_text(name, exact=True))
 
     def endscreen_matches(self):
+        model = self.modern_endscreen()
+        if model is not None:
+            elements = model.get("elements", [])
+            if len(elements) != 3:
+                return False
+            videos = [e["videoEndscreenElement"] for e in elements if "videoEndscreenElement" in e]
+            playlists = [
+                e["playlistEndscreenElement"] for e in elements if "playlistEndscreenElement" in e
+            ]
+            channels = [
+                e["channelEndscreenElement"] for e in elements if "channelEndscreenElement" in e
+            ]
+            return (
+                len(videos) == len(playlists) == len(channels) == 1
+                and videos[0].get("videoType") == "VIDEO_TYPE_BEST_FOR_VIEWER"
+                and playlists[0].get("playlistId") == self.meta["playlistId"]
+                and channels[0].get("isSubscribe") is True
+                and (channels[0].get("channelId") or self.meta["youtubeChannelId"])
+                == self.meta["youtubeChannelId"]
+            )
         if self.elements().count() != 3:
             return False
         if any(self.element(name).count() != 1 for name in ("Video", "Playlist", "Subscribe")):
@@ -297,8 +454,10 @@ class Studio:
 
     def set_endscreen(self):
         self.open_endscreen()
+        if self.modern_endscreen() is not None:
+            return self.set_modern_endscreen()
         if self.endscreen_matches():
-            self.button(self.editor, "Cancel").click()
+            self.close_endscreen()
             return
         # Replace the full layout instead of appending; repeated runs cannot duplicate it.
         for _ in range(4):  # YouTube supports at most four elements.
@@ -361,6 +520,10 @@ class Studio:
         self.result["step"] = "identity"
         self.open_details()
         self.result["steps"]["identity"] = "verified"
+        self.result["step"] = "declarations"
+        self.set_declarations()
+        self.open_details(check_playlist=False)
+        self.verify_declarations()
         self.result["step"] = "language"
         self.set_language()
         self.open_details()  # Full navigation, not an optimistic in-memory value.
@@ -375,7 +538,7 @@ class Studio:
             raise StudioError(
                 "ENDSCREEN_NOT_SAVED", "Újranyitás után nem igazolható mindhárom záróképernyő-elem."
             )
-        self.button(self.editor, "Cancel").click()
+        self.close_endscreen()
         self.result["steps"]["endscreen"] = "verified"
         self.result.update(status="success", step="verification")
 
@@ -386,16 +549,17 @@ class Studio:
         self.result.update(status="error", step="thumbnail")
         self.result["steps"]["thumbnail"] = "pending"
         self.check_session()
-        self.button(self.page, "Ask Studio").click()
         heading = self.page.get_by_role("heading", name="Ask Studio", exact=True)
+        if not heading.is_visible():
+            self.button(self.page, "Ask Studio").click()
         heading.wait_for(state="visible")
-        self.page.get_by_role("textbox", name="Ask something", exact=True).wait_for(state="visible")
+        self.page.get_by_label("Ask something", exact=True).wait_for(state="visible")
         panel = heading.locator("xpath=..")
         for _ in range(8):
-            if panel.get_by_role("textbox", name="Ask something", exact=True).count():
+            if panel.get_by_label("Ask something", exact=True).count():
                 break
             panel = panel.locator("xpath=..")
-        prompt = panel.get_by_role("textbox", name="Ask something", exact=True)
+        prompt = panel.get_by_label("Ask something", exact=True)
         prompt.wait_for(state="visible")
         existing = (
             prompt.input_value()
@@ -420,6 +584,15 @@ class Studio:
     def attach_thumbnail_video(self, panel):
         if panel.get_by_role("button", name="Remove", exact=True).count():
             # Existing context must have independent ID evidence; never replace it silently.
+            images = panel.locator('img[src*="/vi/"], img[src*="/vi_webp/"]')
+            expected = panel.locator(
+                f'img[src*="/vi/{self.meta["videoId"]}/"], img[src*="/vi_webp/{self.meta["videoId"]}/"]'
+            )
+            if (
+                images.count() == expected.count() == 1
+                and panel.get_by_role("button", name="Remove", exact=True).count() == 1
+            ):
+                return
             self.require_identity(panel, "video", self.meta["videoId"])
             return
         self.button(panel, "Add files, reference videos, and more").click()
@@ -440,23 +613,101 @@ class Studio:
             raise StudioError(
                 "ASK_STUDIO_VIDEO_UNVERIFIED", "A kiválasztott videó címkéje nem igazolható."
             )
-        image.click()
+        option = image.locator('xpath=ancestor::*[@role="option" or self::button][1]')
+        (option if option.count() else image).click()
         videos.wait_for(state="hidden")
         self.button(panel, title).wait_for(state="visible")
         self.button(panel, "Remove").wait_for(state="visible")
+
+
+def cdp_endpoint(value):
+    if value == "auto":
+        # Playwright 1.65 resolves Chrome's UI-enabled debugging endpoint natively.
+        return "chrome"
+    try:
+        parsed = urlparse(value)
+        valid = (
+            parsed.scheme in {"http", "ws"}
+            and parsed.hostname in {"localhost", "127.0.0.1", "::1"}
+            and parsed.port is not None
+            and not parsed.username
+            and not parsed.password
+            and not parsed.query
+            and not parsed.fragment
+        )
+    except ValueError:
+        valid = False
+    if not valid:
+        raise StudioError(
+            "INVALID_CDP_ENDPOINT", "Porttal megadott helyi HTTP vagy WebSocket CDP-cím szükséges."
+        )
+    return value
+
+
+def execute_connected(playwright, endpoint, meta, result):
+    from playwright.sync_api import Error
+
+    # Never launch, close, or copy the user's browser/profile. Playwright disconnects
+    # when its driver exits; the new Studio tab remains available for manual work.
+    print(
+        "Kapcsolódás a futó Chrome-hoz; ha új engedélykérés jelenik meg, fogadd el.",
+        file=sys.stderr,
+        flush=True,
+    )
+    try:
+        browser = playwright.chromium.connect_over_cdp(endpoint, timeout=120000, no_defaults=True)
+    except Error as exc:
+        raise StudioError(
+            "CDP_CONNECTION_FAILED",
+            "A Chrome CDP-kapcsolata vagy meglévő lapjainak inicializálása nem fejeződött be. "
+            "Ez kapcsolati, engedélyezési vagy nem válaszoló lapból eredő hiba is lehet; "
+            "a videó módosítása még nem indult el.",
+        ) from exc
+    print("Chrome csatlakoztatva; a Studio ellenőrzése indul.", file=sys.stderr, flush=True)
+    if len(browser.contexts) != 1:
+        raise StudioError(
+            "BROWSER_CONTEXT_AMBIGUOUS", "Pontosan egy Chrome böngészőkörnyezet szükséges."
+        )
+    page = browser.contexts[0].new_page()
+    page.bring_to_front()
+    try:
+        adapter = Studio(page, meta, result)
+        adapter.run()
+        adapter.prepare_thumbnail()
+        page.bring_to_front()
+        print(
+            "Az Ask Studio promptja kitöltve, nincs elküldve. A Chrome-lap nyitva marad; innen te veszed át.",
+            file=sys.stderr,
+            flush=True,
+        )
+    except (Error, AssertionError) as exc:
+        if urlparse(page.url).netloc != urlparse(ORIGIN).netloc:
+            raise StudioError("LOGIN_REQUIRED", LOGIN_HELP) from exc
+        raise StudioError(
+            "UI_NOT_VERIFIABLE",
+            "A Studio UI vagy mentése nem igazolható; ellenőrizd a nyitva hagyott Studio-lapot.",
+        ) from exc
 
 
 def execute(args, result):
     meta = read_meta(args.meta.expanduser().resolve()) if args.command == "studio" else None
     if meta:
         result["videoId"] = meta["videoId"]
-    profile = profile_path(args.profile)
     try:
         from playwright.sync_api import Error, sync_playwright
     except ImportError as exc:
         raise StudioError(
             "DEPENDENCY_MISSING", "Telepítsd a requirements.txt függőségeit a README szerint."
         ) from exc
+    if args.command == "studio":
+        endpoint = cdp_endpoint(args.cdp_endpoint)
+        lock_key = pathlib.Path("/tmp") / (
+            "youtube-cdp-" + hashlib.sha256(endpoint.encode()).hexdigest()
+        )
+        with profile_lock(lock_key), sync_playwright() as playwright:
+            execute_connected(playwright, endpoint, meta, result)
+        return
+    profile = profile_path(args.profile)
     with profile_lock(profile), sync_playwright() as playwright:
         if not profile.exists() and args.command == "studio":
             raise StudioError("LOGIN_REQUIRED", LOGIN_HELP)
@@ -486,11 +737,6 @@ def execute(args, result):
                 # No input(), password access, page dumps, or authentication screenshots.
                 context.wait_for_event("close", timeout=600000)
                 result.update(status="success", step="login-window-closed", sessionVerified=False)
-            else:
-                adapter = Studio(page, meta, result)
-                adapter.run()
-                adapter.prepare_thumbnail()
-                manual_handoff(context)
         except (Error, AssertionError) as exc:
             # A login redirect can occur while an expected Studio component is awaited.
             if args.command == "studio" and urlparse(page.url).netloc != urlparse(ORIGIN).netloc:
@@ -508,14 +754,26 @@ def main(argv=None):
     sub = parser.add_subparsers(dest="command", required=True)
     for command in ("login", "studio"):
         child = sub.add_parser(command)
-        child.add_argument("--profile", default=str(PROFILE))
         if command == "studio":
             child.add_argument("meta", type=pathlib.Path)
+            child.add_argument(
+                "--cdp-endpoint", default=os.environ.get("YOUTUBE_STUDIO_CDP_ENDPOINT", "auto")
+            )
+        else:
+            child.add_argument("--profile", default=str(PROFILE))
     args = parser.parse_args(argv)
     result = {
         "status": "error",
         "step": "input",
-        "steps": {"identity": "pending", "language": "pending", "endscreen": "pending"},
+        "steps": {
+            "identity": "pending",
+            "madeForKids": "pending",
+            "ageRestriction": "pending",
+            "paidPromotion": "pending",
+            "aiUse": "pending",
+            "language": "pending",
+            "endscreen": "pending",
+        },
     }
     try:
         execute(args, result)
@@ -532,7 +790,7 @@ def main(argv=None):
             message=message,
         )
         result["partialSuccess"] = any(
-            result["steps"][s] == "verified" for s in ("language", "endscreen")
+            state == "verified" for key, state in result["steps"].items() if key != "identity"
         )
         result["uncertainSteps"] = [
             s for s, state in result["steps"].items() if state == "save-unverified"

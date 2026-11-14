@@ -137,15 +137,51 @@ class InputTests(unittest.TestCase):
         self.assertEqual(output["uncertainSteps"], ["endscreen"])
         self.assertEqual(output["step"], "endscreen")
 
-    def test_manual_handoff_listens_before_announcing_and_waits_for_close(self):
+    def test_cdp_endpoint_rejects_remote_or_credentialed_addresses(self):
+        for address in [
+            "https://example.com:9222",
+            "http://example.com:9222",
+            "http://localhost",
+            "http://user:secret@localhost:9222",
+            "ws://127.0.0.1:99999",
+            "file:///tmp/socket",
+        ]:
+            with self.subTest(address=address), self.assertRaises(studio.StudioError):
+                studio.cdp_endpoint(address)
+        self.assertEqual(studio.cdp_endpoint("http://127.0.0.1:9222"), "http://127.0.0.1:9222")
+
+    def test_cdp_auto_uses_native_chrome_discovery(self):
+        self.assertEqual(studio.cdp_endpoint("auto"), "chrome")
+
+    def test_connected_handoff_keeps_browser_context_and_tab_open(self):
+        playwright = MagicMock()
+        browser = playwright.chromium.connect_over_cdp.return_value
         context = MagicMock()
-        with patch("builtins.print") as announce:
-            studio.manual_handoff(context)
-        context.expect_event.assert_called_once_with("close", timeout=0)
-        context.expect_event.return_value.__enter__.assert_called_once()
-        context.expect_event.return_value.__exit__.assert_called_once()
-        self.assertTrue(announce.call_args.kwargs["flush"])
+        browser.contexts = [context]
+        with patch.object(studio, "Studio") as adapter, patch("builtins.print"):
+            studio.execute_connected(playwright, "http://127.0.0.1:9222", META, result())
+        playwright.chromium.connect_over_cdp.assert_called_once_with(
+            "http://127.0.0.1:9222", timeout=120000, no_defaults=True
+        )
+        adapter.return_value.run.assert_called_once()
+        adapter.return_value.prepare_thumbnail.assert_called_once()
+        context.new_page.assert_called_once()
+        browser.close.assert_not_called()
         context.close.assert_not_called()
+        context.new_page.return_value.close.assert_not_called()
+        playwright.chromium.launch.assert_not_called()
+        playwright.chromium.launch_persistent_context.assert_not_called()
+
+    def test_cdp_failure_never_launches_browser(self):
+        from playwright.sync_api import Error
+
+        playwright = MagicMock()
+        playwright.chromium.connect_over_cdp.side_effect = Error("refused")
+        with self.assertRaises(studio.StudioError) as failure:
+            studio.execute_connected(playwright, "http://127.0.0.1:9222", META, result())
+        self.assertEqual(failure.exception.code, "CDP_CONNECTION_FAILED")
+        playwright.chromium.launch.assert_not_called()
+        playwright.chromium.launch_persistent_context.assert_not_called()
 
 
 class Handler(http.server.BaseHTTPRequestHandler):
@@ -388,6 +424,52 @@ class BrowserTests(unittest.TestCase):
         saved = json.loads(self.page.evaluate("localStorage.getItem('elements')"))
         self.assertEqual([el["type"] for el in saved], ["Video", "Playlist", "Subscribe"])
         self.assertEqual(saved[1]["id"], META["playlistId"])
+
+    def test_modern_endscreen_verifies_saved_cache_and_prefers_edited_model(self):
+        self.page.set_content("""<div id="modern">
+            <ytve-endscreen-editor-options-panel></ytve-endscreen-editor-options-panel>
+            <ytve-endscreen-marker aria-label="Playlist: Test">Playlist</ytve-endscreen-marker>
+            <ytve-endscreen-editor-playlist-element-options></ytve-endscreen-editor-playlist-element-options>
+        </div>""")
+        model = {
+            "encryptedVideoId": META["videoId"],
+            "elements": [
+                {"channelEndscreenElement": {"isSubscribe": True, "channelId": ""}},
+                {"videoEndscreenElement": {"videoType": "VIDEO_TYPE_BEST_FOR_VIEWER"}},
+                {"playlistEndscreenElement": {"playlistId": META["playlistId"]}},
+            ],
+        }
+        self.page.evaluate(
+            """({id, model}) => {
+            window.endscreenState = {
+                videoEditorState: {timelineHistory: {present: {editors: {ENDSCREEN: {endscreen: null}}}}},
+                entityCache: {entitiesWithoutMask: {'#CreatorEndscreenData': {[id]: {data: model}}}}
+            };
+            document.querySelector('ytve-endscreen-editor-playlist-element-options').polymerController = {
+                __store: {store: {getState: () => window.endscreenState}}
+            };
+        }""",
+            {"id": META["videoId"], "model": model},
+        )
+        self.adapter.editor = self.page.locator("#modern")
+        self.assertTrue(self.adapter.endscreen_matches())
+        self.page.evaluate("""() => {
+            const s = window.endscreenState;
+            const cached = Object.values(s.entityCache.entitiesWithoutMask['#CreatorEndscreenData'])[0].data;
+            const edited = structuredClone(cached);
+            edited.elements[2].playlistEndscreenElement.playlistId = 'wrong-playlist';
+            s.videoEditorState.timelineHistory.present.editors.ENDSCREEN.endscreen = edited;
+        }""")
+        self.assertFalse(self.adapter.endscreen_matches())
+        self.page.evaluate(
+            "() => window.endscreenState.videoEditorState.timelineHistory.present.editors.ENDSCREEN.endscreen.encryptedVideoId = 'xxxxxxxxxxx'"
+        )
+        with self.assertRaises(studio.StudioError):
+            self.adapter.endscreen_matches()
+
+    def test_button_ignores_hidden_duplicate_save(self):
+        self.page.set_content("<button>Save</button><ytcp-button hidden>Save</ytcp-button>")
+        self.assertEqual(self.adapter.button(self.page, "Save").count(), 1)
 
     def test_persistent_profile_reopens_session(self):
         with tempfile.TemporaryDirectory(dir="/tmp") as folder:

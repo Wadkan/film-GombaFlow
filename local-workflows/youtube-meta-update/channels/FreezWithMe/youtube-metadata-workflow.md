@@ -160,18 +160,27 @@ make -C n8n-workflows/youtube-upload studio META="<jóváhagyott-json-teljes-út
 
 A script a meglévő `updated` JSON-t csak olvassa: külön ellenőrzi a sikeres
 `updateResult` eredményt és a `videoId` egyezését. Az aktív csatornát, a videót
-és a videó kijelölt playlistjét ID alapján ellenőrzi. Beállítja a JSON
+és a videó kijelölt playlistjét ID alapján ellenőrzi. Először beállítja a paid promotion: No, AI use: No, age restriction: No
+(nem csak 18 éven felülieknek), made for kids: No értékeket, és teljes
+újratöltés után mind a négy kijelölést igazolja. Eltérésnél ment, hibánál megáll.
+Ezután beállítja a JSON
 `defaultLanguage` szerinti „Video language” mezőt és az „1 video, 1 playlist,
 1 subscribe” záróképernyőt („Best for viewer”, JSON `playlistId`, aktuális
 csatorna), majd újratöltés/újranyitás után igazolja az értékeket.
-Ezután az Ask Studio panelen igazolja az aktuális videó kontextusát, és beilleszti a JSON `thumbnailPrompt` mezőjét egy thumbnail készítésére kérő bevezetővel. Nem küldi el a promptot. A böngészőt előtérbe hozza, jelzi a kézi átvételt, majd az ablak bezárásáig vár; a generálást és a kép alkalmazását a user végzi. Hiányzó vagy nem igazolható Ask Studio-kontextus esetén külön hibát jelez; az igazolt Studio-beállítások megmaradnak, az n8n update-et nem szabad újraindítani.
+Ezután az Ask Studio panelen igazolja az aktuális videó kontextusát, és beilleszti a JSON `thumbnailPrompt` mezőjét egy thumbnail készítésére kérő bevezetővel. Nem küldi el a promptot. A böngészőt előtérbe hozza, jelzi a kézi átvételt, majd lekapcsolódik, a Chrome-lapot nyitva hagyja; a generálást és a kép alkalmazását a user végzi. Hiányzó vagy nem igazolható Ask Studio-kontextus esetén külön hibát jelez; az igazolt Studio-beállítások megmaradnak, az n8n update-et nem szabad újraindítani.
 A scripthez ne adj új interaktív jóváhagyást: az előzőleg megszerzett JSON-
 és alkalmazási engedély vonatkozik erre a lépésre is.
 
-Első vagy lejárt bejelentkezésnél a user kézzel használja a
-`make -C n8n-workflows/youtube-upload login` parancsot. A külön tartós profil
-és a telepítés leírása: [Studio README](../../../../n8n-workflows/youtube-upload/README.md).
-Ne használd a user mindennapi Chrome-profilját, és ne olvass jelszót.
+A Studio-lépést mindig a Playwright script végzi a már futó, bejelentkezett
+Chrome-hoz CDP-n kapcsolódva. A `CDP_ENDPOINT=auto` a Playwright 1.65 beépített
+Chrome-felderítését használja a `/devtools/browser` végponthoz.
+A Chrome új kapcsolódásonként ismét kérhet engedélyt; erre 120 másodperc jut. Egyedi címet `CDP_ENDPOINT` Make-változóval lehet megadni.
+A Chrome-ban a `chrome://inspect/#remote-debugging` oldalon engedélyezhető
+a kapcsolat; a Chrome kapcsolódási kérését a user fogadja el.
+Kapcsolati hibánál ne indíts külön Chromiumot és ne válts AI-agentes kattintgatásra.
+Lejárt belépésnél a user a meglévő Chrome-ban jelentkezzen be.
+A script nem másolja és nem indítja a napi Chrome-profilt, jelszót nem olvas.
+Részletek: [Studio README](../../../../n8n-workflows/youtube-upload/README.md).
 
 Az agent a script külön stdout JSON-eredményét értékelje. Csak `success` és
 mindkét Studio-lépés `verified`, valamint a thumbnail-lépés `prepared` eredménye jelenti az automatizált Studio-rész sikerét;
