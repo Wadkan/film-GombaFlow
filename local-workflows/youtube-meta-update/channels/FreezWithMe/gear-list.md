@@ -6,7 +6,6 @@ Gear list:
 
 - Focus Atlas 8.9 Full Carbon SRAM
 - Bike Multitool 900
-- Suunto Ambit 3 Sapphire / Suunto Ambit 3 Peak
 - VAN RYSEL Racer Ultralight Cycling Jacket
 - VAN RYSEL Winter Visibility Cycling Jacket
 - VAN RYSEL Cycling Base Layer Racer 2
@@ -56,6 +55,8 @@ Gear list:
 
 🎥 Filming & Tech
 
+- Suunto Ambit 3 Peak Sapphire
+- Garmin Enduro 3
 - DJI Osmo Action 5 Pro
 - Insta360 X5
 - Digital Thermometer
