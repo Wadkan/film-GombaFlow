@@ -1,0 +1,59 @@
+## videoId
+
+RLIRbZ2ErVs
+
+## title
+
+Garmin Enduro 3 unboxing
+
+## description
+
+📦⌚ Kicsomagolom a Garmin Enduro 3 órámat! Tarts velem, ahogy közelebbről megnézem az órát és megmutatom, mi kerül elő a dobozból. 🥶🎒
+
+🧰 A videóban bemutatott felszerelésem:
+• Garmin Enduro 3
+
+#freezwithme #GarminEnduro3 #unboxing
+
+## tags
+
+- freezwithme
+- Garmin Enduro 3
+- Garmin
+- Enduro 3
+- Garmin Enduro 3 unboxing
+- Garmin Enduro 3 kicsomagolás
+- Garmin Enduro 3 óra
+- Garmin óra
+- sportóra
+- GPS sportóra
+- unboxing
+- kicsomagolás
+- termékbemutató
+- outdoor felszerelés
+
+## playlist
+
+Termékbemutató, unboxing 🥶⛺️🏔️🚴 #freezwithme
+
+## youtube_scheduled_at
+
+2026-11-22T16:00:00+01:00
+
+## containsSyntheticMedia
+
+false
+
+## defaultLanguage
+
+hu
+
+## YouTube thumbnail prompt
+
+Készíts 16:9 képarányú, mobilon is jól olvasható YouTube-thumbnailt a kiválasztott Garmin Enduro 3 unboxing videóhoz. A fő téma a Garmin Enduro 3 óra kicsomagolása. Kötelezően szerepeljek a képen, jól felismerhető arccal. A megjelenésemet a videó rólam készült képkockájából vagy az általam megadott referenciaképből vedd át, az arcvonásaimat megőrizve; ne helyettesíts másik vagy kitalált személlyel. Ha nincs megfelelő képkocka vagy referencia, kérj rólam referenciaképet. Az óra alakját, arányait, színeit, feliratait és a doboz tényleges tartalmát a videó alapján őrizd meg hitelesen. Ne találj ki használati tesztet, sportolást, helyszínt vagy nem látható tartozékot.
+
+A kompozíció legyen egyszerű: én a kép bal oldalán jelenjek meg felismerhető arccal, a Garmin Enduro 3 pedig nagy, jól felismerhető elem legyen a jobb oldalon. Az eredeti doboz másodlagos szerepben jelenjen meg, ha látható a videóban. A videóból átvett hátteret finoman mosd el. A felirat ne takarja az arcomat vagy az órát; a jobb alsó sarok maradjon lényeges részletektől mentes az időtartamjelzés miatt.
+
+A hangulat legyen személyes, kíváncsiságot keltő, természetes felszerelésbemutató. Használj mély erdőzöld és grafitszürke tónusokat, világos fehér felirattal és visszafogott élénkzöld kiemeléssel. Az órát természetes, irányított fénnyel és határozott kontraszttal emeld ki. Kevés elem, tiszta körvonalak, zsúfoltság nélkül.
+
+A képen megjelenő pontos felirat: „GARMIN ENDURO 3” és alatta „UNBOXING”. Más feliratot, hashtaget, vízjelet, árat vagy reklámállítást ne adj hozzá.
