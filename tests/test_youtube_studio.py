@@ -518,6 +518,30 @@ class BrowserTests(unittest.TestCase):
         )
         self.adapter.editor = self.page.locator("#modern")
 
+    def test_modern_editor_waits_for_saved_layout_after_dialog_shell(self):
+        self.page.set_content("""<button onclick="document.querySelector('tp-yt-paper-dialog').hidden=false;setTimeout(()=>{document.querySelector('#ready').innerHTML='<ytve-endscreen-marker aria-label=Playlist>Ready</ytve-endscreen-marker>'},200)">End screen</button>
+            <ytve-modal-host><tp-yt-paper-dialog hidden style="display:block">
+                <ytve-endscreen-editor-options-panel>Loading</ytve-endscreen-editor-options-panel>
+                <div id="ready"></div>
+            </tp-yt-paper-dialog></ytve-modal-host>""")
+        self.adapter.open_endscreen()
+        self.assertEqual(self.adapter.editor.locator("ytve-endscreen-marker").count(), 1)
+
+    def test_unchanged_modern_layout_discards_when_save_is_disabled(self):
+        self.modern_replacement_fixture([], False)
+        self.page.evaluate("""() => {
+            applyTemplate();model.elements[2].playlistEndscreenElement.playlistId=playlistId;
+            labels[2]='Playlist: Selected';renderMarkers();
+            document.querySelector('#modern button:last-child').disabled=true;
+            const discard=document.createElement('button');discard.textContent='Discard changes';
+            discard.onclick=()=>{window.discarded=true;document.querySelector('#modern').hidden=true};
+            document.querySelector('#modern').append(discard);
+        }""")
+        with patch.object(self.adapter, "open_endscreen"):
+            self.adapter.set_endscreen()
+        self.assertTrue(self.page.evaluate("window.discarded"))
+        self.assertIsNone(self.page.evaluate("window.modernSaved"))
+
     def test_modern_layout_without_playlist_is_replaced_and_searches_by_id(self):
         self.modern_replacement_fixture(["Video: Old", "Subscribe: Current"], True)
         with patch.object(self.adapter, "open_endscreen"):

@@ -330,11 +330,18 @@ class Studio:
         saved.wait_for(state="visible", timeout=self.timeout)
 
     def open_endscreen(self):
+        self.page.bring_to_front()
         self.button(self.page, "End screen").click()
         self.editor = self.page.locator(
             "ytcp-endscreen-editor, ytve-endscreen-editor, ytve-modal-host tp-yt-paper-dialog"
         ).filter(visible=True)
         self.editor.wait_for(state="visible")
+        if self.editor.evaluate("e => e.tagName === 'TP-YT-PAPER-DIALOG'"):
+            # The dialog shell appears before the saved layout/template picker.
+            # Do not interpret a still-loading timeline as an empty end screen.
+            self.editor.locator(
+                'ytve-endscreen-marker[aria-label], ytve-endscreen-template-picker [role="gridcell"]'
+            ).filter(visible=True).first.wait_for(state="visible")
 
     def modern_endscreen(self):
         if not self.editor.locator("ytve-endscreen-editor-options-panel").count():
@@ -347,6 +354,7 @@ class Studio:
             raise StudioError(
                 "UNSUPPORTED_LAYOUT", "A meglévő elrendezés playlist-eleme nem egyértelmű."
             )
+        self.page.bring_to_front()
         playlist.click()
         self.editor.locator("ytve-endscreen-editor-playlist-element-options").wait_for(
             state="attached"
@@ -562,13 +570,13 @@ class Studio:
         self.verify_declarations()
         self.result["step"] = "language"
         self.set_language()
-        self.open_details()  # Full navigation, not an optimistic in-memory value.
+        self.open_details(check_playlist=False)  # Full reload; membership was verified initially.
         if not self.language_matches():
             raise StudioError("LANGUAGE_NOT_SAVED", "Újratöltés után nem egyezik a Video language.")
         self.result["steps"]["language"] = "verified"
         self.result["step"] = "endscreen"
         self.set_endscreen()
-        self.open_details()
+        self.open_details(check_playlist=False)
         self.open_endscreen()
         if not self.endscreen_matches():
             raise StudioError(
