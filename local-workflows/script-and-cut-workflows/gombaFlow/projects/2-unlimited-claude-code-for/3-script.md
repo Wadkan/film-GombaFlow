@@ -27,7 +27,7 @@
 #### Felvehető rész — 1
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="1" clip-type="talking head">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="1" clip-type="talking head" location="A">
 <spoken-cue>serpenyő timeline 2 script 1 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -59,7 +59,7 @@ Az első mondat az első öt másodpercben nevezi meg a cím és thumbnail pain 
 #### Felvehető rész — 2
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="2" clip-type="b-roll">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="2" clip-type="b-roll" location="B">
 <spoken-cue>serpenyő timeline 2 script 2 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -91,7 +91,7 @@ Az outline szövege megegyezik az 1-story.md és az 1-outline-hyperframes-brief.
 #### Felvehető rész — 3
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="3" clip-type="b-roll">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="3" clip-type="b-roll" location="C">
 <spoken-cue>serpenyő timeline 2 script 3 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -123,7 +123,7 @@ A várt képlet: profit = ajánlati ár − önköltség; árrés = profit / aj�
 #### Felvehető rész — 4
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="4" clip-type="b-roll">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="4" clip-type="b-roll" location="A">
 <spoken-cue>serpenyő timeline 2 script 4 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -155,7 +155,7 @@ Az „előtte és utána” a választott felhőszolgáltatói út és a helyi m
 #### Felvehető rész — 5
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="5" clip-type="talking head">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="5" clip-type="talking head" location="B">
 <spoken-cue>serpenyő timeline 2 script 5 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -175,7 +175,7 @@ Forrás: [F2] https://registry.ollama.com/blog/claude és [F3] https://ollama.co
 #### Felvehető rész — 6
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="6" clip-type="talking head">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="6" clip-type="talking head" location="C">
 <spoken-cue>serpenyő timeline 2 script 6 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -209,7 +209,7 @@ Az OpenCode különálló, nyílt forrású agent: https://opencode.ai/product. 
 ##### Felvehető rész — 7
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="7" clip-type="b-roll">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="7" clip-type="b-roll" location="B">
 <spoken-cue>serpenyő timeline 2 script 7 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -231,7 +231,7 @@ Ne futtass vakon shellből másolt install scriptet, ha az app telepítője elé
 ##### Felvehető rész — 8
 
 ````xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="8" clip-type="b-roll">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="8" clip-type="b-roll" location="A">
 <spoken-cue>serpenyő timeline 2 script 8 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -258,7 +258,7 @@ Forrás: [F7] https://ollama.com/library/gemma4 — az oldal a Gemma 4 változat
 ##### Felvehető rész — 9
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="9" clip-type="b-roll">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="9" clip-type="b-roll" location="C">
 <spoken-cue>serpenyő timeline 2 script 9 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -280,7 +280,7 @@ Ez a lépés a betöltést és egyszerű szöveges választ ellenőrzi, nem bizo
 ##### Felvehető rész — 10
 
 ````xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="10" clip-type="b-roll">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="10" clip-type="b-roll" location="A">
 <spoken-cue>serpenyő timeline 2 script 10 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -308,7 +308,7 @@ Forrás: [F2] https://registry.ollama.com/blog/claude dokumentálja az `ANTHROPI
 ##### Felvehető rész — 11
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="11" clip-type="b-roll">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="11" clip-type="b-roll" location="B">
 <spoken-cue>serpenyő timeline 2 script 11 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -330,7 +330,7 @@ Az `ollama ps` a futó Ollama-modellt ellenőrzi. A Claude Code parancsában is 
 ##### Felvehető rész — 12
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="12" clip-type="b-roll">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="12" clip-type="b-roll" location="C">
 <spoken-cue>serpenyő timeline 2 script 12 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -362,7 +362,7 @@ Valódi ügyféladat vagy titok ne kerüljön a projektbe. A kódot még futtat�
 #### Felvehető rész — 13
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="13" clip-type="b-roll">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="13" clip-type="b-roll" location="A">
 <spoken-cue>serpenyő timeline 2 script 13 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -382,7 +382,7 @@ Ha valamelyik eredmény hibás, előbb javítsd az `index.html`-t és futtasd ú
 #### Felvehető rész — 14
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="14" clip-type="talking head">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="14" clip-type="talking head" location="C">
 <spoken-cue>serpenyő timeline 2 script 14 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -414,7 +414,7 @@ Az állításokat a saját teszt eredményéhez igazítsd. A helyi adattovábbí
 #### Felvehető rész — 15
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="15" clip-type="talking head">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="15" clip-type="talking head" location="B">
 <spoken-cue>serpenyő timeline 2 script 15 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -446,7 +446,7 @@ Az eredményről szóló mondat csak a mérések és tesztek után véglegesíth
 #### Felvehető rész — 16
 
 ```xml
-<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="16" clip-type="talking head">
+<agent-cue timeline="Claude Code limitbe futott? Próbáld helyi modellel" script-id="16" clip-type="talking head" location="A">
 <spoken-cue>serpenyő timeline 2 script 16 serpenyő</spoken-cue>
 </agent-cue>
 
