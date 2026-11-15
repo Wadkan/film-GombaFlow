@@ -1,6 +1,6 @@
 # FEATURE-1 — Add an offline Scriptable recording script viewer
 
-**Status:** PLANNED
+**Status:** IN PROGRESS
 
 ## Goal and measurable outcome
 
@@ -282,9 +282,9 @@ prototype review comes first; its sample interactions are not production logic.
 
 ### Step 0 — Clickable mobile dummy (first activity in checkpoint 1)
 
-- [ ] Before implementing the parser, storage or exchange, create a lightweight clickable HTML/CSS/JavaScript mobile dummy using representative content from `FLOW/projects/2-unlimited-claude-code-for/3-script.md`, including its location attributes. - TODO
-- [ ] Demonstrate fixed top filters, type dropdown checkboxes, one-part view, swipe navigation, bottom narration-searchable part picker, spoken cue beside ID, large recorded checkbox, advance/empty state, script list and delete confirmation. Explicitly mark sample state as nonpersistent. - TODO
-- [ ] Present the dummy for user review and incorporate feedback before functional implementation. Retain it within checkpoint 1 without a separate commit checkpoint. Reuse the agreed markup/layout for the reader in checkpoint 2; no production parser, host or persistence is needed for dummy review. - TODO
+- [ ] Before implementing the parser, storage or exchange, create a lightweight clickable HTML/CSS/JavaScript mobile dummy using representative content from `FLOW/projects/2-unlimited-claude-code-for/3-script.md`, including its location attributes. - DONE
+- [ ] Demonstrate fixed top filters, type dropdown checkboxes, one-part view, swipe navigation, bottom narration-searchable part picker, spoken cue beside ID, large recorded checkbox, advance/empty state, script list and delete confirmation. Explicitly mark sample state as nonpersistent. - DONE
+- [ ] Present the dummy for user review and incorporate feedback before functional implementation. Retain it within checkpoint 1 without a separate commit checkpoint. Reuse the agreed markup/layout for the reader in checkpoint 2; no production parser, host or persistence is needed for dummy review. - IN PROGRESS
 
 ### Parser and build tasks (checkpoint 1)
 
@@ -408,7 +408,7 @@ tests green and is a separate review/commit. For each checkpoint invoke
 
 ### Checkpoint 1 — Add the tagged script parser and standalone build
 
-Status: TODO
+Status: IN PROGRESS
 
 Scope: Step 0 reviewed dummy first; then pure parser/filter/navigation rules, valid
 second-topic fixture, explicit legacy rejection, deterministic build and Node
