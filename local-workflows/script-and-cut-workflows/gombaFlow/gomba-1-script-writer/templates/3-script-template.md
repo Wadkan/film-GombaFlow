@@ -42,6 +42,9 @@ Ez a központi lista a teljes tagkészlet. Más tagtípust ne vezess be.
   egyeztetett név.
 - A részenkénti `agent-cue` `clip-type` attribútumát a parancsszótár kliptípusai
   közül töltsd ki. Ez nem felolvasandó metaadat.
+  A `location` attribútum minden résznél kötelező és nem lehet üres. Egyszerű
+  szöveges értéket adj meg (például `location="A"`); az alkalmazás a megadott
+  értékekből állítja össze a helyszűrőt.
   A vágói átadás a részhez már rögzített ID-kat, timeline-t és kliptípust vegye át,
   rövid leírását pedig a rész művelete és mutatott tartalma alapján fogalmazza meg.
 - A tagelt blokkok XML-ként olvashatók legyenek: szövegben az `&` és `<`,
@@ -62,7 +65,7 @@ Ez a központi lista a teljes tagkészlet. Más tagtípust ne vezess be.
 Kitöltött példa, `serpenyő` beállítás esetén:
 
 ```xml
-<agent-cue timeline="Film címe" script-id="15" clip-type="talking head">
+<agent-cue timeline="Film címe" script-id="15" clip-type="talking head" location="A">
 <spoken-cue>serpenyő timeline 1 script 15 serpenyő</spoken-cue>
 </agent-cue>
 
@@ -185,7 +188,7 @@ első megfelelő narrációja tartalmazza a kész átvezető mondatot is.
 #### Felvehető rész — [egyedi script-ID]
 
 ```xml
-<agent-cue timeline="[cél-timeline neve]" script-id="[egyedi script-ID]" clip-type="[típus a RECORDING_COMMANDS.md szótárából]">
+<agent-cue timeline="[cél-timeline neve]" script-id="[egyedi script-ID]" clip-type="[típus a RECORDING_COMMANDS.md szótárából]" location="[nem üres helyszín]">
 <spoken-cue>[varázsszó] timeline [a témaazonosító kezdő számrésze] script [egyedi script-ID] [varázsszó]</spoken-cue>
 </agent-cue>
 

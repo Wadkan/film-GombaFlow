@@ -70,9 +70,10 @@ abbreviation, not an existing environment variable.
 - Store multiple scripts with their progress; list/open/delete locally. Confirm
   before deleting a topic's MD and checkmarks together. The repository is the
   long-term backup; local deletion does not delete repository files.
-- Prepare location filtering now using optional `location="A"` on `agent-cue`;
-  discover values from input. Missing/blank location is a selectable no-location
-  category. Existing scripts without it remain supported.
+- Require a nonempty `location` attribute on every recordable part, matching
+  the current tagged sample. Discover arbitrary location values from input;
+  missing or blank locations reject the script. No no-location category is
+  needed.
 - Repository state is a sibling `recording-state.json`. Reimport overwrites only
   supplied IDs, including false values, preserving omitted IDs. Repeated import
   is idempotent. Only checkmarks travel back, not videos.
@@ -184,7 +185,7 @@ App files:
   `tests/exchange.test.cjs`, and `tests/viewer.spec.cjs`; Playwright config runs
   Chromium with mobile-sized viewport, introduced only in checkpoint 2.
 - `tests/fixtures/999-viewer-fixture.md`: a small valid tagged second topic with
-  matching header/cues, distinct part IDs and at least one no-location part.
+  matching header/cues, distinct part IDs and distinct nonempty locations.
   Multi-topic tests use this fixture alongside the real tagged sample; they
   never pretend the legacy script is supported. Filesystem tests construct a
   disposable matching registry/project tree under `/tmp` without editing the
@@ -208,10 +209,11 @@ and search. Preserve inner text/code; do not execute Markdown HTML.
 Validate `script-id` against positive integers, unique within topic; verify cue
 identity against the part, topic prefix and header magic word. Preserve document
 order, never sort by ID. Require the script's single shared timeline. Read
-`location` as optional scalar text; accept arbitrary nonempty location values.
+Require `location` as a nonempty scalar on every recordable part; accept
+arbitrary location values. Reject missing or blank values.
 Unknown/unbalanced structural tags fail rather than silently dropping content.
-Update the central template's metadata instructions to allow optional location;
-do not require changing old scripts or modifying the user's staged examples.
+Update the central template and examples to require location; do not modify
+either original project script.
 
 ### Interchange contracts, version 1
 
@@ -284,41 +286,42 @@ prototype review comes first; its sample interactions are not production logic.
 
 - [ ] Before implementing the parser, storage or exchange, create a lightweight clickable HTML/CSS/JavaScript mobile dummy using representative content from `FLOW/projects/2-unlimited-claude-code-for/3-script.md`, including its location attributes. - DONE
 - [ ] Demonstrate fixed top filters, type dropdown checkboxes, one-part view, swipe navigation, bottom narration-searchable part picker, spoken cue beside ID, large recorded checkbox, advance/empty state, script list and delete confirmation. Explicitly mark sample state as nonpersistent. - DONE
-- [ ] Present the dummy for user review and incorporate feedback before functional implementation. Retain it within checkpoint 1 without a separate commit checkpoint. Reuse the agreed markup/layout for the reader in checkpoint 2; no production parser, host or persistence is needed for dummy review. - IN PROGRESS
+- [ ] Present the dummy for user review and incorporate feedback before functional implementation. Retain it within checkpoint 1 without a separate commit checkpoint. Reuse the agreed markup/layout for the reader in checkpoint 2; no production parser, host or persistence is needed for dummy review. - DONE
 
 ### Parser and build tasks (checkpoint 1)
 
-- [ ] Test first: add the valid tagged `tests/fixtures/999-viewer-fixture.md` as test setup, then failing Node behavior tests in `tests/core.test.cjs` using it and the real tagged sample. Cover nested code fences, chapter notes, location/no-location, cue/ID validation, explicit rejection of the untouched legacy script, filter intersections, narration-only search and navigation boundaries. Add failing `tests/build.test.cjs` for deterministic embedding, executable-text escaping and generated JavaScript syntax. Run `node --test apps/script-viewer/tests/core.test.cjs apps/script-viewer/tests/build.test.cjs` from the repo root and observe relevant failures before production implementation. - TODO
-- [ ] Implement pure `core.js` and `tools/build.mjs` against the prepared fixture. Embed the reviewed HTML and pure core into a standalone script artifact with only a minimal host shell; no functional native file picker, mobile controller or durable saves in this checkpoint. Update template instructions for optional location, without changing either original script. - TODO
-- [ ] Add the Node-only package test script and root `make test-scriptable-viewer` target, included by existing root `make test`. Create only the tests needed now; do not add empty browser/host suites or skip placeholders for future checkpoints. - TODO
-- [ ] Refactor with tests green, then run `make test-scriptable-viewer` and `make test`. Document the build command and artifact's prototype-only limitations. Parser outputs and a deterministic artifact are independently verifiable without a working phone reader. - TODO
+- [x] Test first: add the valid tagged `tests/fixtures/999-viewer-fixture.md` as test setup, then failing Node behavior tests in `tests/core.test.cjs` using it and the real tagged sample. Cover nested code fences, chapter notes, required nonempty locations, cue/ID validation, explicit rejection of the untouched legacy script, filter intersections, narration-only search and navigation boundaries. Add failing `tests/build.test.cjs` for deterministic embedding, executable-text escaping and generated JavaScript syntax. Run `node --test apps/script-viewer/tests/core.test.cjs apps/script-viewer/tests/build.test.cjs` from the repo root and observe relevant failures before production implementation. - DONE
+- [x] Implement pure `core.js` and `tools/build.mjs` against the prepared fixture. Embed the reviewed HTML and pure core into a standalone script artifact with only a minimal host shell; no functional native file picker, mobile controller or durable saves in this checkpoint. Update template instructions for required location, without changing either original script. - DONE
+- [x] Add the Node-only package test script and root `make test-scriptable-viewer` target, included by existing root `make test`. Create only the tests needed now; do not add empty browser/host suites or skip placeholders for future checkpoints. - DONE
+- [x] Require nonempty locations: add a valid fixture location for every part and a failing test for missing/blank attributes before changing the parser. Then validate with the focused parser/build tests and `make test-scriptable-viewer`; do not run the full root suite. - DONE
+- [x] Enforce required nonempty locations in `core.js`, update the central template, and retain the arbitrary-value location filter. Refactor with focused tests green; run the targeted Node tests, `make test-scriptable-viewer`, and standalone build syntax check. Document the build command and artifact's prototype-only limitations. - DONE
 
 ### Functional mobile reader tasks (checkpoint 2)
 
 - [ ] Test first: introduce the scoped Playwright dev dependency/lockfile and `test:e2e` script. Add failing complete-flow test `filter and read a recording script` in `apps/script-viewer/tests/viewer.spec.cjs`: open the real tagged sample through a fake host, choose chapter/clip/location/status filters and type checkboxes, search only narration from the bottom, swipe/select matching parts, and verify pinned controls, safe inner-code rendering and the mandatory spoken cue. No existing browser spec covers this flow. Exact command: `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "filter and read a recording script"`. Observe behavioral failure before implementing the reader controller. - TODO
 - [ ] Test first: add failing `tests/host.test.cjs` coverage for the minimal host/file-open bridge, invalid legacy input, cancellation and host dismissal. Run `node --test apps/script-viewer/tests/host.test.cjs` from the repo root before implementing host integration. - TODO
 - [ ] Implement the functional mobile reader from the reviewed dummy using the checkpoint 1 core. Add Scriptable MD file selection and the minimal allowlisted command bridge, with session-only checkmarks/preferences and transient topic list. Recording toggles/advance work in session but must not claim durable save. Reuse the real parser in browser tests; fake only native host APIs. - TODO
-- [ ] Extend `make test-scriptable-viewer` to include the browser script and host tests. Refactor with tests green; run the scoped browser command, aggregate target and `make test`, then physical-iPhone reader check below. Document that offline restart persistence arrives in checkpoint 3. - TODO
+- [ ] Extend `make test-scriptable-viewer` to include the browser script and host tests. Refactor with tests green; run the scoped browser command and aggregate target, then physical-iPhone reader check below. Document that offline restart persistence arrives in checkpoint 3. - TODO
 
 ### Offline library tasks (checkpoint 3)
 
 - [ ] Test first: extend `tests/host.test.cjs` with failing behavioral tests for acknowledged durable saves, queued actions, failure/recovery, deletion, global preferences and last cursor. Exact command: `node --test apps/script-viewer/tests/host.test.cjs`. - TODO
 - [ ] Test first: extend `apps/script-viewer/tests/viewer.spec.cjs` with complete flow `record parts and resume the offline library`: import the real tagged sample and the valid second-topic fixture, mark/unmark, advance/empty state, switch/relaunch with the same persisted fake-host snapshot, confirm/cancel delete and simulate save failure. Exact command: `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "record parts and resume the offline library"`. Observe persistence/acknowledgement failures before implementing durable storage. - TODO
 - [ ] Implement the single-writer local snapshot owner, recovery and save acknowledgements; connect existing session reader actions to durable scripts/checkmarks/preferences/cursor. Apply default not-recorded only to a fresh library. Reuse the existing reader and bridge rather than adding exchange capabilities here. - TODO
-- [ ] Refactor with tests green; run the scoped browser command, aggregate target and `make test`, then blocking physical-iPhone airplane-mode/restart checks. Browser fake storage does not prove iOS file persistence; record actual device evidence. - TODO
+- [ ] Refactor with tests green; run the scoped browser command and aggregate target, then blocking physical-iPhone airplane-mode/restart checks. Browser fake storage does not prove iOS file persistence; record actual device evidence. - TODO
 
 ### Repository exchange CLI tasks (checkpoint 4)
 
 - [ ] Test first: add failing filesystem integration tests in `tests/exchange.test.cjs` using disposable tagged fixture projects/registry under `/tmp`. Cover MD+state packaging, true/false/partial merges, repeat import, unknown topic/ID, legacy-script rejection, duplicate keys, invalid versions, path containment, lock contention and failed replacement. Exact command: `node --test apps/script-viewer/tests/exchange.test.cjs`. No browser test is needed for this CLI-only checkpoint. - TODO
 - [ ] Implement version 1 file validators/merge rules in the shared core and `tools/exchange.mjs` package/import-state commands. Keep repository transactions separate from phone UI. Add fixture-based round-trip integration: package, simulated progress export, import twice, repackage and compare; preserve omitted IDs and another topic. - TODO
-- [ ] Wire exchange tests into the aggregate, refactor with tests green, then run the targeted Node command, `make test-scriptable-viewer` and `make test`. Document CLI usage and contract; confirm no native phone exchange or cut-artifact writes are introduced. - TODO
+- [ ] Wire exchange tests into the aggregate, refactor with tests green, then run the targeted Node command and `make test-scriptable-viewer`. Document CLI usage and contract; confirm no native phone exchange or cut-artifact writes are introduced. - TODO
 
 ### Phone exchange integration tasks (checkpoint 5)
 
 - [ ] Test first: extend `tests/host.test.cjs` with failing native-adapter tests for package file selection, identity validation, keep/restore/default choice, cancellation, share/export and failed file operations. Exact command: `node --test apps/script-viewer/tests/host.test.cjs`. - TODO
 - [ ] Test first: extend `apps/script-viewer/tests/viewer.spec.cjs` with complete flow `round trip progress through repository packages`: call the checkpoint 4 CLI on a disposable fixture project, import its package, change checkmarks, export through the fake native adapter, import twice with the real CLI, rebuild and restore. Assert replacement choices, another topic, false values and omitted-ID preservation. Exact command: `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "round trip progress through repository packages"`. Observe missing UI/adapter behavior before production integration. - TODO
 - [ ] Implement package import and native export/sharing using the existing schemas/CLI, retaining direct MD opening. Reuse acknowledged storage and its failure handling. No new CLI transaction or media processing in this checkpoint. - TODO
-- [ ] Refactor with tests green; run the scoped browser command, aggregate target and `make test`. Finish README transfer/recovery guidance and execute the physical-iPhone package round trip below. - TODO
+- [ ] Refactor with tests green; run the scoped browser command and aggregate target. Finish README transfer/recovery guidance and execute the physical-iPhone package round trip below. - TODO
 
 ## Automated validation
 
@@ -327,7 +330,8 @@ authoring. New targets/scripts below are implementation deliverables, not
 claimed to exist today. Use Node 24+ for development and the exchange CLI.
 
 - Checkpoint 1 introduces `make test-scriptable-viewer`, running only available
-  Node core/build tests. Root `make test` includes it immediately.
+  Node core/build tests. Root `make test` includes it immediately, but checkpoint
+  validation runs only the focused viewer target and its exact test command.
 - Checkpoint 2 adds browser tooling: `npm ci --prefix apps/script-viewer`, then
   `npm --prefix apps/script-viewer exec -- playwright install chromium`.
   Add `test:e2e` to the scoped package; the aggregate now runs existing Node
@@ -339,8 +343,9 @@ claimed to exist today. Use Node 24+ for development and the exchange CLI.
 - Browser only from checkpoint 2:
   `npm --prefix apps/script-viewer run test:e2e -- --reporter=line`.
   Exact targeted commands and titles appear before implementation in each task.
-- Before each successful implementation handoff: `make test-scriptable-viewer`
-  and `make test`. Do not add nonexistent generic frontend/backend targets.
+- Before each successful implementation handoff, run the checkpoint's focused
+  commands and `make test-scriptable-viewer`. Do not run the full root `make test`
+  for this feature. Do not add nonexistent generic frontend/backend targets.
   Report environmental blockers truthfully instead of recording a false PASS.
 - Build smoke coverage checks deterministic output, generated JavaScript syntax
   and safe embedding; it writes artifacts under `/tmp`. Production runtime has
@@ -358,6 +363,7 @@ storage, keyboard or sharing behavior.
    `http://localhost:8765/viewer.html` for user review. This is a disposable local
    preview, not hosting required for the installed app. Record feedback before
    proceeding with functional code. Native integration is not required here.
+   PASS — The user accepted the clickable dummy.
 1. Checkpoint 1: no physical-device gate for the parser/build result; automated
    Node behavioral and build checks apply after the mandatory step 0 review.
 2. Checkpoint 2: run `node apps/script-viewer/tools/build.mjs --output /tmp/GombaFlowViewer.js`.
@@ -408,14 +414,15 @@ tests green and is a separate review/commit. For each checkpoint invoke
 
 ### Checkpoint 1 — Add the tagged script parser and standalone build
 
-Status: IN PROGRESS
+Status: APPROVED (review PASS)
 
 Scope: Step 0 reviewed dummy first; then pure parser/filter/navigation rules, valid
 second-topic fixture, explicit legacy rejection, deterministic build and Node
 test wiring. Generated output is a prototype shell, not a functional native
 reader. No browser harness, native integration, persistence or exchange.
 
-Validation: Node core/build command, `make test-scriptable-viewer`, `make test`;
+Validation: Node core/build command, `make test-scriptable-viewer`, standalone
+build syntax check;
 mandatory step 0 user review. No device integration gate.
 
 Commit message:
@@ -437,7 +444,7 @@ MD picker/bridge and browser harness. Uses checkpoint 1 parser/build; progress
 remains session-only. No persistence or exchange.
 
 Validation: scoped reader E2E command and host tests listed above,
-`make test-scriptable-viewer`, `make test`, manual device step 2.
+`make test-scriptable-viewer`, manual device step 2.
 
 Commit message:
 
@@ -458,7 +465,7 @@ save/recovery and confirmed deletion on the existing reader/bridge.
 No package import/export or repository CLI.
 
 Validation: scoped offline-library E2E command and host tests listed above,
-`make test-scriptable-viewer`, `make test`, blocking manual device step 3.
+`make test-scriptable-viewer`, blocking manual device step 3.
 
 Commit message:
 
@@ -479,7 +486,7 @@ filesystem transactions. Independently exercised using fixture projects;
 no phone import/export UI or native sharing.
 
 Validation: targeted Node exchange command listed above,
-`make test-scriptable-viewer`, `make test`. No new browser/device flow.
+`make test-scriptable-viewer`. No new browser/device flow.
 
 Commit message:
 
@@ -500,7 +507,7 @@ using checkpoint 4 contracts/CLI and checkpoint 3 storage; end-to-end transfer
 guidance. No additional repository transaction behavior.
 
 Validation: scoped package-round-trip E2E command and host tests listed above,
-`make test-scriptable-viewer`, `make test`, manual device step 5.
+`make test-scriptable-viewer`, manual device step 5.
 
 Commit message:
 

@@ -1,0 +1,8 @@
+{
+  "name": "gombaflow-script-viewer",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "test": "node --test tests/core.test.cjs tests/build.test.cjs"
+  }
+}

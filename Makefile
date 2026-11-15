@@ -17,7 +17,7 @@ stop-n8n:
 gomba1-transcript:
 	@python3 local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/scripts/run_transcript_flow.py
 
-test: test-n8n test-localworkflows test-youtube-studio
+test: test-n8n test-localworkflows test-youtube-studio test-scriptable-viewer
 
 test-n8n:
 	@python3 -m unittest -v \
@@ -29,6 +29,10 @@ test-n8n:
 
 test-localworkflows:
 	@python3 -m unittest -v test_recording_transcription
+
+.PHONY: test-scriptable-viewer
+test-scriptable-viewer:
+	@npm --prefix apps/script-viewer test
 
 export PYTHONPATH := tests
 
