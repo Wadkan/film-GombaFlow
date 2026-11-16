@@ -6,8 +6,10 @@
 
 Read a GombaFlow recording script on an iPhone while filming, show one recordable
 part at a time, filter and hide content globally, and retain recording progress
-offline. Exchange scripts and checkmarks with this repository through explicit
-files. A complete export/import/reimport round trip preserves true and false
+offline. The immediate priority is one-tap launch from the iPhone Home Screen
+into the last opened script at the last saved part, without selecting the MD
+again and without hosting or a network connection. Exchange scripts and
+checkmarks with this repository through explicit files in later checkpoints. A complete export/import/reimport round trip preserves true and false
 states by topic and stable script ID, without modifying media or cut artifacts.
 
 ## Current repository evidence
@@ -52,6 +54,15 @@ abbreviation, not an existing environment variable.
 
 - Scriptable on iPhone; plain HTML/CSS/JavaScript, no framework, hosting,
   backend, PWA, database or runtime downloads. One generated installable script.
+- Home Screen launch and automatic resume are the checkpoint 3 priorities.
+  Use an iOS Shortcut that opens the installed viewer through Scriptable's
+  local run URL (`scriptable:///run/GombaFlowViewer`), added to the Home Screen.
+  It must run the viewer in Scriptable, where fullscreen WebView is available.
+  Document this single installation route; no custom launcher or widget.
+  References: [Scriptable URL schemes](https://docs.scriptable.app/urlscheme/)
+  and [Apple Home Screen shortcuts](https://support.apple.com/guide/shortcuts/add-a-shortcut-to-the-home-screen-apd735880972/ios).
+  The current Home Screen failure is user-reported; its exact cause is unverified
+  and the corrected route requires a real-device check.
 - Support the current tagged GombaFlow MD format only, not the legacy untagged
   script or arbitrary Markdown/XML dialects.
   Invalid or duplicate IDs fail visibly before replacing valid stored data.
@@ -70,6 +81,12 @@ abbreviation, not an existing environment variable.
 - Store multiple scripts with their progress; list/open/delete locally. Confirm
   before deleting a topic's MD and checkmarks together. The repository is the
   long-term backup; local deletion does not delete repository files.
+- Remember a local copy of the last opened MD and open it by default on the
+  next launch at its last saved part. While reading any MD, keep a visible
+  `Másik MD megnyitása…` button available. It opens the file picker without
+  restarting the viewer. A successfully validated and saved selection becomes
+  the default MD for the next launch; cancellation or invalid input preserves
+  the current MD and saved position.
 - Require a nonempty `location` attribute on every recordable part, matching
   the current tagged sample. Discover arbitrary location values from input;
   missing or blank locations reject the script. No no-location category is
@@ -139,13 +156,24 @@ abbreviation, not an existing environment variable.
    In not-recorded mode choose the next match in document order, falling back
    to the first remaining match when none follows. An empty result preserves
    filters, disables recording/navigation, and offers the agreed all-status action.
-8. Relaunch offline restores locally saved scripts and checkmarks, global
+8. Tapping the Home Screen shortcut launches the installed viewer in Scriptable
+   and opens the last saved topic/part directly, including after force-close
+   in airplane mode. Do not show a file picker on each launch: select an MD
+   only on first use or through an explicit open action. Restoration means the
+   same recordable part, not the exact scroll offset. The visible
+   `Másik MD megnyitása…` button works while an MD is already open. Selecting
+   another valid MD opens it and makes it the next launch's default; cancelling
+   or selecting invalid input keeps the current MD and position intact.
+   Relaunch offline restores
+   locally saved scripts and checkmarks, global
    filters/type selections, bottom search query and last topic/part. If the
-   remembered part is missing or excluded, choose the first match; if no matches,
-   show the empty state. Global unavailable filter values stay explicit and
+   remembered part is missing or excluded, display the first match without
+   erasing the remembered part ID; if no matches, show the empty state. Global unavailable filter values stay explicit and
    yield no matches until changed; never silently reset them when switching topics.
 9. Deleting one topic removes only its MD/progress, preserves global preferences
-   and other topics, clears an invalid last-topic pointer and returns to the list.
+   and other topics, clears an invalid last-topic pointer and returns to the list, or displays
+   `Nincs mentett script` if none remain. The next launch shows that same
+   list/empty view until another MD is opened.
    Cancelling import, replacement, sharing or deletion leaves saved data intact.
 10. Phone package import validates identity and states before replacement.
     Keep-phone-progress retains states for shared IDs; package values initialize
@@ -236,28 +264,51 @@ Define these as new local file contracts, not changes to the cut API:
   When packaging, reject stale repository IDs until the user resolves them;
   never guess how renamed/reused IDs map. Document stable-ID responsibility.
 
-### Host bridge and local state
+### Save and restore the MD and reading progress locally
 
-Scriptable owns durable storage in `FileManager.local().documentsDirectory()`;
-WebView state is a projection, not the durable owner. Store one versioned library
-snapshot containing topic-to-raw-MD/state records, global preferences and last
-position. A single serialized host command queue handles import, save, selection,
-filter updates and delete; never derive file paths from topic strings.
+Scriptable keeps local MD files separate from one `viewer-state.json` in
+`FileManager.local().documentsDirectory()`. The installed program supplies the
+parser, reader and local file handling; MD content is not embedded in its code.
+Keep one app-owned MD copy per topic under an internal generated filename;
+never construct a path from imported topic text. The state file owns
+`schema_version: 1`, a `topics` map (internal MD filename, recorded booleans by
+stable part ID, and `last_part_id`), global filters/type preferences/search,
+and `last_topic_id`. Store part IDs as canonical decimal strings and state
+values as strict booleans; validate references and parse MD before displaying it.
 
-Use WebView.evaluateJavaScript with callback completion to drain a browser-side
-command queue while the view is presented. Commands have unique request IDs;
-allow only explicit actions. Host replies carry success/failure and committed
-state. Cancel the loop on dismissal; do not rely on URL interception for saves.
-Controls show pending state and avoid duplicate changes until acknowledgement.
-Save changes immediately, including filters and cursor, not only at dismissal.
+On startup, read the latest saved state and open its last MD/part from the local
+copy without selecting the original file again. If no last topic is selected,
+show the stored-script list, or `Nincs mentett script` when it is empty. Keep
+`Másik MD megnyitása…` available in both the reader and list/empty view.
 
-Validate next snapshot, write a sibling pending file, read/validate it, preserve
-the previous good snapshot as backup, then replace and verify the active file.
-Report saved only after success. Recover interrupted replacement from a valid
-pending/backup snapshot deterministically; never silently reset corrupt progress.
-A failed save keeps the old confirmed UI/state and gives a retryable visible
-error. Document that abrupt termination before a save acknowledgement may lose
-that pending action. Keep all active data local, outside cache/iCloud-only paths.
+Opening an updated MD for the same topic preserves all saved checkmarks and
+its last part ID. New IDs start unchecked. Retain state for absent IDs without
+attaching it to another part. If the remembered ID is absent or excluded by
+filters, display the first match (or the empty result) without overwriting that
+remembered ID merely because of the fallback. An explicit user selection or
+navigation saves the newly displayed part. Opening a different stored topic
+restores that topic's remembered part. Successful MD selection makes that topic
+the default on next launch. Cancellation, invalid MD and failed saves leave the
+previous confirmed reader and saved selection intact.
+
+Use one serialized connection between the reader and Scriptable for opening,
+saving and deleting files. `WebView.evaluateJavaScript` with callback completion
+carries explicitly allowed commands and their acknowledgements while the view
+is presented. Stop processing when dismissed. No generic command framework,
+extra preference store or package format is needed. Disable duplicate changes
+while saving; show success/advance only after acknowledgement. Save checkmarks,
+filters and current part immediately rather than only when closing.
+
+Validate before writing and report saved only after the write succeeds.
+Use a short-lived sibling temporary file and replacement to avoid writing
+partial JSON directly over the current state; do not retain backup files or
+build a recovery/version-history system. On startup use the latest readable,
+valid saved state. Reject an invalid incoming MD before replacing a valid local
+copy. A save failure keeps the last confirmed state and shows a retryable error.
+If the saved state itself is unreadable or malformed, report it without clearing
+or overwriting it: without a separate backup, lost values cannot be reconstructed.
+Document that an action terminated before acknowledgement may not persist.
+Keep local data outside cache and iCloud-only paths.
 
 ## Security, privacy, failure, and operational handling
 
@@ -270,7 +321,7 @@ that pending action. Keep all active data local, outside cache/iCloud-only paths
 - One host command writer; one repository import process per project. Use an
   exclusive lock plus same-directory temporary file and rename for repository
   writes; on lock contention report busy rather than merge concurrently.
-- Preserve backup on phone and never erase corrupt library data automatically.
+- Do not retain additional phone backups; never erase corrupt saved state automatically.
   Keep delete confirmation explicit that unexported progress will be lost.
 - Explicit repository import is the backup action. Sharing success is not proof
   the Mac imported it. Repository writes do not stage, commit or push anything.
@@ -308,10 +359,10 @@ prototype review comes first; its sample interactions are not production logic.
 
 ### Offline library tasks (checkpoint 3)
 
-- [ ] Test first: extend `tests/host.test.cjs` with failing behavioral tests for acknowledged durable saves, queued actions, failure/recovery, deletion, global preferences and last cursor. Exact command: `node --test apps/script-viewer/tests/host.test.cjs`. - TODO
-- [ ] Test first: extend `apps/script-viewer/tests/viewer.spec.cjs` with complete flow `record parts and resume the offline library`: import the real tagged sample and the valid second-topic fixture, mark/unmark, advance/empty state, switch/relaunch with the same persisted fake-host snapshot, confirm/cancel delete and simulate save failure. Exact command: `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "record parts and resume the offline library"`. Observe persistence/acknowledgement failures before implementing durable storage. - TODO
-- [ ] Implement the single-writer local snapshot owner, recovery and save acknowledgements; connect existing session reader actions to durable scripts/checkmarks/preferences/cursor. Apply default not-recorded only to a fresh library. Reuse the existing reader and bridge rather than adding exchange capabilities here. - TODO
-- [ ] Refactor with tests green; run the scoped browser command and aggregate target, then blocking physical-iPhone airplane-mode/restart checks. Browser fake storage does not prove iOS file persistence; record actual device evidence. - TODO
+- [ ] Test first: extend `tests/host.test.cjs` with failing behavioral tests for acknowledged durable saves, queued actions, failed writes, readable/invalid saved state, deletion, global preferences and last cursor. Update existing build/host/browser tests that assume mandatory selection on every launch or prohibit reader-to-Scriptable communication: tests must follow the checkpoint 3 requirements while retaining first-use selection, cancellation and fullscreen coverage. Exact command: `node --test apps/script-viewer/tests/host.test.cjs`. - TODO
+- [ ] Test first: extend `apps/script-viewer/tests/viewer.spec.cjs` with complete flow `record parts and resume the offline library`: import the real tagged sample and the valid second-topic fixture, mark/unmark, advance/empty state, switch/relaunch with the same persisted fake-host MD files and state file and restore the last topic/part without calling the picker, reopen an updated MD for the same topic without losing checkmarks/last part, cancel switching without losing the current MD, confirm/cancel delete through list/empty states, and simulate save failure. Exact command: `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "record parts and resume the offline library"`. Observe persistence/acknowledgement failures before implementing durable storage. - TODO
+- [ ] Implement the single-writer local MD/state file storage and save acknowledgements; connect existing session reader actions to durable scripts/checkmarks/preferences/cursor. Apply default not-recorded only to a fresh library. Reuse the existing reader; add only the minimum host bridge needed for acknowledged local saves. At launch load the last saved topic/part before presenting the reader, with no repeated MD selection. Document one Home Screen shortcut using the local Scriptable run URL. Do not add exchange capabilities here. - TODO
+- [ ] Refactor with tests green; run the scoped browser command and aggregate target, then blocking physical-iPhone Home Screen launch and airplane-mode/restart checks. Browser fake storage does not prove iOS file persistence; record actual device evidence. - TODO
 
 ### Repository exchange CLI tasks (checkpoint 4)
 
@@ -376,11 +427,21 @@ storage, keyboard or sharing behavior.
    large controls. Open the legacy script to confirm a readable rejection and
    unchanged session content. No persistence claim at this checkpoint.
    PASS — The user reported completing the iPhone check and requested review closure; device/software versions were not provided.
-3. Checkpoint 3: run the same build command and install without deleting local
-   data. Import the tagged sample plus `apps/script-viewer/tests/fixtures/999-viewer-fixture.md`.
-   Change filters/checkmarks, wait for saved acknowledgement, enable airplane
-   mode, force-close/relaunch, and check both topics, global preferences and
-   last position. Exercise rapid toggle, empty state and delete confirmation.
+3. Checkpoint 3: run `make scriptable-viewer` and update the installed
+   `GombaFlowViewer` in Scriptable without deleting local data. Create an iOS
+   Shortcut with URL `scriptable:///run/GombaFlowViewer` followed by Open URLs,
+   and add it to the Home Screen. Tap that icon to launch the fullscreen reader.
+   Open the tagged sample once, select a later part and wait for saved
+   acknowledgement. Enable airplane mode, force-close Scriptable and relaunch
+   from that icon: the same script/part must open without a file picker. Record
+   PASS/FAIL and iPhone/iOS/Scriptable versions; this is the primary blocking check.
+   Then open `apps/script-viewer/tests/fixtures/999-viewer-fixture.md`, change
+   filters/checkmarks and repeat the restart to verify both topics, global
+   preferences and last position. Exercise rapid toggle, empty state and
+   delete confirmation. With an MD open, tap `Másik MD megnyitása…`, cancel
+   once to verify the current MD/part stays open, then select the other MD.
+   After saved acknowledgement, relaunch from the Home Screen and verify the
+   newly selected MD is now the default. Browser tests cannot prove Home Screen integration.
 4. Checkpoint 4: automated CLI filesystem/round-trip tests suffice; no phone
    package-transfer gate until its native integration exists in checkpoint 5.
 5. Checkpoint 5: run
@@ -399,9 +460,11 @@ import MD or a package. No server deploy. The repository and returned JSON are
 long-term backup; offline phone storage is working state. Export/import before
 phone deletion or replacing the app. Keep the previous generated viewer until
 its successor passes the device gate. Local schema stays version 1 throughout
-these checkpoints; unsupported snapshots fail without writes. Roll back viewer
-code by reinstalling the prior compatible script, preserving local data. Recover
-from the latest validated snapshot or a repository-built package. Repo import
+these checkpoints; unsupported state files fail without writes. Roll back viewer
+code by reinstalling the prior compatible script, preserving local data. Use
+the latest valid local MD/state files; repository-built package restoration is
+available only after checkpoint 5. There is no local backup history or automatic
+reconstruction of a corrupt state file. Repo import
 rollback restores the previous state file from normal repository history; the
 feature performs no Git writes.
 
@@ -452,7 +515,12 @@ separate program/MD transfer. Pick, read and validate the MD natively before
 loading the reader. Embed only the selected session's text into its in-memory
 HTML; do not embed project content into the installable program. Present the
 reader fullscreen with no live host command bridge or polling. Opening another
-MD requires restarting the viewer. Durable saves remain checkpoint 3.
+MD requires restarting the viewer. Durable saves remain checkpoint 3. The user
+approved adding the minimum Scriptable–WebView command bridge in checkpoint 3
+because the session-only checkpoint 2 reader has no bridge to reuse. That
+checkpoint owns the bridge, persistent offline library, multiple-script
+selection/deletion, and acknowledged durable updates; it does not add package
+exchange or repository CLI behavior.
 
 Validation: scoped reader E2E command and host tests listed above,
 `make test-scriptable-viewer`, manual device step 2.
@@ -471,9 +539,15 @@ Unreleased: none — local app/tooling and device checks only; no VPS work or re
 
 Status: TODO
 
+Priority: Home Screen launch into the last saved script/part, offline and
+without repeated file selection. Keep the installed Scriptable app and local MD
+transfer. Repository CLI and phone packages remain later checkpoints.
+
 Scope: Durable library/checkmarks, global preferences, cursor, acknowledged
-save/recovery and confirmed deletion on the existing reader/bridge.
-No package import/export or repository CLI.
+local MD/state file saves and confirmed deletion on the existing reader. Add the minimum
+Scriptable–WebView command bridge required for serialized host-owned persistence
+and acknowledgements, plus offline library list/open/delete for multiple
+scripts. No package import/export or repository CLI.
 
 Validation: scoped offline-library E2E command and host tests listed above,
 `make test-scriptable-viewer`, blocking manual device step 3.
