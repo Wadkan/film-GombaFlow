@@ -24,3 +24,4 @@ bump checkpoint for the versioned API contract.
 ## Ordered Backlog
 
 - [FEATURE-1 — Add an offline Scriptable recording script viewer](features/FEATURE-1.md) — Migration: no; API bump: no.
+- [FEATURE-2 — Add an offline recording script PWA](features/FEATURE-2.md) — Migration: no; API bump: no.
