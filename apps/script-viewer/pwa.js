@@ -94,6 +94,20 @@
   }
 
   async function start() {
+    if ('serviceWorker' in navigator && window.isSecureContext) {
+      const offlineStatus = document.getElementById('offlineStatus');
+      const updateOfflineStatus = () => {
+        offlineStatus.textContent = navigator.serviceWorker.controller
+          ? 'Program offline használatra kész'
+          : 'Program offline előkészítése…';
+      };
+      navigator.serviceWorker.addEventListener('controllerchange', updateOfflineStatus);
+      navigator.serviceWorker.register('/sw.js').then(updateOfflineStatus).catch(() => {
+        offlineStatus.textContent = 'Program offline előkészítése nem sikerült';
+      });
+    } else {
+      document.getElementById('offlineStatus').textContent = 'Offline program nem érhető el';
+    }
     storage = await window.GombaFlowStorage.open();
     fileInput = document.createElement('input');
     fileInput.type = 'file';

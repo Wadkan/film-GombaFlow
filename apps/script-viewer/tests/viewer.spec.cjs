@@ -121,6 +121,81 @@ test('record parts and resume the offline library', async ({page}) => {
   await server.close();
 });
 
+test('install, restart offline and update without losing local data', async ({browser}) => {
+  const server = await startPwaServer();
+  const context = await browser.newContext();
+  let page = await context.newPage();
+  try {
+    const manifestResponse = await page.goto(server.url);
+    expect(manifestResponse.status()).toBe(200);
+    expect(await page.request.get(new URL('/manifest.webmanifest', server.url).href).then(response => response.status())).toBe(200);
+    expect(await page.request.get(new URL('/app-icon.svg', server.url).href).then(response => response.status())).toBe(200);
+    await expect(page.locator('#offlineStatus')).toHaveText('Program offline használatra kész');
+    const firstCache = await page.evaluate(async () => (await caches.keys()).find(name => name.startsWith('gombaflow-pwa-')));
+
+    await page.setInputFiles('#scriptFile', {name:'claude.md',mimeType:'text/markdown',buffer:Buffer.from(script)});
+    await page.getByLabel('Felvéve',{exact:true}).click();
+    await expect(page.locator('#content .title')).toContainText('Felvehető rész — 2');
+    await context.setOffline(true);
+    await page.reload();
+    await expect(page.locator('#content .title')).toContainText('Felvehető rész — 2');
+    for (const icon of ['/app-icon-192.png', '/app-icon-512.png', '/apple-touch-icon.png']) {
+      const iconResponse = await page.evaluate(async iconPath => {
+        const response = await fetch(iconPath);
+        return { ok: response.ok, signature: Array.from(new Uint8Array(await response.arrayBuffer()).slice(0, 8)) };
+      }, icon);
+      expect(iconResponse).toEqual({ok:true, signature:[137,80,78,71,13,10,26,10]});
+    }
+    await page.evaluate(async () => {
+      const url = new URL('/index.html', location.href).href;
+      const activeName = (await caches.keys()).find(name => name.startsWith('gombaflow-pwa-'));
+      await (await caches.open(activeName)).delete(url);
+      await (await caches.open('unrelated-cache')).put(url, new Response('<h1>Wrong cache</h1>', {headers:{'Content-Type':'text/html'}}));
+    });
+    await page.goto(new URL('/index.html', server.url).href);
+    await expect(page.locator('#content .title')).toContainText('Felvehető rész — 2');
+    await page.evaluate(() => caches.delete('unrelated-cache'));
+    await page.getByLabel('Felvéve',{exact:true}).click();
+    await expect(page.locator('#content .title')).toContainText('Felvehető rész — 3');
+    const offlineDownload = page.waitForEvent('download');
+    await page.getByRole('button',{name:'Pipák exportja'}).click();
+    expect((await offlineDownload).suggestedFilename()).toMatch(/^2-unlimited-claude-code-for-/);
+
+    await context.setOffline(false);
+    await server.update({editSource: async sourceDir => {
+      await fs.promises.appendFile(path.join(sourceDir, 'pwa.js'), '\n// build B\n');
+    }});
+    await page.evaluate(async () => (await navigator.serviceWorker.getRegistration()).update());
+    await expect.poll(() => page.evaluate(async () => Boolean((await navigator.serviceWorker.getRegistration()).waiting))).toBe(true);
+    await page.close();
+
+    page = await context.newPage();
+    await page.goto(server.url);
+    await expect(page.locator('#offlineStatus')).toHaveText('Program offline használatra kész');
+    await expect(page.locator('#content .title')).toContainText('Felvehető rész — 3');
+    const secondCache = await page.evaluate(async () => (await caches.keys()).find(name => name.startsWith('gombaflow-pwa-')));
+    expect(secondCache).not.toBe(firstCache);
+
+    await server.update({editSource: async sourceDir => {
+      await fs.promises.appendFile(path.join(sourceDir, 'pwa.js'), '\n// incomplete build C\n');
+    }, failAsset: 'app-icon.svg'});
+    await page.evaluate(async () => (await navigator.serviceWorker.getRegistration()).update());
+    await expect.poll(() => server.failedAssetRequests).toBeGreaterThan(0);
+    await page.waitForTimeout(300);
+    expect(await page.evaluate(async () => Boolean((await navigator.serviceWorker.getRegistration()).waiting))).toBe(false);
+    expect(await page.evaluate(async () => (await caches.keys()).filter(name => name.startsWith('gombaflow-pwa-')))).toEqual([secondCache]);
+
+    await context.setOffline(true);
+    await page.reload();
+    await expect(page.locator('#offlineStatus')).toHaveText('Program offline használatra kész');
+    await expect(page.locator('#content .title')).toContainText('Felvehető rész — 3');
+    await expect(page.getByRole('button',{name:'Pipák exportja'})).toBeEnabled();
+  } finally {
+    await context.close();
+    await server.close();
+  }
+});
+
 test('keeps separate topics, preserves progress on update, and rejects invalid MD', async ({page}) => {
   const server=await startPwaServer();
   const secondScript=script.replace('2-unlimited-claude-code-for','3-derived-topic').replaceAll('timeline 2 script','timeline 3 script');

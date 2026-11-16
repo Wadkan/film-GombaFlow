@@ -341,7 +341,12 @@ active version cache with a navigation fallback to its index. Imported content
 stays in IndexedDB, outside the cache.
 
 Use normal waiting-worker activation; do not force `skipWaiting` or reload an
-open reader during a save. Check for updates on startup/return online. Once all
+open reader during a save. Check for updates on startup while the local server
+and tunnel serve the desired build. Returning online does not require a separate
+update check: the operator makes new builds available during local runs.
+This user-approved decision withdraws implementation-review finding 2 for
+checkpoint 3; findings 1 (installation icons) and 3 (active-cache navigation
+fallback) remain required fixes. Once all
 old clients close, activation removes only this app's older program caches;
 never delete IndexedDB or unrelated caches. Document closing all PWA windows
 and reopening after an update. See the
@@ -431,10 +436,10 @@ Never implement later checkpoints early.
 
 ### Offline installation and program updates (checkpoint 3)
 
-- [ ] Test: extend `tests/pwa-tools.test.cjs` with deterministic program/cache-version generation, complete manifest/icon/worker asset inclusion and version changes when program content changes. Use `node --test apps/script-viewer/tests/pwa-tools.test.cjs` and observe failures before adding offline packaging. No production listener, child process or cloudflared behavior belongs in this checkpoint. - TODO
-- [ ] Test: add complete flow `install, restart offline and update without losing local data` in `tests/viewer.spec.cjs`. No current flow covers real service workers. Serve real build A over localhost, verify manifest/icon responses and service-worker control/readiness, import MD and save state, close/reopen with network disabled and prove further edits/export. Restore network with build B, retain the open session until it closes, then verify B activates with data intact. Also fail one asset during update and prove A survives offline. Reuse the checkpoint 1 HTTP fixture and actual IndexedDB; do not fake the worker/cache. Run `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "install, restart offline and update without losing local data"` and observe failures. - TODO
-- [ ] Implementation: add local manifest/icons/service worker, deterministic complete-asset cache and normal waiting update lifecycle. Add only the offline-readiness indication needed to distinguish program readiness from a saved checkbox. Exercise all browser behavior through the existing checkpoint 1 HTTP fixture; do not add `tools/start-pwa.mjs`, the Make startup target or tunnel integration yet. - TODO
-- [ ] Refactor and validation: run `node --test apps/script-viewer/tests/pwa-tools.test.cjs`, the targeted offline/update E2E command above and `make test-pwa`; tests remain included in root `make test`. Document offline readiness, waiting-worker activation, failed-update recovery and code rollback in README using the fixture-based validation command. Physical-device/HTTPS gates are deferred to checkpoint 4 and do not block this independently testable browser result. - TODO
+- [x] Test: extend `tests/pwa-tools.test.cjs` with deterministic program/cache-version generation, complete manifest/icon/worker asset inclusion and version changes when program content changes. Use `node --test apps/script-viewer/tests/pwa-tools.test.cjs` and observe failures before adding offline packaging. No production listener, child process or cloudflared behavior belongs in this checkpoint. - DONE
+- [x] Test: add complete flow `install, restart offline and update without losing local data` in `tests/viewer.spec.cjs`. No current flow covers real service workers. Serve real build A over localhost, verify manifest/icon responses and service-worker control/readiness, import MD and save state, close/reopen with network disabled and prove further edits/export. Restore network with build B, retain the open session until it closes, then verify B activates with data intact. Also fail one asset during update and prove A survives offline. Reuse the checkpoint 1 HTTP fixture and actual IndexedDB; do not fake the worker/cache. Run `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "install, restart offline and update without losing local data"` and observe failures. - DONE
+- [x] Implementation: add local manifest/icons/service worker, deterministic complete-asset cache and normal waiting update lifecycle. Add only the offline-readiness indication needed to distinguish program readiness from a saved checkbox. Exercise all browser behavior through the existing checkpoint 1 HTTP fixture; do not add `tools/start-pwa.mjs`, the Make startup target or tunnel integration yet. - DONE
+- [x] Refactor and validation: run `node --test apps/script-viewer/tests/pwa-tools.test.cjs`, the targeted offline/update E2E command above and `make test-pwa`; tests remain included in root `make test`. Document offline readiness, waiting-worker activation, failed-update recovery and code rollback in README using the fixture-based validation command. Physical-device/HTTPS gates are deferred to checkpoint 4 and do not block this independently testable browser result. - DONE
 
 ### Local HTTP/tunnel launcher and physical-device gates (checkpoint 4)
 
@@ -575,7 +580,7 @@ Unreleased: none — manual local file exchange; no VPS operator action.
 
 ### Checkpoint 3 — Add offline installation and safe program updates
 
-Status: TODO
+Status: APPROVED (review PASS)
 
 Scope: checkpoint 3 TDD tasks, manifest/icons, deterministic offline packaging,
 service-worker installation, waiting activation, cache/update recovery and
