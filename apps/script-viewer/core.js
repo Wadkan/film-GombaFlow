@@ -123,7 +123,12 @@ function parseScript(markdown) {
         } else if (!/\/\s*>$/.test(tag[0])) openTags.push(tag[2].toLowerCase());
       }
     }
-    if (i >= lines.length) throw new ScriptFormatError('Unclosed Markdown code fence');
+    if (i >= lines.length) {
+      const partial = currentFence.body.join('\n');
+      const partId = partial.match(/script-id=["'](\d+)/)?.[1];
+      if (partId) validateStructuralTags(partial, partId);
+      throw new ScriptFormatError('Unclosed Markdown code fence');
+    }
     const block = currentFence.body.join('\n');
     currentFence = null;
     if (!/<agent-cue\b/i.test(block)) {

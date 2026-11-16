@@ -1,4 +1,4 @@
-.PHONY: start-n8n stop-n8n gomba1-transcript test test-n8n test-localworkflows format docs-format
+.PHONY: start-n8n stop-n8n gomba1-transcript scriptable-viewer test test-n8n test-localworkflows format docs-format
 
 .DEFAULT_GOAL := start-n8n
 
@@ -16,6 +16,9 @@ stop-n8n:
 
 gomba1-transcript:
 	@python3 local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/scripts/run_transcript_flow.py
+
+scriptable-viewer:
+	@node apps/script-viewer/tools/build-selected.mjs
 
 test: test-n8n test-localworkflows test-youtube-studio test-scriptable-viewer
 

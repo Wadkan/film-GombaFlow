@@ -191,9 +191,10 @@ App files:
   disposable matching registry/project tree under `/tmp` without editing the
   production registry or project scripts.
 
-Author sources in the repository; generated install scripts and transfer files
-are not committed. Use `/tmp` for local generated examples, test output and
-scratch data. The persisted repository state file is intentional project data.
+Author sources in the repository. User-approved review decision (2026-11-16):
+keep generated install scripts and transfer files in
+`apps/script-viewer/output/` and version them in Git; do not ignore this directory.
+Use `/tmp` for test output and scratch data. The persisted repository state file is intentional project data.
 Scriptable itself receives a user-installed generated file, not a runtime build.
 
 ### Parser and location metadata
@@ -298,10 +299,12 @@ prototype review comes first; its sample interactions are not production logic.
 
 ### Functional mobile reader tasks (checkpoint 2)
 
-- [ ] Test first: introduce the scoped Playwright dev dependency/lockfile and `test:e2e` script. Add failing complete-flow test `filter and read a recording script` in `apps/script-viewer/tests/viewer.spec.cjs`: open the real tagged sample through a fake host, choose chapter/clip/location/status filters and type checkboxes, search only narration from the bottom, swipe/select matching parts, and verify pinned controls, safe inner-code rendering and the mandatory spoken cue. No existing browser spec covers this flow. Exact command: `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "filter and read a recording script"`. Observe behavioral failure before implementing the reader controller. - TODO
-- [ ] Test first: add failing `tests/host.test.cjs` coverage for the minimal host/file-open bridge, invalid legacy input, cancellation and host dismissal. Run `node --test apps/script-viewer/tests/host.test.cjs` from the repo root before implementing host integration. - TODO
-- [ ] Implement the functional mobile reader from the reviewed dummy using the checkpoint 1 core. Add Scriptable MD file selection and the minimal allowlisted command bridge, with session-only checkmarks/preferences and transient topic list. Recording toggles/advance work in session but must not claim durable save. Reuse the real parser in browser tests; fake only native host APIs. - TODO
-- [ ] Extend `make test-scriptable-viewer` to include the browser script and host tests. Refactor with tests green; run the scoped browser command and aggregate target, then physical-iPhone reader check below. Document that offline restart persistence arrives in checkpoint 3. - TODO
+- [x] Review finding 1: reset the visible part to the top on navigation, picker selection and recording auto-advance; extend the existing reader E2E flow with long-part scrolling checks. - DONE
+
+- [x] Test first: introduce the scoped Playwright dev dependency/lockfile and `test:e2e` script. Add failing complete-flow test `filter and read a recording script` in `apps/script-viewer/tests/viewer.spec.cjs`: open the real tagged sample through a fake host, choose chapter/clip/location/status filters and type checkboxes, search only narration from the bottom, swipe/select matching parts, and verify pinned controls, safe inner-code rendering and the mandatory spoken cue. No existing browser spec covers this flow. Exact command: `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "filter and read a recording script"`. Observe behavioral failure before implementing the reader controller. - DONE
+- [x] Test first: add failing `tests/host.test.cjs` coverage for the minimal host/file-open bridge, invalid legacy input, cancellation and host dismissal. Run `node --test apps/script-viewer/tests/host.test.cjs` from the repo root before implementing host integration. - DONE
+- [x] Implement the functional mobile reader from the reviewed dummy using the checkpoint 1 core. Add native Scriptable MD selection and validation before reader presentation, with session-only checkmarks/preferences; the user-approved simplification removes the live command bridge. Recording toggles/advance work in session but must not claim durable save. Reuse the real parser in browser tests; fake only native host APIs. - DONE
+- [x] Extend `make test-scriptable-viewer` to include the browser script and host tests. Refactor with tests green; run the scoped browser command and aggregate target, then physical-iPhone reader check below. Document that offline restart persistence arrives in checkpoint 3. - DONE
 
 ### Offline library tasks (checkpoint 3)
 
@@ -366,12 +369,13 @@ storage, keyboard or sharing behavior.
    PASS — The user accepted the clickable dummy.
 1. Checkpoint 1: no physical-device gate for the parser/build result; automated
    Node behavioral and build checks apply after the mandatory step 0 review.
-2. Checkpoint 2: run `node apps/script-viewer/tools/build.mjs --output /tmp/GombaFlowViewer.js`.
-   Transfer/install in Scriptable; open the current tagged sample from Files.
+2. Checkpoint 2: run `make scriptable-viewer`.
+   Transfer/install in Scriptable; start the program and select the current tagged sample in the native Files picker before the reader opens. Confirm fullscreen presentation.
    Check long-part scrolling, pinned bars, keyboard/search in the bottom picker,
    swipe versus vertical scroll, location/type filters, readable spoken cue and
    large controls. Open the legacy script to confirm a readable rejection and
    unchanged session content. No persistence claim at this checkpoint.
+   PASS — The user reported completing the iPhone check and requested review closure; device/software versions were not provided.
 3. Checkpoint 3: run the same build command and install without deleting local
    data. Import the tagged sample plus `apps/script-viewer/tests/fixtures/999-viewer-fixture.md`.
    Change filters/checkmarks, wait for saved acknowledgement, enable airplane
@@ -437,11 +441,18 @@ Unreleased: none — local app/tooling and device checks only; no VPS work or re
 
 ### Checkpoint 2 — Add the functional Scriptable mobile reader
 
-Status: TODO
+Status: APPROVED (review PASS)
 
 Scope: Functional reader/controller, pinned controls, search/swipe, minimal Scriptable
-MD picker/bridge and browser harness. Uses checkpoint 1 parser/build; progress
+MD picker before reader presentation and browser harness. Uses checkpoint 1 parser/build; progress
 remains session-only. No persistence or exchange.
+
+User-approved simplification (current chat): keep the existing reader UI and
+separate program/MD transfer. Pick, read and validate the MD natively before
+loading the reader. Embed only the selected session's text into its in-memory
+HTML; do not embed project content into the installable program. Present the
+reader fullscreen with no live host command bridge or polling. Opening another
+MD requires restarting the viewer. Durable saves remain checkpoint 3.
 
 Validation: scoped reader E2E command and host tests listed above,
 `make test-scriptable-viewer`, manual device step 2.

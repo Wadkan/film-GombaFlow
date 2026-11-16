@@ -13,3 +13,7 @@ tooling/git
 # Local Python environments and browser caches
 .venv/
 __pycache__/
+node_modules/
+
+# Local browser results
+/apps/script-viewer/test-results/
