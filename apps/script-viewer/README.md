@@ -25,32 +25,14 @@ tartalomfrissítéskor csak az `.md`-t kell újra átvinni. A régi projektnevű
 
 1. Telepítsd a Scriptable alkalmazást az App Store-ból.
 2. A Mac Finderben nyisd meg az `apps/script-viewer/output/` mappát.
-3. A `GombaFlowViewer.js` fájlt Megosztás → AirDrop segítségével küldd az iPhone-ra.
-4. Add hozzá a Scriptable-hoz. Ha a megosztási menüben nem szerepel Scriptable,
-   másold ki a `.js` teljes szövegét, Scriptable-ben a **+** gombbal hozz létre
-   scriptet, és illeszd be. Frissítéskor a teljes régi kódot cseréld le.
-5. A `<projekt>.md` fájlt is AirDropold át, és mentsd a Fájlok alkalmazásban
-   egy helyi, letöltött példányként elérhető mappába.
-6. Scriptable-ben koppints a GombaFlowViewer csempére. **Először a natív
-   fájlválasztó jelenik meg.** Válaszd ki az MD-t. Megszakításkor nem nyílik olvasó.
-7. A program beolvassa és ellenőrzi az MD-t, majd teljes képernyős nézőben
-   megjeleníti az első részt és a teljes beszélt cue-t. Hibás tagged formátumnál
-   **GombaFlow S1** hibaüzenet jelenik meg.
+3. A `GombaFlowViewer.js` fájlt Megosztás → AirDrop segítségével küldd az iPhone-ra, majd add hozzá Scriptable-hoz. Ha a megosztási menüben nem szerepel, másold ki a teljes kódot, Scriptable-ben a **+** gombbal hozz létre scriptet, és illeszd be.
+4. Első alkalommal AirDropold át a kiválasztott tagged `.md` scriptet, és mentsd a Fájlok alkalmazásban egy helyi, letöltött példányként elérhető mappába. Indítsd el a GombaFlowViewer-t, és válaszd ki az MD-t. A script ellenőrzés után a Scriptable saját dokumentumai közé menti, így a következő indítás fájlválasztás nélkül folytatja az utolsó scriptet és részt.
+5. A Home Screen indításhoz hozz létre iOS Shortcutot, amely az **Open URLs** művelettel ezt nyitja meg: `scriptable:///run/GombaFlowViewer`. A Shortcut részleteinél válaszd az **Add to Home Screen** lehetőséget. Ezzel közvetlenül a Scriptable-ben futó, teljes képernyős néző nyílik meg.
+6. A néző **Scriptek** gombjával nyithatsz meg korábban mentett témát, törölhetsz témát megerősítés után, vagy a **Másik MD megnyitása…** gombbal választhatsz új fájlt. A kiválasztás megszakítása vagy egy hibás MD nem cseréli le a mostani scriptet.
 
-A program kiválasztás és betöltés után nem használ folyamatos natív
-parancshidat, időzítős lekérdezést vagy WebView.evaluateJavaScript hívást.
-A felhasználó az iPhone-próba elvégzését visszajelezte; verzióadatot nem adott meg.
+A `viewer-state.json` és témánkénti MD-másolat a Scriptable helyi dokumentumtárában marad. A mentett script, pipák, globális szűrők/típusbeállítások, keresés, a felső és alsó sáv becsukott állapota és az utolsó rész újraindítás után visszaállnak; nincs hálózati függőség. A repository marad a hosszú távú biztonsági másolat. Törlés előtt exportfunkció még nincs; a repo eredeti MD-jét ez a néző soha nem módosítja.
 
-Másik MD-hez zárd be a nézőt, indítsd újra a programot és válassz másik fájlt.
-A **Másik MD…** gomb ezt a menetet jelzi. A megnyitás és olvasás helyi MD-vel
-hálózat nélkül is működhet; egy csak felhőben elérhető fájlt előbb le kell tölteni.
-
-## A jelenlegi checkpoint határa
-
-A szűrés, keresés, lapozás és pipálás az aktuális futásban működik.
-**A pipák és a megnyitott script újraindítás után nem állnak vissza.**
-A tartós offline könyvtár és fájlalapú pipamentés a következő, 3. checkpoint.
-A mostani program nem írja át a bemeneti MD-t és nem ment felvételi állapotot.
+A Home Screen és az offline újraindítás tényleges működését iPhone-on ellenőrizd: válassz egy későbbi részt, várd meg az „Offline mentve” jelzést, kapcsold be a repülő módot, kényszerítsd a Scriptable bezárását, majd indítsd újra a Home Screen ikonról. A Shortcut a Scriptable-ben megadott `GombaFlowViewer` nevű telepített scriptet futtatja.
 
 ## Ellenőrzés
 

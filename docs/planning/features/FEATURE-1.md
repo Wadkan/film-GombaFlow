@@ -359,10 +359,10 @@ prototype review comes first; its sample interactions are not production logic.
 
 ### Offline library tasks (checkpoint 3)
 
-- [ ] Test first: extend `tests/host.test.cjs` with failing behavioral tests for acknowledged durable saves, queued actions, failed writes, readable/invalid saved state, deletion, global preferences and last cursor. Update existing build/host/browser tests that assume mandatory selection on every launch or prohibit reader-to-Scriptable communication: tests must follow the checkpoint 3 requirements while retaining first-use selection, cancellation and fullscreen coverage. Exact command: `node --test apps/script-viewer/tests/host.test.cjs`. - TODO
-- [ ] Test first: extend `apps/script-viewer/tests/viewer.spec.cjs` with complete flow `record parts and resume the offline library`: import the real tagged sample and the valid second-topic fixture, mark/unmark, advance/empty state, switch/relaunch with the same persisted fake-host MD files and state file and restore the last topic/part without calling the picker, reopen an updated MD for the same topic without losing checkmarks/last part, cancel switching without losing the current MD, confirm/cancel delete through list/empty states, and simulate save failure. Exact command: `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "record parts and resume the offline library"`. Observe persistence/acknowledgement failures before implementing durable storage. - TODO
-- [ ] Implement the single-writer local MD/state file storage and save acknowledgements; connect existing session reader actions to durable scripts/checkmarks/preferences/cursor. Apply default not-recorded only to a fresh library. Reuse the existing reader; add only the minimum host bridge needed for acknowledged local saves. At launch load the last saved topic/part before presenting the reader, with no repeated MD selection. Document one Home Screen shortcut using the local Scriptable run URL. Do not add exchange capabilities here. - TODO
-- [ ] Refactor with tests green; run the scoped browser command and aggregate target, then blocking physical-iPhone Home Screen launch and airplane-mode/restart checks. Browser fake storage does not prove iOS file persistence; record actual device evidence. - TODO
+- [ ] Test first: extend `tests/host.test.cjs` with failing behavioral tests for acknowledged durable saves, queued actions, failed writes, readable/invalid saved state, deletion, global preferences and last cursor. Update existing build/host/browser tests that assume mandatory selection on every launch or prohibit reader-to-Scriptable communication: tests must follow the checkpoint 3 requirements while retaining first-use selection, cancellation and fullscreen coverage. Exact command: `node --test apps/script-viewer/tests/host.test.cjs`. - DONE
+- [ ] Test first: extend `apps/script-viewer/tests/viewer.spec.cjs` with complete flow `record parts and resume the offline library`: import the real tagged sample and the valid second-topic fixture, mark/unmark, advance/empty state, switch/relaunch with the same persisted fake-host MD files and state file and restore the last topic/part without calling the picker, reopen an updated MD for the same topic without losing checkmarks/last part, cancel switching without losing the current MD, confirm/cancel delete through list/empty states, and simulate save failure. Exact command: `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "record parts and resume the offline library"`. Observe persistence/acknowledgement failures before implementing durable storage. - DONE
+- [ ] Implement the single-writer local MD/state file storage and save acknowledgements; connect existing session reader actions to durable scripts/checkmarks/preferences/cursor. Apply default not-recorded only to a fresh library. Reuse the existing reader; add only the minimum host bridge needed for acknowledged local saves. At launch load the last saved topic/part before presenting the reader, with no repeated MD selection. Document one Home Screen shortcut using the local Scriptable run URL. Do not add exchange capabilities here. - DONE
+- [ ] Refactor with tests green; run the scoped browser command and aggregate target, then blocking physical-iPhone Home Screen launch and airplane-mode/restart checks. Browser fake storage does not prove iOS file persistence; record actual device evidence. - IN PROGRESS
 
 ### Repository exchange CLI tasks (checkpoint 4)
 
@@ -435,6 +435,7 @@ storage, keyboard or sharing behavior.
    acknowledgement. Enable airplane mode, force-close Scriptable and relaunch
    from that icon: the same script/part must open without a file picker. Record
    PASS/FAIL and iPhone/iOS/Scriptable versions; this is the primary blocking check.
+   FAIL — A Home Screen indítás és a mentett sávállapot működik, de hidegindításkor időnként fekete képernyő marad; az N4 várakozás rontotta a megjelenítést, ezért N5-ben visszavonva; az időszakos indulási hiba továbbra is nyitott.
    Then open `apps/script-viewer/tests/fixtures/999-viewer-fixture.md`, change
    filters/checkmarks and repeat the restart to verify both topics, global
    preferences and last position. Exercise rapid toggle, empty state and
@@ -537,7 +538,7 @@ Unreleased: none — local app/tooling and device checks only; no VPS work or re
 
 ### Checkpoint 3 — Persist offline scripts and recording progress
 
-Status: TODO
+Status: IN PROGRESS
 
 Priority: Home Screen launch into the last saved script/part, offline and
 without repeated file selection. Keep the installed Scriptable app and local MD
