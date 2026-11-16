@@ -37,7 +37,7 @@ copy the whole plan into the release notes.
 
 ## FEATURE-1
 
-[Add an offline Scriptable recording script viewer](features/FEATURE-1.md)
+[Retired; replaced by FEATURE-2](features/FEATURE-2.md)
 
 ## FEATURE-2
 

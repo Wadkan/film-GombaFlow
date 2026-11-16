@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "test": "node --test tests/core.test.cjs tests/build.test.cjs tests/host.test.cjs && npm run test:e2e -- --reporter=line",
+    "test": "node --test tests/core.test.cjs tests/pwa-tools.test.cjs && npm run test:e2e -- --reporter=line",
     "test:e2e": "playwright test"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 # FEATURE-2 — Add an offline recording script PWA
 
-**Status:** PLANNED
+**Status:** IN PROGRESS
 
 ## Goal and measurable outcome
 
@@ -402,17 +402,17 @@ Never implement later checkpoints early.
 
 ### Step 0 — Retire Scriptable and FEATURE-1 (first activity in checkpoint 1)
 
-- [ ] Retention check: identify and retain the current web UI/controller, parser, generic browser tests, parser fixtures and package/Playwright setup using the exact boundary above. The reader/navigation/parser contract is now captured in FEATURE-2; remove any remaining requirement to read FEATURE-1 during implementation. Run `node --test apps/script-viewer/tests/core.test.cjs` as the parser baseline. - TODO
-- [ ] Remove the listed native source/build/output/test assets, the native-only browser test and obsolete README instructions. Adjust package test wiring and bar locators; introduce root `test-pwa`, remove both Scriptable Make targets and wire `test-pwa` into root `make test`. Delete FEATURE-1's plan and its exact backlog row; preserve its allocated registry heading with a FEATURE-2 replacement link. Do not delete or revert the current shared reader or original Claude MD. - TODO
-- [ ] Validation: run `node --test apps/script-viewer/tests/core.test.cjs`, `npm --prefix apps/script-viewer run test:e2e -- --reporter=line` and `make test-pwa`. Inspect `make -n test` to confirm retained/new viewer tests remain in the root aggregate. Audit the deleted-path references. This is removal and test rewiring, not new runtime behavior: keep the useful existing tests green rather than inventing tests asserting documentation text. Proceed to checkpoint 1's new behavior only after this step is complete. - TODO
+- [x] Retention check: identify and retain the current web UI/controller, parser, generic browser tests, parser fixtures and package/Playwright setup using the exact boundary above. The reader/navigation/parser contract is now captured in FEATURE-2; remove any remaining requirement to read FEATURE-1 during implementation. Run `node --test apps/script-viewer/tests/core.test.cjs` as the parser baseline. - DONE
+- [x] Remove the listed native source/build/output/test assets, the native-only browser test and obsolete README instructions. Adjust package test wiring and bar locators; introduce root `test-pwa`, remove both Scriptable Make targets and wire `test-pwa` into root `make test`. Delete FEATURE-1's plan and its exact backlog row; preserve its allocated registry heading with a FEATURE-2 replacement link. Do not delete or revert the current shared reader or original Claude MD. - DONE
+- [x] Validation: run `node --test apps/script-viewer/tests/core.test.cjs`, `npm --prefix apps/script-viewer run test:e2e -- --reporter=line` and `make test-pwa`. Inspect `make -n test` to confirm retained/new viewer tests remain in the root aggregate. Audit the deleted-path references. This is removal and test rewiring, not new runtime behavior: keep the useful existing tests green rather than inventing tests asserting documentation text. Proceed to checkpoint 1's new behavior only after this step is complete. - DONE
 
 ### Browser reader and persistent library (checkpoint 1)
 
-- [ ] Test: add `tests/storage.spec.cjs` using real browser IndexedDB. Cover atomic MD/state save, true/false toggles, preferences without an active topic, save acknowledgement/abort, same-topic reimport, deletion, invalid stored state and interleaved writes from two pages. Derive topic variations and invalid MD from the sole Claude sample. Run `npm --prefix apps/script-viewer run test:e2e -- --reporter=line storage.spec.cjs`; first observe missing-storage failures. - TODO
-- [ ] Test: extend existing `record parts and resume the offline library` in `tests/viewer.spec.cjs` to use a real HTTP-served PWA, file input and IndexedDB, replacing its fake-host persistence. Include two derived topics, switching/reload, update of the same MD, cancellation/invalid import, failed save, deletion/empty library and restored global settings/cursor. Update existing `restores collapsed bars and saves reopening them` for permanent toggle buttons and real persistence. Extend `filter and read a recording script` only where needed for the current layout, mouse/keyboard and 390/1280-pixel viewports. Run `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "filter and read a recording script|record parts and resume the offline library|restores collapsed bars and saves reopening them"` and observe relevant failures. - TODO
-- [ ] Test: add build/runtime tests in `tests/pwa-tools.test.cjs` proving dynamic imports, program-only allowlisting and missing input handling. Run `node --test apps/script-viewer/tests/pwa-tools.test.cjs` and observe missing browser-build behavior before implementing it. - TODO
-- [ ] Implementation: add `storage.js`, `pwa.js`, a program-only `tools/build-pwa.mjs` and the real-HTTP test fixture. Bind browser actions to the retained reader; preserve current markup/CSS and serialized acknowledgements. Implement picker/local copies, topic list/open/confirmed deletion, restore and error handling. Do not restore the retired native build. No exchange, service worker or tunnel yet. - TODO
-- [ ] Refactor and validation: keep only small browser/storage modules, include new tests in package `test`, and confirm root `make test` still reaches them through `test-pwa`. Run `node --test apps/script-viewer/tests/pwa-tools.test.cjs` and `make test-pwa`. Update README with the browser-library boundary and temporary HTTP test workflow. - TODO
+- [x] Test: add `tests/storage.spec.cjs` using real browser IndexedDB. Cover atomic MD/state save, true/false toggles, preferences without an active topic, save acknowledgement/abort, same-topic reimport, deletion, invalid stored state and interleaved writes from two pages. Derive topic variations and invalid MD from the sole Claude sample. Run `npm --prefix apps/script-viewer run test:e2e -- --reporter=line storage.spec.cjs`; first observe missing-storage failures. - DONE
+- [x] Test: extend existing `record parts and resume the offline library` in `tests/viewer.spec.cjs` to use a real HTTP-served PWA, file input and IndexedDB, replacing its fake-host persistence. Include two derived topics, switching/reload, update of the same MD, cancellation/invalid import, failed save, deletion/empty library and restored global settings/cursor. Update existing `restores collapsed bars and saves reopening them` for permanent toggle buttons and real persistence. Extend `filter and read a recording script` only where needed for the current layout, mouse/keyboard and 390/1280-pixel viewports. Run `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "filter and read a recording script|record parts and resume the offline library|restores collapsed bars and saves reopening them"` and observe relevant failures. - DONE
+- [x] Test: add build/runtime tests in `tests/pwa-tools.test.cjs` proving dynamic imports, program-only allowlisting and missing input handling. Run `node --test apps/script-viewer/tests/pwa-tools.test.cjs` and observe missing browser-build behavior before implementing it. - DONE
+- [x] Implementation: add `storage.js`, `pwa.js`, a program-only `tools/build-pwa.mjs` and the real-HTTP test fixture. Bind browser actions to the retained reader; preserve current markup/CSS and serialized acknowledgements. Implement picker/local copies, topic list/open/confirmed deletion, restore and error handling. Do not restore the retired native build. No exchange, service worker or tunnel yet. - DONE
+- [x] Refactor and validation: keep only small browser/storage modules, include new tests in package `test`, and confirm root `make test` still reaches them through `test-pwa`. Run `node --test apps/script-viewer/tests/pwa-tools.test.cjs` and `make test-pwa`. Update README with the browser-library boundary and temporary HTTP test workflow. - DONE
 
 ### Dated additive checkmark exchange (checkpoint 2)
 
@@ -520,7 +520,7 @@ review PASS. Runtime status and retry rules are owned by
 
 ### Checkpoint 1 — Replace Scriptable with a persistent browser recording reader
 
-Status: TODO
+Status: APPROVED (review PASS)
 
 Scope: Step 0's complete Scriptable/FEATURE-1 retirement and keep/delete list,
 then checkpoint 1 TDD tasks, real browser file/storage adapter, retained reader
