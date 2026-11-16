@@ -4,6 +4,7 @@
   let storage;
   let activeTopic = null;
   let fileInput;
+  let exchangeInput;
   let actionQueue = Promise.resolve();
 
   function topicState(state, topicId) {
@@ -25,12 +26,16 @@
     core.parseScript(topic.markdown);
     activeTopic = topicId;
     window.viewerOpen(topic.markdown, topicState(state, topicId));
+    document.getElementById('exportChecksBtn').disabled = false;
+    document.getElementById('importChecksBtn').disabled = false;
   }
 
   async function openLibrary() {
     const state = await storage.read();
     activeTopic = null;
     window.viewerShowLibrary({ topics: Object.keys(state.topics) });
+    document.getElementById('exportChecksBtn').disabled = true;
+    document.getElementById('importChecksBtn').disabled = true;
   }
 
   async function handleFile(file) {
@@ -57,6 +62,9 @@
         return { ok: true };
       case 'record':
         await storage.setRecorded(action.topicId, String(action.id), action.value);
+        break;
+      case 'import-recorded':
+        await storage.mergeRecorded(action.topicId, action.recorded);
         break;
       case 'cursor':
         await storage.setLastPart(action.topicId, String(action.id));
@@ -97,9 +105,18 @@
     fileInput.style.height = '1px';
     fileInput.style.opacity = '0';
     document.body.appendChild(fileInput);
+    exchangeInput = document.createElement('input');
+    exchangeInput.type = 'file';
+    exchangeInput.accept = 'application/json,.json';
+    exchangeInput.id = 'checkmarkFile';
+    exchangeInput.style.position = 'fixed';
+    exchangeInput.style.left = '-10000px';
+    document.body.appendChild(exchangeInput);
     const showLibrary = window.viewerShowLibrary;
     window.viewerShowLibrary = view => {
       activeTopic = null;
+      document.getElementById('exportChecksBtn').disabled = true;
+      document.getElementById('importChecksBtn').disabled = true;
       return showLibrary(view);
     };
     fileInput.addEventListener('change', async () => {
@@ -112,7 +129,44 @@
       }
       catch (error) { window.viewerShowError(error); }
     });
+    exchangeInput.addEventListener('change', async () => {
+      const file = exchangeInput.files?.[0];
+      exchangeInput.value = '';
+      if (!file || !activeTopic) return;
+      try {
+        const state = await storage.read();
+        const topic = state.topics[activeTopic];
+        if (!topic) throw new Error('A kiválasztott script már nem található.');
+        const parsed = core.parseScript(topic.markdown);
+        const payload = window.GombaFlowProgress.validateImport(JSON.parse(await file.text()), {
+          topicId: activeTopic, partIds: parsed.parts.map(part => String(part.id)),
+        });
+        if (!window.confirm(`Az export készült: ${payload.exported_at}. Hozzáadod a pipákat? A már felvett részek pipája nem törlődik.`)) return;
+        await send({ type: 'import-recorded', topicId: activeTopic, recorded: payload.recorded });
+        await openTopic(activeTopic);
+      } catch (error) { window.viewerShowError(error); }
+    });
     window.viewerHost = { send };
+    document.getElementById('exportChecksBtn').onclick = async () => {
+      if (!activeTopic) return;
+      try {
+        const state = await storage.read();
+        const topic = state.topics[activeTopic];
+        if (!topic) throw new Error('A kiválasztott script már nem található.');
+        const parsed = core.parseScript(topic.markdown);
+        const payload = window.GombaFlowProgress.createExport({
+          topicId: activeTopic, partIds: parsed.parts.map(part => String(part.id)), recorded: topic.recorded,
+        });
+        const blob = new Blob([JSON.stringify(payload, null, 2) + '\n'], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${activeTopic}-${payload.exported_at.replace(/[:.]/g, '-')}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+      } catch (error) { window.viewerShowError(error); }
+    };
+    document.getElementById('importChecksBtn').onclick = () => { if (activeTopic) exchangeInput.click(); };
     window.addEventListener('focus', async () => {
       try {
         const state = await storage.read();

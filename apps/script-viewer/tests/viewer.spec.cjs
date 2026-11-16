@@ -236,11 +236,107 @@ test('restores collapsed bars and saves reopening them', async ({page}) => {
   await expect(page.locator('.bottom')).toBeHidden();
   await page.getByRole('button',{name:'Felső sáv váltása'}).click();
   await expect.poll(async()=>page.evaluate(async()=>{const storage=await window.GombaFlowStorage.open();const state=await storage.read();storage.close();return state.preferences.topCollapsed})).toBe(false);
+  const dashboardSizes=await page.evaluate(()=>[
+    getComputedStyle(document.querySelector('.top')).fontSize,
+    getComputedStyle(document.querySelector('.bottom')).fontSize,
+    getComputedStyle(document.querySelector('.top button')).fontFamily,
+    getComputedStyle(document.querySelector('.bottom input')).fontFamily,
+  ]);
+  expect(dashboardSizes[0]).toBe(dashboardSizes[1]);
+  expect(dashboardSizes[2]).toBe(dashboardSizes[3]);
+  expect(parseFloat(dashboardSizes[0])).toBeLessThan(16);
+  const check=await page.locator('#record').boundingBox();
+  const topToggle=await page.getByRole('button',{name:'Felső sáv váltása'}).boundingBox();
+  expect(check.width).toBeLessThan(44);
+  expect(check.x+check.width).toBeGreaterThan(360);
+  expect(check.y+check.height).toBeLessThan(topToggle.y);
+  await page.getByRole('button', { name: /Tartalomtípusok/ }).click();
+  const typesStyle = await page.evaluate(() => ({
+    fontSize: parseFloat(getComputedStyle(document.querySelector('.sheet')).fontSize),
+    closeFontSize: parseFloat(getComputedStyle(document.getElementById('closeSheet')).fontSize),
+    closeRightHit: (() => {
+      const close = document.getElementById('closeSheet');
+      const rect = close.getBoundingClientRect();
+      const hit = document.elementFromPoint(rect.right - 12, rect.bottom - 12);
+      return hit === close || close.contains(hit);
+    })(),
+  }));
+  expect(typesStyle.fontSize).toBeLessThan(16);
+  expect(typesStyle.closeFontSize).toBeLessThan(16);
+  expect(typesStyle.closeRightHit).toBe(true);
+  await page.getByRole('button', { name: 'Bezárás' }).click();
   await page.getByRole('button',{name:'Alsó sáv váltása'}).click();
   await expect.poll(async()=>page.evaluate(async()=>{const storage=await window.GombaFlowStorage.open();const state=await storage.read();storage.close();return state.preferences.bottomCollapsed})).toBe(false);
   await page.reload();
   await expect(page.locator('.top')).toBeVisible();
   await expect(page.locator('.bottom')).toBeVisible();
+  await expect(page.locator('#record')).toBeVisible();
+  } finally {
+    await server.close();
+  }
+});
+
+test('exchange recording checkmarks through JSON files', async ({ page }) => {
+  const server = await startPwaServer();
+  try {
+    await page.goto(server.url);
+    await page.locator('#scriptFile').setInputFiles({ name: 'claude.md', mimeType: 'text/markdown', buffer: Buffer.from(script) });
+    await expect(page.locator('.title')).toContainText('Felvehető rész — 1');
+    await page.locator('#scriptFile').evaluate(input => { input.value = ''; });
+    const derived = script.replace('2-unlimited-claude-code-for', '3-derived-topic').replaceAll('timeline 2 script', 'timeline 3 script');
+    await page.locator('#scriptFile').setInputFiles({ name: 'derived.md', mimeType: 'text/markdown', buffer: Buffer.from(derived) });
+    await page.getByRole('button', { name: 'Scriptek' }).click();
+    await page.locator('[data-open="2-unlimited-claude-code-for"]').click();
+    const beforeImport = await page.evaluate(async () => {
+      const storage = await window.GombaFlowStorage.open(); const state = await storage.read(); storage.close();
+      return { preferences: state.preferences, topicIds: Object.keys(state.topics).sort() };
+    });
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Pipák exportja' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toMatch(/^2-unlimited-claude-code-for-.*\.json$/);
+    const stream = await download.createReadStream();
+    const chunks = [];
+    for await (const chunk of stream) chunks.push(chunk);
+    const exported = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+    expect(exported).toMatchObject({ schema_version: 1, topic_id: '2-unlimited-claude-code-for' });
+    expect(exported.exported_at).toMatch(/^\d{4}-\d\d-\d\dT.*\.\d{3}Z$/);
+    expect(Object.keys(exported.recorded)).toHaveLength(16);
+    expect(Object.values(exported.recorded)).toEqual(Array(16).fill(false));
+
+    await page.getByLabel('Felvéve', { exact: true }).check();
+    const incoming = { ...exported, recorded: { ...exported.recorded, '1': false, '2': true } };
+    let accepted = false;
+    page.on('dialog', async dialog => {
+      expect(dialog.message()).toContain(exported.exported_at);
+      if (accepted) await dialog.accept(); else await dialog.dismiss();
+    });
+    const file = { name: 'checks.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(incoming)) };
+    await page.locator('#checkmarkFile').setInputFiles(file);
+    await expect(page.getByLabel('Felvéve', { exact: true })).toBeChecked();
+    accepted = true;
+    await page.locator('#checkmarkFile').setInputFiles(file);
+    const recordedChecks = () => page.evaluate(async () => {
+      const storage = await window.GombaFlowStorage.open();
+      const state = await storage.read(); storage.close();
+      return { status: state.preferences.status, checks: state.topics['2-unlimited-claude-code-for'].recorded };
+    });
+    await expect.poll(async () => (await recordedChecks()).checks).toMatchObject({ '1': true, '2': true });
+    expect(await page.evaluate(async () => {
+      const storage = await window.GombaFlowStorage.open(); const state = await storage.read(); storage.close();
+      return { preferences: state.preferences, topicIds: Object.keys(state.topics).sort() };
+    })).toEqual(beforeImport);
+    await page.locator('#status').selectOption('all');
+    await expect.poll(async () => (await recordedChecks()).status).toBe('all');
+    await page.reload();
+    await expect(page.locator('#status')).toHaveValue('all');
+    await expect.poll(async () => (await recordedChecks()).checks).toMatchObject({ '1': true, '2': true });
+    await page.getByRole('button', { name: 'Pipák importja' }).click();
+    await page.locator('#checkmarkFile').setInputFiles({
+      name: 'invalid.json', mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify({ ...incoming, recorded: { '999': true } })),
+    });
+    await expect(page.locator('#viewerDiagnostic')).toBeVisible();
   } finally {
     await server.close();
   }

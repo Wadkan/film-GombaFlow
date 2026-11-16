@@ -141,6 +141,18 @@
         });
       },
 
+      mergeRecorded(topicId, incoming) {
+        return transact(state => {
+          const topic = state.topics[topicId];
+          if (!topic || !isObject(incoming) || Object.entries(incoming).some(([id, value]) =>
+            !Object.hasOwn(topic.recorded, id) || typeof value !== 'boolean')) {
+            throw new Error('A pipák importálása nem sikerült.');
+          }
+          for (const [id, value] of Object.entries(incoming)) topic.recorded[id] = topic.recorded[id] === true || value === true;
+          return state;
+        });
+      },
+
       setLastPart(topicId, id) {
         return transact(state => {
           const topic = state.topics[topicId];

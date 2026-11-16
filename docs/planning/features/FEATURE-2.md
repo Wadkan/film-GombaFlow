@@ -128,9 +128,13 @@ below. No startup speed improvement is claimed without device measurements.
    then shows its actual 16 parts. Selecting a valid in-memory variation with
    another topic proves the library is dynamic. The served program contains
    neither sample MD nor an embedded topic catalog.
-2. Preserve Hungarian labels, current colors/layout, readable text, mandatory
-   bottom cue and checkbox, bottom narration-only search, chapter/clip/location/
+2. Preserve Hungarian labels, current colors and reader content layout, readable
+   text, mandatory cue and checkbox, bottom narration-only search, chapter/clip/location/
    recorded filters, type visibility, swipe and arrow/picker navigation.
+   Top and bottom dashboard controls use one compact, consistent font treatment
+   so the script content remains the visual focus. Keep the recording checkbox
+   smaller and persistently visible at the lower right, above the permanent
+   up/down bar-toggle arrows; it is no longer inside the bottom dashboard.
    The permanent ↑/↓ controls stay reachable in either bar state. Existing
    location selection continues using MD metadata without place substitution.
    Chapter/clip/location/status selections combine with AND; case-insensitive
@@ -416,10 +420,14 @@ Never implement later checkpoints early.
 
 ### Dated additive checkmark exchange (checkpoint 2)
 
-- [ ] Test: add `tests/progress.test.cjs` for all four OR combinations, false/omitted preservation, repeated import, strict boolean/ID validation, unknown IDs/topic, schema/timestamp validation and export of every current ID including false values. Inject the clock for deterministic exported_at tests. Run `node --test apps/script-viewer/tests/progress.test.cjs` and observe missing exchange behavior. - TODO
-- [ ] Test: add complete flow `exchange recording checkmarks through JSON files` in `tests/viewer.spec.cjs`; no existing implemented flow covers JSON files. Import the Claude MD, export actual JSON via a browser download, inspect timestamp/schema/booleans, manually change local checks, reimport a mixed true/false file, cancel and confirm with visible export time, reload and prove a preexisting true cannot clear. Include repeated and invalid imports and preservation of another derived topic/settings. Run `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "exchange recording checkmarks through JSON files"` and observe failures before integration. - TODO
-- [ ] Implementation: add pure `progress.js` and minimal per-topic JSON actions in the existing library controls. Validate before the confirmation and apply OR in one latest-state IndexedDB transaction. Export one topic as a downloadable dated JSON file. Do not add repository CLI, migration, full-library archive or timestamp-winner logic. - TODO
-- [ ] Refactor and validation: register progress tests in package `test`, document import/export and the no-clearing rule in README, then run the targeted commands above and `make test-pwa`. - TODO
+- [x] Test: add `tests/progress.test.cjs` for all four OR combinations, false/omitted preservation, repeated import, strict boolean/ID validation, unknown IDs/topic, schema/timestamp validation and export of every current ID including false values. Inject the clock for deterministic exported_at tests. Run `node --test apps/script-viewer/tests/progress.test.cjs` and observe missing exchange behavior. - DONE
+- [x] Test: add complete flow `exchange recording checkmarks through JSON files` in `tests/viewer.spec.cjs`; no existing implemented flow covers JSON files. Import the Claude MD, export actual JSON via a browser download, inspect timestamp/schema/booleans, manually change local checks, reimport a mixed true/false file, cancel and confirm with visible export time, reload and prove a preexisting true cannot clear. Include repeated and invalid imports and preservation of another derived topic/settings. Run `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "exchange recording checkmarks through JSON files"` and observe failures before integration. - DONE
+      PASS — a felhasználó kézzel ellenőrizte a JSON export/import működését a böngészőben.
+- [x] Implementation: add pure `progress.js` and minimal per-topic JSON actions in the existing library controls. Validate before the confirmation and apply OR in one latest-state IndexedDB transaction. Export one topic as a downloadable dated JSON file. Do not add repository CLI, migration, full-library archive or timestamp-winner logic. - DONE
+- [x] Test: extend `restores collapsed bars and saves reopening them` in `tests/viewer.spec.cjs` to assert the compact shared typography, smaller recording checkbox and its persistent lower-right placement above the bar toggles with both bars open and collapsed. Also assert the content-type sheet uses compact text and its full `Bezárás` button is not covered by floating controls. Run `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "restores collapsed bars and saves reopening them"` and observe failures before the UI change. - DONE
+      PASS — a felhasználó kézzel ellenőrizte az új dashboardot, a pipát és a tartalomtípus-ablakot.
+- [x] Implementation: make top/bottom dashboard text and controls use one substantially smaller, consistent font treatment so the reader content remains the visual focus; move the smaller recording checkbox to a fixed lower-right control above the always-visible up/down bar toggles. Make the content-type sheet text smaller and layer it over floating controls so `Bezárás` remains unobscured. Preserve checkbox accessibility, save acknowledgement and navigation behavior. - DONE
+- [x] Refactor and validation: register progress tests in package `test`, document import/export and the no-clearing rule in README, then run the targeted commands above and `make test-pwa`. - DONE
 
 ### Offline installation and program updates (checkpoint 3)
 
@@ -545,7 +553,7 @@ file creation.
 
 ### Checkpoint 2 — Add dated checkmark exchange with additive imports
 
-Status: TODO
+Status: APPROVED (review PASS)
 
 Scope: checkpoint 2 TDD tasks, one-topic JSON serialization/validation,
 export timestamp and monotonic checkmark imports. Independent result: manual

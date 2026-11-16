@@ -12,7 +12,7 @@ async function startPwaServer() {
   const server = http.createServer((request, response) => {
     const pathName = new URL(request.url, 'http://127.0.0.1').pathname;
     const filename = pathName === '/' ? 'index.html' : pathName.slice(1);
-    if (!['index.html', 'storage.js', 'pwa.js'].includes(filename)) {
+    if (!['index.html', 'storage.js', 'progress.js', 'pwa.js'].includes(filename)) {
       response.writeHead(404);
       response.end('Not found');
       return;

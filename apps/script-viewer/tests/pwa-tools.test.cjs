@@ -14,13 +14,15 @@ test('builds a program-only browser app with runtime imports', async () => {
     const outputDir = path.join(tempDir, 'site');
     await builderModule.buildPwa({ outputDir });
     const files = (await fs.readdir(outputDir)).sort();
-    assert.deepEqual(files, ['index.html', 'pwa.js', 'storage.js']);
+    assert.deepEqual(files, ['index.html', 'progress.js', 'pwa.js', 'storage.js']);
     const html = await fs.readFile(path.join(outputDir, 'index.html'), 'utf8');
     assert.match(html, /<script src="\/storage\.js"><\/script>/);
+    assert.match(html, /<script src="\/progress\.js"><\/script>/);
     assert.match(html, /<script src="\/pwa\.js"><\/script>/);
     assert.doesNotMatch(html, /\/\* CORE_SOURCE \*\//);
     assert.doesNotMatch(html, /2-unlimited-claude-code-for|Felvehető rész — 1/);
     assert.equal(await fs.readFile(path.join(outputDir, 'storage.js'), 'utf8'), await fs.readFile(path.join(__dirname, '../storage.js'), 'utf8'));
+    assert.equal(await fs.readFile(path.join(outputDir, 'progress.js'), 'utf8'), await fs.readFile(path.join(__dirname, '../progress.js'), 'utf8'));
   } finally {
     await fs.rm(tempDir, { recursive: true, force: true });
   }
