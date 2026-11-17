@@ -84,10 +84,11 @@ below. No startup speed improvement is claimed without device measurements.
 - One fixed HTTPS origin is served from the Mac through a named Cloudflare
   Tunnel. `make pwa-start` starts the local server and tunnel; Ctrl+C stops
   both. Install/update while they run; use the prepared PWA offline afterward.
-- Four implementation checkpoints, with no HTTP API contract or API version
+- Five implementation checkpoints, with no HTTP API contract or API version
   bump: Step 0 retirement plus browser reader/storage; dated additive JSON
   exchange; offline installation/update through the existing HTTP fixture;
-  then the production HTTP/tunnel launcher and physical-device gates.
+  focused recording-cue/part-heading layout; then the production HTTP/tunnel
+  launcher and physical-device gates.
 
 ## MVP in scope
 
@@ -97,6 +98,7 @@ below. No startup speed improvement is claimed without device measurements.
 - [ ] Export/import one topic's dated checkmark JSON with the additive-only merge rule. - TODO
 - [ ] Install and restart offline on mobile and desktop, including after a program update without clearing user data. - TODO
 - [ ] Start and stop the Mac server/tunnel together through `make pwa-start`, with concise setup and device-check instructions. - TODO
+- [ ] Keep the selected part's spoken cue visible below the upper dashboard while scrolling, and render all part headings in a smaller, consistent size. - TODO
 
 ## Explicitly out of scope
 
@@ -112,7 +114,9 @@ below. No startup speed improvement is claimed without device measurements.
   expansion and transition-processing logic.
 - A frontend framework, third-party runtime CDN, hosted backend, VPS deployment,
   new Cloudflare hosting products or an always-running Mac service.
-- Visual redesign, decorative animation and unrelated parser/test cleanup.
+- Visual redesign beyond the compact part heading and persistent, non-overlapping
+  spoken-cue placement in acceptance criterion 13, decorative animation and
+  unrelated parser/test cleanup.
 
 ## Acceptance criteria
 
@@ -194,6 +198,14 @@ below. No startup speed improvement is claimed without device measurements.
     Ctrl+C, child failure or startup failure cleans up this invocation's
     server/tunnel; occupied ports fail without killing unrelated processes.
     Requests cannot expose repository files, MD samples or tunnel credentials.
+13. Render every `Felvehető rész — N` heading in one smaller, consistent
+    treatment. Move the selected part's spoken recording cue (the per-part cue
+    derived from the MD's `Felvételi varázsszó`) out of the lower dashboard to
+    a sticky row directly below the upper dashboard and above the scrollable
+    reader content. Keep the cue visible while the reader scrolls and while
+    either dashboard is collapsed; it occupies its own layout space and never
+    covers readable script text. Keep the lower dashboard's search and status
+    controls usable.
 
 ## Architecture and state ownership
 
@@ -224,12 +236,12 @@ Keep the current app directory. Planned additions, relative to
   `index.html` and load browser-only modules there. Do not include native
   host/build output or scan project scripts.
 - `manifest.webmanifest`, local icons and `sw.js`: added in checkpoint 3.
-- `tools/start-pwa.mjs`: checkpoint 4 server/child supervisor.
+- `tools/start-pwa.mjs`: checkpoint 5 server/child supervisor.
 - `tests/storage.spec.cjs`, `tests/progress.test.cjs` and
   `tests/pwa-tools.test.cjs`: scoped persistence, exchange and program-build tests.
   Expand Playwright's match only as needed for the IndexedDB test file.
   Existing user flows stay in `tests/viewer.spec.cjs`.
-- `tests/pwa-launcher.test.cjs`: checkpoint 4 subprocess, production HTTP
+- `tests/pwa-launcher.test.cjs`: checkpoint 5 subprocess, production HTTP
   security and launcher lifecycle tests; include in package `test` when added.
 - `tests/helpers/pwa-server.cjs`: minimal real-HTTP browser-test fixture,
   introduced in checkpoint 1 and reused for offline/update tests.
@@ -439,14 +451,20 @@ Never implement later checkpoints early.
 - [x] Test: extend `tests/pwa-tools.test.cjs` with deterministic program/cache-version generation, complete manifest/icon/worker asset inclusion and version changes when program content changes. Use `node --test apps/script-viewer/tests/pwa-tools.test.cjs` and observe failures before adding offline packaging. No production listener, child process or cloudflared behavior belongs in this checkpoint. - DONE
 - [x] Test: add complete flow `install, restart offline and update without losing local data` in `tests/viewer.spec.cjs`. No current flow covers real service workers. Serve real build A over localhost, verify manifest/icon responses and service-worker control/readiness, import MD and save state, close/reopen with network disabled and prove further edits/export. Restore network with build B, retain the open session until it closes, then verify B activates with data intact. Also fail one asset during update and prove A survives offline. Reuse the checkpoint 1 HTTP fixture and actual IndexedDB; do not fake the worker/cache. Run `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "install, restart offline and update without losing local data"` and observe failures. - DONE
 - [x] Implementation: add local manifest/icons/service worker, deterministic complete-asset cache and normal waiting update lifecycle. Add only the offline-readiness indication needed to distinguish program readiness from a saved checkbox. Exercise all browser behavior through the existing checkpoint 1 HTTP fixture; do not add `tools/start-pwa.mjs`, the Make startup target or tunnel integration yet. - DONE
-- [x] Refactor and validation: run `node --test apps/script-viewer/tests/pwa-tools.test.cjs`, the targeted offline/update E2E command above and `make test-pwa`; tests remain included in root `make test`. Document offline readiness, waiting-worker activation, failed-update recovery and code rollback in README using the fixture-based validation command. Physical-device/HTTPS gates are deferred to checkpoint 4 and do not block this independently testable browser result. - DONE
+- [x] Refactor and validation: run `node --test apps/script-viewer/tests/pwa-tools.test.cjs`, the targeted offline/update E2E command above and `make test-pwa`; tests remain included in root `make test`. Document offline readiness, waiting-worker activation, failed-update recovery and code rollback in README using the fixture-based validation command. Physical-device/HTTPS gates are deferred to checkpoint 5 and do not block this independently testable browser result. - DONE
 
-### Local HTTP/tunnel launcher and physical-device gates (checkpoint 4)
+### Recording cue and part-heading layout (checkpoint 4)
+
+- [x] Test: extend the existing `restores collapsed bars and saves reopening them` flow in `tests/viewer.spec.cjs` to check the smaller, consistent part-heading treatment, the recording cue's sticky position below the upper dashboard, continued visibility after long-content scrolling and no overlap with reader text. Cover both dashboard states at the existing mobile and desktop viewports. Run `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "restores collapsed bars and saves reopening them"` and observe the missing behavior before implementation. - DONE
+- [x] Implementation: render every part heading in the same smaller type treatment and move the selected part's spoken cue from the fixed lower dashboard into its own sticky row below the upper dashboard and above the scrollable reader. Keep the cue visible during scrolling and when either dashboard is collapsed, without covering text. Keep the lower dashboard's search/status controls, cue identity, navigation and saved preferences working. - DONE
+- [x] Refactor and validation: run the targeted E2E command above and `make test-pwa`. Keep the cue derived from the active MD/part; add no persisted preference or new reader behavior beyond this layout. - DONE
+
+### Local HTTP/tunnel launcher and physical-device gates (checkpoint 5)
 
 - [ ] Test: add `tests/pwa-launcher.test.cjs` with real subprocess/listener checks using fake cloudflared fixtures under `/tmp`. Prove Make delegation, configured tunnel arguments, program-only HTTP content/types, path traversal and unknown-path rejection, missing config/tool, occupied port, child failure and SIGINT/SIGTERM cleanup without leftover child/listener or killing unrelated processes. Use `node --test apps/script-viewer/tests/pwa-launcher.test.cjs` and observe missing launcher/security behavior before implementation. No live Cloudflare account operations belong in automated tests. - TODO
 - [ ] Implementation: add `tools/start-pwa.mjs` and root `.PHONY: pwa-start` / `pwa-start` target to start the existing program build, production loopback server and named tunnel as one foreground invocation. Implement only the supervisor/configuration/HTTP boundary described above; reuse checkpoint 3's PWA/cache assets without redesigning the service-worker lifecycle. - TODO
 - [ ] Refactor and automated validation: add the launcher tests to package `test` so root `make test` reaches them via `test-pwa`; run `node --test apps/script-viewer/tests/pwa-launcher.test.cjs` and `make test-pwa`. Document tunnel prerequisites, exact one-time setup, shell configuration, printed HTTPS address and one-command start/stop in README. - TODO
-- [ ] Physical-device validation: execute all four Manual validation gates below using `make pwa-start`; record actual PASS/FAIL results. Include mobile-data HTTPS access, installed offline restart, native file import/export, data-preserving program update and Ctrl+C cleanup. Checkpoint 4 cannot pass until these gates are complete. - TODO
+- [ ] Physical-device validation: execute all four Manual validation gates below using `make pwa-start`; record actual PASS/FAIL results. Include mobile-data HTTPS access, installed offline restart, native file import/export, data-preserving program update and Ctrl+C cleanup. Checkpoint 5 cannot pass until these gates are complete. - TODO
 
 ## Automated validation
 
@@ -470,9 +488,10 @@ Browser emulation does not replace mobile installation checks.
 
 Checkpoint 3 validates build/cache generation in `tests/pwa-tools.test.cjs`
 and the real service-worker flow through the existing HTTP fixture. Checkpoint 4
+validates the reader cue/heading layout in the existing browser flow. Checkpoint 5
 adds `tests/pwa-launcher.test.cjs` for production HTTP/subprocess/security
 behavior; it reuses the completed browser implementation. All four physical-device
-gates belong exclusively to checkpoint 4.
+gates belong exclusively to checkpoint 5.
 
 Checkpoint handoff uses its targeted commands plus the scoped aggregate above.
 Do not add unrelated all-suite commands, documentation-prose assertions or live
@@ -482,7 +501,7 @@ tests or claim PASS.
 ## Manual validation
 
 These are local/device gates, not VPS release notes. CLI names introduced here
-are checkpoint 4 deliverables; all four gates are checkpoint 4 requirements.
+are checkpoint 5 deliverables; all four gates are checkpoint 5 requirements.
 Record PASS/FAIL with one concrete sentence on
 each gate when actually executed; do not prefill outcomes.
 
@@ -522,7 +541,8 @@ naturally retains the prior active version.
 ## Checkpoints
 
 Sequence: checkpoint 1 (Step 0 retirement first, then browser implementation)
-→ 2 → 3 (offline browser lifecycle) → 4 (HTTP/tunnel lifecycle and device gates).
+→ 2 → 3 (offline browser lifecycle) → 4 (recording cue/heading layout)
+→ 5 (HTTP/tunnel lifecycle and device gates).
 No API bump. Step 0 is not a checkpoint numbered zero and has no
 separate commit.
 
@@ -606,11 +626,36 @@ Forrás: `docs/planning/features/FEATURE-2.md`, Checkpoint 3 Commit message.
 Unreleased: none — local/browser program-cache behavior validated through the
 existing HTTP fixture; no VPS or tunnel operator action in this checkpoint.
 
-### Checkpoint 4 — Add the local PWA server and tunnel launcher
+### Checkpoint 4 — Keep the recording cue visible while reading
+
+Status: APPROVED (review PASS)
+
+Scope: checkpoint 4 TDD tasks, compact consistent part headings and a sticky
+spoken-cue row below the upper dashboard, above the scrollable reader. The cue
+remains visible while scrolling and when dashboards are collapsed without
+covering script text. Independent result: readable, non-obscuring access to
+the active recording cue throughout the reader.
+
+Validation: `npm --prefix apps/script-viewer run test:e2e -- --reporter=line --grep "restores collapsed bars and saves reopening them"` and `make test-pwa`.
+
+Commit message:
+
+```text
+<FRONTEND> <FEATURE-2> Keep the recording cue visible while reading
+```
+
+Forrás: `docs/planning/features/FEATURE-2.md`, Checkpoint 4 Commit message.
+
+#### Unreleased
+
+Unreleased: none — local reader layout only; no VPS action or release-notes
+file creation.
+
+### Checkpoint 5 — Add the local PWA server and tunnel launcher
 
 Status: TODO
 
-Scope: checkpoint 4 TDD tasks, production loopback HTTP/asset allowlist,
+Scope: checkpoint 5 TDD tasks, production loopback HTTP/asset allowlist,
 foreground tunnel process supervision, Make startup integration, operator
 setup documentation and all four physical-device gates. Independent result:
 one-command HTTPS access from mobile, clean shutdown and validated installed
@@ -626,7 +671,7 @@ Commit message:
 <DEPLOY> <FEATURE-2> Add the local PWA server and tunnel launcher
 ```
 
-Forrás: `docs/planning/features/FEATURE-2.md`, Checkpoint 4 Commit message.
+Forrás: `docs/planning/features/FEATURE-2.md`, Checkpoint 5 Commit message.
 
 #### Unreleased
 

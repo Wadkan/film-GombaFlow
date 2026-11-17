@@ -51,7 +51,10 @@ test('filter and read a recording script', async ({ page }) => {
   await page.getByRole('button', {name:'Bezárás'}).click();
   await expect(page.locator('#content')).toContainText('PARAMETER num_ctx 32768');
   await expect(page.locator('#content script')).toHaveCount(0);
-  await page.evaluate(() => scrollTo(0,document.body.scrollHeight));
+  await page.locator('#content').evaluate(el => { el.scrollTop=el.scrollHeight; });
+  const cueY= (await page.locator('.cuebar').boundingBox()).y;
+  expect(await page.locator('#content').evaluate(el=>el.scrollTop)).toBeGreaterThan(0);
+  expect((await page.locator('.cuebar').boundingBox()).y).toBe(cueY);
   expect((await page.locator('.top').boundingBox()).y).toBe(0);
   const footer=await page.locator('.bottom').boundingBox();
   expect(Math.round(footer.y+footer.height)).toBe(844);
@@ -62,9 +65,13 @@ test('filter and read a recording script', async ({ page }) => {
       await page.getByLabel('Felvételi állapot').selectOption(route==='record'?'no':'all');
       await page.getByLabel('Keresés a narrációban').focus();
       await page.locator('#results [data-id="7"]').click();
-      await page.evaluate(() => scrollTo(0,document.body.scrollHeight));
-      expect(await page.evaluate(() => scrollY)).toBeGreaterThan(300);
-      expect((await page.locator('#content .title').boundingBox()).y).toBeLessThan(0);
+      await page.locator('#content').evaluate(el => { el.scrollTop=el.scrollHeight; });
+      expect(await page.locator('#content').evaluate(el=>el.scrollTop)).toBeGreaterThan(300);
+      const scrolledTitle=await page.locator('#content .title').boundingBox();
+      const contentBox=await page.locator('#content').boundingBox();
+      expect(scrolledTitle.y).toBeLessThan(contentBox.y);
+      const cueBox=await page.locator('.cuebar').boundingBox();
+      expect(cueBox.y+cueBox.height).toBeLessThanOrEqual(contentBox.y);
       if(route==='button') await page.getByRole('button',{name:'Következő rész'}).click();
       if(route==='swipe') await page.evaluate(() => {
         const start=new Event('touchstart'),end=new Event('touchend');
@@ -79,9 +86,9 @@ test('filter and read a recording script', async ({ page }) => {
       if(route==='record') await page.getByLabel('Felvéve',{exact:true}).click();
       await expect(page.locator('#content .title')).toContainText('Felvehető rész — 8');
       const title=await page.locator('#content .title').boundingBox();
-      const top=await page.locator('.top').boundingBox();
+      const cue=await page.locator('.cuebar').boundingBox();
       const bottom=await page.locator('.bottom').boundingBox();
-      expect(title.y).toBeGreaterThanOrEqual(top.y+top.height);
+      expect(title.y).toBeGreaterThanOrEqual(cueBox.y+cueBox.height);
       expect(title.y+title.height).toBeLessThanOrEqual(bottom.y);
     });
   }
@@ -299,8 +306,18 @@ test('deleting the active topic returns to an empty library', async ({page}) => 
 test('restores collapsed bars and saves reopening them', async ({page}) => {
   const server=await startPwaServer();
   try {
+  await page.setViewportSize({width:390,height:844});
   await page.goto(server.url);
   await page.setInputFiles('#scriptFile',{name:'claude.md',mimeType:'text/markdown',buffer:Buffer.from(script)});
+  for(let part=1;part<5;part++) await page.getByRole('button',{name:'Következő rész'}).click();
+  await expect(page.locator('#content .title')).toContainText('Felvehető rész — 5');
+  const part5Font=await page.locator('#content .title').evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
+  await page.getByRole('button',{name:'Következő rész'}).click();
+  await expect(page.locator('#content .title')).toContainText('Felvehető rész — 6');
+  const part6Font=await page.locator('#content .title').evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
+  expect(part6Font).toBe(part5Font);
+  expect(part6Font).toBeLessThan(26);
+  expect(part6Font).toBeGreaterThanOrEqual(20);
   await page.getByRole('button',{name:'Felső sáv váltása'}).click();
   await expect.poll(async()=>page.evaluate(async()=>{const storage=await window.GombaFlowStorage.open();const state=await storage.read();storage.close();return state.preferences.topCollapsed})).toBe(true);
   await page.getByRole('button',{name:'Alsó sáv váltása'}).click();
@@ -309,6 +326,16 @@ test('restores collapsed bars and saves reopening them', async ({page}) => {
   await page.reload();
   await expect(page.locator('.top')).toBeHidden();
   await expect(page.locator('.bottom')).toBeHidden();
+  await expect(page.locator('#cue')).toBeVisible();
+  const cueAndReader=await page.evaluate(()=>{
+    const cue=document.querySelector('.cuebar').getBoundingClientRect();
+    const reader=document.querySelector('#content').getBoundingClientRect();
+    return {cueBottom:cue.bottom,readerTop:reader.top,cueTop:cue.top};
+  });
+  expect(cueAndReader.cueBottom).toBeLessThanOrEqual(cueAndReader.readerTop);
+  await page.locator('#content').evaluate(el=>{el.scrollTop=el.scrollHeight;});
+  expect(await page.locator('#content').evaluate(el=>el.scrollTop)).toBeGreaterThan(0);
+  expect((await page.locator('.cuebar').boundingBox()).y).toBe(cueAndReader.cueTop);
   await page.getByRole('button',{name:'Felső sáv váltása'}).click();
   await expect.poll(async()=>page.evaluate(async()=>{const storage=await window.GombaFlowStorage.open();const state=await storage.read();storage.close();return state.preferences.topCollapsed})).toBe(false);
   const dashboardSizes=await page.evaluate(()=>[
