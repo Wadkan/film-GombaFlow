@@ -1,4 +1,4 @@
-.PHONY: start-n8n stop-n8n gomba1-transcript test test-pwa test-n8n test-localworkflows format docs-format
+.PHONY: start-n8n stop-n8n gomba1-transcript test test-pwa pwa-start test-n8n test-localworkflows format docs-format
 
 .DEFAULT_GOAL := start-n8n
 
@@ -13,6 +13,9 @@ start-n8n:
 
 stop-n8n:
 	@$(MAKE) -C n8n-docker stop-n8n
+
+pwa-start:
+	@node apps/script-viewer/tools/start-pwa.mjs
 
 gomba1-transcript:
 	@python3 local-workflows/script-and-cut-workflows/gombaFlow/gomba-1-script-writer/scripts/run_transcript_flow.py

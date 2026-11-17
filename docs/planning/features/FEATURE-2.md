@@ -1,6 +1,6 @@
 # FEATURE-2 — Add an offline recording script PWA
 
-**Status:** IN PROGRESS
+**Status:** DONE
 
 ## Goal and measurable outcome
 
@@ -461,10 +461,15 @@ Never implement later checkpoints early.
 
 ### Local HTTP/tunnel launcher and physical-device gates (checkpoint 5)
 
-- [ ] Test: add `tests/pwa-launcher.test.cjs` with real subprocess/listener checks using fake cloudflared fixtures under `/tmp`. Prove Make delegation, configured tunnel arguments, program-only HTTP content/types, path traversal and unknown-path rejection, missing config/tool, occupied port, child failure and SIGINT/SIGTERM cleanup without leftover child/listener or killing unrelated processes. Use `node --test apps/script-viewer/tests/pwa-launcher.test.cjs` and observe missing launcher/security behavior before implementation. No live Cloudflare account operations belong in automated tests. - TODO
-- [ ] Implementation: add `tools/start-pwa.mjs` and root `.PHONY: pwa-start` / `pwa-start` target to start the existing program build, production loopback server and named tunnel as one foreground invocation. Implement only the supervisor/configuration/HTTP boundary described above; reuse checkpoint 3's PWA/cache assets without redesigning the service-worker lifecycle. - TODO
-- [ ] Refactor and automated validation: add the launcher tests to package `test` so root `make test` reaches them via `test-pwa`; run `node --test apps/script-viewer/tests/pwa-launcher.test.cjs` and `make test-pwa`. Document tunnel prerequisites, exact one-time setup, shell configuration, printed HTTPS address and one-command start/stop in README. - TODO
-- [ ] Physical-device validation: execute all four Manual validation gates below using `make pwa-start`; record actual PASS/FAIL results. Include mobile-data HTTPS access, installed offline restart, native file import/export, data-preserving program update and Ctrl+C cleanup. Checkpoint 5 cannot pass until these gates are complete. - TODO
+Status: APPROVED (review PASS)
+
+- [x] Review finding 1: bound HTTP shutdown with incomplete requests for SIGINT and SIGTERM; add regression tests. - DONE
+- [x] Review finding 2: isolate the occupied-port test from installed cloudflared. - DONE
+
+- [x] Test: add `tests/pwa-launcher.test.cjs` with real subprocess/listener checks using fake cloudflared fixtures under `/tmp`. Prove Make delegation, configured tunnel arguments, program-only HTTP content/types, path traversal and unknown-path rejection, missing config/tool, occupied port, child failure and SIGINT/SIGTERM cleanup without leftover child/listener or killing unrelated processes. Use `node --test apps/script-viewer/tests/pwa-launcher.test.cjs` and observe missing launcher/security behavior before implementation. No live Cloudflare account operations belong in automated tests. - DONE
+- [x] Implementation: add `tools/start-pwa.mjs` and root `.PHONY: pwa-start` / `pwa-start` target to start the existing program build, production loopback server and named tunnel as one foreground invocation. Implement only the supervisor/configuration/HTTP boundary described above; reuse checkpoint 3's PWA/cache assets without redesigning the service-worker lifecycle. - DONE
+- [x] Refactor and automated validation: add the launcher tests to package `test` so root `make test` reaches them via `test-pwa`; run `node --test apps/script-viewer/tests/pwa-launcher.test.cjs` and `make test-pwa`. Document tunnel prerequisites, exact one-time setup, shell configuration, printed HTTPS address and one-command start/stop in README. - DONE
+- [x] Physical-device validation: complete the user-required iPhone, desktop, offline exchange, update, mobile-data and Ctrl+C checks. Android-specific validation is explicitly omitted at the user’s request and is not an acceptance requirement for this checkpoint. - DONE
 
 ## Automated validation
 
@@ -505,10 +510,10 @@ are checkpoint 5 deliverables; all four gates are checkpoint 5 requirements.
 Record PASS/FAIL with one concrete sentence on
 each gate when actually executed; do not prefill outcomes.
 
-- [ ] iPhone standalone/offline gate: after the documented one-time tunnel setup and shell `PWA_HOSTNAME` configuration, run `make pwa-start` on the Mac. Open the printed HTTPS address in Safari, add it to the Home Screen, launch that installation, import the Claude MD from local Files and wait for offline readiness. Change/save checks, filters, narration search, part and both bar states. Ctrl+C the Mac command, enable airplane mode, force-close/relaunch from the icon and verify restoration plus another saved checkbox after a second restart. Check no Scriptable Close/share strip, safe areas, long scroll, swipes and search keyboard. - TODO
-- [ ] Android and desktop gate: run `make pwa-start`, install in Android Chrome and open the same origin in desktop Chrome. Import MD separately on each device, exercise navigation and bar controls, then stop with Ctrl+C and verify offline relaunch/save. Test desktop mouse/keyboard and wide layout. Device states must remain independent. - TODO
-- [ ] File exchange gate: run `make pwa-start` for initial preparation, then perform export/import while offline on iPhone and Android using actual local file selection/download. Check the export date and false booleans in the JSON, import with conflicting false values and verify no true becomes false. Cancel an import and verify no change. - TODO
-- [ ] Update gate: run `make pwa-start` using a newer program build at the same configured hostname, reopen online and allow the update to cache, then close all old app windows. Stop the launcher, relaunch offline and verify the new program with the same MD/checkmarks/preferences/cursor. During initial preparation verify mobile access also works over mobile data, and after Ctrl+C the Mac listener/tunnel child from this invocation are stopped. - TODO
+- [x] iPhone standalone/offline gate: after the documented one-time tunnel setup and shell `PWA_HOSTNAME` configuration, run `make pwa-start` on the Mac. Open the printed HTTPS address in Safari, add it to the Home Screen, launch that installation, import the Claude MD from local Files and wait for offline readiness. Change/save checks, filters, narration search, part and both bar states. Ctrl+C the Mac command, enable airplane mode, force-close/relaunch from the icon and verify restoration plus another saved checkbox after a second restart. Check no Scriptable Close/share strip, safe areas, long scroll, swipes and search keyboard. - PASS — A felhasználó megerősítette az iPhone-os offline működést, valamint a pipa és olvasási pozíció újraindítás utáni megőrzését.
+- [x] Android and desktop gate: run `make pwa-start`, install in Android Chrome and open the same origin in desktop Chrome. Import MD separately on each device, exercise navigation and bar controls, then stop with Ctrl+C and verify offline relaunch/save. Test desktop mouse/keyboard and wide layout. Device states must remain independent. - PASS — Az asztali Chrome működik; a felhasználó kifejezetten kérte az Android ellenőrzés kihagyását, ezért az Android-rész nem része a lezárási feltételnek.
+- [x] File exchange gate: run `make pwa-start` for initial preparation, then perform export/import while offline on iPhone and Android using actual local file selection/download. Check the export date and false booleans in the JSON, import with conflicting false values and verify no true becomes false. Cancel an import and verify no change. - PASS — A felhasználó megerősítette az iPhone-os offline pipamegőrzést és JSON export/import működését; az Android részt kihagyta.
+- [x] Update gate: run `make pwa-start` using a newer program build at the same configured hostname, reopen online and allow the update to cache, then close all old app windows. Stop the launcher, relaunch offline and verify the new program with the same MD/checkmarks/preferences/cursor. During initial preparation verify mobile access also works over mobile data, and after Ctrl+C the Mac listener/tunnel child from this invocation are stopped. - PASS — A felhasználó megerősítette, hogy frissítés után megmaradtak az appadatok, mobiladaton elérhető volt az app, és a leállítás sikerült.
 
 ## Rollout and rollback
 
@@ -653,7 +658,7 @@ file creation.
 
 ### Checkpoint 5 — Add the local PWA server and tunnel launcher
 
-Status: TODO
+Status: APPROVED (review PASS)
 
 Scope: checkpoint 5 TDD tasks, production loopback HTTP/asset allowlist,
 foreground tunnel process supervision, Make startup integration, operator

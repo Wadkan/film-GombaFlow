@@ -22,5 +22,3 @@ add a new backlog item.
 bump checkpoint for the versioned API contract.
 
 ## Ordered Backlog
-
-- [FEATURE-2 — Add an offline recording script PWA](features/FEATURE-2.md) — Migration: no; API bump: no.
