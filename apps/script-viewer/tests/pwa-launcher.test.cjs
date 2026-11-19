@@ -53,18 +53,36 @@ test('Make delegates to the foreground production PWA launcher', async () => {
   assert.match(makefile, /^pwa-start:\n\t@node apps\/script-viewer\/tools\/start-pwa\.mjs$/m);
 });
 
-test('launcher serves only generated app assets and stops its tunnel child on SIGINT', async () => {
+test('launcher serves the PWA locally without tunnel settings', async () => {
+  const child = start({ PWA_HOSTNAME: '', PWA_TUNNEL_CONFIG: '/dev/null', PWA_CLOUDFLARED: '/dev/null' });
+  const readOutput = outputOf(child);
+  try {
+    await waitFor(value => value.includes('http://127.0.0.1:8787'), child, readOutput);
+    const index = await get(8787, '/');
+    assert.equal(index.status, 200);
+    assert.match(index.body.toString(), /GombaFlow/);
+    assert.doesNotMatch(readOutput(), /https:\/\//);
+    child.kill('SIGTERM');
+    assert.deepEqual(await exited(child), [0, null]);
+  } finally {
+    if (child.exitCode === null && child.signalCode === null) child.kill('SIGTERM');
+    await exited(child);
+  }
+});
+
+test('launcher uses existing tunnel config without a hostname and stops its tunnel child on SIGINT', async () => {
   const temp = await fs.mkdtemp(path.join(os.tmpdir(), 'gombaflow-pwa-launcher-'));
   const config = path.join(temp, 'tunnel.yml');
   const argsFile = path.join(temp, 'args.json');
   const fake = path.join(temp, 'cloudflared');
   await fs.writeFile(config, 'tunnel: fixture\n');
-  await fs.writeFile(fake, `#!/bin/sh\nif [ "$1" = "--version" ]; then exit 0; fi\nprintf '%s\\n' "$@" > "${argsFile}"\ntrap 'exit 0' TERM INT\nwhile :; do :; done\n`, { mode: 0o755 });
+  await fs.writeFile(fake, `#!/bin/sh\nif [ "$1" = "--version" ]; then exit 0; fi\nprintf '%s\\n' "$@" > "${argsFile}"\ntrap 'exit 0' TERM INT\necho "Fixture tunnel ready"\nwhile :; do :; done\n`, { mode: 0o755 });
   const port = 8787;
-  const child = start({ PATH: `${temp}:${process.env.PATH}`, PWA_HOSTNAME: 'pwa.example.test', PWA_TUNNEL: 'fixture-tunnel', PWA_TUNNEL_CONFIG: config });
+  const child = start({ PWA_HOSTNAME: '', PWA_TUNNEL: 'fixture-tunnel', PWA_TUNNEL_CONFIG: config, PWA_CLOUDFLARED: fake });
   const readOutput = outputOf(child);
   try {
-    await waitFor(value => value.includes('Local server ready') && value.includes('https://pwa.example.test'), child, readOutput);
+    await waitFor(value => value.includes('Local server ready') && value.includes('Starting Cloudflare Tunnel: fixture-tunnel'), child, readOutput);
+    await waitFor(value => value.includes('Fixture tunnel ready'), child, readOutput);
     const args = (await fs.readFile(argsFile, 'utf8')).trim().split('\n');
     assert.deepEqual(args, ['tunnel', '--config', config, 'run', 'fixture-tunnel']);
     const index = await get(port, '/');

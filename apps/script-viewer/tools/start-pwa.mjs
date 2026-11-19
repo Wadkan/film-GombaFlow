@@ -37,11 +37,13 @@ async function stopChild(child) {
 }
 
 async function main() {
-  if (!hostname) throw new Error('Set PWA_HOSTNAME to the fixed public HTTPS hostname.');
-  if (!await fs.stat(tunnelConfig).then(stat => stat.isFile()).catch(() => false)) throw new Error(`Tunnel config is missing: ${tunnelConfig}`);
+  const hasTunnelConfig = await fs.stat(tunnelConfig).then(stat => stat.isFile()).catch(() => false);
+  if (hostname && !hasTunnelConfig) throw new Error(`Tunnel config is missing: ${tunnelConfig}`);
   const executable = process.env.PWA_CLOUDFLARED || 'cloudflared';
-  const check = spawnSync(executable, ['--version'], { stdio: 'ignore' });
-  if (check.error || check.status !== 0) throw new Error(`Required tunnel tool is unavailable: ${executable}`);
+  if (hasTunnelConfig) {
+    const check = spawnSync(executable, ['--version'], { stdio: 'ignore' });
+    if (check.error || check.status !== 0) throw new Error(`Required tunnel tool is unavailable: ${executable}`);
+  }
   const outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'gombaflow-pwa-live-'));
   let server;
   const sockets = new Set();
@@ -87,14 +89,16 @@ async function main() {
     await fs.rm(outputDir, { recursive: true, force: true });
     throw error;
   }
-  child = spawn(executable, ['tunnel', '--config', tunnelConfig, 'run', tunnelName], { stdio: 'inherit' });
-  child.once('error', error => { console.error(`Tunnel failed to start: ${error.message}`); void cleanup(1); });
-  child.once('exit', (code, signal) => {
-    if (!stopping) { console.error(`Tunnel exited unexpectedly (${signal || code}).`); void cleanup(code === 0 ? 1 : (code || 1)); }
-  });
+  if (hasTunnelConfig) {
+    child = spawn(executable, ['tunnel', '--config', tunnelConfig, 'run', tunnelName], { stdio: 'inherit' });
+    child.once('error', error => { console.error(`Tunnel failed to start: ${error.message}`); void cleanup(1); });
+    child.once('exit', (code, signal) => {
+      if (!stopping) { console.error(`Tunnel exited unexpectedly (${signal || code}).`); void cleanup(code === 0 ? 1 : (code || 1)); }
+    });
+    console.log(hostname ? `PWA available at https://${hostname}` : `Starting Cloudflare Tunnel: ${tunnelName}`);
+  }
   process.once('SIGINT', () => { void cleanup(0); });
   process.once('SIGTERM', () => { void cleanup(0); });
-  console.log(`PWA available at https://${hostname}`);
   console.log(`Local server ready at http://127.0.0.1:${port}`);
   await stopPromise;
 }
