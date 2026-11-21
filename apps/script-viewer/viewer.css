@@ -58,6 +58,11 @@ button:active:not(:disabled) {
     padding: 4px 8px;
     font-size: 13px;
 }
+.brand #updateBtn.updateAvailable {
+    background: #198754;
+    border-color: #198754;
+    color: white;
+}
 .filters {
     display: grid;
     grid-template-columns: 1fr 1fr;

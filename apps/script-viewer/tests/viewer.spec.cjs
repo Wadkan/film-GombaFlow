@@ -208,20 +208,24 @@ test('install, restart offline and update without losing local data', async ({br
     expect((await offlineDownload).suggestedFilename()).toMatch(/^2-unlimited-claude-code-for-/);
 
     await context.setOffline(false);
-    await page.getByRole('button',{name:'Frissítés'}).click();
-    await expect(page.locator('#updateStatus')).toHaveText('Aktuális verzió');
+    await expect(page.getByRole('button',{name:'Frissítés'})).toBeHidden();
     await server.update({editSource: async sourceDir => {
       await fs.promises.appendFile(path.join(sourceDir, 'pwa.js'), '\n// build B\n');
     }});
+    await page.evaluate(async () => (await navigator.serviceWorker.getRegistration()).update());
+    await expect(page.getByRole('button',{name:'Frissítés'})).toBeVisible();
+    await expect(page.getByRole('button',{name:'Frissítés'})).toHaveClass(/updateAvailable/);
+    await expect(page.getByRole('button',{name:'Frissítés'})).toHaveCSS('background-color','rgb(25, 135, 84)');
     const buildBNavigation = page.waitForNavigation({waitUntil:'load'});
     await page.getByRole('button',{name:'Frissítés'}).click();
     await buildBNavigation;
     await expect(page.locator('#partDetails')).toHaveText(/^#3 - /);
     const secondCache = await page.evaluate(async () => (await caches.keys()).find(name => name.startsWith('gombaflow-pwa-')));
-
     await server.update({editSource: async sourceDir => {
       await fs.promises.appendFile(path.join(sourceDir, 'pwa.js'), '\n// incomplete build C\n');
     }, failAsset: 'app-icon-192.png'});
+    await page.evaluate(async () => (await navigator.serviceWorker.getRegistration()).update());
+    await expect(page.getByRole('button',{name:'Frissítés'})).toBeVisible();
     await page.getByRole('button',{name:'Frissítés'}).click();
     await expect.poll(() => server.failedAssetRequests).toBeGreaterThan(0);
     await expect(page.locator('#updateStatus')).toHaveText('Frissítési hiba');

@@ -123,6 +123,9 @@
       updateBtn.disabled = true;
       return;
     }
+    updateBtn.hidden = true;
+    updateBtn.classList.remove('updateAvailable');
+    updateStatus.textContent = '';
 
     const preparationTimeout = setTimeout(() => finishPreparation(), 15000);
     function finishPreparation() {
@@ -136,17 +139,32 @@
     if (worker.controller) finishPreparation();
     worker.register('/sw.js').then(registration => {
       updateRegistration = registration;
+      const showAvailableUpdate = () => {
+        updateBtn.hidden = false;
+        updateBtn.disabled = false;
+        updateBtn.classList.add('updateAvailable');
+        updateStatus.textContent = '';
+      };
       const watchInstallation = () => {
+        if (registration.waiting) {
+          showAvailableUpdate();
+          return;
+        }
         const installing = registration.installing;
-        if (!installing || worker.controller) return;
+        if (!installing) return;
         const checkInstallation = () => {
-          if (installing.state === 'redundant') finishPreparation();
+          if (installing.state === 'installed' && registration.waiting) showAvailableUpdate();
+          else if (installing.state === 'redundant') finishPreparation();
         };
         installing.addEventListener('statechange', checkInstallation);
         checkInstallation();
       };
-      registration.addEventListener('updatefound', watchInstallation);
-      watchInstallation();
+      if (registration.waiting) showAvailableUpdate();
+      registration.addEventListener('updatefound', () => {
+        showAvailableUpdate();
+        watchInstallation();
+      });
+      registration.update().catch(() => {});
     }).catch(finishPreparation);
   }
 
@@ -178,6 +196,8 @@
       const installing = updateRegistration.installing;
       if (!installing) {
         updateStatus.textContent = 'Aktuális verzió';
+        updateBtn.hidden = true;
+        updateBtn.classList.remove('updateAvailable');
         updateInProgress = false;
         updateBtn.disabled = false;
         return;
@@ -194,8 +214,10 @@
       await activateWaitingWorker(updateRegistration, updateStatus);
     } catch (error) {
       updateStatus.textContent = 'Frissítési hiba';
-      updateInProgress = false;
+      updateBtn.hidden = false;
       updateBtn.disabled = false;
+      updateBtn.classList.add('updateAvailable');
+      updateInProgress = false;
     }
   }
 
