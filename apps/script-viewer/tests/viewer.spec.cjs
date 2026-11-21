@@ -14,7 +14,7 @@ test('filter and read a recording script', async ({ page }) => {
   await page.setContent(html.replace('/* CORE_SOURCE */', () => core));
   await page.evaluate(script => window.viewerOpen(script), script);
   await expect(page.locator('#partInfo')).toBeVisible();
-  await expect(page.locator('#partInfo')).toHaveText(/^#1 - /);
+  await expect(page.locator('#partDetails')).toHaveText(/^#1 - /);
   await page.getByLabel('Fejezet').selectOption({ label: 'C4 — Megvalósítás' });
   await page.getByLabel('Felvétel típusa').selectOption({ label: 'b-roll' });
   await page.getByLabel('Helyszín').selectOption({ label: 'Helyszín B' });
@@ -24,7 +24,7 @@ test('filter and read a recording script', async ({ page }) => {
   await page.getByRole('button', { name: 'Bezárás' }).click();
   await page.getByLabel('Keresés a narrációban').fill('gomba-gemma');
   await expect(page.locator('#results .result')).toHaveCount(0);
-  await expect(page.locator('#partInfo')).toBeHidden();
+  await expect(page.locator('#partDetails')).toBeHidden();
   await page.getByLabel('Keresés a narrációban').fill('modell');
   await expect(page.locator('#results .result').first()).toBeVisible();
   await page.locator('#results .result').first().click();
@@ -91,7 +91,7 @@ test('filter and read a recording script', async ({ page }) => {
         await page.locator('#results [data-id="8"]').click();
       }
       if(route==='record') await page.getByLabel('Felvéve',{exact:true}).click();
-      await expect(page.locator('#partInfo')).toHaveText(/^#8 - /);
+      await expect(page.locator('#partDetails')).toHaveText(/^#8 - /);
       expect(await page.locator('#content').evaluate(el => el.scrollTop)).toBe(0);
       const narration=await page.getByRole('heading', {name:'Narráció'}).boundingBox();
       expect(narration.y).toBeGreaterThanOrEqual(cueBox.y+cueBox.height);
@@ -125,20 +125,40 @@ test('record parts and resume the offline library', async ({page}) => {
   await page.goto(server.url);
   await expect(page.getByRole('heading',{name:'Scriptek'})).toBeVisible();
   await expect(page.getByRole('button',{name:'Másik MD megnyitása…'})).toBeVisible();
+  const partStatus = page.locator('#partInfo > .part-status');
+  await expect(partStatus.locator('#offlineStatus')).toHaveText('Offline kész');
+  await expect(partStatus.locator('#saveStatus')).toBeHidden();
+  await expect(page.locator('.bottom #saveStatus, .bottom #offlineStatus')).toHaveCount(0);
   await page.setInputFiles('#scriptFile',{name:'claude.md',mimeType:'text/markdown',buffer:Buffer.from(script)});
-  await expect(page.locator('#partInfo')).toHaveText(/^#1 - /);
+  await expect(page.locator('#partDetails')).toHaveText(/^#1 - /);
+  await expect(partStatus.locator('#saveStatus')).toHaveText('Mentve');
   await page.getByLabel('Felvéve',{exact:true}).click();
-  await expect(page.locator('#partInfo')).toHaveText(/^#2 - /);
+  await expect(page.locator('#partDetails')).toHaveText(/^#2 - /);
   await page.getByRole('button',{name:/Tartalomtípusok/}).click();
   await page.getByLabel('Képernyő-akció').uncheck();
   await page.getByRole('button',{name:'Bezárás'}).click();
   await page.reload();
-  await expect(page.locator('#partInfo')).toHaveText(/^#2 - /);
+  await expect(page.locator('#partDetails')).toHaveText(/^#2 - /);
   const state=await page.evaluate(async()=>{const storage=await window.GombaFlowStorage.open();const value=await storage.read();storage.close();return value});
   expect(state.topics['2-unlimited-claude-code-for'].recorded['1']).toBe(true);
   expect(state.topics['2-unlimited-claude-code-for'].last_part_id).toBe('2');
   expect(state.preferences.types.screen).toBe(false);
   await server.close();
+});
+
+test('shows a failed first offline installation and recovers on reload', async ({page}) => {
+  const server = await startPwaServer();
+  try {
+    server.setFailAsset('app-icon.svg');
+    await page.goto(server.url);
+    const status = page.locator('#partInfo #offlineStatus');
+    await expect(status).toHaveText('Offline hiba');
+    server.setFailAsset(null);
+    await page.reload();
+    await expect(status).toHaveText('Offline kész');
+  } finally {
+    await server.close();
+  }
 });
 
 test('install, restart offline and update without losing local data', async ({browser}) => {
@@ -150,15 +170,15 @@ test('install, restart offline and update without losing local data', async ({br
     expect(manifestResponse.status()).toBe(200);
     expect(await page.request.get(new URL('/manifest.webmanifest', server.url).href).then(response => response.status())).toBe(200);
     expect(await page.request.get(new URL('/app-icon.svg', server.url).href).then(response => response.status())).toBe(200);
-    await expect(page.locator('#offlineStatus')).toHaveText('Program offline használatra kész');
+    await expect(page.locator('#offlineStatus')).toHaveText('Offline kész');
     const firstCache = await page.evaluate(async () => (await caches.keys()).find(name => name.startsWith('gombaflow-pwa-')));
 
     await page.setInputFiles('#scriptFile', {name:'claude.md',mimeType:'text/markdown',buffer:Buffer.from(script)});
     await page.getByLabel('Felvéve',{exact:true}).click();
-    await expect(page.locator('#partInfo')).toHaveText(/^#2 - /);
+    await expect(page.locator('#partDetails')).toHaveText(/^#2 - /);
     await context.setOffline(true);
     await page.reload();
-    await expect(page.locator('#partInfo')).toHaveText(/^#2 - /);
+    await expect(page.locator('#partDetails')).toHaveText(/^#2 - /);
     for (const icon of ['/app-icon-192.png', '/app-icon-512.png', '/apple-touch-icon.png']) {
       const iconResponse = await page.evaluate(async iconPath => {
         const response = await fetch(iconPath);
@@ -173,10 +193,10 @@ test('install, restart offline and update without losing local data', async ({br
       await (await caches.open('unrelated-cache')).put(url, new Response('<h1>Wrong cache</h1>', {headers:{'Content-Type':'text/html'}}));
     });
     await page.goto(new URL('/index.html', server.url).href);
-    await expect(page.locator('#partInfo')).toHaveText(/^#2 - /);
+    await expect(page.locator('#partDetails')).toHaveText(/^#2 - /);
     await page.evaluate(() => caches.delete('unrelated-cache'));
     await page.getByLabel('Felvéve',{exact:true}).click();
-    await expect(page.locator('#partInfo')).toHaveText(/^#3 - /);
+    await expect(page.locator('#partDetails')).toHaveText(/^#3 - /);
     const offlineDownload = page.waitForEvent('download');
     await page.getByRole('button',{name:'Pipák exportja'}).click();
     expect((await offlineDownload).suggestedFilename()).toMatch(/^2-unlimited-claude-code-for-/);
@@ -191,8 +211,8 @@ test('install, restart offline and update without losing local data', async ({br
 
     page = await context.newPage();
     await page.goto(server.url);
-    await expect(page.locator('#offlineStatus')).toHaveText('Program offline használatra kész');
-    await expect(page.locator('#partInfo')).toHaveText(/^#3 - /);
+    await expect(page.locator('#offlineStatus')).toHaveText('Offline kész');
+    await expect(page.locator('#partDetails')).toHaveText(/^#3 - /);
     const secondCache = await page.evaluate(async () => (await caches.keys()).find(name => name.startsWith('gombaflow-pwa-')));
     expect(secondCache).not.toBe(firstCache);
 
@@ -207,8 +227,8 @@ test('install, restart offline and update without losing local data', async ({br
 
     await context.setOffline(true);
     await page.reload();
-    await expect(page.locator('#offlineStatus')).toHaveText('Program offline használatra kész');
-    await expect(page.locator('#partInfo')).toHaveText(/^#3 - /);
+    await expect(page.locator('#offlineStatus')).toHaveText('Offline kész');
+    await expect(page.locator('#partDetails')).toHaveText(/^#3 - /);
     await expect(page.getByRole('button',{name:'Pipák exportja'})).toBeEnabled();
   } finally {
     await context.close();
@@ -225,15 +245,15 @@ test('keeps separate topics, preserves progress on update, and rejects invalid M
     await page.goto(server.url);
     await page.setInputFiles('#scriptFile',{name:'claude.md',mimeType:'text/markdown',buffer:Buffer.from(script)});
     await page.getByLabel('Felvéve',{exact:true}).click();
-    await expect(page.locator('#partInfo')).toHaveText(/^#2 - /);
+    await expect(page.locator('#partDetails')).toHaveText(/^#2 - /);
     await page.evaluate(()=>window.viewerShowLibrary({topics:['2-unlimited-claude-code-for']}));
     await page.locator('#scriptFile').evaluate(input=>{input.value='';input.dispatchEvent(new Event('change',{bubbles:true}))});
     await expect(page.locator('#content')).toContainText('2-unlimited-claude-code-for');
     await page.locator('#scriptFile').evaluate(input=>{input.value=''});
     await page.setInputFiles('#scriptFile',{name:'derived.md',mimeType:'text/markdown',buffer:Buffer.from(secondScript)});
-    await expect(page.locator('#partInfo')).toHaveText(/^#1 - /);
+    await expect(page.locator('#partDetails')).toHaveText(/^#1 - /);
     await page.getByRole('button',{name:'Scriptek'}).click();
-    await expect(page.locator('#partInfo')).toBeHidden();
+    await expect(page.locator('#partDetails')).toBeHidden();
     await expect(page.locator('#content')).toContainText('2-unlimited-claude-code-for');
     await expect(page.locator('#content')).toContainText('3-derived-topic');
     await page.locator('#scriptFile').evaluate(input=>{input.value=''});
@@ -241,12 +261,12 @@ test('keeps separate topics, preserves progress on update, and rejects invalid M
     await page.getByRole('button',{name:'Scriptek'}).click();
     await expect(page.locator('#content')).toContainText('4-another-topic');
     await page.getByRole('button',{name:'Megnyitás'}).first().click();
-    await expect(page.locator('#partInfo')).toHaveText(/^#2 - /);
+    await expect(page.locator('#partDetails')).toHaveText(/^#2 - /);
     await page.getByRole('button',{name:'Scriptek'}).click();
 
     await page.locator('#scriptFile').evaluate(input=>{input.value=''});
     await page.setInputFiles('#scriptFile',{name:'claude-updated.md',mimeType:'text/markdown',buffer:Buffer.from(updatedScript)});
-    await expect(page.locator('#partInfo')).toHaveText(/^#2 - /);
+    await expect(page.locator('#partDetails')).toHaveText(/^#2 - /);
     const state=await page.evaluate(async()=>{const storage=await window.GombaFlowStorage.open();const value=await storage.read();storage.close();return value});
     expect(state.topics['2-unlimited-claude-code-for'].recorded['1']).toBe(true);
     expect(state.topics['2-unlimited-claude-code-for'].last_part_id).toBe('2');
@@ -280,7 +300,7 @@ test('keeps the reader and last acknowledged state when an IndexedDB write fails
     await page.goto(server.url);
     await page.setInputFiles('#scriptFile',{name:'claude.md',mimeType:'text/markdown',buffer:Buffer.from(script)});
     await page.getByLabel('Felvéve',{exact:true}).click();
-    await expect(page.locator('#partInfo')).toHaveText(/^#2 - /);
+    await expect(page.locator('#partDetails')).toHaveText(/^#2 - /);
     await page.evaluate(()=>{
       const put=IDBObjectStore.prototype.put;
       window.restoreStorePut=()=>{IDBObjectStore.prototype.put=put};
@@ -291,6 +311,7 @@ test('keeps the reader and last acknowledged state when an IndexedDB write fails
     });
     await page.getByLabel('Felvéve',{exact:true}).check();
     await expect(page.locator('#viewerDiagnostic')).toBeVisible();
+    await expect(page.locator('#partInfo #saveStatus')).toHaveText('Mentési hiba');
     await expect(page.getByLabel('Felvéve',{exact:true})).not.toBeChecked();
     const state=await page.evaluate(async()=>{window.restoreStorePut();const storage=await window.GombaFlowStorage.open();const value=await storage.read();storage.close();return value});
     expect(state.topics['2-unlimited-claude-code-for'].recorded['1']).toBe(true);
@@ -327,15 +348,15 @@ test('restores collapsed bars and saves reopening them', async ({page}) => {
   const next = page.getByRole('button', {name:'Következő rész'});
   for (const id of [2, 3, 4]) {
     await next.click();
-    await expect(page.locator('#partInfo')).toHaveText(new RegExp('^#' + id + ' - '));
+    await expect(page.locator('#partDetails')).toHaveText(new RegExp('^#' + id + ' - '));
   }
-  await expect(page.locator('#partInfo')).toHaveText('#4 - C2 — Előtte és utána · b-roll · Helyszín A OFFLINE · MENTETT');
-  await expect(page.locator('#partInfo > #partDetails + .sample')).toBeVisible();
+  await expect(page.locator('#partDetails')).toHaveText('#4 - C2 — Előtte és utána · b-roll · Helyszín A');
+  await expect(page.locator('#partInfo > #partDetails + .part-status')).toBeVisible();
   await next.click();
-  await expect(page.locator('#partInfo')).toHaveText(/^#5 - /);
+  await expect(page.locator('#partDetails')).toHaveText(/^#5 - /);
   const part5Font=await page.locator('#partInfo').evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
   await page.getByRole('button',{name:'Következő rész'}).click();
-  await expect(page.locator('#partInfo')).toHaveText(/^#6 - /);
+  await expect(page.locator('#partDetails')).toHaveText(/^#6 - /);
   const part6Font=await page.locator('#partInfo').evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
   expect(part6Font).toBe(part5Font);
   expect(part6Font).toBe(15);
@@ -349,7 +370,7 @@ test('restores collapsed bars and saves reopening them', async ({page}) => {
   await expect(page.locator('.bottom')).toBeHidden();
   await expect(page.getByRole('button', {name:'Előző rész'})).toBeVisible();
   await expect(page.getByRole('button', {name:'Következő rész'})).toBeVisible();
-  await expect(page.locator('#partInfo')).toHaveText(/^#6 - /);
+  await expect(page.locator('#partDetails')).toHaveText(/^#6 - /);
   await expect(page.locator('#partInfo')).toBeVisible();
   await page.setViewportSize({width:320,height:844});
   const collapsedPartInfo = await page.locator('#partInfo').boundingBox();
@@ -422,7 +443,7 @@ test('exchange recording checkmarks through JSON files', async ({ page }) => {
   try {
     await page.goto(server.url);
     await page.locator('#scriptFile').setInputFiles({ name: 'claude.md', mimeType: 'text/markdown', buffer: Buffer.from(script) });
-    await expect(page.locator('#partInfo')).toHaveText(/^#1 - /);
+    await expect(page.locator('#partDetails')).toHaveText(/^#1 - /);
     await page.locator('#scriptFile').evaluate(input => { input.value = ''; });
     const derived = script.replace('2-unlimited-claude-code-for', '3-derived-topic').replaceAll('timeline 2 script', 'timeline 3 script');
     await page.locator('#scriptFile').setInputFiles({ name: 'derived.md', mimeType: 'text/markdown', buffer: Buffer.from(derived) });

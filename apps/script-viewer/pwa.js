@@ -7,6 +7,21 @@
   let exchangeInput;
   let actionQueue = Promise.resolve();
 
+  function setSaveStatus(message) {
+    document.getElementById('saveStatus').textContent = message;
+  }
+
+  async function saveLocally(write) {
+    setSaveStatus('Mentés…');
+    try {
+      await write();
+      setSaveStatus('Mentve');
+    } catch (error) {
+      setSaveStatus('Mentési hiba');
+      throw error;
+    }
+  }
+
   function topicState(state, topicId) {
     const topic = state.topics[topicId];
     if (!topic) throw new Error('A kiválasztott script már nem található.');
@@ -25,6 +40,7 @@
     if (!topic) throw new Error('A kiválasztott script már nem található.');
     core.parseScript(topic.markdown);
     activeTopic = topicId;
+    setSaveStatus('Mentve');
     window.viewerOpen(topic.markdown, topicState(state, topicId));
     document.getElementById('exportChecksBtn').disabled = false;
     document.getElementById('importChecksBtn').disabled = false;
@@ -41,11 +57,11 @@
   async function handleFile(file) {
     const markdown = await file.text();
     const parsed = core.parseScript(markdown);
-    await storage.saveTopic({
+    await saveLocally(() => storage.saveTopic({
       topicId: parsed.topicId,
       markdown,
       partIds: parsed.parts.map(part => String(part.id)),
-    });
+    }));
     if (navigator.storage?.persist) navigator.storage.persist().catch(() => {});
     await openTopic(parsed.topicId);
   }
@@ -61,20 +77,20 @@
         chooseFile();
         return { ok: true };
       case 'record':
-        await storage.setRecorded(action.topicId, String(action.id), action.value);
+        await saveLocally(() => storage.setRecorded(action.topicId, String(action.id), action.value));
         break;
       case 'import-recorded':
-        await storage.mergeRecorded(action.topicId, action.recorded);
+        await saveLocally(() => storage.mergeRecorded(action.topicId, action.recorded));
         break;
       case 'cursor':
-        await storage.setLastPart(action.topicId, String(action.id));
+        await saveLocally(() => storage.setLastPart(action.topicId, String(action.id)));
         break;
       case 'preferences':
-        await storage.savePreferences(action.value);
+        await saveLocally(() => storage.savePreferences(action.value));
         break;
       case 'delete': {
         if (!window.confirm(`Törlöd a(z) ${action.topicId} scriptet és a hozzá tartozó pipákat?`)) return { ok: true };
-        await storage.deleteTopic(action.topicId);
+        await saveLocally(() => storage.deleteTopic(action.topicId));
         await openLibrary();
         break;
       }
@@ -93,21 +109,41 @@
     return pending;
   }
 
-  async function start() {
-    if ('serviceWorker' in navigator && window.isSecureContext) {
-      const offlineStatus = document.getElementById('offlineStatus');
-      const updateOfflineStatus = () => {
-        offlineStatus.textContent = navigator.serviceWorker.controller
-          ? 'Program offline használatra kész'
-          : 'Program offline előkészítése…';
-      };
-      navigator.serviceWorker.addEventListener('controllerchange', updateOfflineStatus);
-      navigator.serviceWorker.register('/sw.js').then(updateOfflineStatus).catch(() => {
-        offlineStatus.textContent = 'Program offline előkészítése nem sikerült';
-      });
-    } else {
-      document.getElementById('offlineStatus').textContent = 'Offline program nem érhető el';
+  function prepareOfflineProgram() {
+    const offlineStatus = document.getElementById('offlineStatus');
+    const worker = navigator.serviceWorker;
+    if (!worker || !window.isSecureContext) {
+      offlineStatus.textContent = 'Nincs offline mód';
+      return;
     }
+
+    const preparationTimeout = setTimeout(() => finishPreparation(), 15000);
+    function finishPreparation() {
+      clearTimeout(preparationTimeout);
+      offlineStatus.textContent = worker.controller
+        ? 'Offline kész'
+        : 'Offline hiba';
+    }
+
+    worker.addEventListener('controllerchange', finishPreparation);
+    if (worker.controller) finishPreparation();
+    worker.register('/sw.js').then(registration => {
+      const watchInstallation = () => {
+        const installing = registration.installing;
+        if (!installing || worker.controller) return;
+        const checkInstallation = () => {
+          if (installing.state === 'redundant') finishPreparation();
+        };
+        installing.addEventListener('statechange', checkInstallation);
+        checkInstallation();
+      };
+      registration.addEventListener('updatefound', watchInstallation);
+      watchInstallation();
+    }).catch(finishPreparation);
+  }
+
+  async function start() {
+    prepareOfflineProgram();
     storage = await window.GombaFlowStorage.open();
     fileInput = document.createElement('input');
     fileInput.type = 'file';
