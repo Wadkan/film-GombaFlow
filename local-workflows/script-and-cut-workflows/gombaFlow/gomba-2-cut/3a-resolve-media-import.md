@@ -42,10 +42,25 @@ Importot csak ezután indíts; korábbi siker ne maradjon friss eredményként.
 3. Az egyértelműen megtalált forrást használd újra. Több megfelelő klip,
    elérhetetlen forrás vagy bizonytalan egyezés esetén állj meg, és jelezd a
    konkrét problémát; ne importálj duplikátumot.
-4. Csak a hiányzó forrásokat importáld az `ImportMedia` API-val, a forrásokhoz
-   tartozó `{"FilePath": "..."}` elemek listájával. Ellenőrizd
-   a visszakapott Media Pool-klip útvonalát, forráshashét és `GetUniqueId()`
-   azonosítóját. A projektet natívan mentsd (`SaveProject`).
+4. Csak az ellenőrzött projektbe és az előre tervezett Media Pool-mappába
+   importálj. Az `AddItemListToMediaPool` az aktuális Media Pool-mappába ír,
+   ezért a hívás előtt ellenőrizd, hogy az aktuális mappa a tervezett mappa;
+   eltérés vagy bizonytalanság esetén állj meg. A hiányzó források abszolút
+   útvonalaival hívd:
+   `resolve.GetMediaStorage().AddItemListToMediaPool([{"media": path} for path in missing_paths])`.
+   Ne használd az `ImportMedia` API-t.
+5. Ellenőrizd, hogy a visszatérés az összes kért forráshoz tartalmaz-e
+   `MediaPoolItem`-et. Ha a hívás `0`/`None` értéket, részleges eredményt ad,
+   vagy kivételt dob, azonnal mentsd `incomplete` állapotként az `error`
+   mezőbe a pontos nyers visszatérést és annak típusát (például
+   `repr`/`type`), illetve kivételnél a kivételtípust és pontos üzenetet.
+   Ezután ellenőrizd a Media Poolban, hogy ténylegesen mely források kerültek
+   be, és csak az útvonal, forráshash és `GetUniqueId()` alapján
+   visszaellenőrzött tételeket rögzítsd. Ne próbálkozz újra, ne válts vissza
+   az `ImportMedia`-ra, és ne használj más importáló API-t.
+6. Sikeres teljes visszatérésnél is ellenőrizd minden visszakapott Media
+   Pool-klip útvonalát, forráshashét és `GetUniqueId()` azonosítóját. A
+   projektet natívan mentsd (`SaveProject`).
 
 A workflow szerint mentsd és olvasd vissza az ellenőrzött importeredményt a
 `cut_workflow_state.json` `media_import` mezőjében. Nem adsz át memóriaobjektumot.
