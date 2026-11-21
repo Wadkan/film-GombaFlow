@@ -97,9 +97,17 @@ test('filter and read a recording script', async ({ page }) => {
       expect(narration.y).toBeGreaterThanOrEqual(cueBox.y+cueBox.height);
     });
   }
-  await page.setViewportSize({ width: 1280, height: 900 });
-  await expect(page.locator('#partInfo')).toBeVisible();
-  await expect(page.getByLabel('Keresés a narrációban')).toBeVisible();
+  for (const width of [320, 390, 700, 1280]) {
+    await page.setViewportSize({ width, height: 844 });
+    await expect(page.locator('#partInfo')).toBeVisible();
+    await expect(page.getByLabel('Keresés a narrációban')).toBeVisible();
+    const dashboard = await page.locator('.bottom').boundingBox();
+    const previous = await page.getByRole('button', {name:'Előző rész'}).boundingBox();
+    const next = await page.getByRole('button', {name:'Következő rész'}).boundingBox();
+    expect(previous.x + previous.width).toBeLessThan(dashboard.x);
+    expect(dashboard.x + dashboard.width).toBeLessThan(next.x);
+    expect(previous.y + previous.height).toBe(next.y + next.height);
+  }
 });
 
 test('shows browser failures on screen for diagnosis', async ({page}) => {
@@ -217,6 +225,7 @@ test('keeps separate topics, preserves progress on update, and rejects invalid M
     await page.goto(server.url);
     await page.setInputFiles('#scriptFile',{name:'claude.md',mimeType:'text/markdown',buffer:Buffer.from(script)});
     await page.getByLabel('Felvéve',{exact:true}).click();
+    await expect(page.locator('#partInfo')).toHaveText(/^#2 - /);
     await page.evaluate(()=>window.viewerShowLibrary({topics:['2-unlimited-claude-code-for']}));
     await page.locator('#scriptFile').evaluate(input=>{input.value='';input.dispatchEvent(new Event('change',{bubbles:true}))});
     await expect(page.locator('#content')).toContainText('2-unlimited-claude-code-for');
@@ -338,8 +347,19 @@ test('restores collapsed bars and saves reopening them', async ({page}) => {
   await page.reload();
   await expect(page.locator('.top')).toBeHidden();
   await expect(page.locator('.bottom')).toBeHidden();
+  await expect(page.getByRole('button', {name:'Előző rész'})).toBeVisible();
+  await expect(page.getByRole('button', {name:'Következő rész'})).toBeVisible();
   await expect(page.locator('#partInfo')).toHaveText(/^#6 - /);
   await expect(page.locator('#partInfo')).toBeVisible();
+  await page.setViewportSize({width:320,height:844});
+  const collapsedPartInfo = await page.locator('#partInfo').boundingBox();
+  const previous = await page.getByRole('button', {name:'Előző rész'}).boundingBox();
+  const following = await next.boundingBox();
+  expect(previous.x + previous.width).toBeLessThan(collapsedPartInfo.x);
+  expect(collapsedPartInfo.x + collapsedPartInfo.width).toBeLessThan(following.x);
+  expect(collapsedPartInfo.y).toBeLessThan(previous.y + previous.height);
+  expect(collapsedPartInfo.y + collapsedPartInfo.height).toBeGreaterThan(previous.y);
+  await page.setViewportSize({width:390,height:844});
   const partInfoBeforeScroll = await page.locator('#partInfo').boundingBox();
   await expect(page.locator('#cue')).toBeVisible();
   const cueAndReader=await page.evaluate(()=>{
@@ -389,6 +409,9 @@ test('restores collapsed bars and saves reopening them', async ({page}) => {
   await expect(page.locator('.top')).toBeVisible();
   await expect(page.locator('.bottom')).toBeVisible();
   await expect(page.locator('#record')).toBeVisible();
+  const partInfo = await page.locator('#partInfo').boundingBox();
+  const dashboard = await page.locator('.bottom').boundingBox();
+  expect(partInfo.y + partInfo.height).toBe(dashboard.y);
   } finally {
     await server.close();
   }
