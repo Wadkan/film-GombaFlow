@@ -22,3 +22,5 @@ add a new backlog item.
 bump checkpoint for the versioned API contract.
 
 ## Ordered Backlog
+
+- [FEATURE-3 — Separate and format PWA viewer sources](features/FEATURE-3.md)

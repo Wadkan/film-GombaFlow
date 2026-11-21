@@ -14,7 +14,7 @@ Related follow-up of the same feature: `FEATURE-{N}b`, `FEATURE-{N}c`, … — t
 letters do not consume the next integer. Never reuse an ID. Never take an ID
 from chat memory or a private notes file.
 
-Next unused integer: **FEATURE-3**
+Next unused integer: **FEATURE-4**
 
 Allocate an ID only from this clean registry: read **Next unused integer**,
 confirm the destination plan path is free, add the `## FEATURE-{N}` heading with
@@ -42,3 +42,7 @@ copy the whole plan into the release notes.
 ## FEATURE-2
 
 [Add an offline recording script PWA](features/FEATURE-2.md)
+
+## FEATURE-3
+
+[Separate and format PWA viewer sources](features/FEATURE-3.md)
