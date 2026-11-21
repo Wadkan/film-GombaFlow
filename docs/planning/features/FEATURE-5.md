@@ -1,6 +1,6 @@
 # FEATURE-5 — Add a manual PWA update button
 
-**Status:** PLANNED
+**Status:** DONE
 
 ## Goal and measurable outcome
 
@@ -20,7 +20,7 @@ A recording operator can update the installed GombaFlow PWA in one tap and conti
 
 ## MVP in scope
 
-- [ ] Add a **Frissítés** button with progress and outcome feedback, explicit worker activation, and one reload that preserves IndexedDB data. - TODO
+- [x] Add a **Frissítés** button with progress and outcome feedback, explicit worker activation, and one reload that preserves IndexedDB data. - DONE
 
 ## Explicitly out of scope
 
@@ -42,9 +42,9 @@ Keep the same HTTPS origin and `/sw.js` URL. Keep the current offline cache acti
 
 ## Ordered TDD implementation tasks
 
-1. [ ] Update `apps/script-viewer/tests/viewer.spec.cjs`, **install, restart offline and update without losing local data**, to use the real button. Verify passive waiting, that a pending save completes before the single reload into a visibly distinct build, and that saved library state is restored. Check the current-version and failed-update outcomes. Run `npm --prefix apps/script-viewer run test:e2e -- tests/viewer.spec.cjs -g "install, restart offline and update without losing local data" --reporter=line` and confirm it fails before implementation. - TODO
-2. [ ] Add the button to `viewer.html`, the update flow to `pwa.js`, and the explicit activation message to `sw.js`. Replace the blanket `skipWaiting` assertion in `tests/pwa-tools.test.cjs` with the browser flow's passive-waiting check. Document the button and first rollout in the app README. - TODO
-3. [ ] Refactor only as needed while green. Rerun the focused browser test and `make test-pwa`. - TODO
+1. [x] Update `apps/script-viewer/tests/viewer.spec.cjs`, **install, restart offline and update without losing local data**, to use the real button. Verify passive waiting, that a pending save completes before the single reload into a visibly distinct build, and that saved library state is restored. Check the current-version and failed-update outcomes. Run `npm --prefix apps/script-viewer run test:e2e -- tests/viewer.spec.cjs -g "install, restart offline and update without losing local data" --reporter=line` and confirm it fails before implementation. - DONE
+2. [x] Add the button to `viewer.html`, the update flow to `pwa.js`, and the explicit activation message to `sw.js`. Replace the blanket `skipWaiting` assertion in `tests/pwa-tools.test.cjs` with the browser flow's passive-waiting check. Document the button and first rollout in the app README. - DONE
+3. [x] Refactor only as needed while green. Rerun the focused browser test and `make test-pwa`. - DONE
 
 ## Automated validation
 
@@ -62,7 +62,7 @@ Serve the complete new build on the existing origin. The first rollout uses the 
 
 ### Checkpoint 1 — Add a manual PWA update button
 
-Status: TODO
+Status: APPROVED (review PASS)
 
 Sequence: `w-implement-preflight` (recommended), `w-implement`, `w-implement-review`.
 

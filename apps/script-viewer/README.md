@@ -8,9 +8,11 @@ A `tools/build-pwa.mjs` kizárólag az olvasót, a parsert, a böngészős modul
 
 Az első online megnyitáskor a service worker letölti a teljes programot és az ikont. A **Offline kész** állapot után a mentett MD-k és pipák hálózat nélkül is használhatók. A böngésző IndexedDB-tára különálló a program cache-étől.
 
-A frissítés ellenőrzése az alkalmazás indulásakor történik, amikor a Macen futó helyi kiszolgáló és tunnel elérhetővé teszi az új buildet. A hálózat visszatérésekor külön frissítésellenőrzés nem követelmény.
+A frissítés ellenőrzése az alkalmazás indulásakor történik, amikor a Macen futó helyi kiszolgáló és tunnel elérhetővé teszi az új buildet. A **Frissítés** gomb egyetlen ellenőrzéshez vagy telepítéshez indul. Ellenőrzés közben az ismételt koppintásokat az alkalmazás figyelmen kívül hagyja.
 
-Az új programverzió a nyitott ablakok mellett települ, de a régi munkamenetet nem váltja le. Zárd be az alkalmazás összes ablakát, majd nyisd meg újra; ekkor az új verzió indul, a helyi MD-k és olvasási állapot megmarad. Ha egy frissítés hiányos vagy sikertelen, az aktív verzió és annak cache-e marad használható. Visszaállításhoz a kívánt forrásverziót kell ugyanazon az originon újra kiszolgálni, majd megvárni a worker aktiválását; a böngészőadatok törlése nem szükséges.
+Az új programverzió várva marad a telepítés befejezése után, és a régi munkamenetet nem váltja le, amíg a gombot meg nem nyomod. A frissítés először befejezi a függőben lévő mentéseket, majd újraaktiválja a nyitó ablakot egyszer; a többi nyitott ablak változatlan marad. Az új verzió az IndexedDB-ben tárolt MD-ket, pipákat, olvasási pozíciót és szűrőket változtatás nélkül használja.
+
+Ha nincs új verzió, az alkalmazás azt írja ki, hogy **Aktuális verzió**. Ha a letöltés vagy telepítés hiányos, az aktív verzió és annak cache-e marad használható, a gomb pedig ismételhető **Frissítési hiba** állapotot mutat. Visszaállításhoz a kívánt forrásverziót kell ugyanazon az originon újra kiszolgálni, majd megvárni a worker aktiválását; a böngészőadatok törlése nem szükséges.
 
 ## Helyi indítás és mobilos HTTPS-elérés
 

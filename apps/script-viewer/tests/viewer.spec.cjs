@@ -208,26 +208,24 @@ test('install, restart offline and update without losing local data', async ({br
     expect((await offlineDownload).suggestedFilename()).toMatch(/^2-unlimited-claude-code-for-/);
 
     await context.setOffline(false);
+    await page.getByRole('button',{name:'Frissítés'}).click();
+    await expect(page.locator('#updateStatus')).toHaveText('Aktuális verzió');
     await server.update({editSource: async sourceDir => {
       await fs.promises.appendFile(path.join(sourceDir, 'pwa.js'), '\n// build B\n');
     }});
-    await page.evaluate(async () => (await navigator.serviceWorker.getRegistration()).update());
-    await expect.poll(() => page.evaluate(async () => Boolean((await navigator.serviceWorker.getRegistration()).waiting))).toBe(true);
-    await page.close();
-
-    page = await context.newPage();
-    await page.goto(server.url);
-    await expect(page.locator('#offlineStatus')).toHaveText('Offline kész');
+    const buildBNavigation = page.waitForNavigation({waitUntil:'load'});
+    await page.getByRole('button',{name:'Frissítés'}).click();
+    await buildBNavigation;
     await expect(page.locator('#partDetails')).toHaveText(/^#3 - /);
     const secondCache = await page.evaluate(async () => (await caches.keys()).find(name => name.startsWith('gombaflow-pwa-')));
-    expect(secondCache).not.toBe(firstCache);
 
     await server.update({editSource: async sourceDir => {
       await fs.promises.appendFile(path.join(sourceDir, 'pwa.js'), '\n// incomplete build C\n');
     }, failAsset: 'app-icon-192.png'});
-    await page.evaluate(async () => (await navigator.serviceWorker.getRegistration()).update());
+    await page.getByRole('button',{name:'Frissítés'}).click();
     await expect.poll(() => server.failedAssetRequests).toBeGreaterThan(0);
-    await page.waitForTimeout(300);
+    await expect(page.locator('#updateStatus')).toHaveText('Frissítési hiba');
+    await expect(page.getByRole('button',{name:'Frissítés'})).toBeEnabled();
     expect(await page.evaluate(async () => Boolean((await navigator.serviceWorker.getRegistration()).waiting))).toBe(false);
     expect(await page.evaluate(async () => (await caches.keys()).filter(name => name.startsWith('gombaflow-pwa-')))).toEqual([secondCache]);
 

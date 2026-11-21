@@ -25,6 +25,10 @@ self.addEventListener('activate', event => {
   )).then(() => self.clients.claim()));
 });
 
+self.addEventListener('message', event => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
   event.respondWith(caches.open(CACHE_NAME).then(cache => cache.match(event.request).then(cached => {

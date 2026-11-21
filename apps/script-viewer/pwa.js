@@ -6,6 +6,9 @@
   let fileInput;
   let exchangeInput;
   let actionQueue = Promise.resolve();
+  let updateInProgress = false;
+  let updateRegistration = null;
+  let updateReloadRequested = false;
 
   function setSaveStatus(message) {
     document.getElementById('saveStatus').textContent = message;
@@ -111,9 +114,13 @@
 
   function prepareOfflineProgram() {
     const offlineStatus = document.getElementById('offlineStatus');
+    const updateStatus = document.getElementById('updateStatus');
+    const updateBtn = document.getElementById('updateBtn');
     const worker = navigator.serviceWorker;
     if (!worker || !window.isSecureContext) {
       offlineStatus.textContent = 'Nincs offline mód';
+      updateStatus.textContent = 'Frissítés nem érhető el';
+      updateBtn.disabled = true;
       return;
     }
 
@@ -128,6 +135,7 @@
     worker.addEventListener('controllerchange', finishPreparation);
     if (worker.controller) finishPreparation();
     worker.register('/sw.js').then(registration => {
+      updateRegistration = registration;
       const watchInstallation = () => {
         const installing = registration.installing;
         if (!installing || worker.controller) return;
@@ -140,6 +148,66 @@
       registration.addEventListener('updatefound', watchInstallation);
       watchInstallation();
     }).catch(finishPreparation);
+  }
+
+  async function requestUpdate() {
+    if (updateInProgress) return;
+    const updateBtn = document.getElementById('updateBtn');
+    const updateStatus = document.getElementById('updateStatus');
+    if (!updateRegistration) {
+      updateStatus.textContent = 'Frissítési hiba';
+      return;
+    }
+    updateInProgress = true;
+    updateBtn.disabled = true;
+    updateStatus.textContent = 'Frissítés ellenőrzése…';
+
+    try {
+      await actionQueue;
+      if (updateRegistration.waiting) {
+        await activateWaitingWorker(updateRegistration, updateStatus);
+        return;
+      }
+
+      await updateRegistration.update();
+      if (updateRegistration.waiting) {
+        await activateWaitingWorker(updateRegistration, updateStatus);
+        return;
+      }
+
+      const installing = updateRegistration.installing;
+      if (!installing) {
+        updateStatus.textContent = 'Aktuális verzió';
+        updateInProgress = false;
+        updateBtn.disabled = false;
+        return;
+      }
+
+      await new Promise((resolve, reject) => {
+        const onStateChange = () => {
+          if (installing.state === 'installed') resolve();
+          else if (installing.state === 'redundant') reject(new Error('A frissítés telepítése sikertelen.'));
+        };
+        installing.addEventListener('statechange', onStateChange);
+        onStateChange();
+      });
+      await activateWaitingWorker(updateRegistration, updateStatus);
+    } catch (error) {
+      updateStatus.textContent = 'Frissítési hiba';
+      updateInProgress = false;
+      updateBtn.disabled = false;
+    }
+  }
+
+  async function activateWaitingWorker(registration, updateStatus) {
+    await actionQueue;
+    updateStatus.textContent = 'Frissítés telepítése…';
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!updateInProgress || updateReloadRequested) return;
+      updateReloadRequested = true;
+      window.location.reload();
+    }, { once: true });
+    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
   }
 
   async function start() {
@@ -197,6 +265,7 @@
       } catch (error) { window.viewerShowError(error); }
     });
     window.viewerHost = { send };
+    document.getElementById('updateBtn').onclick = requestUpdate;
     document.getElementById('exportChecksBtn').onclick = async () => {
       if (!activeTopic) return;
       try {

@@ -40,7 +40,12 @@ test('builds a program-only browser app with runtime imports', async () => {
     for (const asset of ['/', '/index.html', '/storage.js', '/progress.js', '/pwa.js', '/manifest.webmanifest', '/app-icon-192.png', '/app-icon-512.png', '/apple-touch-icon.png', '/favicon-32.png']) {
       assert.ok(worker.includes(`'${asset}'`), `offline cache includes ${asset}`);
     }
-    assert.doesNotMatch(worker, /skipWaiting/, 'new workers must wait for existing clients');
+    assert.match(worker, /SKIP_WAITING/, 'explicit activation message is supported');
+    assert.match(worker, /skipWaiting\(\)/, 'explicit activation calls skipWaiting');
+    const installBlock = worker.match(/self\.addEventListener\('install',[\s\S]*?\n\}\);/)?.[0] || '';
+    const activateBlock = worker.match(/self\.addEventListener\('activate',[\s\S]*?\n\}\);/)?.[0] || '';
+    assert.doesNotMatch(installBlock, /skipWaiting/, 'installation does not activate automatically');
+    assert.doesNotMatch(activateBlock, /skipWaiting/, 'activation does not activate itself');
     assert.match(worker, /clients\.claim\(\)/, 'the active worker controls the initial page after precaching');
     assert.match(worker, /CACHE_NAME = CACHE_PREFIX \+ '[a-f0-9]{16}'/);
     const secondDir = path.join(tempDir, 'site-second');
