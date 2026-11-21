@@ -14,13 +14,14 @@ test('builds a program-only browser app with runtime imports', async () => {
     const outputDir = path.join(tempDir, 'site');
     await builderModule.buildPwa({ outputDir });
     const files = (await fs.readdir(outputDir)).sort();
-    assert.deepEqual(files, ['app-icon-192.png', 'app-icon-512.png', 'app-icon.svg', 'apple-touch-icon.png', 'index.html', 'manifest.webmanifest', 'progress.js', 'pwa.js', 'storage.js', 'sw.js']);
+    assert.deepEqual(files, ['app-icon-192.png', 'app-icon-512.png', 'apple-touch-icon.png', 'favicon-32.png', 'index.html', 'manifest.webmanifest', 'progress.js', 'pwa.js', 'storage.js', 'sw.js']);
     const html = await fs.readFile(path.join(outputDir, 'index.html'), 'utf8');
     assert.match(html, /<script src="\/storage\.js"><\/script>/);
     assert.match(html, /<script src="\/progress\.js"><\/script>/);
     assert.match(html, /<script src="\/pwa\.js"><\/script>/);
     assert.match(html, /rel="manifest" href="\/manifest\.webmanifest"/);
     assert.match(html, /rel="apple-touch-icon" href="\/apple-touch-icon\.png"/);
+    assert.match(html, /rel="icon" type="image\/png" sizes="32x32" href="\/favicon-32\.png"/);
     assert.doesNotMatch(html, /\/\* CORE_SOURCE \*\//);
     assert.doesNotMatch(html, /2-unlimited-claude-code-for|Felvehető rész — 1/);
     assert.equal(await fs.readFile(path.join(outputDir, 'storage.js'), 'utf8'), await fs.readFile(path.join(__dirname, '../storage.js'), 'utf8'));
@@ -28,16 +29,15 @@ test('builds a program-only browser app with runtime imports', async () => {
     const manifest = JSON.parse(await fs.readFile(path.join(outputDir, 'manifest.webmanifest'), 'utf8'));
     assert.equal(manifest.start_url, '/');
     assert.deepEqual(manifest.icons.map(icon => [icon.src, icon.sizes]), [['/app-icon-192.png', '192x192'], ['/app-icon-512.png', '512x512']]);
-    for (const [file, size] of [['app-icon-192.png', 192], ['app-icon-512.png', 512], ['apple-touch-icon.png', 180]]) {
+    for (const [file, size] of [['app-icon-192.png', 192], ['app-icon-512.png', 512], ['apple-touch-icon.png', 180], ['favicon-32.png', 32]]) {
       const png = await fs.readFile(path.join(outputDir, file));
       assert.equal(png.toString('hex', 0, 8), '89504e470d0a1a0a', `${file} is a PNG`);
       assert.equal(png.readUInt32BE(16), size, `${file} has ${size}px width`);
       assert.equal(png.readUInt32BE(20), size, `${file} has ${size}px height`);
     }
-    const icon = await fs.readFile(path.join(outputDir, 'app-icon.svg'), 'utf8');
     const worker = await fs.readFile(path.join(outputDir, 'sw.js'), 'utf8');
     assert.match(worker, /addAll\(/);
-    for (const asset of ['/', '/index.html', '/storage.js', '/progress.js', '/pwa.js', '/manifest.webmanifest', '/app-icon.svg', '/app-icon-192.png', '/app-icon-512.png', '/apple-touch-icon.png']) {
+    for (const asset of ['/', '/index.html', '/storage.js', '/progress.js', '/pwa.js', '/manifest.webmanifest', '/app-icon-192.png', '/app-icon-512.png', '/apple-touch-icon.png', '/favicon-32.png']) {
       assert.ok(worker.includes(`'${asset}'`), `offline cache includes ${asset}`);
     }
     assert.doesNotMatch(worker, /skipWaiting/, 'new workers must wait for existing clients');
@@ -46,10 +46,9 @@ test('builds a program-only browser app with runtime imports', async () => {
     const secondDir = path.join(tempDir, 'site-second');
     await builderModule.buildPwa({ outputDir: secondDir });
     assert.equal(await fs.readFile(path.join(secondDir, 'sw.js'), 'utf8'), worker, 'same program produces the same worker');
-    assert.equal(await fs.readFile(path.join(secondDir, 'app-icon.svg'), 'utf8'), icon);
     const changedDir = await fs.mkdtemp(path.join(os.tmpdir(), 'gombaflow-pwa-changed-'));
     try {
-      for (const name of ['viewer.html', 'viewer.css', 'viewer.js', 'core.js', 'storage.js', 'progress.js', 'pwa.js', 'manifest.webmanifest', 'app-icon.svg', 'app-icon-192.png', 'app-icon-512.png', 'apple-touch-icon.png', 'sw.js']) {
+      for (const name of ['viewer.html', 'viewer.css', 'viewer.js', 'core.js', 'storage.js', 'progress.js', 'pwa.js', 'manifest.webmanifest', 'app-icon-192.png', 'app-icon-512.png', 'apple-touch-icon.png', 'favicon-32.png', 'sw.js']) {
         await fs.copyFile(path.join(__dirname, '..', name), path.join(changedDir, name)).catch(error => { if (error.code !== 'ENOENT') throw error; });
       }
       await fs.copyFile(path.join(__dirname, '../tools/build-pwa.mjs'), path.join(changedDir, 'build-pwa.mjs'));

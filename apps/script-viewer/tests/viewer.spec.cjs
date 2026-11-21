@@ -155,7 +155,7 @@ test('record parts and resume the offline library', async ({page}) => {
 test('shows a failed first offline installation and recovers on reload', async ({page}) => {
   const server = await startPwaServer();
   try {
-    server.setFailAsset('app-icon.svg');
+    server.setFailAsset('app-icon-192.png');
     await page.goto(server.url);
     const status = page.locator('#partInfo #offlineStatus');
     await expect(status).toHaveText('Offline hiba');
@@ -175,7 +175,7 @@ test('install, restart offline and update without losing local data', async ({br
     const manifestResponse = await page.goto(server.url);
     expect(manifestResponse.status()).toBe(200);
     expect(await page.request.get(new URL('/manifest.webmanifest', server.url).href).then(response => response.status())).toBe(200);
-    expect(await page.request.get(new URL('/app-icon.svg', server.url).href).then(response => response.status())).toBe(200);
+    expect(await page.request.get(new URL('/app-icon-192.png', server.url).href).then(response => response.status())).toBe(200);
     await expect(page.locator('#offlineStatus')).toHaveText('Offline kész');
     const firstCache = await page.evaluate(async () => (await caches.keys()).find(name => name.startsWith('gombaflow-pwa-')));
 
@@ -224,7 +224,7 @@ test('install, restart offline and update without losing local data', async ({br
 
     await server.update({editSource: async sourceDir => {
       await fs.promises.appendFile(path.join(sourceDir, 'pwa.js'), '\n// incomplete build C\n');
-    }, failAsset: 'app-icon.svg'});
+    }, failAsset: 'app-icon-192.png'});
     await page.evaluate(async () => (await navigator.serviceWorker.getRegistration()).update());
     await expect.poll(() => server.failedAssetRequests).toBeGreaterThan(0);
     await page.waitForTimeout(300);

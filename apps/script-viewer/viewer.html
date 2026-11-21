@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport"
             content="width=device-width,initial-scale=1,viewport-fit=cover">
-        <title>GombaFlow · felvételi néző</title>
+        <title>GombaFlow Scripter</title>
         <style>
         /* VIEWER_CSS */
         </style>
@@ -19,7 +19,7 @@
                 var message=String(error && (error.stack || error.message) || error);
                 window.viewerDiagnosticState.error=message;
                 var box=document.getElementById('viewerDiagnostic');
-                box.textContent='GombaFlow diagnosztika D3\nLépés: '+window.viewerDiagnosticState.stage+'\n\n'+message;
+                box.textContent='GombaFlow Scripter diagnosztika D3\nLépés: '+window.viewerDiagnosticState.stage+'\n\n'+message;
                 box.hidden=false;
             };
             window.addEventListener('error',function(event){window.viewerShowError((event.message||'JavaScript hiba')+'\n'+(event.filename||'')+':'+event.lineno+':'+event.colno+'\n'+(event.error&&event.error.stack||''));});
@@ -29,7 +29,7 @@
         <div class="top-shell">
             <header class="top">
                 <div class="brand">
-                    <strong>GombaFlow · Felvételi néző</strong>
+                    <strong>GombaFlow Scripter</strong>
                     <div style="display:flex;gap:6px">
                         <button id="exportChecksBtn" disabled>Pipák exportja</button>
                         <button id="importChecksBtn" disabled>Pipák importja</button>

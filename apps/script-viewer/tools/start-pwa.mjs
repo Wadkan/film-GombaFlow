@@ -13,10 +13,10 @@ const hostname = process.env.PWA_HOSTNAME;
 const port = 8787;
 const contentTypes = new Map([
   ['.html', 'text/html; charset=utf-8'], ['.js', 'text/javascript; charset=utf-8'],
-  ['.webmanifest', 'application/manifest+json; charset=utf-8'], ['.svg', 'image/svg+xml'],
+  ['.webmanifest', 'application/manifest+json; charset=utf-8'],
   ['.png', 'image/png'],
 ]);
-const siteFiles = new Set(['index.html', 'storage.js', 'progress.js', 'pwa.js', 'sw.js', 'manifest.webmanifest', 'app-icon.svg', 'app-icon-192.png', 'app-icon-512.png', 'apple-touch-icon.png']);
+const siteFiles = new Set(['index.html', 'storage.js', 'progress.js', 'pwa.js', 'sw.js', 'manifest.webmanifest', 'app-icon-192.png', 'app-icon-512.png', 'apple-touch-icon.png', 'favicon-32.png']);
 
 function fail(message) {
   console.error(message);

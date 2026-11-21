@@ -7,10 +7,10 @@ const APP_ASSETS = [
   '/progress.js',
   '/pwa.js',
   '/manifest.webmanifest',
-  '/app-icon.svg',
   '/app-icon-192.png',
   '/app-icon-512.png',
-  '/apple-touch-icon.png'
+  '/apple-touch-icon.png',
+  '/favicon-32.png'
 ];
 
 self.addEventListener('install', event => {

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const defaultAppDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const allowedSources = ['viewer.html', 'viewer.css', 'viewer.js', 'core.js', 'storage.js', 'progress.js', 'pwa.js'];
-const staticAssets = ['manifest.webmanifest', 'app-icon.svg', 'app-icon-192.png', 'app-icon-512.png', 'apple-touch-icon.png', 'sw.js'];
+const staticAssets = ['manifest.webmanifest', 'app-icon-192.png', 'app-icon-512.png', 'apple-touch-icon.png', 'favicon-32.png', 'sw.js'];
 
 export async function buildPwa({ appDir = defaultAppDir, outputDir } = {}) {
   if (!outputDir) throw new Error('Usage: node tools/build-pwa.mjs --output <directory>');
@@ -33,7 +33,7 @@ export async function buildPwa({ appDir = defaultAppDir, outputDir } = {}) {
     .replace('/* VIEWER_CSS */', () => source['viewer.css'])
     .replace('/* VIEWER_JS */', () => source['viewer.js'])
     .replace('/* CORE_SOURCE */', () => source['core.js'])
-    .replace('</head>', '<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/apple-touch-icon.png"></head>')
+    .replace('</head>', '<link rel="manifest" href="/manifest.webmanifest"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"></head>')
     .replace('</body>', '<script src="/storage.js"></script><script src="/progress.js"></script><script src="/pwa.js"></script></body>');
   const hash = crypto.createHash('sha256');
   for (const [name, content] of [...Object.entries(source), ...Object.entries(staticContent)]) {

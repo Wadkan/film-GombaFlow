@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "GombaFlow · Felvételi néző",
-  "short_name": "GombaFlow",
+  "name": "GombaFlow Scripter",
+  "short_name": "Scripter",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
