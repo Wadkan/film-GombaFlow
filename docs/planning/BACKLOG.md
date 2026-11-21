@@ -22,3 +22,5 @@ add a new backlog item.
 bump checkpoint for the versioned API contract.
 
 ## Ordered Backlog
+
+[FEATURE-5 — Add a manual PWA update button](features/FEATURE-5.md)
