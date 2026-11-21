@@ -61,10 +61,10 @@ test('filter and read a recording script', async ({ page }) => {
   expect((await page.locator('.cuebar').boundingBox()).y).toBe(cueY);
   expect((await page.locator('.top').boundingBox()).y).toBe(0);
   const footer=await page.locator('.bottom').boundingBox();
-  expect(Math.round(footer.y+footer.height)).toBe(844);
   const readerBox = await page.locator('#content').boundingBox();
-  expect(readerBox.y + readerBox.height).toBe(partInfoBeforeScroll.y);
-  expect(partInfoBeforeScroll.y + partInfoBeforeScroll.height).toBe(footer.y);
+  expect(readerBox.y + readerBox.height).toBe(footer.y);
+  expect(footer.y + footer.height).toBe(partInfoBeforeScroll.y);
+  expect(Math.round(partInfoBeforeScroll.y + partInfoBeforeScroll.height)).toBe(844);
   await expect(page.locator('#content')).not.toContainText('const greeting');
   for (const route of ['button', 'swipe', 'picker', 'record']) {
     await test.step('new part starts below pinned header: '+route, async () => {
@@ -101,11 +101,11 @@ test('filter and read a recording script', async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });
     await expect(page.locator('#partInfo')).toBeVisible();
     await expect(page.getByLabel('Keresés a narrációban')).toBeVisible();
-    const dashboard = await page.locator('.bottom').boundingBox();
+    const partRow = await partInfo.boundingBox();
     const previous = await page.getByRole('button', {name:'Előző rész'}).boundingBox();
     const next = await page.getByRole('button', {name:'Következő rész'}).boundingBox();
-    expect(previous.x + previous.width).toBeLessThan(dashboard.x);
-    expect(dashboard.x + dashboard.width).toBeLessThan(next.x);
+    expect(previous.x + previous.width).toBeLessThan(partRow.x);
+    expect(partRow.x + partRow.width).toBeLessThan(next.x);
     expect(previous.y + previous.height).toBe(next.y + next.height);
   }
 });
@@ -362,12 +362,20 @@ test('restores collapsed bars and saves reopening them', async ({page}) => {
   expect(part6Font).toBe(15);
   await page.getByRole('button',{name:'Felső sáv váltása'}).click();
   await expect.poll(async()=>page.evaluate(async()=>{const storage=await window.GombaFlowStorage.open();const state=await storage.read();storage.close();return state.preferences.topCollapsed})).toBe(true);
-  await page.getByRole('button',{name:'Alsó sáv váltása'}).click();
+  const toggleBottom = page.getByRole('button', {name:'Alsó dashboard'});
+  await expect(page.getByRole('button', {name:'Alsó sáv váltása'})).toHaveCount(0);
+  await expect(toggleBottom).toHaveAttribute('aria-expanded', 'true');
+  const expandedPartRow = await page.locator('#partInfo').boundingBox();
+  await toggleBottom.click();
+  await expect(toggleBottom).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('.bottom')).toBeHidden();
+  expect(await page.locator('#partInfo').boundingBox()).toEqual(expandedPartRow);
   await expect.poll(async()=>page.evaluate(async()=>{const storage=await window.GombaFlowStorage.open();const state=await storage.read();storage.close();return state.preferences.topCollapsed})).toBe(true);
   await expect.poll(async()=>page.evaluate(async()=>{const storage=await window.GombaFlowStorage.open();const state=await storage.read();storage.close();return state.preferences.bottomCollapsed})).toBe(true);
   await page.reload();
   await expect(page.locator('.top')).toBeHidden();
   await expect(page.locator('.bottom')).toBeHidden();
+  await expect(toggleBottom).toHaveAttribute('aria-expanded', 'false');
   await expect(page.getByRole('button', {name:'Előző rész'})).toBeVisible();
   await expect(page.getByRole('button', {name:'Következő rész'})).toBeVisible();
   await expect(page.locator('#partDetails')).toHaveText(/^#6 - /);
@@ -424,7 +432,8 @@ test('restores collapsed bars and saves reopening them', async ({page}) => {
   expect(typesStyle.closeFontSize).toBeLessThan(16);
   expect(typesStyle.closeRightHit).toBe(true);
   await page.getByRole('button', { name: 'Bezárás' }).click();
-  await page.getByRole('button',{name:'Alsó sáv váltása'}).click();
+  await toggleBottom.press('Enter');
+  await expect(toggleBottom).toHaveAttribute('aria-expanded', 'true');
   await expect.poll(async()=>page.evaluate(async()=>{const storage=await window.GombaFlowStorage.open();const state=await storage.read();storage.close();return state.preferences.bottomCollapsed})).toBe(false);
   await page.reload();
   await expect(page.locator('.top')).toBeVisible();
@@ -432,7 +441,7 @@ test('restores collapsed bars and saves reopening them', async ({page}) => {
   await expect(page.locator('#record')).toBeVisible();
   const partInfo = await page.locator('#partInfo').boundingBox();
   const dashboard = await page.locator('.bottom').boundingBox();
-  expect(partInfo.y + partInfo.height).toBe(dashboard.y);
+  expect(dashboard.y + dashboard.height).toBe(partInfo.y);
   } finally {
     await server.close();
   }
