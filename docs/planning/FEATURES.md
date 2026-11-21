@@ -49,4 +49,4 @@ copy the whole plan into the release notes.
 
 ## FEATURE-4
 
-[Add a PWA reading fallback for local failures](features/FEATURE-4.md)
+Retired

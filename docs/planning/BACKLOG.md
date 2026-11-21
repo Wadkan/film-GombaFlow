@@ -22,5 +22,3 @@ add a new backlog item.
 bump checkpoint for the versioned API contract.
 
 ## Ordered Backlog
-
-- [FEATURE-4 — Add a PWA reading fallback for local failures](features/FEATURE-4.md)
