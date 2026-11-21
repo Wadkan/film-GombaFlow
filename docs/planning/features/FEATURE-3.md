@@ -1,6 +1,6 @@
 # FEATURE-3 — Separate and format PWA viewer sources
 
-**Status:** PLANNED
+**Status:** DONE
 
 ## Goal and measurable outcome
 
@@ -19,8 +19,8 @@ Make the recording viewer straightforward to edit by formatting `viewer.html` an
 
 ## MVP in scope
 
-- [ ] Format the page markup and the extracted CSS and JavaScript. Preserve whitespace where it affects rendering or text. - TODO
-- [ ] Extend the build input list, template substitutions, and directly affected test fixtures for the two source files. - TODO
+- [x] Format the page markup and the extracted CSS and JavaScript. Preserve whitespace where it affects rendering or text. - DONE
+- [x] Extend the build input list, template substitutions, and directly affected test fixtures for the two source files. - DONE
 
 ## Explicitly out of scope
 
@@ -42,9 +42,9 @@ Preserve the current HTML escaping, local data handling, and browser requests. T
 
 ## Ordered TDD implementation tasks
 
-1. [ ] Extend `apps/script-viewer/tests/pwa-tools.test.cjs`, test `builds a program-only browser app with runtime imports`. In its temporary source fixture, change each extracted input independently and assert that the change appears in the correct inline block and changes the generated worker version. Keep the existing output-file and precache assertions. Run `node --test apps/script-viewer/tests/pwa-tools.test.cjs` and verify that the new coverage fails before extraction. - TODO
-2. [ ] Extract and format the two sources and the page. Update `tools/build-pwa.mjs` to read and inline the two files at the original locations, then apply the existing parser injection. Update the build fixture source lists and the existing direct HTML test setup for the two insertions. Keep the served-PWA flows and assertions. - TODO
-3. [ ] Re-run the build tests and review the diff for CSS cascade order, whitespace-sensitive markup and strings, script execution order, and unrelated edits. Run the PWA validation target. - TODO
+1. [x] Extend `apps/script-viewer/tests/pwa-tools.test.cjs`, test `builds a program-only browser app with runtime imports`. In its temporary source fixture, change each extracted input independently and assert that the change appears in the correct inline block and changes the generated worker version. Keep the existing output-file and precache assertions. Run `node --test apps/script-viewer/tests/pwa-tools.test.cjs` and verify that the new coverage fails before extraction. - DONE
+2. [x] Extract and format the two sources and the page. Update `tools/build-pwa.mjs` to read and inline the two files at the original locations, then apply the existing parser injection. Update the build fixture source lists and the existing direct HTML test setup for the two insertions. Keep the served-PWA flows and assertions. - DONE
+3. [x] Re-run the build tests and review the diff for CSS cascade order, whitespace-sensitive markup and strings, script execution order, and unrelated edits. Run the PWA validation target. - DONE
 
 ## Automated validation
 
@@ -59,7 +59,7 @@ Build and serve through `make pwa-start`. The source change gets a new cache ver
 
 ### Checkpoint 1 — Separate and format PWA viewer sources
 
-Status: TODO
+Status: APPROVED (review PASS)
 
 Run `w-implement-preflight` (recommended), `w-implement`, then `w-implement-review`. This is the only checkpoint.
 

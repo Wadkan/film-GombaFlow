@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const defaultAppDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const allowedSources = ['viewer.html', 'core.js', 'storage.js', 'progress.js', 'pwa.js'];
+const allowedSources = ['viewer.html', 'viewer.css', 'viewer.js', 'core.js', 'storage.js', 'progress.js', 'pwa.js'];
 const staticAssets = ['manifest.webmanifest', 'app-icon.svg', 'app-icon-192.png', 'app-icon-512.png', 'apple-touch-icon.png', 'sw.js'];
 
 export async function buildPwa({ appDir = defaultAppDir, outputDir } = {}) {
@@ -30,6 +30,8 @@ export async function buildPwa({ appDir = defaultAppDir, outputDir } = {}) {
   }
 
   const html = source['viewer.html']
+    .replace('/* VIEWER_CSS */', () => source['viewer.css'])
+    .replace('/* VIEWER_JS */', () => source['viewer.js'])
     .replace('/* CORE_SOURCE */', () => source['core.js'])
     .replace('</head>', '<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/apple-touch-icon.png"></head>')
     .replace('</body>', '<script src="/storage.js"></script><script src="/progress.js"></script><script src="/pwa.js"></script></body>');

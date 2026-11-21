@@ -49,7 +49,7 @@ test('builds a program-only browser app with runtime imports', async () => {
     assert.equal(await fs.readFile(path.join(secondDir, 'app-icon.svg'), 'utf8'), icon);
     const changedDir = await fs.mkdtemp(path.join(os.tmpdir(), 'gombaflow-pwa-changed-'));
     try {
-      for (const name of ['viewer.html', 'core.js', 'storage.js', 'progress.js', 'pwa.js', 'manifest.webmanifest', 'app-icon.svg', 'app-icon-192.png', 'app-icon-512.png', 'apple-touch-icon.png', 'sw.js']) {
+      for (const name of ['viewer.html', 'viewer.css', 'viewer.js', 'core.js', 'storage.js', 'progress.js', 'pwa.js', 'manifest.webmanifest', 'app-icon.svg', 'app-icon-192.png', 'app-icon-512.png', 'apple-touch-icon.png', 'sw.js']) {
         await fs.copyFile(path.join(__dirname, '..', name), path.join(changedDir, name)).catch(error => { if (error.code !== 'ENOENT') throw error; });
       }
       await fs.copyFile(path.join(__dirname, '../tools/build-pwa.mjs'), path.join(changedDir, 'build-pwa.mjs'));
@@ -58,6 +58,17 @@ test('builds a program-only browser app with runtime imports', async () => {
       await builderModule.buildPwa({ appDir: changedDir, outputDir: changedOutput });
       const changedWorker = await fs.readFile(path.join(changedOutput, 'sw.js'), 'utf8');
       assert.notEqual(changedWorker, worker, 'changed program content changes the cache version');
+      for (const [sourceName, marker] of [['viewer.css', '/* changed extracted css */'], ['viewer.js', '// changed extracted main script']]) {
+        const isolatedDir = path.join(tempDir, `changed-${sourceName}`);
+        await fs.cp(changedDir, isolatedDir, { recursive: true });
+        await fs.appendFile(path.join(isolatedDir, sourceName), `\n${marker}\n`);
+        const isolatedOutput = path.join(tempDir, `site-${sourceName}`);
+        await builderModule.buildPwa({ appDir: isolatedDir, outputDir: isolatedOutput });
+        const isolatedHtml = await fs.readFile(path.join(isolatedOutput, 'index.html'), 'utf8');
+        const isolatedWorker = await fs.readFile(path.join(isolatedOutput, 'sw.js'), 'utf8');
+        assert.ok(isolatedHtml.includes(marker), `${sourceName} changes its inline HTML block`);
+        assert.notEqual(isolatedWorker, changedWorker, `${sourceName} changes the worker cache version`);
+      }
     } finally {
       await fs.rm(changedDir, { recursive: true, force: true });
     }

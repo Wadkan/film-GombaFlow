@@ -5,13 +5,19 @@ const { startPwaServer } = require('./helpers/pwa-server.cjs');
 
 const root = path.resolve(__dirname, '../../..');
 const html = fs.readFileSync(path.join(__dirname, '../viewer.html'), 'utf8');
+const css = fs.readFileSync(path.join(__dirname, '../viewer.css'), 'utf8');
+const viewer = fs.readFileSync(path.join(__dirname, '../viewer.js'), 'utf8');
 const script = fs.readFileSync(path.join(root, 'local-workflows/script-and-cut-workflows/gombaFlow/projects/2-unlimited-claude-code-for/3-script.md'), 'utf8');
 const core = fs.readFileSync(path.join(__dirname, '../core.js'), 'utf8');
+const directHtml = html
+  .replace('/* VIEWER_CSS */', () => css)
+  .replace('/* VIEWER_JS */', () => viewer)
+  .replace('/* CORE_SOURCE */', () => core);
 
 test('filter and read a recording script', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.evaluate(({ script, core }) => { window.__viewerHost = { script, core }; }, { script, core });
-  await page.setContent(html.replace('/* CORE_SOURCE */', () => core));
+  await page.setContent(directHtml);
   await page.evaluate(script => window.viewerOpen(script), script);
   await expect(page.locator('#partInfo')).toBeVisible();
   await expect(page.locator('#partDetails')).toHaveText(/^#1 - /);
@@ -111,7 +117,7 @@ test('filter and read a recording script', async ({ page }) => {
 });
 
 test('shows browser failures on screen for diagnosis', async ({page}) => {
-  await page.setContent(html.replace('/* CORE_SOURCE */', () => core));
+  await page.setContent(directHtml);
   await page.evaluate(() => window.dispatchEvent(new ErrorEvent('error', {message:'diagnostic test failure', filename:'viewer', lineno:42})));
   await expect(page.locator('#viewerDiagnostic')).toBeVisible();
   await expect(page.locator('#viewerDiagnostic')).toContainText('diagnostic test failure');
