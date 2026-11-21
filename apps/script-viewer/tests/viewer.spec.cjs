@@ -320,7 +320,8 @@ test('restores collapsed bars and saves reopening them', async ({page}) => {
     await next.click();
     await expect(page.locator('#partInfo')).toHaveText(new RegExp('^#' + id + ' - '));
   }
-  await expect(page.locator('#partInfo')).toHaveText('#4 - C2 — Előtte és utána · b-roll · Helyszín A');
+  await expect(page.locator('#partInfo')).toHaveText('#4 - C2 — Előtte és utána · b-roll · Helyszín A OFFLINE · MENTETT');
+  await expect(page.locator('#partInfo > #partDetails + .sample')).toBeVisible();
   await next.click();
   await expect(page.locator('#partInfo')).toHaveText(/^#5 - /);
   const part5Font=await page.locator('#partInfo').evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
