@@ -1,6 +1,6 @@
 # FEATURE-6 — Mark talking-head pauses for review
 
-**Status:** PLANNED
+**Status:** DONE
 
 ## Goal and measurable outcome
 
@@ -39,9 +39,9 @@ then shows those cuts as gaps between retention markers on the original footage.
 
 ## MVP in scope
 
-- [ ] Add one standard-library Python CLI and the config setting - TODO
-- [ ] Integrate validation, pause processing, and repair reporting into 2b,
-      with only the necessary local workflow and orchestrator edits - TODO
+- [x] Add one standard-library Python CLI and the config setting - DONE
+- [x] Integrate validation, pause processing, and repair reporting into 2b,
+      with only the necessary local workflow and orchestrator edits - DONE
 
 ## Explicitly out of scope
 
@@ -122,7 +122,7 @@ status and use the existing failure and review gates.
 
 ## Ordered TDD implementation tasks
 
-1. [ ] Add `tests/test_retake_silence.py`, with `test_pause_ranges_respect_cue_threshold_and_existing_cuts`
+1. [x] Add `tests/test_retake_silence.py`, with `test_pause_ranges_respect_cue_threshold_and_existing_cuts`
        (including a 2.4–4.4-second boundary pair that must be retained,
        a 2.4–4.41-second pair that passes the threshold, and a configured
        alternate value),
@@ -133,14 +133,14 @@ status and use the existing failure and review gates.
        starts from a durable per-group save and checks that failure preserves
        its bytes and pending IDs. On retry, verify that only pending groups
        are processed. Include repeated processing, bounds and word references.
-       Register the module in `make test-localworkflows` and observe failure - TODO
-2. [ ] Implement the smallest CLI and config change to make those tests pass.
-       Keep any cleanup inside the new helper - TODO
-3. [ ] Update 2b, the local workflow, and orchestrator instructions narrowly
+       Register the module in `make test-localworkflows` and observe failure - DONE
+2. [x] Implement the smallest CLI and config change to make those tests pass.
+       Keep any cleanup inside the new helper - DONE
+3. [x] Update 2b, the local workflow, and orchestrator instructions narrowly
        to run the CLI, relay repairs, preserve the retry limit and retain
-       existing stage stops - TODO
-4. [ ] Run automated validation and perform the short agent handoff check
-       below - TODO
+       existing stage stops - DONE
+4. [x] Run automated validation and perform the short agent handoff check
+       below - DONE
 
 ## Automated validation
 
@@ -157,6 +157,10 @@ status and use the existing failure and review gates.
   retries without a user prompt and uses the resulting ranges. With a valid
   `needs_review` result containing an empty `blocked` group, confirm the
   agent reaches the existing missing-footage gate.
+- PASS — a `/tmp/feat6-manual` másolaton a hibás tartomány exit 1-gyel és
+  konkrét hibamezővel jelentkezett, kimenet nélkül; a javított draft sikeresen
+  levágta a 5.01–11.0 mp-es szünetet, a `blocked` csoport üres maradt, és a
+  terv `needs_review` állapottal elérné a missing-footage kaput.
 
 ## Rollout and rollback
 
@@ -168,7 +172,7 @@ behavior. Keep original media, transcripts and index files.
 
 ### Checkpoint 1 — Mark talking-head pauses for review
 
-Status: TODO
+Status: APPROVED (review PASS)
 
 Run `w-implement-preflight`, `w-implement`, then `w-implement-review`.
 No API bump.

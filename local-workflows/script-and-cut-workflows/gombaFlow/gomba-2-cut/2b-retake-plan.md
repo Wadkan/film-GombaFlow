@@ -128,7 +128,10 @@ törlési felhatalmazások. Igazolt újramondás részeként a töltelékszó,
 félmondat és csend is kihagyható. A megerősített csendet önállóan is jelöld
 kivágandónak a beszédre szánt anyagban, a felvétel elején is. A jegyzékben
 megadott forrásidőket használd, és a döntést a megtartási határokkal add át
-a review timeline-nak. A teljes B-roll tartománya kerüljön a `retained_ranges`
+a review timeline-nak. A beszédre szánt anyagon belüli, a
+`recording-config.json` `silence_min_seconds` értékénél hosszabb szünetek
+kivágását a lenti gépi szabály számolja; az ismétlés- és parancsvágástól független.
+A teljes B-roll tartománya kerüljön a `retained_ranges`
 listába a képével és a hozzá tartozó eredeti hanggal együtt, szinkronban.
 
 ## Felvételi parancsok és közös megtartási tartományok
@@ -305,6 +308,10 @@ A terv sémája `1.1`, kötelező mezői:
 
 - `schema_version`: `"1.1"`; `script_sha256` és `recording_index_sha256` a
   pontos bemeneti állapot azonosítói.
+- `pending_pause_group_ids`: opcionális lista a szünetvágásra még váró,
+  újraépített csoportok `script_id` értékeivel. Folyamatos passnál a javítás
+  előtti tartós mentésben rögzíted; kezdeti futásnál az összes frissen elemzett
+  csoportot felsorolod. A kész eredmény ezt a mezőt nem tartalmazza.
 - `coverage_checked`: csak akkor `true`, ha minden script-rész hiányellenőrzése
   elkészült a fenti szabályok szerint; különben `false`.
 - `status`: `ready_for_execution` vagy `needs_review`; csak minden csoport
@@ -363,9 +370,44 @@ Hiányzó vagy érvénytelen hivatkozott forrásadat blokkol.
 
 A 2b. lépés gépi kimenete a teljes `retake_plan.json`; bizonytalanságnál a
 hivatkozott közös problémánapló is készül. Resolve-hoz ne nyúlj.
-Az elemzés végén jelezd, ha a problémánapló tartalmaz a Full Takes-en
-ellenőrizendő tételt, és add meg a napló útvonalát.
-Rough Cut csak `ready_for_execution` tervből készülhet.
-Mondd ki, hogy a Resolve-projekt és timeline még nem készült el, a terv pedig
-nincs végrehajtva. A részletes vágási döntések review-ja az első timeline
-markerein történik.
+
+### Szünetvágás és gépi ellenőrzés
+
+A completed draft szünetvágását és ellenőrzését a helyi
+`scripts/apply_retakes_silence.py` végzi, kizárólag a standard Python
+könyvtárral:
+
+```text
+python3 scripts/apply_retakes_silence.py \
+  --draft "$fixture/draft.json" \
+  --index "$fixture/recording_index.json" \
+  --config local-workflows/recording-config.json \
+  --output "$fixture/final.json"
+```
+
+- A draftot először strukturált JSON-ként írd egy `/tmp` alatti munkafájlba.
+  A script ellenőrzi az `1.1` sémát, a script- és jegyzéklenyomatot, a
+  csoport–rekord társításokat, a coverage- és állapotjelzők konzisztenciáját,
+  valamint a `retained_ranges` véges, nem üres, a forrástartományba eső és nem
+  átfedő voltát; minden hibához a mezőt vagy rekordazonosítót és az okot adja.
+- Szünetvágást csak a `pending_pause_group_ids`-ban felsorolt, `talking head`
+  clip típusú csoportok ellenőrzött cue-jú rekordjaira alkalmaz. A
+  `[content_start, content_end)` ablakon belül a szóidőtartományok uniójából
+  kimaradó, a konfigurált `silence_min_seconds` értékénél hosszabb réseket
+  eltávolítja a meglévő `retained_ranges`-ekből. A megtartási sorrend, a
+  meglévő cue- és ismétlésdöntések, a kézi review-csoportok és a nem beszélő
+  clip típusok változatlanok maradnak; egy korábban nem üres csoport nem
+  ürülhet ki, és a `blocked` csoport érvényes marad.
+- Csak sikeres és ellenőrzött kimenetet ír `--output`-ba, atomikusan. Hibás
+  pass nem ír kimenetet, és a legutóbbi tartós mentést hagyja érintetlenül.
+- A javítható hiba terjedelmét a jegyzék, a script és az átiratok alapján
+  javíthatod; minden javítást röviden jelezz az orchestratornak. Három Python
+  hívásnál ne fuss többet; ha a hiba a meglévő bizonyítékból nem javítható,
+  állj meg a konkrét hibával. A hiányzó felvétel továbbra is a meglévő
+  coverage-kapun halad át.
+  Az elemzés végén jelezd, ha a problémánapló tartalmaz a Full Takes-en
+  ellenőrizendő tételt, és add meg a napló útvonalát.
+  Rough Cut csak `ready_for_execution` tervből készülhet.
+  Mondd ki, hogy a Resolve-projekt és timeline még nem készült el, a terv pedig
+  nincs végrehajtva. A részletes vágási döntések review-ja az első timeline
+  markerein történik.

@@ -1,3 +1,4 @@
 {
-  "magic_word": "serpenyő"
+  "magic_word": "serpenyő",
+  "silence_min_seconds": 2
 }

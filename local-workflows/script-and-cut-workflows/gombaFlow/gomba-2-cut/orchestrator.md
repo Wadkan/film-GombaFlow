@@ -90,6 +90,11 @@ A szükséges userkérdést vagy rövid tájékoztatást a workflow közös komm
 szabálya szerint juttasd el. Interaktív lépés saját felhasználói kontextusban
 is végrehajtható, ha az elkülönített végrehajtó nem tud közvetlenül kérdezni;
 a tartalmi elemzés ettől még ne kerüljön az orchestrator kontextusába.
+A 2b gépi ellenőrzésének javításait a végrehajtó rövid progress-üzenetben
+küldi; ezeket a végső státusztól elkülönítve, a végrehajtó visszatérése előtt
+add tovább a usernek. Ha az elkülönített végrehajtó ilyet nem tud küldeni,
+a `problems.md` javítási bejegyzéseit a visszatérés után, a következő lépés
+előtt közvetítsd rövid összefoglalóval. Ez nem hoz létre jóváhagyási kaput.
 
 ## Kontextus és mentés
 

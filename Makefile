@@ -32,7 +32,7 @@ test-n8n:
 		test_youtube_meta_write
 
 test-localworkflows:
-	@python3 -m unittest -v test_recording_transcription
+	@python3 -m unittest -v test_recording_transcription test_retake_silence
 
 .PHONY: test-pwa
 test-pwa:

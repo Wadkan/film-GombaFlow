@@ -253,6 +253,11 @@ A cél egyértelműsége mellett az azonosítatlan vagy `needs_review` rekordot
   hiánnyal vagy teljesen megőrzött bizonytalan anyaggal.
 - `BLOCKED`: érvénytelen forrás vagy más akadály miatt a terv a Full Takes-hez
   sem használható.
+- A 2b gépi ellenőrzésének javítható, a meglévő bizonyítékból azonnal
+  korrigálható hibáinál a skill legfeljebb három hívás alatt javít, és minden
+  javítást rövid userjelzéssel jelez a hívónak, ahelyett hogy technikai
+  hibaként azonnal megállna; a nem javítható hiba, illetve a harmadik hívás
+  sikertelensége a szokásos `BLOCKED` megállást adja.
 
 ### Full Takes bemeneti kapu
 
