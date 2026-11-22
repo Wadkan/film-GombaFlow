@@ -8,7 +8,7 @@
 
 ## [`1-transcription.md`](local-workflows/script-and-cut-workflows/gombaFlow/gomba-2-cut/1-transcription.md)
 
-- [ ] TODO A felvételmappa és almappái videónkénti, szóidőbélyeges átiratot kapnak. A teljes lista a `master_transcript.json` fájlban szerepel.
+- [x] A `/Users/wadkan/Downloads/test_records` mappa két videójához elkészült a videónkénti, szóidőbélyeges átirat. A `master_transcript.json` manifest, a források SHA-256 azonosítói és az időbélyegek ellenőrizve. Mindkét videó `transcribed` státuszú.
 - [ ] TODO A hang vagy felismert beszéd nélküli videók is szerepelnek a listában. A felhasználó leírása alapján tisztázott script-hozzárendelés a `recording_assignments.json` fájlba kerül.
 
 ## [`2-recording-index.md`](local-workflows/script-and-cut-workflows/gombaFlow/gomba-2-cut/2-recording-index.md)

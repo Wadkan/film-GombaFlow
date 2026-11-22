@@ -47,8 +47,15 @@ A repo gyökeréből, a felhasználó által megadott mappával:
 ```bash
 ~/video-ai/bin/python local-workflows/script-and-cut-workflows/gombaFlow/gomba-2-cut/scripts/transcribe_recordings.py \
   --input-dir /path/to/recordings \
+  --script /path/to/project/3-script.md \
   --language hu
 ```
+
+Ha a forgatási script ismert, add át a `--script` kapcsolóval. Több ismert
+scripthez ismételd a kapcsolót. A CLI a megadott scriptek fejlécéből olvassa be a
+varázsszavakat, és `hotwords` támpontként adja át a Faster-Whispernek a teljes
+klip átírásakor. Ismeretlen scriptnél a kapcsoló elhagyható. Az átirat a modell
+által ténylegesen felismert szöveget tárolja.
 
 A [script](scripts/transcribe_recordings.py) végzi az átírást; az agent nem írja
 újra vagy javítja kézzel az átiratot. A művelet átírás, nem fordítás. Nem értelmez

@@ -65,6 +65,30 @@ class RecordingTranscriptionTests(unittest.TestCase):
         self.assertTrue(model.transcribe.call_args.kwargs["word_timestamps"])
         self.assertEqual(model.transcribe.call_count, 1)
 
+    def test_cli_passes_script_header_words_to_whisper(self):
+        (self.sources / "a.mov").write_bytes(b"source")
+        scripts = [self.root / "first.md", self.root / "second.md"]
+        for path, word in zip(scripts, ("tarisznya", "gesztenye"), strict=True):
+            path.write_text(f"# Script\n\n- Felvételi varázsszó: `{word}`\n", encoding="utf-8")
+        model = mock.Mock()
+        model.transcribe.return_value = (iter([]), SimpleNamespace(language="hu"))
+        argv = [str(SCRIPT_PATH), "--input-dir", str(self.sources)]
+        for path in scripts:
+            argv.extend(("--script", str(path)))
+        with (
+            mock.patch("sys.argv", argv),
+            mock.patch.dict(
+                "sys.modules",
+                {"faster_whisper": SimpleNamespace(WhisperModel=mock.Mock(return_value=model))},
+            ),
+            mock.patch.object(
+                transcription, "probe_media", return_value={"duration": 2.0, "has_audio": True}
+            ),
+            mock.patch("sys.stdout", io.StringIO()),
+        ):
+            self.assertEqual(transcription.main(), 0)
+        self.assertEqual(model.transcribe.call_args.kwargs["hotwords"], "tarisznya gesztenye")
+
     def test_existing_output_is_not_overwritten(self):
         (self.sources / "a.mov").write_bytes(b"source")
         self.output.mkdir()

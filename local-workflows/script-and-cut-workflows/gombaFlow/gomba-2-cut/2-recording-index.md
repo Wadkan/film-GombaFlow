@@ -70,6 +70,14 @@ A néma felvétel nem hibás vagy törlendő bemenet.
    nyitó–záró párjait, szakaszhatárokon át is. Kis- és nagybetű, írásjel,
    illetve egyértelműen számként felismert/bemondott ID normalizálható, az
    eredeti szöveg módosítása nélkül. Hiányzó szót, ID-t vagy zárójelet ne pótolj.
+   A script fejlécéből beolvasott varázsszó egyértelmű hangzásbeli
+   félrehallását csak akkor fogadd el, ha mindkét határoló szó szerepel az
+   időbélyeges átiratban, és mindkettő megfelel ugyanannak a varázsszónak.
+   Közöttük teljes `timeline <szám> script <szám>` parancsnak kell állnia,
+   és a számoknak a registry és a script alapján egyértelműen azonosítaniuk
+   kell a részt. A jegyzék `cue.original_text` mezőjében őrizd meg a
+   ténylegesen felismert szöveget. Bizonytalan egyezésnél a rekord maradjon
+   `needs_review`.
 2. Az azonosító parancs a parancsszótár alakjának feleljen meg. A bemondott
    timeline utáni szám egyezzen a script fejlécében szereplő témaazonosító
    kezdő számrészével; a script-ID egyezzen a megfelelő résszel. A timeline

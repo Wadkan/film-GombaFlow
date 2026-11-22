@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import math
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -35,7 +36,28 @@ def write_json(path: Path, value: dict) -> None:
         output.write("\n")
 
 
-def run_batch(input_dir: Path, model_factory, language: str | None) -> Path:
+def read_magic_word(script_path: Path) -> str:
+    with script_path.expanduser().open(encoding="utf-8") as script:
+        header = []
+        for line in script:
+            if line.startswith("## "):
+                break
+            header.append(line.rstrip("\n"))
+    values = [
+        re.fullmatch(r"- Felvételi varázsszó:\s*`([^`]+)`\s*", line)
+        for line in header
+        if line.startswith("- Felvételi varázsszó:")
+    ]
+    if len(values) == 1 and values[0] and (word := values[0][1].strip()):
+        return word
+    raise ValueError(
+        f"Hiányzó vagy érvénytelen felvételi varázsszó a script fejlécében: {script_path}"
+    )
+
+
+def run_batch(
+    input_dir: Path, model_factory, language: str | None, hotwords: str | None = None
+) -> Path:
     input_dir = input_dir.expanduser().resolve(strict=True)
     if not input_dir.is_dir():
         raise ValueError("Az input-dir egy felvételmappa legyen.")
@@ -52,6 +74,7 @@ def run_batch(input_dir: Path, model_factory, language: str | None) -> Path:
     )
     if not sources:
         raise ValueError("Nincs támogatott videófájl a megadott mappában.")
+    hints = {"hotwords": hotwords} if hotwords else {}
     output_dir.mkdir(parents=True, exist_ok=False)
     model = None
     manifest = {"schema_version": "1.0", "recordings": []}
@@ -82,6 +105,7 @@ def run_batch(input_dir: Path, model_factory, language: str | None) -> Path:
                 word_timestamps=True,
                 vad_filter=True,
                 beam_size=5,
+                **hints,
             )
             record["language"] = info.language
             for segment in segments:
@@ -140,6 +164,13 @@ def main() -> int:
         description="Helyi videók szóidőbélyeges Faster-Whisper átirata"
     )
     parser.add_argument("--input-dir", type=Path)
+    parser.add_argument(
+        "--script",
+        type=Path,
+        action="append",
+        default=[],
+        help="A forgatási script útvonala a varázsszó beolvasásához; ismételhető",
+    )
     parser.add_argument("--language", default="hu", help="Nyelvkód; auto = automatikus felismerés")
     parser.add_argument("--model", default="small", help="Modellnév vagy letöltött modell útvonala")
     args = parser.parse_args()
@@ -156,11 +187,13 @@ def main() -> int:
             if not answer:
                 raise ValueError("A videók útvonala szükséges; nem indul feldolgozás.")
             input_dir = Path(answer)
+        hotwords = " ".join(dict.fromkeys(read_magic_word(path) for path in args.script))
         print(
             run_batch(
                 input_dir,
                 model_factory,
                 None if args.language == "auto" else args.language,
+                hotwords=hotwords or None,
             )
         )
         return 0
