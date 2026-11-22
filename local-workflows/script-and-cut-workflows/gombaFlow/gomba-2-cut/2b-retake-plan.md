@@ -59,13 +59,14 @@ Ehhez nem szükséges klipenként új subagent.
 
 A [parancsszótár](../gomba-1-script-writer/RECORDING_COMMANDS.md) szerinti
 hibajelzés egyértelművé teszi, hogy a közvetlenül előtte lévő beszédrész hibás és
-újramondásra szánt. Keresd meg az utána következő újramondást, és annak
-illesztéséből határozd meg a korábbi hibás tartomány vágási határát. Ne
-követelj szó szerinti egyezést a scripttel. Ha az újramondás vagy a határ nem
-azonosítható biztosan, vagy nem követi újramondás, tartsd meg a hibás részt;
-ha van újramondás, azt is. A teljes érintett ismétléscsoport maradjon vágatlanul;
-a hiányzó vagy bizonytalan javítást rögzítsd a közös problémánaplóban és
-jelöld kézi vágásra.
+újramondásra szánt. Keresd meg a parancs utáni javított újrakezdést. A script
+és a szóidőbélyegek alapján keresd vissza az előző próbálkozásban azt a szót,
+ahonnan az újramondás átveszi a tartalmat. Ettől a szótól jelöld kihagyásra
+a lecserélt beszédet a hibajelzésig. A korábbi egyedi mondatkezdetet és a
+javított újramondást tartsd meg. Jelentésbeli egyezés elegendő.
+Ha csak a csatlakozás helye bizonytalan, az érintett tartományt őrizd meg és
+rögzítsd az `unresolved` listában a Full Takes review timeline jelöléséhez.
+Ha az újramondás sem azonosítható, őrizd meg az érintett változatokat.
 
 ## Ellenőrzés és felvételi sorrend
 
@@ -122,9 +123,12 @@ Kötelező értelmezési példák:
 
 Az elemzéshez használhatod a `normal`, `restart`, `partial_sentence`, `duplicate`,
 `filler`, `silence`, `unknown` beszédtípusokat. Ezek leíró címkék, nem önálló
-törlési felhatalmazások: töltelékszót, csendet vagy félmondatot ebben a lépésben
-csak akkor hagyhatsz ki, ha az igazolt újramondási tartomány része.
-A beszédhiány nem ismétlés; B-rollt vagy animációt ne törölj szöveghiány miatt.
+törlési felhatalmazások. Igazolt újramondás részeként a töltelékszó,
+félmondat és csend is kihagyható. A megerősített csendet önállóan is jelöld
+kivágandónak a beszédre szánt anyagban, a felvétel elején is. A jegyzékben
+megadott forrásidőket használd, és a döntést a megtartási határokkal add át
+a review timeline-nak. A teljes B-roll tartománya kerüljön a `retained_ranges`
+listába a képével és a hozzá tartozó eredeti hanggal együtt, szinkronban.
 
 ## Felvételi parancsok és közös megtartási tartományok
 
@@ -143,7 +147,7 @@ A jegyzékben rögzített, ellenőrzött felhasználói azonosítójavítást ve
 figyelembe; a `cue` eredeti szövegét és időhatárait őrizd meg.
 A parancsokat az ismétléskeresésnél ne tekintsd narrációnak.
 
-Az érvényes parancs teljes blokkját, mindkét varázsszóval együtt, jelöld
+Beszédre szánt anyagban az érvényes parancs teljes blokkját, mindkét varázsszóval együtt, jelöld
 kihagyásra. Rögzítsd a parancs típusát, eredeti szövegét, `recording_id` és
 `source_id` értékét, forrásidő-határait és a felismerés alapját. A hibaparancs
 kihagyása külön döntés a hibás beszéd kivágásától: utóbbihoz továbbra is
@@ -157,11 +161,17 @@ találgass és ne tervezz automatikus kivágást: az érintett csoport teljes
 felvételei maradjanak meg, `manual_review_required: true` jelzéssel és az
 `unresolved` listában rögzített indokkal, a közös problémánapló szerint.
 
-Az ismétlésekre és parancsokra vonatkozó igazolt döntéseket forrásonként
+Az ismétlésekre, parancsokra és megerősített csendre vonatkozó döntéseket forrásonként
 egyesítsd, az átfedéseket kezeld, és ezek alapján képezd a közös, rendezett
 `retained_ranges` listát. Az egyedi beszéd és a megőrzendő képi anyag maradjon
-meg. A kézi review-ra jelölt csoport teljes forrástartományait őrizd meg,
-parancsokkal együtt.
+meg. Ha a bizonytalanság csak egy csatlakozást érint, az igazolt döntéseket
+a többi tartományra alkalmazd. Ha a teljes csoport bizonytalan, őrizd meg
+a teljes forrástartományait a parancsokkal együtt.
+
+A Full Takes review timeline a teljes forrásanyagot mutatja. A tervezett
+kivágást a `retained_ranges` alapján elhelyezett `KEEP IN` / `KEEP OUT`
+határok mutatják, a bizonytalan csatlakozást `REVIEW START` / `REVIEW END`
+pár jelöli. A kézi ellenőrzés és vágás az elkészült review timeline-on kezdődik.
 
 ## Hiányzó felvételrészek ellenőrzése
 
@@ -312,11 +322,11 @@ A terv sémája `1.1`, kötelező mezői:
   szövege, `recording_id`, `source_id`, a teljes blokk forrásidő-határai és a
   felismerés alapja. Ehhez nem szükséges helyettesítő újramondás.
 - Minden csoportban `retained_ranges`: a végeredményben megmaradó forrás-
-  tartományok rendezett listája, mindkét döntéstípust együtt alkalmazva. Minden elem tartalmazza a `recording_id`,
+  tartományok rendezett listája, az igazolt döntéseket együtt alkalmazva. Minden elem tartalmazza a `recording_id`,
   `source_id`, `source_start` és `source_end` mezőket; a beszédnél az eredeti
   szóhivatkozásokat is. Az időhatárok forrásmásodpercben, félig nyílt
   `[source_start, source_end)` tartományok. Megőrzendő képi anyagnál a jegyzék
-  szerinti forrástartományt használd. Kézi vágásra jelölt csoportnál minden
+  szerinti forrástartományt használd. Teljes csoportot érintő bizonytalanságnál minden
   érintett felvétel teljes `source_start`–`source_end` tartománya szerepeljen,
   törlési döntés nélkül. Üres lista csak ellenőrzött, teljesen kihagyott résznél
   érvényes; ezt a csoport döntése és az `approved_omissions` bejegyzése
