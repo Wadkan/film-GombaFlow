@@ -64,8 +64,9 @@ hibajelzés egyértelművé teszi, hogy a közvetlenül előtte lévő beszédr�
 ahonnan az újramondás átveszi a tartalmat. Ettől a szótól jelöld kihagyásra
 a lecserélt beszédet a hibajelzésig. A korábbi egyedi mondatkezdetet és a
 javított újramondást tartsd meg. Jelentésbeli egyezés elegendő.
-Ha csak a csatlakozás helye bizonytalan, az érintett tartományt őrizd meg és
-rögzítsd az `unresolved` listában a Full Takes review timeline jelöléséhez.
+Ha a hibás beszéd kezdete bizonytalan, ne adj meg hozzá vágási határt.
+Őrizd meg az anyagot, és naplózd az `unresolved` listában és a `problems.md`-ben.
+Sárga review jelöléshez csak igazolt tartományt adj át.
 Ha az újramondás sem azonosítható, őrizd meg az érintett változatokat.
 
 ## Ellenőrzés és felvételi sorrend
@@ -206,9 +207,8 @@ Az ismétlések tervezése után, a terv végrehajthatónak jelölése előtt:
    bizonytalan felvételt.
 4. Gyűjtsd össze az összes hiányt a terv `missing_items` listájába ugyanazzal
    a hiányazonosítóval, `awaiting_decision` állapottal, majd a terv legyen
-   `needs_review`. A chatben
-   csak a hibafájl útvonalát és a döntés szükségességét jelezd; a hiányzó ID-kat
-   és szövegeket kizárólag a fájlban listázd. A felhasználó részenként dönthet
+   `needs_review`. A chatben csak a hibafájl útvonalát jelezd. Döntést az
+   elkészült Full Takes után kérj. A felhasználó részenként dönthet
    a kihagyásról vagy új felvételről; az átirat hibáját is jelezheti.
 5. A felhasználó döntését a problémánapló szabályai szerint rögzítsd. Kihagyás
    esetén a terv `approved_omissions` listájában őrizd meg a hiányazonosítót,
@@ -266,8 +266,8 @@ egyértelműen, jelezd az akadályt, ne találgass. Hiány nélkül a lista üre
   mentsd el.
 - A már kész pótfelvételeket a többi hiány döntésétől függetlenül dolgozd fel.
   Ha ezután egy hiány még döntésre vagy felvételre vár, mentsd a tervet
-  `needs_review` állapottal, a chatben csak a problémalista útvonalát és a
-  szükséges következő lépést jelezd, majd várj.
+  `needs_review` állapottal. A megmaradt hiány a Full Takes előtt
+  naplózandó, az elkészült Full Takes után a meglévő döntési kapu érvényes.
 - A pótfelvétel elkészült átírásának manifestútvonalát és a `transcribed`
   állapotot mentsd el. Ha
   a feldolgozás megszakadt, a már létező manifestet csak akkor használd újra,
@@ -357,16 +357,15 @@ Csak visszaolvasott és ellenőrzött, minden csoportban `validated` állapotú 
 jelölhető `ready_for_execution` állapotúnak, ha `coverage_checked` értéke is
 `true`. Az `unresolved` tartalmazhat kézi
 vágásra jelölt csoportot, ha annak minden változata ellenőrzötten megmarad.
-Felhasználói döntésre váró hiányzó felvételrész, illetve hiányzó vagy érvénytelen
-forrásadat viszont továbbra is blokkolja a tervet.
+Felhasználói döntésre váró hiánynál a terv maradjon `needs_review`, és a
+[Full Takes kapuja](WORKFLOW.md#full-takes-bemeneti-kapu) szerint add tovább.
+Hiányzó vagy érvénytelen hivatkozott forrásadat blokkol.
 
 A 2b. lépés gépi kimenete a teljes `retake_plan.json`; bizonytalanságnál a
 hivatkozott közös problémánapló is készül. Resolve-hoz ne nyúlj.
-Az elemzés végén jelezd a kézi vágás szükségességét és a problémánapló
-útvonalát; az ismétlésvágási bizonytalanság tisztázására ne várj. Döntésre
-váró hiányzó felvételrésznél, illetve hiányzó vagy érvénytelen forrásadatnál a
-terv maradjon `needs_review`; ne add át végrehajthatóként.
-Csak `ready_for_execution` tervet tekints végrehajthatónak.
+Az elemzés végén jelezd, ha a problémánapló tartalmaz a Full Takes-en
+ellenőrizendő tételt, és add meg a napló útvonalát.
+Rough Cut csak `ready_for_execution` tervből készülhet.
 Mondd ki, hogy a Resolve-projekt és timeline még nem készült el, a terv pedig
 nincs végrehajtva. A részletes vágási döntések review-ja az első timeline
 markerein történik.

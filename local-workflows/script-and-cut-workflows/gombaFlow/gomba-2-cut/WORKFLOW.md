@@ -23,10 +23,8 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    Az index és az átiratok alapján ID-nként elkészíti és ellenőrzi a teljes
    `retake_plan.json` tervet. A `retained_ranges` adatokat a 3c a review
    timeline piros markerpárjainak előkészítéséhez használja. A hiányzó felvételrészeket a script saját
-   `problems.md` fájljába írja, és a felhasználói döntésig nem adja át a tervet
-   végrehajtásra. Resolve-projektet és timeline-t nem nyit meg.
-   A kész terv után a futás mindig megáll. A felhasználó átnézi az eredményt,
-   majd külön indítja a következő szakaszt.
+   `problems.md` fájljába írja. Resolve-projektet és timeline-t nem nyit meg.
+   A kész terv után az előkészítés megáll.
 5. A terv elkészülte és külön felhasználói indítás után [timeline-összeállítás](3-timeline-assembly.md):
    ekkor választ vagy hoz létre Resolve-projektet, majd sorrendben végrehajtja
    a [3a médiaimportot](3a-resolve-media-import.md), a
@@ -126,9 +124,15 @@ szakaszt. Az index által előírt belső hívások a meghívott feladathoz tart
   A módosított naplót mentés után olvasd vissza; naplózandó probléma nélkül
   ne követeld a napló létezését.
 - Megállapított hiány esetén az összes ellenőrizhető érintett részt vizsgáld
-  végig, a hiányokat naplózd, majd az adott skill kapuja szerint várj a
-  felhasználó döntésére. A nem blokkoló bizonytalanság ne váljon automatikusan
+  végig és naplózd a hiányokat. A Full Takes elkészülte után az adott skill
+  kapuja szerint várj a felhasználó döntésére. A nem blokkoló bizonytalanság ne váljon automatikusan
   megállapított hiánnyá.
+- A Full Takes elkészültéig a tartalmi hiány és bizonytalanság önmagában
+  nem megállási ok. A rendelkezésre álló anyagot őrizd meg, a problémát
+  naplózd. Csak igazolt határokra tegyél markert. Tartalmi döntést a
+  Full Takes elkészülte után kérj. Akkor állj meg előbb, ha a cél vagy a
+  biztonságos összeállítás és mentés valamely előfeltétele nem igazolható.
+  A külön indítandó szakaszok határai érvényesek.
 - Technikai, környezeti, olvasási vagy mentési hibánál azonnal szakítsd meg
   a feldolgozást. Ha biztonságosan lehetséges, mentsd a részállapotot és a
   hiba részleteit a skill kimenetébe vagy a problémanaplóba; ne indíts újabb
@@ -220,11 +224,11 @@ A feladat részletei, sémái és ellenőrzései a megfelelő skillben vannak.
   `<felvételmappa>/transcripts/problems.md` használható.
 - `COMPLETED`: a jegyzékek elkészültek és ellenőrzöttek.
 - `COMPLETED_WITH_ISSUES`: a továbbvihető bizonytalanság dokumentált.
-- `BLOCKED`: sérült bemenet, szükséges pontosítás vagy azonosítójavítás vár.
+- `BLOCKED`: sérült bemenet, vagy a szükséges pontosítás nélkül nem állapítható
+  meg a cél, illetve nem menthető ellenőrzött jegyzék.
 
-Továbbvihető probléma csak a szükséges téma- és script-hozzárendelések
-egyértelműsége mellett engedélyezett. A további végrehajtáshoz szükséges
-azonosítatlan vagy `needs_review` rekord nem jelent kész hozzárendelést.
+A cél egyértelműsége mellett az azonosítatlan vagy `needs_review` rekordot
+őrizd meg hozzárendelés nélkül a Full Takes számára.
 
 ### 2a-script-selection
 
@@ -245,10 +249,20 @@ azonosítatlan vagy `needs_review` rekord nem jelent kész hozzárendelést.
 - Kimenet: `<scriptmappa>/retake_plan.json` és szükség esetén
   `<scriptmappa>/problems.md`.
 - `COMPLETED`: a teljes, visszaellenőrzött terv végrehajtható.
-- `COMPLETED_WITH_ISSUES`: végrehajtható terv, dokumentált és teljesen megőrzött
-  bizonytalan anyaggal.
-- `BLOCKED`: hiányzó felvételről döntés vagy pótfelvétel vár, illetve érvénytelen
-  forrás vagy más végrehajtási akadály áll fenn.
+- `COMPLETED_WITH_ISSUES`: a Full Takes-hez használható terv, dokumentált
+  hiánnyal vagy teljesen megőrzött bizonytalan anyaggal.
+- `BLOCKED`: érvénytelen forrás vagy más akadály miatt a terv a Full Takes-hez
+  sem használható.
+
+### Full Takes bemeneti kapu
+
+A 3. és 3c. lépés elfogadja az ellenőrzött, egyező script- és
+jegyzéklenyomatú, `1.1` sémájú, `coverage_checked: true` tervet
+`ready_for_execution` állapotban, vagy `needs_review` állapotban, ha csak
+naplózott tartalmi hiány vagy bizonytalanság maradt. Legalább egy ellenőrzött
+forrás szükséges. Függő mentési tranzakció vagy érvénytelen forráshivatkozás
+blokkol. A `needs_review` terv alapján csak Full Takes építhető. A 3e előtt
+a 2b-ben rögzített hiányokat a meglévő folytatási szabály szerint kell rendezni.
 
 ### 3-timeline-assembly
 

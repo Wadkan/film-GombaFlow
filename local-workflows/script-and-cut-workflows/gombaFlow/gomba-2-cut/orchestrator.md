@@ -37,14 +37,14 @@ Egy futás egy szakaszt végez, a végén visszaadja a vezérlést a usernek.
 - Az 1–4. számozott lépést végzi. A [2a. lépés](2a-script-selection.md)
   hívása előtt alkalmazza a workflow [scriptválasztási kapuját](WORKFLOW.md#scriptválasztási-kapu).
 - Kész terv után mindig teljes megállás (`plan_review`). Röviden jelezd a
-  `retake_plan.json` útvonalát, a terv átnézését és azt, hogy a folytatáshoz
+  `retake_plan.json` útvonalát és azt, hogy a Full Takes elkészítéséhez
   külön a `review` szakaszt vagy a timeline-összeállítást kell indítani.
   Resolve-projekt ekkor még nem készül, és a terv nincs végrehajtva.
 
 ### Review timeline — `review`
 
 - Bemenet az egyértelmű scriptmappa vagy `cut_workflow_state.json`, valamint
-  a terv átnézése utáni külön userindítás. A terv megléte nem indítás.
+  külön userindítás a terv elkészülte után. A terv megléte nem indítás.
 - Az 5. számozott workflow-lépés teljes receptjét hajtja végre.
 - A timeline elkészülte után teljes megállás (`timeline_review`). A user
   Resolve-ban nézze át a timeline-t és módosítsa a markereket, ha szükséges.

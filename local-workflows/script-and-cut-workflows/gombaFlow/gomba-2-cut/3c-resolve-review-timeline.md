@@ -17,8 +17,8 @@ A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 
 ## Bemenet
 
-A kiválasztott `recording_index.json`, az `1.1` sémájú, `coverage_checked: true`
-és `ready_for_execution` állapotú `retake_plan.json`, valamint a [médiaregiszter](3b-resolve-media-registry.md)
+A kiválasztott `recording_index.json`, a [Full Takes bemeneti kapuján](WORKFLOW.md#full-takes-bemeneti-kapu)
+átengedett `retake_plan.json`, valamint a [médiaregiszter](3b-resolve-media-registry.md)
 `review_timeline_resolve_media_registry.json` kimenete. A projektet és a forrásokat a
 regiszter Resolve-azonosítóival használd; ne importálj újra médiát.
 Ellenőrizd a terv script- és jegyzéklenyomatát, a `topic_id` és a nyitott
@@ -120,12 +120,13 @@ ne markerezz újra semmit. Új timeline teljes összeállításánál e mező `n
    `recording_id`; `script_id` csak akkor szerepeljen, ha a jegyzékben nem
    `null`. Az ismeretlen scriptmetaadatot ne találd ki.
 4. A forrástartományon belüli azonosítatlan anyagot és bizonytalanságot őrizd
-   meg teljesen, és a [markerindex](davinci_marker_index.md) szerinti sárga
-   review markerpárral jelöld. Ha egy rekordhoz hiányzik érvényes megtartási
+   meg teljesen, és igazolt határoknál a [markerindex](davinci_marker_index.md)
+   szerinti sárga review markerpárral jelöld. Ha egy rekordhoz hiányzik érvényes megtartási
    vagy kihagyási döntés, ne következtess törlésre: az érintett logikai
-   tartomány maradjon bent, kapjon review jelölést, és a bizonytalanságot a
+   tartomány maradjon bent. A bizonytalanságot a
    [közös problémanapló](../PROBLEM_LOG.md) szerint rögzítsd a script
-   `problems.md` fájljába a review timeline nevével és markerhelyeivel.
+   `problems.md` fájljába a review timeline nevével és a megállapítható
+   markerhelyekkel. Bizonytalan markerhatárnál csak naplózd a tételt.
    Eltérő vagy átfedő döntésnél a review jelölés élvez elsőbbséget az
    érintett tartományon; az azon kívüli, nem ütköző jelöléseket tartsd meg.
 5. Olvasd vissza minden fizikai videoklip teljes forrástartományát, kapcsolt

@@ -100,13 +100,13 @@ A néma felvétel nem hibás vagy törlendő bemenet.
 6. A felhasználói hozzárendeléseket ellenőrizd a scripthez, és ugyanebbe a
    jegyzékbe vedd fel, a szó szerinti leírást és annak eredetét megőrizve.
    Például az „API-kulcs bekötéséhez B-roll” leírást a megfelelő script-részhez
-   rendeld. A usertől ne kérj ID-t. Hiányzó vagy többértelmű egyezésnél tartalmi
-   pontosítást kérj, és a válaszig `needs_review` maradjon a rekord.
+   rendeld. A usertől ne kérj ID-t. Hiányzó vagy többértelmű egyezésnél a
+   rekord a tartalmi pontosításig maradjon `needs_review`.
 
 Hiányzó varázsszópár, ismeretlen parancs vagy bizonytalan határ esetén az
 érintett tartományt őrizd meg `needs_review` státusszal, automatikus vágási
 utasítás nélkül. Kézi hozzárendelés és bemondás ütközését ne döntsd el önállóan.
-Egymást átfedő hozzárendeléseknél kérj pontosítást.
+Egymást átfedő hozzárendeléseket is jelölj pontosításra.
 
 ## Hibás azonosítók javítása
 
@@ -128,15 +128,16 @@ felvétel teljes útvonalát, az időponthoz a bemondás forráson belüli kezde
 a tételt a `master_transcript.json` melletti `problems.md` fájl ugyanilyen
 szakaszába írd, a meglévő tartalom megőrzésével. A `Javított` mezőben kérd a
 témaazonosítót és a script-ID-t is; a registry alapján ellenőrizd mindkettőt.
-Ne válassz találomra scriptet vagy scriptnaplót. A felhasználónak add meg a napló útvonalát, és
-kérd, hogy a `Javított` mezőt töltse ki. Az érintett rekord maradjon
-`needs_review`, és a feldolgozást ne add tovább végrehajthatóként.
+Ne válassz találomra scriptet vagy scriptnaplót. Jelezd a napló útvonalát.
+Az érintett rekord maradjon `needs_review`. A `Javított` mező kitöltését
+akkor kérd a Full Takes előtt, ha nélküle a cél nem állapítható meg vagy
+nem menthető ellenőrzött jegyzék. Egyébként a Full Takes után kérd.
 
 Folytatáskor olvasd vissza az érintett script és a manifest melletti napló
 kitöltött mezőit. A manifest melletti javításból azonosítsd a scriptet a
 registry alapján, és őrizd meg a javítás forrására mutató hivatkozást. A javított azonosítót ellenőrizd
-az érintett scriptben; üres, érvénytelen vagy nem egyértelmű javításnál kérj
-pontosítást, és ne találgass. Az érvényes választ, a forrást és a felhasználói
+az érintett scriptben. Üres, érvénytelen vagy nem egyértelmű javításnál a fenti
+kapu szerint kérj pontosítást. Az érvényes választ, a forrást és a felhasználói
 eredetet őrizd meg a jegyzékben, a felismert eredeti bemondással és annak
 ellenőrzött időhatáraival együtt. A javítás kizárólag az azonosítót oldja fel;
 bizonytalan varázsszópárt vagy időhatárt nem igazol. A jegyzékben csak az érintett
@@ -226,11 +227,16 @@ forrásazonosság vagy a tervezett hash eltérésénél állj meg konkrét hibá
 
 ## Végső ellenőrzés
 
+A Full Takes előtti tartalmi bizonytalanságokra a workflow közös szabálya
+vonatkozik. Ha az ellenőrzött jegyzék a meghatározott célhoz menthető, a
+javítási tételt vedd fel a naplóba, és a felhasználói pontosítást halaszd a
+Full Takes elkészülte utánra.
+
 Ellenőrizd, hogy minden eredeti felvétel és hozzárendelt tartomány
 visszakereshető a jegyzékben, beleértve a néma és csak bemondásos részeket is.
 A scriptből hiányzó felvételeket és beszédrészeket a
 [vágási terv](2b-retake-plan.md) ellenőrzi és naplózza.
 
-Csak a pontosítást igénylő tételeket kérdezd meg;
+Az itt megadott időpontban csak a pontosítást igénylő tételeket kérdezd meg;
 a sikeresen azonosított részeket ne sorold fel. Bizonytalan részeknél jelezd
 a függőben lévő azonosítást, ne állítsd, hogy minden rész feldolgozható.

@@ -25,7 +25,7 @@ sikere még nem jelenti a review timeline elkészültét.
 
 ## Cél és bemenet
 
-Ellenőrzött, végrehajtható vágási tervből dolgozz.
+Ellenőrzött, a Full Takes kapuján átengedett tervből dolgozz.
 Olvasd be a scriptmappa `cut_workflow_state.json` fájlját, és ellenőrizd
 a scriptválasztást a workflow szerint.
 
@@ -55,10 +55,8 @@ az ehhez tartozó munkaváltozatok neve:
 
 ## Végrehajtás előtti ellenőrzések
 
-Mielőtt Resolve-projektet nyitnál vagy hoznál létre, ellenőrizd, hogy a `retake_plan.json`
-`1.1` sémájú, `ready_for_execution` állapotú, `coverage_checked` értéke `true`,
-és a benne lévő script/index hash-ek egyeznek. Korábbi vagy hiányellenőrzés
-nélküli tervet ne fogadj el; azt az aktuális tervlépésben kell újra elkészíteni.
+Mielőtt Resolve-projektet nyitnál vagy hoznál létre, ellenőrizd a
+[Full Takes bemeneti kapuját](WORKFLOW.md#full-takes-bemeneti-kapu).
 Ellenőrizd a scriptet, indexet, forrásokat és tartományokat is; bármely hibánál
 állj meg Resolve-művelet nélkül.
 
@@ -69,9 +67,8 @@ Ellenőrizd a scriptet, indexet, forrásokat és tartományokat is; bármely hib
   egyetlen cél-timeline-ra mutat. Eltérésnél állj meg konkrét hibával.
 - A források léteznek, tartalomazonosítójuk változatlan; minden megtartandó
   tartomány nem üres és a forrás időtartamán belül van.
-- A jegyzékben ne maradjon `needs_review` rekord. Ilyenkor a 2. lépésben kell
-  tisztázni a hozzárendelést, és utána újraindítani ezt a lépést; a bizonytalan
-  felvételt ne minősítsd hiányzónak és ne hagyd el csendben.
+- A `needs_review` rekord forrását őrizd meg hozzárendelés nélkül, és a
+  bizonytalanságot naplózd.
 
 Miután az összes fájl- és tervellenőrzés sikeres, olvasd ki a Resolve
 projektlistáját, és keresd meg a kiválasztott `topic_id` nevű projektet.
@@ -248,8 +245,8 @@ megduplázhatná őket.
 
 Váratlan, a tervben nem jóváhagyott hiánynál a közös problémánapló szerint a
 script saját `problems.md` fájljába írd az érintett részeket, és a felhasználónak
-csak a napló útvonalát és az akadályt jelezd; a hiányzó részeket ne listázd a
-chatben. Ilyenkor a kimenet `incomplete`, és a tervet újra kell ellenőrizni.
+csak a napló útvonalát jelezd. Ha a rendelkezésre álló források ellenőrzötten
+bekerültek, az összeállítás tartalmi hiány mellett is kész.
 Ha nincs ilyen hiány, röviden jelezd, hogy az összeállítás kész. A jóváhagyott
 kihagyásokat ne jelentsd újra hiányként. Végrehajtási akadályt hibaként jelezz,
 ne hiányzó felvételként.
