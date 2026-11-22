@@ -1,9 +1,9 @@
 ---
-name: 0-preflight
-description: "Fájlalapú vágás előtti kapu: egy felvételi jegyzék és a hozzá tartozó script kiválasztása."
+name: 2a-script-selection
+description: "A felvételi jegyzék és a hozzá tartozó script kiválasztása, ellenőrzése és mentése."
 ---
 
-# Vágás előtti preflight
+# 2a. Scriptválasztás
 
 ## Saját végrehajtási sorrend
 

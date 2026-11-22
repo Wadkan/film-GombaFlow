@@ -37,8 +37,8 @@ szakaszát a teszt felvételmappájával. A belső skilleket ne indítsd el mell
 
 - [ ] **[1-transcription](gomba-2-cut/1-transcription.md):** a `transcripts/master_transcript.json` minden videót felsorol; a szóidőbélyeges átiratban az azonosítók, hibajelzés és javított mondat visszakereshetők.
 - [ ] **[2-recording-index](gomba-2-cut/2-recording-index.md):** a megfelelő scriptmappában készül `recording_index.json`; minden szükséges script-részhez a helyes forrás és kliptípus tartozik, az újramondás sem vész el.
-- [ ] **[0-preflight](gomba-2-cut/0-preflight.md):** a `cut_workflow_state.json` a teszt scriptjére és jegyzékére mutat; Resolve-projektet még nem választ vagy hoz létre.
-- [ ] **[2a-retake-plan](gomba-2-cut/2a-retake-plan.md):** a `retake_plan.json` `1.1` sémájú, teljes lefedettségű és `ready_for_execution`; a hibás mondat helyett a javítottat tartaná meg. A B-roll képe és hangja megmarad.
+- [ ] **[2a-script-selection](gomba-2-cut/2a-script-selection.md)** A `cut_workflow_state.json` a teszt scriptjére és jegyzékére mutat. A Resolve-projekt kiválasztása vagy létrehozása csak a timeline-összeállításkor történik.
+- [ ] **[2b-retake-plan](gomba-2-cut/2b-retake-plan.md)** A `retake_plan.json` `1.1` sémájú, teljes lefedettségű és `ready_for_execution` állapotú. A terv a javított mondatot tartja meg. A B-roll képe és hangja megmarad.
 - [ ] **Orchestrator-kapu:** kész terv után `plan_review` megállás történik. Nézd át a tervet; Resolve-timeline még nincs, a `review` szakasz csak külön indításodra indul.
 
 ## 4. Resolve — első, teljes review timeline

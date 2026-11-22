@@ -1,9 +1,9 @@
 ---
-name: 2a-retake-plan
+name: 2b-retake-plan
 description: "Az ismétlések és felvételi parancsok közös kivágási terve a szóidőbélyeges átiratok és az elfogadott script alapján."
 ---
 
-# 2a. Ismétlések és felvételi parancsok kivágási terve
+# 2b. Ismétlések és felvételi parancsok kivágási terve
 
 ## Saját végrehajtási sorrend
 
@@ -343,7 +343,7 @@ vágásra jelölt csoportot, ha annak minden változata ellenőrzötten megmarad
 Felhasználói döntésre váró hiányzó felvételrész, illetve hiányzó vagy érvénytelen
 forrásadat viszont továbbra is blokkolja a tervet.
 
-A 2a. lépés gépi kimenete a teljes `retake_plan.json`; bizonytalanságnál a
+A 2b. lépés gépi kimenete a teljes `retake_plan.json`; bizonytalanságnál a
 hivatkozott közös problémánapló is készül. Resolve-hoz ne nyúlj.
 Az elemzés végén jelezd a kézi vágás szükségességét és a problémánapló
 útvonalát; az ismétlésvágási bizonytalanság tisztázására ne várj. Döntésre

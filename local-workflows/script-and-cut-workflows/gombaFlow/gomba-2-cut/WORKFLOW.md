@@ -14,10 +14,12 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
 2. [Felvételek azonosítása és jegyzék](2-recording-index.md): az átírt
    anyagot témaazonosító szerint csoportosítja, és minden csoporthoz az ahhoz
    tartozó meglévő scriptmappába ír egy `recording_index.json` fájlt.
-3. [Vágás előtti preflight](0-preflight.md): egy indexnél azzal folytat;
-   többnél megkérdezi, melyikkel dolgozzon. Ez csak fájlalapú scriptválasztás;
-   Resolve-projektet nem választ és nem hoz létre.
-4. [Ismétlések kivágási terve](2a-retake-plan.md).
+3. [2a. Scriptválasztás](2a-script-selection.md). Egy választható indexnél
+   a scriptválasztási kapu automatikusan továbblép. Több jelöltnél a hívó
+   megkérdezi a felhasználót, melyikkel dolgozzon. A 2a. lépés ellenőrzi
+   és a scriptmappába menti a választást. Resolve-projektet nem választ és
+   nem hoz létre.
+4. [2b. Ismétlések kivágási terve](2b-retake-plan.md).
    Az index és az átiratok alapján ID-nként elkészíti és ellenőrzi a teljes
    `retake_plan.json` tervet. A `retained_ranges` adatokat a 3c a review
    timeline piros markerpárjainak előkészítéséhez használja. A hiányzó felvételrészeket a script saját
@@ -40,8 +42,8 @@ script szerinti timeline összeállítása és az ismétlések kivágása.
    készíti el a második timeline-t és a `rough_cut_timeline_cleanup.json` fájlt.
    A mentés utáni Resolve-módosítások nem kerülnek automatikusan a pillanatképbe.
 
-Hibás azonosító javítása után is mindig a preflight következik. Pótfelvételnél
-az átírás és a jegyzékbővítés a mentett terv folytatásához tartozik.
+Hibás azonosító javítása után is mindig a 2a. lépés következik.
+Pótfelvételnél az átírás és a jegyzékbővítés a mentett terv folytatásához tartozik.
 Az eredeti médiafájlokat a lépések nem mozgatják, másolják vagy módosítják.
 
 ### Összetett és közvetlen skillhívások
@@ -53,9 +55,9 @@ Az összetett skillek belső hívási sorrendje:
 - A 6–7. számozott lépésben a szülő `prepare` fázisa, a belső markerkiolvasás,
   majd a szülő `build` fázisa következik. A kiolvasás az aktuális hívásban
   történik, korábbi pillanatkép nem helyettesíti.
-- A tervlépés mentett pótfelvételi folytatásában: átírás az új mappából →
-  jegyzékkészítő hozzáfűzés → preflight → tervellenőrzés, ugyanahhoz a
-  kiválasztott scripthez.
+- A tervlépés mentett pótfelvételi folytatásában az új mappa átírása után
+  a jegyzékbővítés, a 2a. lépés és a tervellenőrzés következik, ugyanahhoz
+  a kiválasztott scripthez.
 
 Ez a sorrend az orchestrált és a közvetlen skillhívásokra egyaránt kötelező.
 A közvetlenül indított összetett skill hívója ugyanennek az indexnek
@@ -220,7 +222,7 @@ Továbbvihető probléma csak a szükséges téma- és script-hozzárendelések
 egyértelműsége mellett engedélyezett. A további végrehajtáshoz szükséges
 azonosítatlan vagy `needs_review` rekord nem jelent kész hozzárendelést.
 
-### 0-preflight
+### 2a-script-selection
 
 - Bemenet: az érintett `<scriptmappa>/recording_index.json` és a benne
   hivatkozott `<scriptmappa>/3-script.md` fájlok. Orchestrált hívásnál a lent
@@ -230,7 +232,7 @@ azonosítatlan vagy `needs_review` rekord nem jelent kész hozzárendelést.
 - `COMPLETED_WITH_ISSUES`: csak dokumentált, továbbvihető probléma mellett.
 - `BLOCKED`: hiányzó vagy érvénytelen bemenet, illetve függő scriptválasztás.
 
-### 2a-retake-plan
+### 2b-retake-plan
 
 - Bemenet: `<scriptmappa>/cut_workflow_state.json`,
   `<scriptmappa>/recording_index.json`, `<scriptmappa>/3-script.md`
@@ -390,7 +392,7 @@ Az állapot sémája `1.0`, mezői:
   található. A többi skill változatlanul őrzi meg, nem értelmezi és nem írja.
   A fájl sémája `1.0` marad; közvetlen skillhíváshoz ez a mező nem kötelező.
 
-A preflight a választási mezőket, a projektválasztás a `resolve_project`, az
+A 2a. lépés a választási mezőket, a projektválasztás a `resolve_project`, az
 import a `media_import`, az orchestrator az `orchestration` mezőt írja;
 más mezőt őrizzen meg. Meglévő állapotnál
 ellenőrizd a sémát, a scriptmappát, témát, útvonalakat és lenyomatokat. Váratlan
@@ -425,16 +427,17 @@ téma/script/manifest kapcsolat ellentmondása blokkol.
 - Megadott cél-scriptnél annak az indexét ellenőrizze, másikra ne váltson.
 - Egyetlen jelöltnél automatikusan azt válassza. Többnél a témaazonosító és
   scriptcím alapján kérdezze meg, melyikkel dolgozzon, majd várjon a válaszra.
-- A választás után egyetlen abszolút indexútvonalat adjon a preflightnak.
+- A választás után egyetlen abszolút indexútvonalat adjon a
+  `2a-script-selection` skillnek.
   Ezzel a kimeneti állapotfájl helye már a hívás előtt egyértelmű; a skill
   státuszválaszában nem kell útvonalat vagy választási adatot visszaadni.
-- Közvetlen preflight-hívásnál ugyanezt a kaput a skill saját felhasználói
-  kontextusában kell alkalmazni. Konkrét, már kiválasztott indexnél ne
-  kérdezzen újra. Az index és a script ellenőrzése minden esetben kötelező.
+- A `2a-script-selection` közvetlen hívásakor ugyanezt a kaput a skill saját
+  felhasználói kontextusában kell alkalmazni. Konkrét, már kiválasztott indexnél
+  ne kérdezzen újra. Az index és a script ellenőrzése minden esetben kötelező.
 
 Korábbi állapotfájl jelenléte vagy módosítási ideje nem választási bizonyíték.
-A preflight kizárólag a kiválasztott scriptmappában menti az állapotot;
-a hívó sikeres státusz után onnan olvassa vissza a választást.
+A 2a. lépés kizárólag a kiválasztott scriptmappában menti az állapotot.
+A hívó sikeres státusz után onnan olvassa vissza a választást.
 
 ### Pótfelvétel mentése adatátadás nélkül
 
@@ -465,8 +468,8 @@ csak mindkét fájl sikeres visszaellenőrzése után töröld. Már hozzáadott
 Meglévő állapothoz tartozó jegyzék javításakor a következő szabályt alkalmazd.
 Csak az állapot `recording_index_path` mezőjével azonos jegyzék hash-ét írd át;
 más script javítása nem változtatja meg az aktuális választást vagy annak hash-ét.
-Az első preflight előtt, még állapotfájl nélkül javított jegyzék hash-ét a
-preflight az ellenőrzött aktuális tartalomból rögzíti.
+A 2a. lépés első futása előtt, még állapotfájl nélkül javított jegyzék hash-ét
+a skill az ellenőrzött aktuális tartalomból rögzíti.
 
 1. Olvasd vissza a user kitöltött `problems.md` javítását; ellenőrizd a régi
    jegyzék hash-ét az állapothoz és a script változatlanságát. Csak az engedélyezett
@@ -477,8 +480,8 @@ preflight az ellenőrzött aktuális tartalomból rögzíti.
 2. Mentsd és olvasd vissza a javított jegyzéket; kizárólag a tervezett új hash
    fogadható el. Frissítsd az állapot `recording_index_sha256` mezőjét, és jelöld
    a javítást `committed` állapotúnak. Más választási vagy projektmezőt ne írj át.
-3. A következő preflight ezt az egyező, naplóval igazolt új hash-t fogadja el;
-   váratlan eltérés továbbra is blokkol. A tervkészítés a `committed` bejegyzésből
+3. A 2a. lépés következő futása az egyező, naplóval igazolt új hash-t fogadja el.
+   Váratlan eltérés továbbra is blokkol. A tervkészítés a `committed` bejegyzésből
    ismeri fel a jogos jegyzékváltozást: meglévő tervnél `needs_review` és
    `coverage_checked: false` állapotot ment, újraelemzi az érintett csoportokat,
    majd újraellenőrzi a teljes lefedettséget. Csak ezután vezeti át a terv hash-ét

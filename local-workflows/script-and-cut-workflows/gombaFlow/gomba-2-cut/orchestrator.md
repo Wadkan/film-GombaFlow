@@ -34,8 +34,8 @@ Egy futás egy szakaszt végez, a végén visszaadja a vezérlést a usernek.
 
 - Bemenet új feldolgozásnál a felvételmappa. Folytatásnál konkrét manifest,
   jegyzék vagy scriptmappa is megadható a lent rögzített folytatási szabállyal.
-- Az 1–4. számozott lépést végzi. A scriptválasztási kaput a preflight
-  hívása előtt alkalmazza a workflow „Scriptválasztási kapu” része szerint.
+- Az 1–4. számozott lépést végzi. A [2a. lépés](2a-script-selection.md)
+  hívása előtt alkalmazza a workflow [scriptválasztási kapuját](WORKFLOW.md#scriptválasztási-kapu).
 - Kész terv után mindig teljes megállás (`plan_review`). Röviden jelezd a
   `retake_plan.json` útvonalát, a terv átnézését és azt, hogy a folytatáshoz
   külön a `review` szakaszt vagy a timeline-összeállítást kell indítani.
@@ -120,7 +120,8 @@ mentik, a futásmutatót megőrzik. Az orchestrator ezért fázisonként vezérl
 összetett hívásokat; a közvetlen, teljes skillhívás ugyanazt a receptet követi,
 de nem állítja át egy korábbi orchestratorfutás mutatóját.
 
-Az első sikeres preflight előtt a futás helye csak az aktuális hívásban ismert.
+A 2a. lépés első sikeres futása előtt a futás helye csak az aktuális
+hívásban ismert.
 Ha a cél-scriptnek már van ellenőrzött állapotfájlja, az új szakasz elejétől
 mentsd a futásmutatót és az aktuális `input_paths` értékét is. A korábbi batch
 útvonalával ne írd felül egy megkezdett pótfelvételi menet bemenetét.
@@ -129,7 +130,8 @@ meg a futás, a user a manifesttel és szükség esetén a céllal indíthatja �
 a választást nem szabad régi chatből vagy állapotfájlok versenyeztetéséből kitalálni.
 Az addigi lépések összesített problémajelzését a hívó vigye tovább a
 `has_issues` kezdeti értékébe. Az első mentett futásmutatót csak a választási
-állapot sikeres visszaolvasása után hozza létre; a preflightot emiatt ne ismételje meg.
+állapot sikeres visszaolvasása után hozza létre. Emiatt a 2a. lépést ne
+ismételje meg.
 Utána minden lépés indítása előtt mentsd és olvasd vissza az aktuális
 `stage`, `step`, `last_status: null`, `stop_reason: null` állapotot, a szakasz
 `has_issues` értékének megőrzésével. Csak ezután hívd a végrehajtót. A válasz
@@ -169,8 +171,8 @@ Az alábbi Rough Cut-kivétel ilyenkor is érvényes.
   átiratszöveg olvasása nélkül válassz: függő userazonosításnál az átírási
   skill saját azonosítási folytatása, teljes eredménynél a jegyzékkészítés
   következik. A kész manifest önmagában nem igazolja az azonosítás lezárását.
-- Kész indexszel a scriptválasztási kapu és a preflight lehet a belépés;
-  meglévő tervhez is érvényes scriptválasztás szükséges. Jelzett
+- Kész indexszel a scriptválasztási kapu, majd a 2a. lépés lehet a belépés.
+  Meglévő tervhez is érvényes scriptválasztás szükséges. Jelzett
   azonosítójavításnál a workflow javítási útvonalát kövesd. A megadott kész
   bemenetet a fogadó skill ellenőrzi; meglévő átiratot vagy jegyzéket ne
   készíts újra automatikusan. Bizonytalan belépési pontnál kérj pontosítást.

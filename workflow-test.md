@@ -18,12 +18,12 @@
 - [ ] TODO A kézzel hozzárendelt és az azonosítatlan anyag is visszakereshető a témánkénti `recording_index.json` fájlban.
 - [ ] TODO A hibás azonosítót a `problems.md` naplózza. A jóváhagyott javítás vagy pótfelvétel bekerül a jegyzékbe.
 
-## [`0-preflight.md`](local-workflows/script-and-cut-workflows/gombaFlow/gomba-2-cut/0-preflight.md)
+## [`2a-script-selection.md`](local-workflows/script-and-cut-workflows/gombaFlow/gomba-2-cut/2a-script-selection.md)
 
 - [ ] TODO Ellenőrzi, hogy a jegyzék az aktuális scripthez tartozik. Több választható scriptnél döntést kér.
 - [ ] TODO A választott script és jegyzék bekerül a `cut_workflow_state.json` fájlba. A Resolve-projekt választása a timeline-összeállításkor történik.
 
-## [`2a-retake-plan.md`](local-workflows/script-and-cut-workflows/gombaFlow/gomba-2-cut/2a-retake-plan.md)
+## [`2b-retake-plan.md`](local-workflows/script-and-cut-workflows/gombaFlow/gomba-2-cut/2b-retake-plan.md)
 
 - [ ] TODO Felismeri a teljes és részleges újramondásokat. Az utolsó változatot és a korábbi egyedi szöveget tartja meg a tervben.
 - [ ] TODO Az azonosítóbemondást és a `HIBA újra` blokkot a varázsszavakkal együtt jelöli kivágásra. A hibás beszédhez igazolt újramondás kell.
