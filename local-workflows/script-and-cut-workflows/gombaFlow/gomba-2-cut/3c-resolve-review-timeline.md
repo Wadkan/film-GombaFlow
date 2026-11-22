@@ -27,9 +27,14 @@ Hibás vagy hiányzó bemenetnél jelezd a konkrét akadályt.
 
 A timeline-neveket a [timeline-összeállítás](3-timeline-assembly.md)
 `Timeline-nevek` része adja. A script egyetlen logikai céljához tartozó első,
-review timeline-t hozd létre. Meglévő, nem üres timeline-nál ne írj felül vagy
-duplikálj tartalmat; a workflow szerinti pótfelvételi hozzáfűzés kivételével
-állj meg és jelezd. A második timeline-t ne készítsd el.
+review timeline-t használd. Ha a megfelelő projektben már létezik a célnevű,
+üres timeline, használd újra; ne hozz létre másodikat. Meglévő, nem üres
+timeline-nál ne írj felül vagy duplikálj tartalmat; a workflow szerinti
+pótfelvételi hozzáfűzés kivételével állj meg és jelezd. Korábbi assembly
+újrafuttatásakor előbb kérj explicit userdöntést. Jóváhagyott újrafuttatásnál
+a cél timeline csak akkor használható újra, ha a Resolve-ból visszaolvasva
+üres; a régi assemblyből törölt klipet ne állítsd vissza. A második timeline-t
+ne készítsd el.
 
 ## Pótfelvételi hozzáfűzés
 
@@ -42,92 +47,94 @@ pótfelvételi manifestből származzanak. Eltérés vagy részleges korábbi m�
 nem kezelhető automatikus hozzáfűzésként.
 
 Ha van új rekord, az első timeline-módosítás előtt mentsd és olvasd vissza
-az assemblyt `incomplete` státusszal, a korábbi bejegyzések megőrzésével.
-Az új rekordok pontos listáját ugyanebben a mentésben rögzítsd a
-`last_append_recording_ids` mezőben a kimeneti szerződés szerint.
+az assemblyt `incomplete` státusszal, a korábbi fizikai klip- és logikai
+rekordkapcsolatok megőrzésével. Az új rekordok pontos listáját ugyanebben a
+mentésben rögzítsd a `last_append_recording_ids` mezőben a kimeneti szerződés
+szerint.
 Csak a sikeres visszaolvasás után kezdj hozzáfűzni. Megszakítás után ez az
 állapot kézi egyeztetést igényel; ne állítsd automatikusan `completed` értékre,
 és ne ismételd meg a hozzáfűzést.
 
-Csak az új rekordokat helyezd el, az aktuális timeline összes sávjának
-legutolsó klipvége után, egymás közt a lenti felvételi sorrendben. Ugyanazt a
-timeline-t és annak beállításait használd. A lenti elhelyezési, markerezési és
-visszaellenőrzési szabályokat ebben a módban csak az új klipekre alkalmazd.
-A korábbi klipekhez, kapcsolt hangokhoz és usermarkerekhez ne nyúlj; a user
-által törölt régi klipet az assembly alapján ne helyezd vissza.
+Az új logikai rekordokat a korábbi és új fizikai források alapján kezeld:
+ha az új rekord forrása már szerepel egy teljes timeline-klipben, csak a
+logikai leképezést és az új tartomány markereit add hozzá; ne helyezd be újra
+a teljes fájlt. Új fizikai forrásnál egy teljes klipet helyezz az aktuális
+sávok legutolsó klipvége után, és az ugyanabból a forrásból származó összes új
+rekordot ehhez az egy kliphez rendeld. Ugyanazt a timeline-t és beállításait
+használd. A korábbi klipekhez, hangokhoz és usermarkerekhez ne nyúlj, kivéve
+az új rekordhoz szükséges, nem ütköző markerek hozzáadását; a user által
+törölt régi klipet ne állítsd vissza.
 
-A visszaellenőrzött új elhelyezéseket fűzd a meglévő
-`review_timeline_assembly.json` `clips` listájához. Őrizd meg a korábbi
-bejegyzéseket mint az eredeti elhelyezések kapcsolatait; ezek nem írják felül
-a user azóta végzett timeline-módosításait. Frissítsd a jegyzéklenyomatot és
-a hiányösszesítést; csak a sikeres Resolve-mentés és minden új elhelyezés és
-marker visszaellenőrzése után mentsd és olvasd vissza `completed` státusszal
-az assemblyt. Ha nincs új
+A visszaellenőrzött új fizikai klipeket és logikai leképezéseket fűzd a
+`review_timeline_assembly.json` `clips` és `recordings` listájához. Őrizd meg
+a korábbi bejegyzéseket mint az eredeti elhelyezések kapcsolatait; ezek nem
+írják felül a user azóta végzett timeline-módosításait. Frissítsd a
+jegyzéklenyomatot és a hiányösszesítést; csak a sikeres Resolve-mentés és
+minden új klip, leképezés és marker visszaellenőrzése után mentsd és olvasd
+vissza `completed` státusszal az assemblyt. Ha nincs új
 rekord, a `last_append_recording_ids` legyen üres lista; ne helyezz el és
 ne markerezz újra semmit. Új timeline teljes összeállításánál e mező `null`.
 
 ## Teljes felvételek és markerek
 
-1. Felvételi sorrendben helyezd el az adott `topic_id` minden azonosított
-   felvételváltozatát: külön forrásoknál a média rögzítési ideje, ennek
-   hiányában a fájl létrehozási dátuma szerint; egy forráson belül a
-   forrásidő szerint. A jegyzék `source_start`–`source_end` tartományait
-   használd, az azonosítóbemondásokkal együtt. Ha egy forrás több témát
-   tartalmaz, csak a kiválasztott témához tartozó részeit helyezd el.
-   A felvételek eredeti képét és hangját szinkronban őrizd meg. A B-roll képe
-   és meglévő hangja a talking headtől külön video-, illetve hangsávra kerüljön;
-   a hangot ne némítsd vagy módosítsd. A külön sávokon is őrizd meg a teljes
-   timeline felvételi sorrendjét, és a tényleges sávokat olvasd vissza. A
-   videót és a hozzá tartozó összes meglévő hangklipet kapcsold össze a
-   Resolve-ban, majd olvasd vissza a kapcsolatot. Sikertelen kapcsolás vagy
-   technikai visszaolvasási hiba esetén állj meg és jelezd.
-2. A terv `retained_ranges` minden eleménél ellenőrizd a `recording_id`,
-   `source_id`, `source_start` és `source_end` mezőket, majd rendeld a
-   tartományt az első timeline megfelelő klippéldányához. A forrás saját,
-   médiaregiszterbeli FPS-ével alakítsd a forrásmásodperceket félig nyílt
-   forrásképkocka-tartománnyá: a kezdetet lefelé, a véghatárt felfelé kerekítsd.
-   A Resolve-ból visszaolvasott forrás- és timeline-kliphatárokkal, valamint
-   a két időalappal rendeld a tartományt a megfelelő timeline-képkockákhoz.
-   A [markerindex](davinci_marker_index.md) szerint a kezdő marker az első,
-   a záró marker az utolsó megtartott képkockára kerüljön, ne a kizáró
-   véghatárra. Bizonytalan csoportnál a teljes
-   `source_start`–`source_end` tartományt jelöld, az azonosítóbemondással együtt.
-3. A nem kézi vágásra jelölt csoportok minden nem üres, érvényes megtartási tartományához a
-   [markerindex](davinci_marker_index.md) szerinti piros megtartási markerpárt
-   helyezd el a megfelelő videoklipen `TimelineItem.AddMarker()` hívással. A
-   kapcsolt hangra ne készíts külön vágási markert; a videó jelölése az egész
-   kép–hang egységre vonatkozik.
-   Felvételenként is vizsgáld a teljes kihagyást, akkor is, ha ugyanazon
-   script-ID más take-jeinek vannak megtartási tartományai. Ha az elhelyezett
-   klip teljes kihagyását a terv igazolt törlési döntése vagy rá vonatkozó
-   `approved_omissions` bejegyzése bizonyítja, a markerindex szerinti egyetlen
-   sárga `OMIT TAKE` tartománymarkert helyezd el rajta. A marker a klip
-   kezdetén induljon, időtartama a teljes, Resolve-ból visszaolvasott kliphossz
-   legyen. A marker megjegyzésébe írd a script-ID-t, `recording_id`-t és az
-   elhagyás rövid angol indokát. A klip a review timeline-on teljesen megmarad.
-   A megtartási tartomány hiánya önmagában nem bizonyít teljes kihagyást;
-   bizonyíték nélkül a 4. pont szerinti review jelölést használd.
-   Olvasd vissza a markereket `GetMarkers()`-szel, és ellenőrizd a színt,
-   nevet és helyet.
-   TODO KÉSŐBB LESZ IMPLEMENTALVA: A cím- és képmarkereket ebben a lépésben ne hozd létre.
-4. Kézi vágásra jelölt vagy nem egyértelmű tartománynál ne találj ki vágási
-   határt: az érintett felvétel maradjon teljesen meg. Ha azon ez a lépés már
-   elhelyezett piros megtartási vagy `OMIT TAKE` markereket, a review jelölés előtt távolítsd el
-   az érintett felvételhez tartozókat. Az első review timeline-on
-   a [markerindex](davinci_marker_index.md) szerinti sárga kezdő és záró markerrel
-   jelöld a teljes bizonytalan rész elejét és végét. A markereket olvasd vissza.
-   Tartalmi bizonytalanságnál ne hagyj félreérthető megtartási markerpárt;
-   a felvételt őrizd meg, és folytasd a többi rész feldolgozását.
-   A bizonytalanságot a [közös problémánapló](../PROBLEM_LOG.md) szerint a
-   script saját `problems.md` fájljának `Kézi vágást igénylő részek` fejléce
-   alá is rögzítsd a review timeline nevével és markerhelyeivel.
-5. Olvasd vissza az összes elhelyezett videoklip markereit és kapcsolt hangjait.
-   Egyetlen kép–hang egység sem maradhat jelölés nélkül: a videoklipen
-   ellenőrzött megtartási pár, teljes klipet lefedő
-   `OMIT TAKE` vagy teljes bizonytalan klipet jelölő review pár szükséges.
-   Hiányzó vagy ütköző tartalmi döntésnél alkalmazd a 4. pontot; az `OMIT TAKE`
-   és más vágási jelölés együtt nem érvényes. Ellenőrizd a neveket, színeket,
-   markerpárokat és az `OMIT TAKE` teljes időtartamát is.
+1. A kiválasztott témához tartozó indexrekordokból gyűjtsd ki a fizikai
+   forrásfájlokat, fájlonként egyedi `source_id` szerint. Felvételi sorrendben
+   helyezz el minden ilyen fájlt pontosan egyszer, a teljes tényleges
+   videotartományával, az azonosítóbemondásokkal együtt; a `recording_index`
+   `source_start`–`source_end` mezői logikai rekordhatárok, nem timeline-klip
+   határok. Az audio-only tail-t ne vedd bele, ha annak elhagyását a user
+   kifejezetten jóváhagyta; más eltérő audio/video végpontnál állj meg és
+   kérj döntést. A fájlok közötti sorrendet a média rögzítési ideje, ennek
+   hiányában a fájl létrehozási dátuma, egy forráson belül a source time adja.
+   A teljes eredeti kép és a meglévő hang maradjon szinkronban, egymáshoz
+   kapcsolva; a teljes fizikai klipeket a fő review video- és hangsávra
+   helyezd. Ezen a timeline-on a fizikai forrás fájlszinten marad egyetlen
+   kép–hang egység, ezért a logikai `clip_type` nem osztja külön sávokra és
+   nem vághatja szét. A `recordings` leképezésben őrizd meg az egyes logikai
+   rekordok `clip_type` értékét; a B-roll és talking-head tartományok külön
+   sávra rendezése a 3e Rough Cut feladata. A tényleges sávokat, teljes
+   forrástartományokat és hangkapcsolatot olvasd vissza.
+2. A timeline összes fizikai klipjének forrástartománya legyen teljes.
+   Minden indexrekordot rendelj hozzá pontosan egy, azonos `source_id`-jú
+   fizikai kliphez; több `recording_id` szándékosan hivatkozhat ugyanarra a
+   `timeline_clip_id`-ra. A terv `retained_ranges` elemeinél ellenőrizd a
+   `recording_id`, `source_id`, `source_start` és `source_end` mezőket, majd
+   számítsd ki a logikai tartomány félig nyílt forrásképkocka-határait a
+   médiaregiszter FPS-ével: a kezdést lefelé, a véghatárt felfelé kerekítsd.
+   A Resolve-ból visszaolvasott teljes kliphatárok és a timeline időalapja
+   alapján képezd a logikai tartomány timeline-képkocka-határait. E határokat
+   írd a `recordings` leképezésbe. Ne készíts `AppendToTimeline()`-hívást
+   indexrekordonként.
+3. Minden logikai rekord tényleges tartományát a fizikai forrásklip
+   videóelemén jelöld. Érvényes, nem kézi vágású megtartási tartományhoz a
+   [markerindex](davinci_marker_index.md) szerinti piros `KEEP IN` / `KEEP OUT`
+   párt, bizonytalan vagy kézi vágású tartományhoz sárga `REVIEW START` /
+   `REVIEW END` párt használj. A kezdő marker az első, a záró marker az utolsó
+   megtartott képkockára kerüljön. A videoklip `TimelineItem.AddMarker()`
+   hívásával helyezd el, majd olvasd vissza `GetMarkers()`-szel. A kapcsolt
+   hangra ne készíts külön markerpárt; a videó markerpárja a logikai
+   kép–hang tartományt jelöli.
+   Teljes fizikai klipre szóló jóváhagyott kihagyásnál használható az egyetlen
+   sárga `OMIT TAKE`; részleges/logikai rekord kihagyását ne jelöld a teljes
+   fizikai klipet lefedő markerrel. A marker megjegyzésében szerepeljen a
+   `recording_id`; `script_id` csak akkor szerepeljen, ha a jegyzékben nem
+   `null`. Az ismeretlen scriptmetaadatot ne találd ki.
+4. A forrástartományon belüli azonosítatlan anyagot és bizonytalanságot őrizd
+   meg teljesen, és a [markerindex](davinci_marker_index.md) szerinti sárga
+   review markerpárral jelöld. Ha egy rekordhoz hiányzik érvényes megtartási
+   vagy kihagyási döntés, ne következtess törlésre: az érintett logikai
+   tartomány maradjon bent, kapjon review jelölést, és a bizonytalanságot a
+   [közös problémanapló](../PROBLEM_LOG.md) szerint rögzítsd a script
+   `problems.md` fájljába a review timeline nevével és markerhelyeivel.
+   Eltérő vagy átfedő döntésnél a review jelölés élvez elsőbbséget az
+   érintett tartományon; az azon kívüli, nem ütköző jelöléseket tartsd meg.
+5. Olvasd vissza minden fizikai videoklip teljes forrástartományát, kapcsolt
+   hangját, sávját és markerlistáját, majd ellenőrizd az összes logikai
+   `recording_id` leképezést és markerpárt. A review timeline-on a teljes
+   forrásklip maradjon meg; a Rough Cut csak később, a 3e-ben használja a
+   logikai forrástartományokat. Az `OMIT TAKE` marker nem szerepelhet más,
+   ugyanazon teljes klipet jelölő vágási markerekkel együtt. A cím- és
+   képmarkereket ebben a lépésben ne hozd létre.
 
 Ha bármely szükséges marker létrehozása, eltávolítása vagy visszaellenőrzése technikai okból
 meghiúsul, azonnal állj meg, és ne jelents sikert. Ha lehetséges, mentsd a

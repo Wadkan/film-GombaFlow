@@ -20,8 +20,9 @@ A hívási kapcsolatokat, kapukat és státuszfeltételeket ezekből alkalmazd.
 Olvasd be a kiválasztott script mappájából a `recording_index.json`,
 `review_timeline_assembly.json` és `review_timeline_resolve_media_registry.json`
 fájlokat. Ellenőrizd a `topic_id`-t, a script- és indexlenyomatokat, valamint
-a projekt- és timeline-azonosítók egyezését. Hibás vagy hiányzó kötelező
-bemenetnél állj meg és jelezd az akadályt.
+a projekt- és timeline-azonosítók egyezését. Az assembly 1.1 vagy korábbi
+1.0 sémájú lehet; más verziónál állj meg. Hibás vagy hiányzó kötelező
+bemenetnél jelezd az akadályt.
 
 A felhasználói review után minden Rough Cut-összeállításhoz olvasd ki újra a
 Resolve aktuális markereit, meglévő pillanatkép esetén is. Ellenőrizd a nyitott
@@ -42,9 +43,12 @@ korábbi fájlt ne írj felül.
    eredményét külön őrizd meg; ne a korábbi tervből következtess a markerekre.
 2. Minden klippéldánynál olvasd ki a timeline-klip és Media Pool-klip
    azonosítóját, sávját, timeline- és forráshatárait, kapcsolt klipjeit és markereit.
-   A `review_timeline_assembly.json` és a jegyzék alapján rendeld hozzá a
-   `recording_id`, `source_id` és `script_id` értékeket. A kapcsolt hangot a
-   hozzá tartozó videokliphez rendeld. Nem egyértelmű
+   A `review_timeline_assembly.json` `clips` listája az 1.1 sémában fizikai
+   forrásklippeket, a `recordings` lista logikai indexrekordokat tartalmaz.
+   Egy fizikai kliphez több logikai rekord tartozhat; mindet rendeld hozzá a
+   közös `timeline_clip_id` és a forrástartomány alapján. Az 1.0 sémájú régi
+   assemblynél az egyes `clips` elemek adják a közvetlen kapcsolatot. A
+   kapcsolt hangot a hozzá tartozó videokliphez rendeld. Nem egyértelmű
    hozzárendelésnél ne találgass: a tényleges klipet is rögzítsd, az ismeretlen
    mezők legyenek `null`, és az eset kerüljön az `unresolved` listába.
 3. A [markerindex](davinci_marker_index.md) alapján jelöld `unresolved` tétellel
@@ -70,22 +74,27 @@ jelezd a hibát; ne add át a részleges pillanatképet kész kimenetként.
 A pillanatkép `unresolved` tételeit a workflow közös hibakezelése szerint
 naplózd; a bejegyzésből az érintett klip vagy marker legyen visszakereshető.
 
-## Kimenet: `review_timeline_markers.json` — 1.0
+## Kimenet: `review_timeline_markers.json` — 1.1
 
 Mentsd a kiválasztott script mappájába. A meglévő fájlt csak a teljes új
 kiolvasás és ellenőrzés sikerénél cseréld le; hiba esetén ne add át a régi
 pillanatképet friss eredményként. A fájl a
 kiolvasáskori Resolve-állapot pillanatképe. Mezői:
 
-- `schema_version`: `"1.0"`; `topic_id`, `resolve_project_id`,
+- `schema_version`: `"1.1"`; `topic_id`, `resolve_project_id`,
   `review_timeline_id`, `review_timeline_name`, `timeline_start_frame` és
   `timeline_frame_rate`: a kiválasztott scripthez tartozó Resolve-adatok.
 - `timeline_markers`: minden timeline-szintű marker listája.
 - `clips`: minden tényleges video- és hangsávbeli klippéldány listája:
   `timeline_clip_id`, `resolve_media_pool_item_id`, `track_type`, `track_index`,
   `timeline_start_frame`, `timeline_end_frame`, `source_start_frame`,
-  `source_end_frame`, `recording_id`, `source_id`, `script_id`,
-  `linked_timeline_clip_ids` és `markers`.
+  `source_end_frame`, `linked_timeline_clip_ids` és `markers`. A videoklip
+  bejegyzése `recordings` listában tartalmazza az összes hozzá tartozó logikai
+  rekordot: `recording_id`, `source_id`, `script_id`, `script_order`,
+  `source_start_frame`, `source_end_frame`, `timeline_start_frame` és
+  `timeline_end_frame`. Több rekord ugyanahhoz a fizikai kliphez tartozhat;
+  a kapcsolt hang bejegyzését a `linked_timeline_clip_ids` alapján rendeld
+  hozzá, ne készíts második logikai felvételt belőle.
 - Minden `timeline_markers` és `markers` elem: a Resolve-ból visszaolvasott
   `frame_id`, `name`, `color`, `duration`, `note` és `custom_data`. A `frame_id`
   eredeti értékét és a marker hatókörét őrizd meg; ne keverd össze a timeline-

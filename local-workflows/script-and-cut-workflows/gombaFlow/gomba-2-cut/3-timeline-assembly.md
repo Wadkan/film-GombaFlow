@@ -32,10 +32,12 @@ a scriptválasztást a workflow szerint.
 A `recording_index.json` és az abban hivatkozott, elfogadott `3-script.md`
 alapján készülő teljes recept eredménye a script egyetlen céljához tartozó
 review timeline. Az eredeti videókat és átiratokat ne módosítsd.
-Ezen a timeline-on minden azonosított felvételváltozat megmarad;
-az ismétlésekre javasolt megtartási tartományokat a terv rögzíti; a végleges
-megtartást a review timeline markerei adják, amelyekből a 3e lépés építi a
-Rough Cut timeline-t.
+Ezen a timeline-on minden, a jegyzékben hivatkozott fizikai forrásfájl egyetlen,
+teljes, vágatlan klippéldányként marad meg. A `recording_index.json` rekordjai
+logikai forrástartományok: több rekord ugyanarra a teljes timeline-klipre
+hivatkozhat. Az ismétlésekre javasolt megtartási tartományokat a terv rögzíti;
+a végleges megtartást a forrástartományokon elhelyezett review timeline-markerek
+adják, amelyekből a 3e lépés építi a Rough Cut timeline-t.
 
 Alkalmazd a scriptből hivatkozott
 [vágói szerződést](../gomba-1-script-writer/templates/3-script-template.md) és
@@ -94,10 +96,13 @@ A végső `review_timeline_assembly.json` ugyanezt a projektet azonosítsa.
   rendelkezésre áll működő kapcsolat. A használt eszköz aktuális API-leírásából
   ellenőrizd a médiaimportot, forrástartományt, klipelhelyezést, klipnevet,
   hang engedélyezését és a visszaolvasható klippéldány-azonosítót.
-- Az első timeline fenti neve használható. Meglévő, nem üres cél-timeline
-  vagy korábbi `review_timeline_assembly.json` esetén állj meg újrafuttatási döntésre;
-  kivétel a workflow szerint engedélyezett pótfelvételi hozzáfűzés.
-  Ne törölj felhasználói vágást és ne duplikáld automatikusan a tartalmat.
+- Az első timeline fenti neve használható. A megfelelő projektben már létező,
+  üres cél-timeline-t használd újra; ne hozz létre másodikat. Nem üres
+  cél-timeline-nál állj meg, ne írj felül és ne duplikálj tartalmat.
+  Korábbi `review_timeline_assembly.json` esetén kérj explicit újrafuttatási
+  döntést; csak az ezt jóváhagyó userutasítás után szabad a meglévő
+  eredményt új sémájú összeállítással lecserélni. A workflow szerinti
+  pótfelvételi hozzáfűzés külön kivétel. Ne törölj felhasználói vágást.
 
 Elérhetetlen eszköznél vagy hibás bemenetnél konkrét akadályt jelezz. JSON vagy
 vágási terv elkészítése önmagában nem jelenti a timeline összeállítását.
@@ -131,27 +136,36 @@ assemblyből olvasd, ne az orchestrator memóriájából vedd át.
 2. A média eredeti képe és meglévő hangja szinkronban, egymáshoz kapcsolva
    legyen elhelyezve. A részek egymás után következzenek, kitalált átfedés,
    áttűnés vagy önálló új narráció nélkül.
-3. A teljes felvételek forrástartományai az azonosítóbemondásokat is
-   tartalmazzák. Több B-roll-ID egy fájlban külön klipként szerepeljen.
-4. A B-roll képe és meglévő hangja a talking headtől külön video-, illetve
-   hangsávon, egymással szinkronban legyen. Az eredeti hang maradjon
+3. Minden fizikai forrásklip a teljes eredeti forrástartományt tartalmazza,
+   az azonosítóbemondásokkal együtt. Több logikai B-roll-ID ugyanazon fizikai
+   forrásfájlon ugyanarra a teljes klipre mutasson; ne készüljön belőlük
+   külön timeline-klippéldány.
+4. A teljes review forrásklipjei a fő review video- és hangsávon, egymással
+   szinkronban szerepeljenek; a különböző logikai `clip_type` értékek nem
+   osztják szét vagy vágják meg a fizikai fájlt. Az eredeti hang maradjon
    változatlan, korábbi `audio_enabled: false` érték esetén is. Hang nélküli
-   forráshoz ne tartozzon mesterséges hang. Olvasd vissza a sávokat és hangállapotot.
-5. A megjelenített klipnév: `S{script_id} · {recording_id} · {clip_type} · {description}`.
-   Az értékek a jegyzékből származzanak; a vágási markerek legyenek visszaellenőrzöttek.
+   forráshoz ne tartozzon mesterséges hang. A 3e a logikai B-roll
+   tartományokat külön sávra rendezheti. Olvasd vissza a sávokat és hangállapotot.
+5. Minden fizikai forrásfájl pontosan egyszer szerepeljen teljes
+   forrástartománnyal; egy fájl több logikai felvételrekordhoz is tartozhat.
+   A `timeline_clip_id` egyedi a `clips` listában, és szándékosan ismétlődhet
+   a `recordings` leképezéseiben. A Resolve tényleges klipnevét őrizd meg;
+   ne nevezz át fizikai klipet egyetlen logikai `recording_id` nevére.
+   A vágási markerek legyenek visszaellenőrzöttek.
 6. A forrásmásodpercek megfelelő időalapú képkockahatárokra legyenek átszámítva.
    A tényleges forrás- és timeline-határokat olvasd vissza, és vesd össze
    a mentett elhelyezésekkel. Ellenőrizd, hogy a képkockás
    határillesztés nem vág le megtartandó beszédet vagy B-roll-képet.
 
-### Kimeneti szerződés: `review_timeline_assembly.json` — 1.0
+### Kimeneti szerződés: `review_timeline_assembly.json` — 1.1
 
 A jegyzék mappájába mentett elhelyezéseket ellenőrizd. A bemeneti jegyzék
-változatlan marad; ez a kimenet adja hozzá a tényleges timeline-kapcsolatokat.
+változatlan marad; ez a kimenet választja külön a fizikai timeline-klippeket
+a hozzájuk rendelt logikai felvételrekordoktól.
 
 A gyökér mezői:
 
-- `schema_version`: `"1.0"`.
+- `schema_version`: `"1.1"`.
 - `recording_index_path`, `recording_index_sha256`, `script_sha256`: a felhasznált
   bemenetek visszakereshető referenciái.
 - `resolve_project_id`, `resolve_project_name`: a használt Resolve-projektből
@@ -160,7 +174,11 @@ A gyökér mezői:
 - `timelines`: a script egyetlen cél-timeline-ját tartalmazó lista;
   az elem `timeline_id`, `timeline_name`, `frame_rate` és `start_frame` mezői
   a vágóprogramból visszaolvasva.
-- `clips`: minden ténylegesen elhelyezett klippéldány kapcsolata.
+- `clips`: minden ténylegesen elhelyezett fizikai forrásklippéldány pontosan
+  egyszer. A lista nem a logikai `recording_id` rekordok száma szerint készül.
+- `recordings`: a jegyzék minden logikai felvételrekordjának kapcsolata a
+  forrásklippéldányhoz és a rajta lévő forrástartományhoz. Több elem
+  hivatkozhat ugyanarra a `timeline_clip_id` értékre.
 - `missing_parts`: a script azon részei, amelyekhez nincs azonosított felvétel,
   a terv `approved_omissions` listája szerinti jóváhagyott kihagyások nélkül;
   elemenként `script_id`, `chapter_id`, `timeline`, `description`.
@@ -172,25 +190,59 @@ A gyökér mezői:
 
 Minden `clips` bejegyzés:
 
-- `recording_id`, `source_id`, `source_path`, `script_id`, `script_order`:
-  az eredeti jegyzékhez vezető kapcsolat.
+- `source_id`, `source_path`: az eredeti fizikai forrásra mutató kapcsolat.
+- `resolve_media_pool_item_id`: az importáláskor ellenőrzött Media Pool-item
+  azonosítója a médiaregiszter szerint.
 - `timeline_id`, `timeline_clip_id`, `video_track`, `audio_tracks`:
   tényleges vágóprogrambeli azonosítók és sávok. Hang nélküli forrásnál
   az `audio_tracks` üres lista.
-- `clip_name`, `clip_type`, `audio_enabled`: alkalmazott és visszaolvasott értékek.
-- `source_start`, `source_end`: a tényleges megtartott forrásrész másodpercben.
+- `clip_name`, `audio_enabled`: a teljes fizikai timeline-klip Resolve-ból
+  visszaolvasott neve és hangkapcsolata.
+- `source_start`, `source_end`: a teljes elhelyezett forrástartomány
+  másodpercben. Az indexrekord határai nem rövidíthetik le ezt a klipet.
+- `source_start_frame`, `source_end_frame`: a Resolve-ból visszaolvasott teljes
+  forrásképkocka-tartomány, félig nyílt formában.
 - `timeline_start_frame`, `timeline_end_frame`: tényleges timeline-képkockák,
   félig nyílt tartományként, az adott timeline időalapjában.
 - `take_order_basis`: `source_time`, `verified_recording_order` vagy
   `file_creation_date`. A sorrendet alátámasztó adatot a `take_order_evidence`
-  mezőben rögzítsd.
+  mezőben rögzítsd. A sorrend a fizikai forrásklipre vonatkozik.
 
-Minden jegyzékbeli azonosított felvételhez legyen mentett elhelyezési kapcsolat. Az elhelyezett
-részek sorrendjét, forrástartományait, nevét és hangállapotát a timeline
-visszaolvasásával ellenőrizd; pótfelvételi hozzáfűzéskor a 3c erre vonatkozó
-szabálya szerinti új elhelyezéseket ellenőrizd. Eszközhiba esetén az addig létrejött klipeket is
-rögzítsd `incomplete` kimenetben; ne jelents sikert, és ne indíts automatikus
-újrapróbálkozást, amely megduplázhatná őket.
+Minden `recordings` bejegyzés:
+
+- `recording_id`, `source_id`, `script_id`, `script_order`, `clip_type`,
+  `description`: az eredeti jegyzékrekord logikai metaadatai; a hiányzó
+  scriptmetaadat maradjon `null`, ne következtess rá.
+- `timeline_clip_id`: hivatkozás pontosan egy `clips` bejegyzésre. A forrás-ID
+  egyezzen; a logikai forrástartomány essen a teljes fizikai klip
+  forrástartományába.
+- `source_start`, `source_end`: a jegyzék szerinti logikai forrástartomány
+  másodpercben, félig nyílt tartományként.
+- `source_start_frame`, `source_end_frame`: a médiaregiszter forrás-FPS-ével
+  képzett félig nyílt forrásképkocka-tartomány.
+- `timeline_start_frame`, `timeline_end_frame`: a logikai forrástartománynak
+  megfelelő félig nyílt timeline-képkocka-tartomány.
+- `take_order_basis`, `take_order_evidence`: az adott logikai rekord
+  forrásklipen belüli sorrendjének bizonyítéka.
+- `markers`: a rekord tartományához tartozó, Resolve-ból visszaolvasott
+  markerek listája; minden elem tartalmazza a `frame_id`, `name`, `color`,
+  `duration` és `note` mezőket.
+
+A régi `1.0` assembly-ben a `clips` egy-egy bejegyzése egyszerre jelent fizikai
+klipet és logikai rekordot. Ezt a régi formát csak olvasd; új összeállítás
+mindig `1.1` sémával készüljön. A 3d és 3e a két formátum közötti különbséget
+az alábbi szerződések szerint kezelje.
+
+Minden jegyzékbeli azonosított felvételhez legyen pontosan egy logikai
+`recordings` kapcsolat, és minden ilyen kapcsolat mutasson egy tényleges,
+teljes fizikai klipre. Az elhelyezett fizikai klipek sorrendjét, teljes
+forrástartományát, nevét és hangkapcsolatát, valamint a logikai rekordok
+forrástartományát és markereit olvasd vissza. Pótfelvételi hozzáfűzéskor
+a 3c erre vonatkozó szabálya szerinti új logikai kapcsolatokat és szükség
+szerint új fizikai forrásklippeket ellenőrizd. Eszközhiba esetén az addig
+létrejött klipeket és leképezéseket is rögzítsd `incomplete` kimenetben;
+ne jelents sikert, és ne indíts automatikus újrapróbálkozást, amely
+megduplázhatná őket.
 
 ### Felhasználói eredmény
 
