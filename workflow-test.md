@@ -20,8 +20,8 @@
 
 ## [`2a-script-selection.md`](local-workflows/script-and-cut-workflows/gombaFlow/gomba-2-cut/2a-script-selection.md)
 
-- [ ] TODO Ellenőrzi, hogy a jegyzék az aktuális scripthez tartozik. Több választható scriptnél döntést kér.
-- [ ] TODO A választott script és jegyzék bekerül a `cut_workflow_state.json` fájlba. A Resolve-projekt választása a timeline-összeállításkor történik.
+- [x] A megadott jegyzék scriptútvonala és scriptlenyomata egyezett az aktuális fájllal.
+- [x] A script- és jegyzékválasztás bekerült, majd visszaellenőrzésre került a `cut_workflow_state.json` fájlban. Resolve-projekt nem lett választva.
 
 ## [`2b-retake-plan.md`](local-workflows/script-and-cut-workflows/gombaFlow/gomba-2-cut/2b-retake-plan.md)
 

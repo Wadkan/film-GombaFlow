@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "topic_id": "2-unlimited-claude-code-for",
+  "script_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/2-unlimited-claude-code-for/3-script.md",
+  "script_sha256": "ecb80d62d715adf90f34d13491244bf039c6c0b184bccc4bc12140b25dbbd2c8",
+  "recording_index_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/2-unlimited-claude-code-for/recording_index.json",
+  "recording_index_sha256": "d1ab5c23f06ac17c9a3a8d636d39ff267696858204d18e20cd74d766cfa267e8",
+  "resolve_project": null,
+  "media_import": null,
+  "index_correction": null
+}
