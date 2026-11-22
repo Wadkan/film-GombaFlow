@@ -10,6 +10,11 @@ At the start of every task, read and follow:
 - `docs/orchestration/ORCHESTRATOR.md` for the local backlog orchestrator
 - current repository docs/source/tests/Makefile/package scripts relevant to the task
 
+For an isolated Gomba 2 cut workflow call, the caller loads the startup
+context above. The delegated executor loads the targeted context specified in
+[Végrehajtó hívása](local-workflows/script-and-cut-workflows/gombaFlow/gomba-2-cut/orchestrator.md#végrehajtó-hívása).
+The rest of this file applies to both.
+
 Current repository source and docs override stale memories, summaries, or old prompts.
 
 All agents, including the orchestrator and delegated agents, must create

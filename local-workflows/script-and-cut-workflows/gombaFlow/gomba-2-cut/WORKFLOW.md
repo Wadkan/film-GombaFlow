@@ -96,10 +96,14 @@ adatokat a végrehajtás előtt ellenőrzi. Hiányzó vagy bizonytalan hozzáren
 nem találhat ki. A Markdown-lépések megírása nem jelenti egy konkrét videóprojekt
 feldolgozását; siker csak a tényleges műveletek visszaellenőrzése után jelenthető.
 
-Minden skill indításkor olvassa el a „Feldolgozási lépések”, „Közös szerződés”,
+Közvetlen skillhíváskor a skill olvassa el a „Feldolgozási lépések”, „Közös szerződés”,
 „Közös visszatérési státuszok” és „Fájlos állapotátvétel” részeket,
 valamint a saját bejegyzését. A hívási sorrend, kapuk, fájlkapcsolatok és
 státuszfeltételek egyetlen forrása ez a workflow.
+
+Orchestrált híváskor a hívó tölti be a közös részeket. Az elkülönített
+végrehajtó olvasási körét az orchestrator átadása határozza meg, a skill
+indításkor felsorolt közös szakaszaira is.
 
 A közös belépő az [orchestrator](orchestrator.md); saját vezérlési és
 folytatási szabályai ott találhatók.

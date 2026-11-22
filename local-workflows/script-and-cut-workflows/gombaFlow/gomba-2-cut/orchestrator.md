@@ -75,11 +75,16 @@ hogy elkülönítetten futtattál egy skillt.
 Egy hívás csak ezeket kapja:
 
 - az aktuális skill Markdown-fájljának és a workflow-nak az útvonalát;
-- az aktuális lépést/fázist és a rá vonatkozó workflow-részek megnevezését;
-- a konkrét bemeneti útvonalakat, a már kiválasztott célt és az aktuális
-  userkérésből az ehhez szükséges döntést vagy folytatási célt;
+- egy konkrét végrehajtandó feladatot, a megállási pontot és a szükséges
+  workflow-szakaszok pontos címét;
+- a konkrét bemeneti és kimeneti útvonalakat, a már kiválasztott célt és az
+  aktuális userkérésből az ehhez szükséges döntést vagy folytatási célt;
 - azt az utasítást, hogy a saját részletes bemeneteit fájlból olvassa,
   a saját eredményeit oda mentse, és a hívónak csak a workflow-státuszt adja vissza.
+
+A hívó tölti be a közös projektkontextust. Az elkülönített végrehajtó az
+átadott skillt, a kijelölt szakaszokat és a feladathoz közvetlenül szükséges
+hivatkozásokat olvassa.
 
 A szükséges userkérdést vagy rövid tájékoztatást a workflow közös kommunikációs
 szabálya szerint juttasd el. Interaktív lépés saját felhasználói kontextusban
