@@ -57,8 +57,8 @@ feloldhatók legyenek. A beszéd nélküli képi részeket tartsd meg tartalmi e
 nélkül.
 Ehhez nem szükséges klipenként új subagent.
 
-A [parancsszótár](../gomba-1-script-writer/RECORDING_COMMANDS.md) `HIBA újra`
-jelzése egyértelművé teszi, hogy közvetlenül előtte lévő beszédrész hibás és
+A [parancsszótár](../gomba-1-script-writer/RECORDING_COMMANDS.md) szerinti
+hibajelzés egyértelművé teszi, hogy a közvetlenül előtte lévő beszédrész hibás és
 újramondásra szánt. Keresd meg az utána következő újramondást, és annak
 illesztéséből határozd meg a korábbi hibás tartomány vágási határát. Ne
 követelj szó szerinti egyezést a scripttel. Ha az újramondás vagy a határ nem
@@ -130,8 +130,10 @@ A beszédhiány nem ismétlés; B-rollt vagy animációt ne törölj szöveghiá
 
 Az adott script-ID felvételein keresd meg a scriptben rögzített varázsszóval
 keretezett, a parancsszótárnak megfelelő utasításokat. Az azonosítóbemondás
-határaihoz használd és ellenőrizd a jegyzék `cue` mezőjét; a felvételen belüli
-`HIBA újra` parancs teljes blokkját a szóidőbélyeges átiratból azonosítsd.
+határaihoz használd és ellenőrizd a jegyzék `cue` mezőjét. A felvételen belüli
+hibaparancs teljes blokkját a szóidőbélyeges átiratból azonosítsd. A két
+varázsszó közé mondott `HIBA` és `HIBA újra` egyaránt érvényes. A rövid
+alakot automatikusan fogadd el.
 Az azonosítóbemondás ellenőrzésénél ugyanazt a szabályt alkalmazd, mint a
 [jegyzékkészítésnél](2-recording-index.md#azonosítás). Ha mindkét keretszó
 egyértelműen ugyanarra a varázsszóra illik, és a köztük lévő teljes
@@ -143,8 +145,8 @@ A parancsokat az ismétléskeresésnél ne tekintsd narrációnak.
 
 Az érvényes parancs teljes blokkját, mindkét varázsszóval együtt, jelöld
 kihagyásra. Rögzítsd a parancs típusát, eredeti szövegét, `recording_id` és
-`source_id` értékét, forrásidő-határait és a felismerés alapját. A `HIBA újra`
-blokk kihagyása külön döntés a hibás beszéd kivágásától: utóbbihoz továbbra is
+`source_id` értékét, forrásidő-határait és a felismerés alapját. A hibaparancs
+kihagyása külön döntés a hibás beszéd kivágásától: utóbbihoz továbbra is
 biztosan azonosítható újramondás és illesztés szükséges.
 
 Alkalmazd a vágói szerződés képi kivételét: ha egy nem `talking head` részben

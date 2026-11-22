@@ -21,7 +21,8 @@ A varázsszó értékét a készülő script a központi `local-workflows/record
 
 - **Cél:** a készítő egyértelműen hibásnak jelölje a közvetlenül előtte
   felvett beszédrészt, majd újramondja azt.
-- **Alak:** `[varázsszó] HIBA újra [varázsszó]`.
+- **Alak:** `[varázsszó] HIBA újra [varázsszó]` vagy `[varázsszó] HIBA [varázsszó]`.
+  A két alak jelentése azonos. Példa: `serpenyő HIBA serpenyő`.
 - **Hatókör:** ugyanazon script-ID-n belül a hibajelzés utáni újramondás
   javítja a jelzés előtti, hibás beszédrészt.
 - **Vágás:** csak akkor jelöld kivágásra a hibás próbálkozást, ha az utána
