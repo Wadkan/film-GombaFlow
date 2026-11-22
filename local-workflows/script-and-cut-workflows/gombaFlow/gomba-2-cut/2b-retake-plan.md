@@ -132,6 +132,11 @@ Az adott script-ID felvételein keresd meg a scriptben rögzített varázsszóva
 keretezett, a parancsszótárnak megfelelő utasításokat. Az azonosítóbemondás
 határaihoz használd és ellenőrizd a jegyzék `cue` mezőjét; a felvételen belüli
 `HIBA újra` parancs teljes blokkját a szóidőbélyeges átiratból azonosítsd.
+Az azonosítóbemondás ellenőrzésénél ugyanazt a szabályt alkalmazd, mint a
+[jegyzékkészítésnél](2-recording-index.md#azonosítás). Ha mindkét keretszó
+egyértelműen ugyanarra a varázsszóra illik, és a köztük lévő teljes
+`timeline <szám> script <szám>` parancs érvényes, fogadd el a cue-t
+felhasználói jóváhagyás nélkül.
 A jegyzékben rögzített, ellenőrzött felhasználói azonosítójavítást vedd
 figyelembe; a `cue` eredeti szövegét és időhatárait őrizd meg.
 A parancsokat az ismétléskeresésnél ne tekintsd narrációnak.
