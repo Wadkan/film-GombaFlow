@@ -22,3 +22,5 @@ add a new backlog item.
 bump checkpoint for the versioned API contract.
 
 ## Ordered Backlog
+
+[FEATURE-6 — Mark talking-head pauses for review](features/FEATURE-6.md)
