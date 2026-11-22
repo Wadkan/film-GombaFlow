@@ -1,0 +1,403 @@
+{
+  "schema_version": "1.0",
+  "source_id": "sha256:f0bf227b2fd4885ca6ff0c3e95cbace471214bf5056bcd91fce5179cff436477",
+  "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/2-unlimited-claude-code-for/test_records/mov02.mov",
+  "file_name": "mov02.mov",
+  "duration": 24.797687,
+  "time_base": "source_seconds",
+  "language": "hu",
+  "status": "transcribed",
+  "segments": [
+    {
+      "start": 0.14,
+      "end": 3.14,
+      "text": " Sárpenyő, Timeline 2, Script 4, Sárpenyő",
+      "words": [
+        {
+          "start": 0.14,
+          "end": 0.96,
+          "text": " Sárpenyő,"
+        },
+        {
+          "start": 1.04,
+          "end": 1.36,
+          "text": " Timeline"
+        },
+        {
+          "start": 1.36,
+          "end": 1.58,
+          "text": " 2,"
+        },
+        {
+          "start": 1.88,
+          "end": 2.08,
+          "text": " Script"
+        },
+        {
+          "start": 2.08,
+          "end": 2.44,
+          "text": " 4,"
+        },
+        {
+          "start": 2.64,
+          "end": 3.14,
+          "text": " Sárpenyő"
+        }
+      ]
+    },
+    {
+      "start": 3.14,
+      "end": 6.38,
+      "text": " A különbség nem annyi, hogy ugyanaz a másik gépel lakik",
+      "words": [
+        {
+          "start": 3.14,
+          "end": 3.66,
+          "text": " A"
+        },
+        {
+          "start": 3.66,
+          "end": 4.06,
+          "text": " különbség"
+        },
+        {
+          "start": 4.06,
+          "end": 4.2,
+          "text": " nem"
+        },
+        {
+          "start": 4.2,
+          "end": 4.62,
+          "text": " annyi,"
+        },
+        {
+          "start": 4.64,
+          "end": 4.78,
+          "text": " hogy"
+        },
+        {
+          "start": 4.78,
+          "end": 5.12,
+          "text": " ugyanaz"
+        },
+        {
+          "start": 5.12,
+          "end": 5.2,
+          "text": " a"
+        },
+        {
+          "start": 5.2,
+          "end": 5.78,
+          "text": " másik"
+        },
+        {
+          "start": 5.78,
+          "end": 6.08,
+          "text": " gépel"
+        },
+        {
+          "start": 6.08,
+          "end": 6.38,
+          "text": " lakik"
+        }
+      ]
+    },
+    {
+      "start": 6.38,
+      "end": 9.86,
+      "text": " A modelt, a költségviselést és a sebességet is serejjük",
+      "words": [
+        {
+          "start": 6.38,
+          "end": 6.8,
+          "text": " A"
+        },
+        {
+          "start": 6.8,
+          "end": 7.22,
+          "text": " modelt,"
+        },
+        {
+          "start": 7.5,
+          "end": 7.56,
+          "text": " a"
+        },
+        {
+          "start": 7.56,
+          "end": 8.5,
+          "text": " költségviselést"
+        },
+        {
+          "start": 8.5,
+          "end": 8.74,
+          "text": " és"
+        },
+        {
+          "start": 8.74,
+          "end": 8.86,
+          "text": " a"
+        },
+        {
+          "start": 8.86,
+          "end": 9.3,
+          "text": " sebességet"
+        },
+        {
+          "start": 9.3,
+          "end": 9.46,
+          "text": " is"
+        },
+        {
+          "start": 9.46,
+          "end": 9.86,
+          "text": " serejjük"
+        }
+      ]
+    },
+    {
+      "start": 9.86,
+      "end": 11.86,
+      "text": " A modell és az agent két külön dolog",
+      "words": [
+        {
+          "start": 9.86,
+          "end": 10.12,
+          "text": " A"
+        },
+        {
+          "start": 10.12,
+          "end": 10.52,
+          "text": " modell"
+        },
+        {
+          "start": 10.52,
+          "end": 10.64,
+          "text": " és"
+        },
+        {
+          "start": 10.64,
+          "end": 10.76,
+          "text": " az"
+        },
+        {
+          "start": 10.76,
+          "end": 10.96,
+          "text": " agent"
+        },
+        {
+          "start": 10.96,
+          "end": 11.34,
+          "text": " két"
+        },
+        {
+          "start": 11.34,
+          "end": 11.62,
+          "text": " külön"
+        },
+        {
+          "start": 11.62,
+          "end": 11.86,
+          "text": " dolog"
+        }
+      ]
+    },
+    {
+      "start": 11.86,
+      "end": 16.08,
+      "text": " Az előfizetésen vagy apis, klót-használatán antropik modellje válaszol",
+      "words": [
+        {
+          "start": 11.86,
+          "end": 11.96,
+          "text": " Az"
+        },
+        {
+          "start": 11.96,
+          "end": 12.82,
+          "text": " előfizetésen"
+        },
+        {
+          "start": 12.82,
+          "end": 12.92,
+          "text": " vagy"
+        },
+        {
+          "start": 12.92,
+          "end": 13.6,
+          "text": " apis,"
+        },
+        {
+          "start": 13.62,
+          "end": 13.96,
+          "text": " klót"
+        },
+        {
+          "start": 13.96,
+          "end": 14.66,
+          "text": "-használatán"
+        },
+        {
+          "start": 14.66,
+          "end": 15.2,
+          "text": " antropik"
+        },
+        {
+          "start": 15.2,
+          "end": 15.56,
+          "text": " modellje"
+        },
+        {
+          "start": 15.56,
+          "end": 16.08,
+          "text": " válaszol"
+        }
+      ]
+    },
+    {
+      "start": 16.08,
+      "end": 18.48,
+      "text": " Itt ugyanazt a klót-kóz, ezt közt olomán keresztül",
+      "words": [
+        {
+          "start": 16.08,
+          "end": 16.56,
+          "text": " Itt"
+        },
+        {
+          "start": 16.56,
+          "end": 16.9,
+          "text": " ugyanazt"
+        },
+        {
+          "start": 16.9,
+          "end": 16.96,
+          "text": " a"
+        },
+        {
+          "start": 16.96,
+          "end": 17.16,
+          "text": " klót"
+        },
+        {
+          "start": 17.16,
+          "end": 17.4,
+          "text": "-kóz,"
+        },
+        {
+          "start": 17.46,
+          "end": 17.54,
+          "text": " ezt"
+        },
+        {
+          "start": 17.54,
+          "end": 17.72,
+          "text": " közt"
+        },
+        {
+          "start": 17.72,
+          "end": 18.08,
+          "text": " olomán"
+        },
+        {
+          "start": 18.08,
+          "end": 18.48,
+          "text": " keresztül"
+        }
+      ]
+    },
+    {
+      "start": 18.48,
+      "end": 20.46,
+      "text": " Egy másik helyben futon modellhez irányítjuk",
+      "words": [
+        {
+          "start": 18.48,
+          "end": 18.6,
+          "text": " Egy"
+        },
+        {
+          "start": 18.6,
+          "end": 18.94,
+          "text": " másik"
+        },
+        {
+          "start": 18.94,
+          "end": 19.24,
+          "text": " helyben"
+        },
+        {
+          "start": 19.24,
+          "end": 19.5,
+          "text": " futon"
+        },
+        {
+          "start": 19.5,
+          "end": 19.92,
+          "text": " modellhez"
+        },
+        {
+          "start": 19.92,
+          "end": 20.46,
+          "text": " irányítjuk"
+        }
+      ]
+    },
+    {
+      "start": 20.46,
+      "end": 23.88,
+      "text": " Így változik az adat útja, és a számítást erhez is",
+      "words": [
+        {
+          "start": 20.46,
+          "end": 21.14,
+          "text": " Így"
+        },
+        {
+          "start": 21.14,
+          "end": 21.64,
+          "text": " változik"
+        },
+        {
+          "start": 21.64,
+          "end": 21.78,
+          "text": " az"
+        },
+        {
+          "start": 21.78,
+          "end": 22.06,
+          "text": " adat"
+        },
+        {
+          "start": 22.06,
+          "end": 22.46,
+          "text": " útja,"
+        },
+        {
+          "start": 22.64,
+          "end": 22.72,
+          "text": " és"
+        },
+        {
+          "start": 22.72,
+          "end": 22.84,
+          "text": " a"
+        },
+        {
+          "start": 22.84,
+          "end": 23.3,
+          "text": " számítást"
+        },
+        {
+          "start": 23.3,
+          "end": 23.68,
+          "text": " erhez"
+        },
+        {
+          "start": 23.68,
+          "end": 23.88,
+          "text": " is"
+        }
+      ]
+    }
+  ]
+}

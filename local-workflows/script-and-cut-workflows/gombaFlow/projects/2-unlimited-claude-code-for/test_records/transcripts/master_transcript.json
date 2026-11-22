@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "recordings": [
+    {
+      "source_id": "sha256:1ad71e0007bb7c3afe6a23e47a9acc4c220d6c926abf6ccd73b6f09dc4dcc106",
+      "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/2-unlimited-claude-code-for/test_records/mov01.mov",
+      "transcript_path": "recording_0001.json",
+      "status": "transcribed"
+    },
+    {
+      "source_id": "sha256:f0bf227b2fd4885ca6ff0c3e95cbace471214bf5056bcd91fce5179cff436477",
+      "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/2-unlimited-claude-code-for/test_records/mov02.mov",
+      "transcript_path": "recording_0002.json",
+      "status": "transcribed"
+    }
+  ]
+}
