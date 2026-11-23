@@ -338,9 +338,9 @@ A terv sémája `1.1`, kötelező mezői:
       `recording_id` és `source_id` értékét, a teljes blokk forrásidő-határait és
       a felismerés alapját. Ehhez nem szükséges helyettesítő újramondás.
 - Minden csoportban `retained_ranges`: a végeredményben megmaradó forrás-
-  tartományok rendezett listája, az igazolt döntéseket együtt alkalmazva. Minden elem tartalmazza a `recording_id`,
-  `source_id`, `source_start` és `source_end` mezőket; a beszédnél az eredeti
-  szóhivatkozásokat is. Az időhatárok forrásmásodpercben, félig nyílt
+  tartományok rendezett listája, az igazolt döntéseket együtt alkalmazva.
+  Minden elem kizárólag a `recording_id`, `source_id`, `source_start` és
+  `source_end` mezőket tartalmazza. Az időhatárok forrásmásodpercben, félig nyílt
   `[source_start, source_end)` tartományok. Megőrzendő képi anyagnál a jegyzék
   szerinti forrástartományt használd. Teljes csoportot érintő bizonytalanságnál minden
   érintett felvétel teljes `source_start`–`source_end` tartománya szerepeljen,

@@ -264,25 +264,36 @@ def apply_pauses(draft, index, config):
 
 def _apply_group(group, pending, clips, records, threshold):
     if group["script_id"] not in pending:
-        return group
+        retained_ranges = [
+            {key: item[key] for key in ("recording_id", "source_id", "source_start", "source_end")}
+            for item in group.get("retained_ranges", [])
+        ]
+        return {**group, "retained_ranges": retained_ranges}
     part = clips.get(group["script_id"], {})
     if part.get("clip_type") != "talking head":
-        return group
+        retained_ranges = [
+            {key: item[key] for key in ("recording_id", "source_id", "source_start", "source_end")}
+            for item in group.get("retained_ranges", [])
+        ]
+        return {**group, "retained_ranges": retained_ranges}
 
     new_ranges = []
     for item in group.get("retained_ranges", []):
+        retained_range = {
+            key: item[key] for key in ("recording_id", "source_id", "source_start", "source_end")
+        }
         rec = records.get(item["recording_id"])
         if rec is None or rec.get("cue") is None or rec.get("clip_type") != "talking head":
-            new_ranges.append(item)
+            new_ranges.append(retained_range)
             continue
         transcript_path = rec.get("transcript_path")
         if not transcript_path:
-            new_ranges.append(item)
+            new_ranges.append(retained_range)
             continue
         transcript = _load_json(pathlib.Path(transcript_path))
         words = _collect_words(transcript, rec.get("content_start"), rec.get("content_end"))
         if not words:
-            new_ranges.append(item)
+            new_ranges.append(retained_range)
             continue
 
         retained = [(item["source_start"], item["source_end"])]
@@ -293,7 +304,6 @@ def _apply_group(group, pending, clips, records, threshold):
             retained,
             threshold,
         )
-        word_refs = item.get("word_refs")
         for left, right in pieces:
             out = {
                 "recording_id": item["recording_id"],
@@ -301,12 +311,6 @@ def _apply_group(group, pending, clips, records, threshold):
                 "source_start": left,
                 "source_end": right,
             }
-            if word_refs is not None:
-                kept_refs = []
-                for ref in word_refs:
-                    if _dec(ref["start"]) >= left and _dec(ref["end"]) <= right:
-                        kept_refs.append(ref)
-                out["word_refs"] = kept_refs
             new_ranges.append(out)
 
     return {**group, "retained_ranges": new_ranges}

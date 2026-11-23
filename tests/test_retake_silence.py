@@ -290,7 +290,15 @@ class RetakeSilenceTests(unittest.TestCase):
             ),
             self.group(
                 2,
-                [self.retained("T002", "R2", 5.0, 13.0)],
+                [
+                    self.retained(
+                        "T002",
+                        "R2",
+                        5.0,
+                        13.0,
+                        word_refs=[{"start": 6.0, "end": 6.5, "text": "visual"}],
+                    )
+                ],
                 status="validated",
                 manual_review_required=False,
             ),
@@ -311,7 +319,6 @@ class RetakeSilenceTests(unittest.TestCase):
                     "source_id": "sha256:R1",
                     "source_start": 11.0,
                     "source_end": 13.17,
-                    "word_refs": [{"start": 11.0, "end": 11.4, "text": "kept"}],
                 }
             ],
         )
@@ -327,6 +334,9 @@ class RetakeSilenceTests(unittest.TestCase):
                 }
             ],
         )
+        expected_fields = {"recording_id", "source_id", "source_start", "source_end"}
+        self.assertEqual(set(by_id[1]["retained_ranges"][0]), expected_fields)
+        self.assertEqual(set(by_id[2]["retained_ranges"][0]), expected_fields)
 
     def test_invalid_plan_reports_location_without_writing_output(self):
         self.write_transcript("R1", [(11.0, 11.4, "a")])

@@ -1,6 +1,6 @@
 # BUG3 — Omit redundant word refs from retained ranges
 
-**Status:** PLANNED
+**Status:** DONE
 
 ## Goal and measurable outcome
 
@@ -45,7 +45,7 @@ duplicated from the transcripts into the persisted plan.
 
 ## Smallest safe fix
 
-- [ ] Remove `word_refs` from the persisted `retained_ranges` output - TODO
+- [x] Remove `word_refs` from the persisted `retained_ranges` output - DONE
 
 ## Explicitly out of scope
 
@@ -75,7 +75,7 @@ duplicated from the transcripts into the persisted plan.
    `source_start`, and `source_end`. Expect the talking-head bounds to be
    `[11.0, 13.17)` and the B-roll bounds to remain `[5.0, 13.0)`. Run the
    following command from the repository root and confirm the assertions fail
-   against the current CLI - TODO
+   against the current CLI - DONE
 
     ```sh
     PYTHONPATH=tests python3 -m unittest -q \
@@ -85,7 +85,7 @@ duplicated from the transcripts into the persisted plan.
 2. Update the `retained_ranges` schema in `2b-retake-plan.md` and the output
    of `apply_retakes_silence.py` so every persisted range has only the four
    timeline fields, including ranges that bypass pause cutting. Keep the
-   split verification internal. Rerun the test and confirm it passes - TODO
+   split verification internal. Rerun the test and confirm it passes - DONE
 
 ## Automated validation
 
@@ -114,7 +114,7 @@ duplicated from the transcripts into the persisted plan.
 
 ### Checkpoint 1 — Omit redundant word refs from retained ranges
 
-Status: TODO
+Status: APPROVED (review PASS)
 
 Commit message:
 
