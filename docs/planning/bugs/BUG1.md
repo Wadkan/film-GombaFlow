@@ -1,6 +1,6 @@
 # BUG1 — Record recognized HIBA retake deletions in the 2b plan
 
-**Status:** PLANNED
+**Status:** IN PROGRESS
 
 ## Goal and measurable outcome
 
@@ -50,9 +50,9 @@ into the canonical `deletions` field, so the failed attempt no longer stays in
 
 ## Smallest safe fix
 
-- [ ] Pin `deletions` and `command_omissions` in `2b-retake-plan.md` (325–330)
+- [x] Pin `deletions` and `command_omissions` in `2b-retake-plan.md` (325–330)
       and state that a recognized `HIBA` pair writes its replaced span into
-      `deletions` at (60–66) - TODO
+      `deletions` at (60–66) - DONE
 
 ## Explicitly out of scope
 
@@ -82,7 +82,7 @@ into the canonical `deletions` field, so the failed attempt no longer stays in
    `2b-retake-plan.md` (325–330) to name `deletions` and `command_omissions`
    and (60–66) to state the recognized `HIBA` pair writes the replaced span
    into `deletions`; verify a disposable talking-head fixture with a recognized
-   pair produces a `deletions` entry and no failed span in `retained_ranges` - TODO
+   pair produces a `deletions` entry and no failed span in `retained_ranges` - IN PROGRESS
 
 ## Automated validation
 
@@ -103,7 +103,7 @@ into the canonical `deletions` field, so the failed attempt no longer stays in
 
 ### Checkpoint 1 — Record recognized HIBA retake deletions
 
-Status: TODO
+Status: IN PROGRESS
 
 Commit message:
 

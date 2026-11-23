@@ -13,6 +13,10 @@
       "project_dir": "2-unlimited-claude-code-for",
       "transcript_ready": true,
       "transcript": "projects/2-unlimited-claude-code-for/source-transcript.md"
+    },
+    "local-gomba-2-cut-3-flow-test": {
+      "topic_id": "3-flow-test",
+      "project_dir": "3-flow-test"
     }
   }
 }

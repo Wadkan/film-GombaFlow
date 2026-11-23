@@ -61,8 +61,12 @@ A [parancsszótár](../gomba-1-script-writer/RECORDING_COMMANDS.md) szerinti
 hibajelzés egyértelművé teszi, hogy a közvetlenül előtte lévő beszédrész hibás és
 újramondásra szánt. Keresd meg a parancs utáni javított újrakezdést. A script
 és a szóidőbélyegek alapján keresd vissza az előző próbálkozásban azt a szót,
-ahonnan az újramondás átveszi a tartalmat. Ettől a szótól jelöld kihagyásra
-a lecserélt beszédet a hibajelzésig. A korábbi egyedi mondatkezdetet és a
+ahonnan az újramondás átveszi a tartalmat. Ha a `HIBA` / `HIBA újra` pár és
+az újrakezdési határ egyértelmű, az adott script-ID `groups` elemének
+`deletions` listájába írj pontosan egy törlési döntést a lecserélt beszédre.
+A tartomány az előző próbálkozásban az átvevő szótól a hibaparancsot lezáró
+varázsszó végéig tartson. Ez a tartomány ne
+szerepeljen a `retained_ranges` mezőben. A korábbi egyedi mondatkezdetet és a
 javított újramondást tartsd meg. Jelentésbeli egyezés elegendő.
 Ha a hibás beszéd kezdete bizonytalan, ne adj meg hozzá vágási határt.
 Őrizd meg az anyagot, és naplózd az `unresolved` listában és a `problems.md`-ben.
@@ -152,7 +156,8 @@ figyelembe; a `cue` eredeti szövegét és időhatárait őrizd meg.
 A parancsokat az ismétléskeresésnél ne tekintsd narrációnak.
 
 Beszédre szánt anyagban az érvényes parancs teljes blokkját, mindkét varázsszóval együtt, jelöld
-kihagyásra. Rögzítsd a parancs típusát, eredeti szövegét, `recording_id` és
+kihagyásra. Az adott script-ID `groups` elemének `command_omissions` listájában
+rögzítsd a parancs típusát, eredeti szövegét, `recording_id` és
 `source_id` értékét, forrásidő-határait és a felismerés alapját. A hibaparancs
 kihagyása külön döntés a hibás beszéd kivágásától: utóbbihoz továbbra is
 biztosan azonosítható újramondás és illesztés szükséges.
@@ -322,12 +327,16 @@ A terv sémája `1.1`, kötelező mezői:
   Minden script-ID-hoz legyen csoport. A kézi vágásra jelölt csoport is lehet
   `validated`, ha az összes forrástartománya ellenőrzött és megmarad.
   A `manual_review_required` ennél `true`, egyébként `false`.
-- Minden ismétlés miatti törlési döntés: a korábbi rész `recording_id` és szóhivatkozásai,
-  az eredeti kivágandó szöveg, a helyette megtartott újabb rész szóhivatkozásai
-  és az ismétlési megfelelés indoka.
-- Minden felvételi parancs miatti kihagyási döntés: a parancs típusa, eredeti
-  szövege, `recording_id`, `source_id`, a teljes blokk forrásidő-határai és a
-  felismerés alapja. Ehhez nem szükséges helyettesítő újramondás.
+  A két döntési lista kizárólag a megfelelő `groups` elem mezője.
+  Mindkettő kötelező, döntés hiányában üres lista (`[]`).
+    - `deletions`: az adott csoport ismétlés miatti törlési döntései. Egy elem
+      tartalmazza a korábbi rész `recording_id` értékét és szóhivatkozásait, az
+      eredeti kivágandó szöveget, a helyette megtartott újabb rész
+      szóhivatkozásait és az ismétlési megfelelés indokát.
+    - `command_omissions`: az adott csoport felvételi parancs miatti kihagyási
+      döntései. Egy elem tartalmazza a parancs típusát, eredeti szövegét,
+      `recording_id` és `source_id` értékét, a teljes blokk forrásidő-határait és
+      a felismerés alapját. Ehhez nem szükséges helyettesítő újramondás.
 - Minden csoportban `retained_ranges`: a végeredményben megmaradó forrás-
   tartományok rendezett listája, az igazolt döntéseket együtt alkalmazva. Minden elem tartalmazza a `recording_id`,
   `source_id`, `source_start` és `source_end` mezőket; a beszédnél az eredeti
