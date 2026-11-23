@@ -12,7 +12,7 @@ of the same bug: `BUG{N}b`, `BUG{N}c`, … — those letters do not consume the 
 integer. Never reuse an ID. Never take an ID from chat memory or a private notes
 file.
 
-Next unused integer: **BUG1**
+Next unused integer: **BUG4**
 
 Allocate an ID only from this clean registry: read **Next unused integer**,
 confirm the destination plan path is free, add the `## BUG{N}` heading with a
@@ -31,3 +31,15 @@ copy the whole plan into the release notes.
 ---
 
 ## Allocated Bug IDs
+
+## BUG1
+
+[Record recognized HIBA retake deletions in the 2b plan](bugs/BUG1.md)
+
+## BUG2
+
+[Accept script-headed topic IDs for local projects](bugs/BUG2.md)
+
+## BUG3
+
+[Omit redundant word refs from retained ranges](bugs/BUG3.md)
