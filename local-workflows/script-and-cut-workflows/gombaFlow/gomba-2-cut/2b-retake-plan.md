@@ -64,10 +64,12 @@ hibajelzés egyértelművé teszi, hogy a közvetlenül előtte lévő beszédr�
 ahonnan az újramondás átveszi a tartalmat. Ha a `HIBA` / `HIBA újra` pár és
 az újrakezdési határ egyértelmű, az adott script-ID `groups` elemének
 `deletions` listájába írj pontosan egy törlési döntést a lecserélt beszédre.
-A tartomány az előző próbálkozásban az átvevő szótól a hibaparancsot lezáró
-varázsszó végéig tartson. Ez a tartomány ne
-szerepeljen a `retained_ranges` mezőben. A korábbi egyedi mondatkezdetet és a
-javított újramondást tartsd meg. Jelentésbeli egyezés elegendő.
+A bejegyzés `source_start` mezője az átvevő szó kezdete az előző
+próbálkozásban, a `source_end` pedig az ugyanahhoz a hibaparancshoz tartozó
+`command_omissions` bejegyzés `source_end` értéke (a záró varázsszó vége).
+A korábbi rész szóhivatkozásai is tartalmazzák a teljes parancsblokkot a záró
+varázsszóig. A korábbi egyedi mondatkezdetet és a javított újramondást tartsd
+meg. Jelentésbeli egyezés elegendő.
 Ha a hibás beszéd kezdete bizonytalan, ne adj meg hozzá vágási határt.
 Őrizd meg az anyagot, és naplózd az `unresolved` listában és a `problems.md`-ben.
 Sárga review jelöléshez csak igazolt tartományt adj át.
@@ -176,6 +178,12 @@ egyesítsd, az átfedéseket kezeld, és ezek alapján képezd a közös, rendez
 meg. Ha a bizonytalanság csak egy csatlakozást érint, az igazolt döntéseket
 a többi tartományra alkalmazd. Ha a teljes csoport bizonytalan, őrizd meg
 a teljes forrástartományait a parancsokkal együtt.
+
+A csoport mentése előtt minden igazolt hibaparancshoz tartozó `deletions`
+bejegyzésnél ellenőrizd, hogy a végpont egyezik a parancsblokk végével, és
+az érintett felvétel egyetlen `retained_ranges` eleme sem fed át a teljes
+`[source_start, source_end)` törlési tartománnyal. Átfedés esetén mentés
+előtt vond ki a teljes törlési tartományt az érintett megtartási elemekből.
 
 A Full Takes review timeline a teljes forrásanyagot mutatja. A tervezett
 kivágást a `retained_ranges` alapján elhelyezett `KEEP IN` / `KEEP OUT`
