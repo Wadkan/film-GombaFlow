@@ -23,6 +23,5 @@ bump checkpoint for the versioned API contract.
 
 ## Ordered Backlog
 
-- [BUG2 — Accept script-headed topic IDs for local projects](bugs/BUG2.md)
 - [BUG1 — Record recognized HIBA retake deletions in the 2b plan](bugs/BUG1.md)
 - [BUG3 — Omit redundant word refs from retained ranges](bugs/BUG3.md)
