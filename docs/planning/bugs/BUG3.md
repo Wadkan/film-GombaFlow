@@ -67,13 +67,25 @@ duplicated from the transcripts into the persisted plan.
 
 ## Ordered TDD implementation tasks
 
-1. In `tests/test_retake_silence.py`, adjust the talking-head case to assert
-   the output `retained_ranges` entries carry no `word_refs`; observe it fail
-   against the current CLI. Run `python3 -m unittest test_retake_silence` to
-   register the failure - TODO
-2. Change `apply_retakes_silence.py` `_apply_group` and `2b-retake-plan.md`
-   (324–327) so `word_refs` is not persisted on `retained_ranges` while the
-   split verification stays internal; rerun the test to green - TODO
+1. In `tests/test_retake_silence.py`, update
+   `test_protected_groups_and_other_clip_types_are_preserved`. Keep the
+   existing legacy `word_refs` in the talking-head draft range and add valid
+   legacy `word_refs` to the B-roll draft range that bypasses pause cutting.
+   Assert that both output ranges have exactly `recording_id`, `source_id`,
+   `source_start`, and `source_end`. Expect the talking-head bounds to be
+   `[11.0, 13.17)` and the B-roll bounds to remain `[5.0, 13.0)`. Run the
+   following command from the repository root and confirm the assertions fail
+   against the current CLI - TODO
+
+    ```sh
+    PYTHONPATH=tests python3 -m unittest -q \
+      test_retake_silence.RetakeSilenceTests.test_protected_groups_and_other_clip_types_are_preserved
+    ```
+
+2. Update the `retained_ranges` schema in `2b-retake-plan.md` and the output
+   of `apply_retakes_silence.py` so every persisted range has only the four
+   timeline fields, including ranges that bypass pause cutting. Keep the
+   split verification internal. Rerun the test and confirm it passes - TODO
 
 ## Automated validation
 
@@ -81,8 +93,17 @@ duplicated from the transcripts into the persisted plan.
 
 ## Manual validation
 
-- Run the silence CLI on the `/tmp` `3-flow-test` copy and confirm the output
+- Run the silence CLI on the `3-flow-test` plan and confirm the output
   `retained_ranges` has no `word_refs`, while the four timeline fields remain.
+  From the repository root, run:
+
+    ```sh
+    python3 local-workflows/script-and-cut-workflows/gombaFlow/gomba-2-cut/scripts/apply_retakes_silence.py \
+      --draft local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/retake_plan.json \
+      --index local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/recording_index.json \
+      --config local-workflows/recording-config.json \
+      --output /tmp/bug3-manual-retake-plan.json
+    ```
 
 ## Rollout and rollback
 
@@ -101,6 +122,8 @@ Commit message:
 <SKILL> <BUG3> Omit redundant word refs from retained ranges
 ```
 
-### Unreleased
+#### Unreleased
 
 Unreleased: none — local workflow instruction change adds no VPS work.
+
+No API bump is required; this change affects only the local workflow JSON plan.
