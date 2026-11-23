@@ -31,6 +31,7 @@ Gear list:
 - Hikeman Waist Bag (Temu)
 - SIMOND MT500 Merino Wool Beanie
 - SIMOND MT500 Merino Wool Neck Gaiter
+- Decathlon összecsukható szék
 
 🍲 Cooking & Water
 
@@ -52,6 +53,13 @@ Gear list:
 - Gill Verso Dry Suit / S
 - Xcel Infiniti 8mm Round Toe Wetsuit Boots
 - SUP Quick Fin Screw
+- Decathlon SUP szállító kocsi: https://www.decathlon.hu/p/szallitokocsi-kajakhoz-sup-hoz/_/R-p-347605
+- Burley Flatbed Bike Cargo Trailer
+- Decathlon Tribord Pro 80 literes IPX4 táska
+- Itiwit úszássegítő mellény zsebekkel
+- Decathlon UV nyakvédő sapka
+- Decathlon UV nadrág hosszú
+- Decathlon UV póló hosszú
 
 🎥 Filming & Tech
 
