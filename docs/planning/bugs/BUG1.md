@@ -1,6 +1,6 @@
 # BUG1 — Record recognized HIBA retake deletions in the 2b plan
 
-**Status:** IN PROGRESS
+**Status:** DONE
 
 ## Goal and measurable outcome
 
@@ -82,7 +82,7 @@ into the canonical `deletions` field, so the failed attempt no longer stays in
    `2b-retake-plan.md` (325–330) to name `deletions` and `command_omissions`
    and (60–66) to state the recognized `HIBA` pair writes the replaced span
    into `deletions`; verify a disposable talking-head fixture with a recognized
-   pair produces a `deletions` entry and no failed span in `retained_ranges` - IN PROGRESS
+   pair produces a `deletions` entry and no failed span in `retained_ranges` - DONE
 
 ## Automated validation
 
@@ -93,7 +93,10 @@ into the canonical `deletions` field, so the failed attempt no longer stays in
 - Run the 2b agent on a disposable talking-head fixture with a fully recognized
   `HIBA újra` pair and confirm the output `deletions` entry covers the takeover
   word through the magic-word pair, and the failed span is absent from
-  `retained_ranges`.
+  `retained_ranges` - PASS. Four recognized retake deletions were checked.
+  Each begins at the previous attempt's takeover word, ends at the matching
+  command's closing magic word, has complete transcript word references, and
+  overlaps no retained range. The 2b validator exited successfully.
 
 ## Rollout and rollback
 
@@ -103,7 +106,7 @@ into the canonical `deletions` field, so the failed attempt no longer stays in
 
 ### Checkpoint 1 — Record recognized HIBA retake deletions
 
-Status: IN PROGRESS
+Status: APPROVED (review PASS)
 
 Commit message:
 

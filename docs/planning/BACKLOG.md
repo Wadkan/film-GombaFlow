@@ -22,5 +22,3 @@ add a new backlog item.
 bump checkpoint for the versioned API contract.
 
 ## Ordered Backlog
-
-- [BUG1 — Record recognized HIBA retake deletions in the 2b plan](bugs/BUG1.md)
