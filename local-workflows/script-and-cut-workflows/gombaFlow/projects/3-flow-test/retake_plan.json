@@ -1,0 +1,911 @@
+{
+  "schema_version": "1.1",
+  "script_sha256": "e0425e2b35b730c76dc0cbe55c39e06d03449273145576e5aaec0f8fdbb8c7c7",
+  "recording_index_sha256": "902974733f8060893b16536ff071473548e7a826ef673a367d04b406cb64a3df",
+  "coverage_checked": true,
+  "status": "needs_review",
+  "groups": [
+    {
+      "script_id": "1",
+      "timeline": "Flow teszt — vágási próbafelvétel",
+      "status": "validated",
+      "manual_review_required": false,
+      "recording_order": [
+        "R007",
+        "R012"
+      ],
+      "order_evidence": {
+        "basis": "media_creation_time",
+        "field": "format.tags.creation_time",
+        "values": [
+          "2026-11-22T22:57:48.000000Z",
+          "2026-11-22T23:05:13.000000Z"
+        ],
+        "timezone": "UTC",
+        "source_paths": [
+          "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v2.mov",
+          "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v4.mov"
+        ]
+      },
+      "deletions": [
+        {
+          "recording_id": "R007",
+          "previous_word_refs": [
+            {
+              "start": 9.16,
+              "end": 10.24,
+              "text": "Ebben"
+            },
+            {
+              "start": 10.24,
+              "end": 10.34,
+              "text": "a"
+            },
+            {
+              "start": 10.34,
+              "end": 10.58,
+              "text": "rövid"
+            },
+            {
+              "start": 10.58,
+              "end": 11.36,
+              "text": "felvételben"
+            },
+            {
+              "start": 11.36,
+              "end": 11.54,
+              "text": "azt"
+            },
+            {
+              "start": 11.54,
+              "end": 12.04,
+              "text": "mutatom"
+            },
+            {
+              "start": 12.04,
+              "end": 12.26,
+              "text": "meg,"
+            },
+            {
+              "start": 12.62,
+              "end": 12.88,
+              "text": "hogyan"
+            },
+            {
+              "start": 12.88,
+              "end": 13.32,
+              "text": "próbálom"
+            },
+            {
+              "start": 13.32,
+              "end": 13.48,
+              "text": "ki"
+            },
+            {
+              "start": 13.48,
+              "end": 13.58,
+              "text": "a"
+            },
+            {
+              "start": 13.58,
+              "end": 14.06,
+              "text": "válgási"
+            },
+            {
+              "start": 14.06,
+              "end": 14.52,
+              "text": "folyamatot"
+            },
+            {
+              "start": 14.52,
+              "end": 14.64,
+              "text": "egy"
+            },
+            {
+              "start": 14.64,
+              "end": 15.16,
+              "text": "tiszta,"
+            },
+            {
+              "start": 15.62,
+              "end": 16.38,
+              "text": "hétköznapi,"
+            },
+            {
+              "start": 19.54,
+              "end": 20.96,
+              "text": "beszélgetős,"
+            },
+            {
+              "start": 23.32,
+              "end": 24.02,
+              "text": "anyagon."
+            }
+          ],
+          "original_text": "Ebben a rövid felvételben azt mutatom meg, hogyan próbálom ki a vágási folyamatot egy tiszta, hétköznapi, beszélgetős, anyagon.",
+          "replacement_recording_id": "R012",
+          "replacement_word_refs": [
+            {
+              "start": 4.17,
+              "end": 5.01,
+              "text": "Eben"
+            },
+            {
+              "start": 5.01,
+              "end": 5.13,
+              "text": "a"
+            },
+            {
+              "start": 5.13,
+              "end": 5.33,
+              "text": "rövid"
+            },
+            {
+              "start": 5.33,
+              "end": 6.03,
+              "text": "felvételben"
+            },
+            {
+              "start": 6.03,
+              "end": 6.27,
+              "text": "azt"
+            },
+            {
+              "start": 6.27,
+              "end": 6.67,
+              "text": "mutatom"
+            },
+            {
+              "start": 6.67,
+              "end": 6.87,
+              "text": "meg,"
+            },
+            {
+              "start": 7.05,
+              "end": 7.27,
+              "text": "hogyan"
+            },
+            {
+              "start": 7.27,
+              "end": 7.73,
+              "text": "próbálom"
+            },
+            {
+              "start": 7.73,
+              "end": 7.87,
+              "text": "ki"
+            },
+            {
+              "start": 7.87,
+              "end": 7.95,
+              "text": "a"
+            },
+            {
+              "start": 7.95,
+              "end": 8.41,
+              "text": "vágási"
+            },
+            {
+              "start": 8.41,
+              "end": 8.89,
+              "text": "folyamatot"
+            },
+            {
+              "start": 8.89,
+              "end": 9.03,
+              "text": "egy"
+            },
+            {
+              "start": 9.03,
+              "end": 9.45,
+              "text": "tiszta"
+            },
+            {
+              "start": 9.45,
+              "end": 10.21,
+              "text": "hétköznapi"
+            },
+            {
+              "start": 10.21,
+              "end": 11.03,
+              "text": "beszélgettős"
+            },
+            {
+              "start": 11.03,
+              "end": 11.49,
+              "text": "anyagon"
+            }
+          ],
+          "reason": "A későbbi v4 felvétel teljes egészében, azonos jelentéssel újramondja a korábbi v2 narrációt; rögzítési metaadat szerint v4 későbbi."
+        }
+      ],
+      "command_omissions": [
+        {
+          "type": "identifier",
+          "original_text": "Sárpenyő Timeline 3 Script 1 Sárpenyő",
+          "recording_id": "R007",
+          "source_id": "sha256:28c61277ece643340e20742e709b16ef58e24b1e802df3b6b3b0fa083d92fca1",
+          "source_start": 1.78,
+          "source_end": 5.36,
+          "recognition_basis": "cue mező és szóidőbélyeges teljes Timeline 3 Script 1 parancs; mindkét keretszó felismerhető."
+        },
+        {
+          "type": "identifier",
+          "original_text": "Szerpenyő Timeline 3 Script 1 Szerpenyő",
+          "recording_id": "R012",
+          "source_id": "sha256:728d09b6d55c11b4be7b1c6913f2446ededf5fc7db6dabafe8b7251bd838e890",
+          "source_start": 0.85,
+          "source_end": 4.17,
+          "recognition_basis": "cue mező és szóidőbélyeges teljes Timeline 3 Script 1 parancs; mindkét keretszó felismerhető."
+        }
+      ],
+      "retained_ranges": [
+        {
+          "recording_id": "R012",
+          "source_id": "sha256:728d09b6d55c11b4be7b1c6913f2446ededf5fc7db6dabafe8b7251bd838e890",
+          "source_start": 4.17,
+          "source_end": 11.49
+        }
+      ]
+    },
+    {
+      "script_id": "2",
+      "timeline": "Flow teszt — vágási próbafelvétel",
+      "status": "validated",
+      "manual_review_required": false,
+      "recording_order": [
+        "R002",
+        "R003"
+      ],
+      "order_evidence": {
+        "basis": "same_source_source_time",
+        "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v1.mov",
+        "recording_ids": [
+          "R002",
+          "R003"
+        ],
+        "ranges": [
+          [
+            1.14,
+            41.31
+          ],
+          [
+            41.31,
+            54.35
+          ]
+        ]
+      },
+      "deletions": [
+        {
+          "recording_id": "R002",
+          "previous_word_refs": [
+            {
+              "start": 14.37,
+              "end": 15.21,
+              "text": "Aztán"
+            },
+            {
+              "start": 15.21,
+              "end": 15.99,
+              "text": "szendékosan"
+            },
+            {
+              "start": 15.99,
+              "end": 16.45,
+              "text": "teszek,"
+            }
+          ],
+          "original_text": "Aztán szendékosan teszek,",
+          "replacement_recording_id": "R002",
+          "replacement_word_refs": [
+            {
+              "start": 21.21,
+              "end": 22.21,
+              "text": "Aztán"
+            },
+            {
+              "start": 22.21,
+              "end": 22.89,
+              "text": "szendékosan"
+            },
+            {
+              "start": 22.89,
+              "end": 23.19,
+              "text": "teszek"
+            }
+          ],
+          "reason": "A következő, javított nekifutás ugyanazt a mondatkezdetet ismétli; a későbbi példány eleje marad."
+        },
+        {
+          "recording_id": "R002",
+          "previous_word_refs": [
+            {
+              "start": 23.19,
+              "end": 23.55,
+              "text": "néhány"
+            },
+            {
+              "start": 23.55,
+              "end": 24.13,
+              "text": "szünetetés"
+            },
+            {
+              "start": 24.13,
+              "end": 24.55,
+              "text": "hibát,"
+            },
+            {
+              "start": 24.93,
+              "end": 25.07,
+              "text": "hogy"
+            },
+            {
+              "start": 25.07,
+              "end": 25.17,
+              "text": "a"
+            },
+            {
+              "start": 25.17,
+              "end": 25.59,
+              "text": "vágás"
+            },
+            {
+              "start": 25.59,
+              "end": 26.03,
+              "text": "után"
+            }
+          ],
+          "original_text": "néhány szünetetés hibát, hogy a vágás után",
+          "replacement_recording_id": "R002",
+          "replacement_word_refs": [
+            {
+              "start": 29.99,
+              "end": 30.97,
+              "text": "Néhány"
+            },
+            {
+              "start": 30.97,
+              "end": 31.55,
+              "text": "szünetetés"
+            },
+            {
+              "start": 31.55,
+              "end": 31.87,
+              "text": "hibát,"
+            },
+            {
+              "start": 31.93,
+              "end": 32.03,
+              "text": "hogy"
+            },
+            {
+              "start": 32.03,
+              "end": 32.13,
+              "text": "a"
+            },
+            {
+              "start": 32.13,
+              "end": 32.51,
+              "text": "vágás"
+            },
+            {
+              "start": 32.51,
+              "end": 32.81,
+              "text": "után"
+            },
+            {
+              "start": 32.81,
+              "end": 33.27,
+              "text": "pontosan"
+            },
+            {
+              "start": 33.27,
+              "end": 33.59,
+              "text": "vissza"
+            },
+            {
+              "start": 33.59,
+              "end": 33.87,
+              "text": "tudja"
+            },
+            {
+              "start": 33.87,
+              "end": 34.29,
+              "text": "madni"
+            },
+            {
+              "start": 34.29,
+              "end": 35.11,
+              "text": "a"
+            },
+            {
+              "start": 37.54,
+              "end": 38.18,
+              "text": "megtartandó"
+            },
+            {
+              "start": 38.18,
+              "end": 38.76,
+              "text": "részeket"
+            }
+          ],
+          "reason": "A HIBA újra utáni harmadik nekifutás a korábbi mondat „Néhány” szavától folytatja és helyettesíti ezt a hibás folytatást."
+        }
+      ],
+      "command_omissions": [
+        {
+          "type": "identifier",
+          "original_text": "Serpenyő, Timeline 3, Script 2-tő serpenyő",
+          "recording_id": "R002",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 1.14,
+          "source_end": 4.88,
+          "recognition_basis": "cue mező és teljes szóidőbélyeges azonosítóparancs."
+        },
+        {
+          "type": "error",
+          "original_text": "serpenyő hiba újra serpenyő",
+          "recording_id": "R002",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 19.03,
+          "source_end": 21.21,
+          "recognition_basis": "A két varázsszó között a szótár szerinti HIBA újra parancs áll."
+        },
+        {
+          "type": "error",
+          "original_text": "Serpenyő, hiba újra serpenyő",
+          "recording_id": "R002",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 27.27,
+          "source_end": 29.99,
+          "recognition_basis": "A két varázsszó között a szótár szerinti HIBA újra parancs áll."
+        },
+        {
+          "type": "identifier",
+          "original_text": "Serpenyő, Timeline 3, Script 2-tő serpenyő",
+          "recording_id": "R003",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 41.31,
+          "source_end": 44.25,
+          "recognition_basis": "cue mező és teljes szóidőbélyeges azonosítóparancs; cue_only take, narráció nélkül."
+        }
+      ],
+      "retained_ranges": [
+        {
+          "recording_id": "R002",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 9.13,
+          "source_end": 14.37
+        },
+        {
+          "recording_id": "R002",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 21.21,
+          "source_end": 23.19
+        },
+        {
+          "recording_id": "R002",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 29.99,
+          "source_end": 35.11
+        },
+        {
+          "recording_id": "R002",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 37.54,
+          "source_end": 38.76
+        }
+      ]
+    },
+    {
+      "script_id": "3",
+      "timeline": "Flow teszt — vágási próbafelvétel",
+      "status": "blocked",
+      "manual_review_required": true,
+      "recording_order": [],
+      "order_evidence": null,
+      "deletions": [],
+      "command_omissions": [],
+      "retained_ranges": []
+    },
+    {
+      "script_id": "4",
+      "timeline": "Flow teszt — vágási próbafelvétel",
+      "status": "validated",
+      "manual_review_required": false,
+      "recording_order": [
+        "R004"
+      ],
+      "order_evidence": {
+        "basis": "single_recording",
+        "recording_id": "R004"
+      },
+      "deletions": [
+        {
+          "recording_id": "R004",
+          "previous_word_refs": [
+            {
+              "start": 57.63,
+              "end": 58.17,
+              "text": "A"
+            },
+            {
+              "start": 58.17,
+              "end": 58.31,
+              "text": "cél"
+            },
+            {
+              "start": 58.31,
+              "end": 58.51,
+              "text": "az,"
+            },
+            {
+              "start": 58.61,
+              "end": 58.73,
+              "text": "hogy"
+            },
+            {
+              "start": 58.73,
+              "end": 58.81,
+              "text": "a"
+            },
+            {
+              "start": 58.81,
+              "end": 59.41,
+              "text": "készanyagban"
+            },
+            {
+              "start": 59.41,
+              "end": 59.57,
+              "text": "csak"
+            },
+            {
+              "start": 59.57,
+              "end": 59.83,
+              "text": "az"
+            },
+            {
+              "start": 59.83,
+              "end": 60.21,
+              "text": "maradjon,"
+            },
+            {
+              "start": 60.53,
+              "end": 60.81,
+              "text": "amit"
+            },
+            {
+              "start": 60.81,
+              "end": 61.33,
+              "text": "tényleg..."
+            }
+          ],
+          "original_text": "A cél az, hogy a készanyagban csak az maradjon, amit tényleg...",
+          "replacement_recording_id": "R004",
+          "replacement_word_refs": [
+            {
+              "start": 64.51,
+              "end": 64.79,
+              "text": "A"
+            },
+            {
+              "start": 64.79,
+              "end": 64.95,
+              "text": "cél"
+            },
+            {
+              "start": 64.95,
+              "end": 65.19,
+              "text": "az,"
+            },
+            {
+              "start": 65.27,
+              "end": 65.37,
+              "text": "hogy"
+            },
+            {
+              "start": 65.37,
+              "end": 65.45,
+              "text": "a"
+            },
+            {
+              "start": 65.45,
+              "end": 66.07,
+              "text": "készanyagban"
+            },
+            {
+              "start": 66.07,
+              "end": 66.23,
+              "text": "csak"
+            },
+            {
+              "start": 66.23,
+              "end": 66.49,
+              "text": "az"
+            },
+            {
+              "start": 66.49,
+              "end": 66.85,
+              "text": "maradjon,"
+            },
+            {
+              "start": 66.91,
+              "end": 67.11,
+              "text": "amit"
+            },
+            {
+              "start": 67.11,
+              "end": 67.43,
+              "text": "tényleg"
+            },
+            {
+              "start": 67.43,
+              "end": 68.19,
+              "text": "megtartottam"
+            }
+          ],
+          "reason": "A HIBA újra utáni nekifutás újramondja és befejezi az előző félbemaradt mondatot."
+        },
+        {
+          "recording_id": "R004",
+          "previous_word_refs": [
+            {
+              "start": 71.49,
+              "end": 71.65,
+              "text": "És"
+            },
+            {
+              "start": 71.65,
+              "end": 71.77,
+              "text": "a"
+            },
+            {
+              "start": 71.77,
+              "end": 71.99,
+              "text": "végén"
+            },
+            {
+              "start": 71.99,
+              "end": 72.15,
+              "text": "egy"
+            },
+            {
+              "start": 72.15,
+              "end": 72.55,
+              "text": "folyamatos"
+            },
+            {
+              "start": 72.55,
+              "end": 73.17,
+              "text": "érthető"
+            },
+            {
+              "start": 73.17,
+              "end": 74.13,
+              "text": "rész"
+            }
+          ],
+          "original_text": "És a végén egy folyamatos érthető rész",
+          "replacement_recording_id": "R004",
+          "replacement_word_refs": [
+            {
+              "start": 76.87,
+              "end": 77.31,
+              "text": "És"
+            },
+            {
+              "start": 77.31,
+              "end": 77.41,
+              "text": "a"
+            },
+            {
+              "start": 77.41,
+              "end": 77.79,
+              "text": "végén"
+            },
+            {
+              "start": 77.79,
+              "end": 77.95,
+              "text": "egy"
+            },
+            {
+              "start": 77.95,
+              "end": 78.41,
+              "text": "folyamatos"
+            },
+            {
+              "start": 78.41,
+              "end": 78.99,
+              "text": "érthető"
+            },
+            {
+              "start": 78.99,
+              "end": 79.31,
+              "text": "rész"
+            },
+            {
+              "start": 79.31,
+              "end": 79.61,
+              "text": "álljon"
+            },
+            {
+              "start": 79.61,
+              "end": 80.05,
+              "text": "össze"
+            }
+          ],
+          "reason": "A későbbi nekifutás megismétli ezt a mondatrészt és befejezi; a legutolsó változat marad."
+        }
+      ],
+      "command_omissions": [
+        {
+          "type": "identifier",
+          "original_text": "Serpenyő, Timeline 3, Script 4-tő serpenyő",
+          "recording_id": "R004",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 54.35,
+          "source_end": 57.63,
+          "recognition_basis": "cue mező és teljes szóidőbélyeges azonosítóparancs."
+        },
+        {
+          "type": "error",
+          "original_text": "Serpenyő, hiba újra serpenyő",
+          "recording_id": "R004",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 62.47,
+          "source_end": 64.51,
+          "recognition_basis": "A két varázsszó közötti HIBA újra parancs."
+        },
+        {
+          "type": "error",
+          "original_text": "Serpenyő, hiba újra serpenyő",
+          "recording_id": "R004",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 74.13,
+          "source_end": 76.87,
+          "recognition_basis": "A két varázsszó közötti HIBA újra parancs."
+        }
+      ],
+      "retained_ranges": [
+        {
+          "recording_id": "R004",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 57.63,
+          "source_end": 61.33
+        },
+        {
+          "recording_id": "R004",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 64.51,
+          "source_end": 71.49
+        },
+        {
+          "recording_id": "R004",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 76.87,
+          "source_end": 80.05
+        }
+      ]
+    },
+    {
+      "script_id": "5",
+      "timeline": "Flow teszt — vágási próbafelvétel",
+      "status": "validated",
+      "manual_review_required": false,
+      "recording_order": [
+        "R005"
+      ],
+      "order_evidence": {
+        "basis": "single_recording",
+        "recording_id": "R005"
+      },
+      "deletions": [],
+      "command_omissions": [],
+      "retained_ranges": [
+        {
+          "recording_id": "R005",
+          "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+          "source_start": 82.61,
+          "source_end": 96.77551
+        }
+      ]
+    },
+    {
+      "script_id": "6",
+      "timeline": "Flow teszt — vágási próbafelvétel",
+      "status": "blocked",
+      "manual_review_required": true,
+      "recording_order": [],
+      "order_evidence": null,
+      "deletions": [],
+      "command_omissions": [],
+      "retained_ranges": []
+    },
+    {
+      "script_id": "7",
+      "timeline": "Flow teszt — vágási próbafelvétel",
+      "status": "validated",
+      "manual_review_required": false,
+      "recording_order": [
+        "R010"
+      ],
+      "order_evidence": {
+        "basis": "single_recording",
+        "recording_id": "R010"
+      },
+      "deletions": [],
+      "command_omissions": [
+        {
+          "type": "identifier",
+          "original_text": "Serpenyő, Timeline 3, Script 7, Serpenyő",
+          "recording_id": "R010",
+          "source_id": "sha256:9d7a2bee63c686e93860b0af15a28bfc1c251c3c5a46f86e6ff1d9d72ea06d76",
+          "source_start": 41.01,
+          "source_end": 44.05,
+          "recognition_basis": "cue mező és teljes szóidőbélyeges azonosítóparancs."
+        }
+      ],
+      "retained_ranges": [
+        {
+          "recording_id": "R010",
+          "source_id": "sha256:9d7a2bee63c686e93860b0af15a28bfc1c251c3c5a46f86e6ff1d9d72ea06d76",
+          "source_start": 44.05,
+          "source_end": 53.445261
+        }
+      ]
+    }
+  ],
+  "unresolved": [
+    {
+      "script_id": null,
+      "recording_id": "R001",
+      "reason": "Első azonosítóbemondás előtti forrástartomány; nincs script-hozzárendelés.",
+      "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v1.mov",
+      "source_start": 0,
+      "source_end": 1.14
+    },
+    {
+      "script_id": null,
+      "recording_id": "R006",
+      "reason": "Első azonosítóbemondás előtti forrástartomány; nincs script-hozzárendelés.",
+      "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v2.mov",
+      "source_start": 0,
+      "source_end": 1.78
+    },
+    {
+      "script_id": null,
+      "recording_id": "R008",
+      "reason": "Első azonosítóbemondás előtti forrástartomány; nincs script-hozzárendelés.",
+      "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v3.mov",
+      "source_start": 0,
+      "source_end": 2.38
+    },
+    {
+      "script_id": null,
+      "recording_id": "R009",
+      "reason": "A teljes timeline/script parancs hibásan ismert fel; a script-ID nem bizonyítható, ezért a teljes tartomány megőrzendő.",
+      "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v3.mov",
+      "source_start": 2.38,
+      "source_end": 41.01
+    },
+    {
+      "script_id": null,
+      "recording_id": "R011",
+      "reason": "Első azonosítóbemondás előtti forrástartomány; nincs script-hozzárendelés.",
+      "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v4.mov",
+      "source_start": 0,
+      "source_end": 0.85
+    },
+    {
+      "script_id": "3",
+      "reason": "Nincs script-ID 3-hoz azonosított felvétel; az azonosítatlan rekordok miatt a hiány nem bizonyított, azonosításra vár."
+    },
+    {
+      "script_id": "6",
+      "reason": "Nincs script-ID 6-hoz azonosított felvétel; az R009 hibás cue-ja akár ide is tartozhat, de nem rendelhető hozzá találgatással."
+    }
+  ],
+  "missing_items": [],
+  "approved_omissions": [],
+  "pending_index_update": null
+}

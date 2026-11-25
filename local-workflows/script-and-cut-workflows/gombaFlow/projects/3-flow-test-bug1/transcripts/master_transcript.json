@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "recordings": [
+    {
+      "source_id": "sha256:8d1408c523826aec071f5e5e72c88b8629e50b95ebdaadcd97340f7dbc7618c9",
+      "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v1.mov",
+      "transcript_path": "recording_0001.json",
+      "status": "transcribed"
+    },
+    {
+      "source_id": "sha256:28c61277ece643340e20742e709b16ef58e24b1e802df3b6b3b0fa083d92fca1",
+      "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v2.mov",
+      "transcript_path": "recording_0002.json",
+      "status": "transcribed"
+    },
+    {
+      "source_id": "sha256:9d7a2bee63c686e93860b0af15a28bfc1c251c3c5a46f86e6ff1d9d72ea06d76",
+      "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v3.mov",
+      "transcript_path": "recording_0003.json",
+      "status": "transcribed"
+    },
+    {
+      "source_id": "sha256:728d09b6d55c11b4be7b1c6913f2446ededf5fc7db6dabafe8b7251bd838e890",
+      "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v4.mov",
+      "transcript_path": "recording_0004.json",
+      "status": "transcribed"
+    }
+  ]
+}

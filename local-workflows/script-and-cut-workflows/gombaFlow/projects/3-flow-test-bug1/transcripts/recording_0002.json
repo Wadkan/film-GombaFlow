@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0",
+  "source_id": "sha256:28c61277ece643340e20742e709b16ef58e24b1e802df3b6b3b0fa083d92fca1",
+  "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v2.mov",
+  "file_name": "v2.mov",
+  "duration": 28.254467,
+  "time_base": "source_seconds",
+  "language": "hu",
+  "status": "transcribed",
+  "segments": [
+    {
+      "start": 1.78,
+      "end": 5.36,
+      "text": " Sárpenyő Timeline 3 Script 1 Sárpenyő",
+      "words": [
+        {
+          "start": 1.78,
+          "end": 2.78,
+          "text": " Sárpenyő"
+        },
+        {
+          "start": 2.78,
+          "end": 3.38,
+          "text": " Timeline"
+        },
+        {
+          "start": 3.38,
+          "end": 3.76,
+          "text": " 3"
+        },
+        {
+          "start": 3.76,
+          "end": 4.18,
+          "text": " Script"
+        },
+        {
+          "start": 4.18,
+          "end": 4.5,
+          "text": " 1"
+        },
+        {
+          "start": 4.5,
+          "end": 5.36,
+          "text": " Sárpenyő"
+        }
+      ]
+    },
+    {
+      "start": 9.16,
+      "end": 12.26,
+      "text": " Ebben a rövid felvételben azt mutatom meg,",
+      "words": [
+        {
+          "start": 9.16,
+          "end": 10.24,
+          "text": " Ebben"
+        },
+        {
+          "start": 10.24,
+          "end": 10.34,
+          "text": " a"
+        },
+        {
+          "start": 10.34,
+          "end": 10.58,
+          "text": " rövid"
+        },
+        {
+          "start": 10.58,
+          "end": 11.36,
+          "text": " felvételben"
+        },
+        {
+          "start": 11.36,
+          "end": 11.54,
+          "text": " azt"
+        },
+        {
+          "start": 11.54,
+          "end": 12.04,
+          "text": " mutatom"
+        },
+        {
+          "start": 12.04,
+          "end": 12.26,
+          "text": " meg,"
+        }
+      ]
+    },
+    {
+      "start": 12.62,
+      "end": 24.02,
+      "text": " hogyan próbálom ki a válgási folyamatot egy tiszta, hétköznapi, beszélgetős, anyagon.",
+      "words": [
+        {
+          "start": 12.62,
+          "end": 12.88,
+          "text": " hogyan"
+        },
+        {
+          "start": 12.88,
+          "end": 13.32,
+          "text": " próbálom"
+        },
+        {
+          "start": 13.32,
+          "end": 13.48,
+          "text": " ki"
+        },
+        {
+          "start": 13.48,
+          "end": 13.58,
+          "text": " a"
+        },
+        {
+          "start": 13.58,
+          "end": 14.06,
+          "text": " válgási"
+        },
+        {
+          "start": 14.06,
+          "end": 14.52,
+          "text": " folyamatot"
+        },
+        {
+          "start": 14.52,
+          "end": 14.64,
+          "text": " egy"
+        },
+        {
+          "start": 14.64,
+          "end": 15.16,
+          "text": " tiszta,"
+        },
+        {
+          "start": 15.62,
+          "end": 16.38,
+          "text": " hétköznapi,"
+        },
+        {
+          "start": 19.54,
+          "end": 20.96,
+          "text": " beszélgetős,"
+        },
+        {
+          "start": 23.32,
+          "end": 24.02,
+          "text": " anyagon."
+        }
+      ]
+    }
+  ]
+}

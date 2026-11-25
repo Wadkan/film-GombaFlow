@@ -1,0 +1,623 @@
+{
+  "schema_version": "1.0",
+  "source_id": "sha256:9d7a2bee63c686e93860b0af15a28bfc1c251c3c5a46f86e6ff1d9d72ea06d76",
+  "source_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test/v3.mov",
+  "file_name": "v3.mov",
+  "duration": 53.445261,
+  "time_base": "source_seconds",
+  "language": "hu",
+  "status": "transcribed",
+  "segments": [
+    {
+      "start": 2.38,
+      "end": 5.2,
+      "text": " Serpenyő, Timeline, Iron Script, hadd serpenyő",
+      "words": [
+        {
+          "start": 2.38,
+          "end": 3.24,
+          "text": " Serpenyő,"
+        },
+        {
+          "start": 3.32,
+          "end": 3.64,
+          "text": " Timeline,"
+        },
+        {
+          "start": 3.76,
+          "end": 3.92,
+          "text": " Iron"
+        },
+        {
+          "start": 3.92,
+          "end": 4.28,
+          "text": " Script,"
+        },
+        {
+          "start": 4.48,
+          "end": 4.64,
+          "text": " hadd"
+        },
+        {
+          "start": 4.64,
+          "end": 5.2,
+          "text": " serpenyő"
+        }
+      ]
+    },
+    {
+      "start": 6.02,
+      "end": 9.16,
+      "text": " A felvétel során figyelek arra, hogy a benveldő le",
+      "words": [
+        {
+          "start": 6.02,
+          "end": 6.66,
+          "text": " A"
+        },
+        {
+          "start": 6.66,
+          "end": 7.1,
+          "text": " felvétel"
+        },
+        {
+          "start": 7.1,
+          "end": 7.4,
+          "text": " során"
+        },
+        {
+          "start": 7.4,
+          "end": 7.82,
+          "text": " figyelek"
+        },
+        {
+          "start": 7.82,
+          "end": 8.34,
+          "text": " arra,"
+        },
+        {
+          "start": 8.4,
+          "end": 8.52,
+          "text": " hogy"
+        },
+        {
+          "start": 8.52,
+          "end": 8.58,
+          "text": " a"
+        },
+        {
+          "start": 8.58,
+          "end": 8.98,
+          "text": " benveldő"
+        },
+        {
+          "start": 8.98,
+          "end": 9.16,
+          "text": " le"
+        }
+      ]
+    },
+    {
+      "start": 9.16,
+      "end": 11.5,
+      "text": " Serpenyő, hiba újra serpenyő",
+      "words": [
+        {
+          "start": 9.16,
+          "end": 10.28,
+          "text": " Serpenyő,"
+        },
+        {
+          "start": 10.34,
+          "end": 10.48,
+          "text": " hiba"
+        },
+        {
+          "start": 10.48,
+          "end": 10.76,
+          "text": " újra"
+        },
+        {
+          "start": 10.76,
+          "end": 11.5,
+          "text": " serpenyő"
+        }
+      ]
+    },
+    {
+      "start": 11.5,
+      "end": 15.9,
+      "text": " A felvétel során figyelek arra, hogy a bemondás után mindig egyértelműen elindulj",
+      "words": [
+        {
+          "start": 11.5,
+          "end": 11.52,
+          "text": " A"
+        },
+        {
+          "start": 11.52,
+          "end": 12.32,
+          "text": " felvétel"
+        },
+        {
+          "start": 12.32,
+          "end": 12.64,
+          "text": " során"
+        },
+        {
+          "start": 12.64,
+          "end": 13.04,
+          "text": " figyelek"
+        },
+        {
+          "start": 13.04,
+          "end": 13.34,
+          "text": " arra,"
+        },
+        {
+          "start": 13.42,
+          "end": 13.48,
+          "text": " hogy"
+        },
+        {
+          "start": 13.48,
+          "end": 13.54,
+          "text": " a"
+        },
+        {
+          "start": 13.54,
+          "end": 13.98,
+          "text": " bemondás"
+        },
+        {
+          "start": 13.98,
+          "end": 14.22,
+          "text": " után"
+        },
+        {
+          "start": 14.22,
+          "end": 14.58,
+          "text": " mindig"
+        },
+        {
+          "start": 14.58,
+          "end": 15.24,
+          "text": " egyértelműen"
+        },
+        {
+          "start": 15.24,
+          "end": 15.9,
+          "text": " elindulj"
+        }
+      ]
+    },
+    {
+      "start": 15.9,
+      "end": 18.5,
+      "text": " Serpenyő, hiba újra serpenyő",
+      "words": [
+        {
+          "start": 15.9,
+          "end": 17.16,
+          "text": " Serpenyő,"
+        },
+        {
+          "start": 17.3,
+          "end": 17.42,
+          "text": " hiba"
+        },
+        {
+          "start": 17.42,
+          "end": 17.82,
+          "text": " újra"
+        },
+        {
+          "start": 17.82,
+          "end": 18.5,
+          "text": " serpenyő"
+        }
+      ]
+    },
+    {
+      "start": 18.5,
+      "end": 23.04,
+      "text": " A felvétel során figyelek arra, hogy a bemondás után mindig egyértelműen elindulj",
+      "words": [
+        {
+          "start": 18.5,
+          "end": 18.92,
+          "text": " A"
+        },
+        {
+          "start": 18.92,
+          "end": 19.42,
+          "text": " felvétel"
+        },
+        {
+          "start": 19.42,
+          "end": 19.74,
+          "text": " során"
+        },
+        {
+          "start": 19.74,
+          "end": 20.14,
+          "text": " figyelek"
+        },
+        {
+          "start": 20.14,
+          "end": 20.52,
+          "text": " arra,"
+        },
+        {
+          "start": 20.82,
+          "end": 20.92,
+          "text": " hogy"
+        },
+        {
+          "start": 20.92,
+          "end": 20.98,
+          "text": " a"
+        },
+        {
+          "start": 20.98,
+          "end": 21.38,
+          "text": " bemondás"
+        },
+        {
+          "start": 21.38,
+          "end": 21.64,
+          "text": " után"
+        },
+        {
+          "start": 21.64,
+          "end": 21.98,
+          "text": " mindig"
+        },
+        {
+          "start": 21.98,
+          "end": 22.66,
+          "text": " egyértelműen"
+        },
+        {
+          "start": 22.66,
+          "end": 23.04,
+          "text": " elindulj"
+        }
+      ]
+    },
+    {
+      "start": 23.04,
+      "end": 25.18,
+      "text": " A szöveg, és ahol hosszabb szünetet tartok",
+      "words": [
+        {
+          "start": 23.04,
+          "end": 23.16,
+          "text": " A"
+        },
+        {
+          "start": 23.16,
+          "end": 23.56,
+          "text": " szöveg,"
+        },
+        {
+          "start": 23.62,
+          "end": 23.74,
+          "text": " és"
+        },
+        {
+          "start": 23.74,
+          "end": 23.94,
+          "text": " ahol"
+        },
+        {
+          "start": 23.94,
+          "end": 24.22,
+          "text": " hosszabb"
+        },
+        {
+          "start": 24.22,
+          "end": 24.62,
+          "text": " szünetet"
+        },
+        {
+          "start": 24.62,
+          "end": 25.18,
+          "text": " tartok"
+        }
+      ]
+    },
+    {
+      "start": 25.18,
+      "end": 31.31,
+      "text": " Ott a vágó, felismerhez se a határt",
+      "words": [
+        {
+          "start": 25.18,
+          "end": 25.96,
+          "text": " Ott"
+        },
+        {
+          "start": 28.81,
+          "end": 28.99,
+          "text": " a"
+        },
+        {
+          "start": 28.99,
+          "end": 29.41,
+          "text": " vágó,"
+        },
+        {
+          "start": 29.85,
+          "end": 30.51,
+          "text": " felismerhez"
+        },
+        {
+          "start": 30.51,
+          "end": 30.65,
+          "text": " se"
+        },
+        {
+          "start": 30.65,
+          "end": 30.77,
+          "text": " a"
+        },
+        {
+          "start": 30.77,
+          "end": 31.31,
+          "text": " határt"
+        }
+      ]
+    },
+    {
+      "start": 36.05,
+      "end": 39.01,
+      "text": " Ha minden a helyén van, a vágás utá...",
+      "words": [
+        {
+          "start": 36.05,
+          "end": 36.85,
+          "text": " Ha"
+        },
+        {
+          "start": 36.85,
+          "end": 37.09,
+          "text": " minden"
+        },
+        {
+          "start": 37.09,
+          "end": 37.19,
+          "text": " a"
+        },
+        {
+          "start": 37.19,
+          "end": 37.53,
+          "text": " helyén"
+        },
+        {
+          "start": 37.53,
+          "end": 37.65,
+          "text": " van,"
+        },
+        {
+          "start": 37.79,
+          "end": 37.87,
+          "text": " a"
+        },
+        {
+          "start": 37.87,
+          "end": 38.23,
+          "text": " vágás"
+        },
+        {
+          "start": 38.23,
+          "end": 39.01,
+          "text": " utá..."
+        }
+      ]
+    },
+    {
+      "start": 39.01,
+      "end": 39.83,
+      "text": " Na bajz meg",
+      "words": [
+        {
+          "start": 39.01,
+          "end": 39.39,
+          "text": " Na"
+        },
+        {
+          "start": 39.39,
+          "end": 39.67,
+          "text": " bajz"
+        },
+        {
+          "start": 39.67,
+          "end": 39.83,
+          "text": " meg"
+        }
+      ]
+    },
+    {
+      "start": 41.01,
+      "end": 44.05,
+      "text": " Serpenyő, Timeline 3, Script 7, Serpenyő",
+      "words": [
+        {
+          "start": 41.01,
+          "end": 41.57,
+          "text": " Serpenyő,"
+        },
+        {
+          "start": 41.63,
+          "end": 42.03,
+          "text": " Timeline"
+        },
+        {
+          "start": 42.03,
+          "end": 42.41,
+          "text": " 3,"
+        },
+        {
+          "start": 42.71,
+          "end": 42.97,
+          "text": " Script"
+        },
+        {
+          "start": 42.97,
+          "end": 43.31,
+          "text": " 7,"
+        },
+        {
+          "start": 43.47,
+          "end": 44.05,
+          "text": " Serpenyő"
+        }
+      ]
+    },
+    {
+      "start": 44.05,
+      "end": 48.07,
+      "text": " Ha minden a helyén van, a vágás után egy rövid összefüggő anyagot kapok",
+      "words": [
+        {
+          "start": 44.05,
+          "end": 44.59,
+          "text": " Ha"
+        },
+        {
+          "start": 44.59,
+          "end": 44.89,
+          "text": " minden"
+        },
+        {
+          "start": 44.89,
+          "end": 45.01,
+          "text": " a"
+        },
+        {
+          "start": 45.01,
+          "end": 45.33,
+          "text": " helyén"
+        },
+        {
+          "start": 45.33,
+          "end": 45.45,
+          "text": " van,"
+        },
+        {
+          "start": 45.61,
+          "end": 45.63,
+          "text": " a"
+        },
+        {
+          "start": 45.63,
+          "end": 46.03,
+          "text": " vágás"
+        },
+        {
+          "start": 46.03,
+          "end": 46.33,
+          "text": " után"
+        },
+        {
+          "start": 46.33,
+          "end": 46.47,
+          "text": " egy"
+        },
+        {
+          "start": 46.47,
+          "end": 46.73,
+          "text": " rövid"
+        },
+        {
+          "start": 46.73,
+          "end": 47.39,
+          "text": " összefüggő"
+        },
+        {
+          "start": 47.39,
+          "end": 47.71,
+          "text": " anyagot"
+        },
+        {
+          "start": 47.71,
+          "end": 48.07,
+          "text": " kapok"
+        }
+      ]
+    },
+    {
+      "start": 48.07,
+      "end": 51.87,
+      "text": " Amíg jól látszik, holmarad meg a beszéd, és hol lett valami ki hagyva",
+      "words": [
+        {
+          "start": 48.07,
+          "end": 48.33,
+          "text": " Amíg"
+        },
+        {
+          "start": 48.33,
+          "end": 48.53,
+          "text": " jól"
+        },
+        {
+          "start": 48.53,
+          "end": 48.95,
+          "text": " látszik,"
+        },
+        {
+          "start": 49.03,
+          "end": 49.47,
+          "text": " holmarad"
+        },
+        {
+          "start": 49.47,
+          "end": 49.61,
+          "text": " meg"
+        },
+        {
+          "start": 49.61,
+          "end": 49.73,
+          "text": " a"
+        },
+        {
+          "start": 49.73,
+          "end": 50.29,
+          "text": " beszéd,"
+        },
+        {
+          "start": 50.43,
+          "end": 50.53,
+          "text": " és"
+        },
+        {
+          "start": 50.53,
+          "end": 50.73,
+          "text": " hol"
+        },
+        {
+          "start": 50.73,
+          "end": 50.91,
+          "text": " lett"
+        },
+        {
+          "start": 50.91,
+          "end": 51.33,
+          "text": " valami"
+        },
+        {
+          "start": 51.33,
+          "end": 51.51,
+          "text": " ki"
+        },
+        {
+          "start": 51.51,
+          "end": 51.87,
+          "text": " hagyva"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "topic_id": "3-flow-test",
+  "script_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test-bug1/3-script.md",
+  "script_sha256": "e0425e2b35b730c76dc0cbe55c39e06d03449273145576e5aaec0f8fdbb8c7c7",
+  "recording_index_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test-bug1/recording_index.json",
+  "recording_index_sha256": "902974733f8060893b16536ff071473548e7a826ef673a367d04b406cb64a3df",
+  "resolve_project": null,
+  "media_import": null,
+  "index_correction": null,
+  "orchestration": {
+    "stage": "prepare",
+    "step": "2b-retake-plan",
+    "input_paths": {
+      "recording_dir": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test-bug1",
+      "manifest_path": "/Users/wadkan/Projects/film-GombaFlow/local-workflows/script-and-cut-workflows/gombaFlow/projects/3-flow-test-bug1/transcripts/master_transcript.json"
+    },
+    "last_status": "COMPLETED_WITH_ISSUES",
+    "has_issues": true,
+    "stop_reason": "plan_review"
+  }
+}
